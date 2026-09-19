@@ -1,0 +1,465 @@
+{
+  "channel": "release",
+  "count": 89,
+  "entrypoints": [
+    "adapter/nanaimo_adapter.c",
+    "adapter/nanaimo_adapter_testports.c"
+  ],
+  "build_outputs": {
+    "adapter/nanaimo_adapter.exe": {
+      "size": 18281984,
+      "sha256": "017B284DABE6FC701A8E70C2F42042C125ACD610CD9D0DC56171ABB2E85C2B25"
+    },
+    "adapter/nanaimo_adapter_testports.exe": {
+      "size": 18281984,
+      "sha256": "E8B2900859171C62667C71D86E902C451FD6AE6640A904ECEC9F9C36788361E5"
+    }
+  },
+  "files": [
+    {
+      "path": "adapter/nanaimo_adapter.c",
+      "size": 3560,
+      "sha256": "FE45D4D6A764515ED86B39F2DB6261E446B9C20AE50EC4AC5278F88880F08120"
+    },
+    {
+      "path": "adapter/nanaimo_adapter_testports.c",
+      "size": 162,
+      "sha256": "3EAD734315C1506A0F526E93BC8EFDE216DFE1D8CB6C3A81E80CA41C2310E1C2"
+    },
+    {
+      "path": "release/components/adapter_core/foundation.inc",
+      "size": 28650,
+      "sha256": "33FB0D9B6E970063493247F4B713727F8DC22D1978F797BDB6464A56065FE8D6"
+    },
+    {
+      "path": "release/components/adapter_core/profile_resources_runtime.inc",
+      "size": 8481,
+      "sha256": "B63E03693AB32DCA75BFF5D2C3466688C7722FC2170E08998A6E3ED608F6F43C"
+    },
+    {
+      "path": "release/components/adapter_core/teamplay_adapter.inc",
+      "size": 13722,
+      "sha256": "F741ED94151AA45754EC3422DD8EFBDF2487A17DF7A469022528A6EF99A0CFF8"
+    },
+    {
+      "path": "release/components/apartments/apartment_runtime.inc",
+      "size": 10546,
+      "sha256": "37B2D161569EB7A0BFE52B67F03F8C8E32FEAD9487A7C37771EBFB65886B49C2"
+    },
+    {
+      "path": "release/components/boss/component_data.inc",
+      "size": 570725,
+      "sha256": "068EB07E0477335D9B8437284F86CA18846C05AD87A7AC89E987A3789FCCD05F"
+    },
+    {
+      "path": "release/components/boss/protocol_adapter.inc",
+      "size": 1646,
+      "sha256": "9C5270DA0FE17939BB89BF81AC5F90E578412277096ACC20936097B852E1B0C8"
+    },
+    {
+      "path": "release/components/cards/card_system.inc",
+      "size": 5067,
+      "sha256": "A9582EBEE25B2D4B45EA4FB8CE713958C806D43C6D2AD6580A332E05CAAA9953"
+    },
+    {
+      "path": "release/components/cards/gameitem_effect_data.inc",
+      "size": 56075,
+      "sha256": "167C8B2BFFFDF7F6E2FE4ECD908DE01BE4D71E097D5679D7A109FED8FB510F1C"
+    },
+    {
+      "path": "release/components/cards/key_runtime.inc",
+      "size": 10872,
+      "sha256": "FA99D1B4F3E9E9143CCD3F31E7659F1D8D75A0BEFD45F370D9F7CCEE7287CCF5"
+    },
+    {
+      "path": "release/components/cards/profile_state.inc",
+      "size": 5379,
+      "sha256": "7C380AEA854A3B5BF3B893F2FDFF7CC8B3DEC775E4E370C2C9C046692245DA0C"
+    },
+    {
+      "path": "release/components/cards/random_pool.inc",
+      "size": 3196,
+      "sha256": "7C21C28EECB35D244E7F4A2ECC3F8D0311B7CC1B9E1DE764A7CBD2E52F9D7D66"
+    },
+    {
+      "path": "release/components/cards/synthesis_recipe_data.inc",
+      "size": 2049040,
+      "sha256": "F639AFDBC24F1BDF92779C40E769C6F02C5C43520B725B4026EC421C78E6AB54"
+    },
+    {
+      "path": "release/components/catalogs/avatar_shop_catalog.inc",
+      "size": 92971,
+      "sha256": "8806F9A000BE95C9961153696D7AE0870F292DBCC493049961BAADF86E149F57"
+    },
+    {
+      "path": "release/components/catalogs/pet_shop_catalog.inc",
+      "size": 26141,
+      "sha256": "D74B21D81E5DD01651BCD2A398D066A5C79B7207BDA424D35207654E8BAF12C9"
+    },
+    {
+      "path": "release/components/channel_reentry/channel_reentry_runtime.inc",
+      "size": 8351,
+      "sha256": "0EBB705C3817FC34DF395BB46A5F547447D3D2723762F77DB0E5306FBDC6D481"
+    },
+    {
+      "path": "release/components/channel_reentry/current_runtime.inc",
+      "size": 6163,
+      "sha256": "CBDB4627B449CDA25DC1EDD5907D0BB902EA78D0E38E60186FE9CC54011EF519"
+    },
+    {
+      "path": "release/components/channel_reentry/peer_runtime.inc",
+      "size": 5643,
+      "sha256": "846EE7BDD629C64BA50638F3074317BCD90FE1A452029E543015ACC7ABF6863F"
+    },
+    {
+      "path": "release/components/combat_attribution/map_identity_runtime.inc",
+      "size": 5674,
+      "sha256": "3FF016EEF1A18F9E5067042BCD3F3A0AF88C3460800BD67D45C1B2556DB982FA"
+    },
+    {
+      "path": "release/components/combat_attribution/meat_collision_runtime.inc",
+      "size": 5275,
+      "sha256": "6C0F1E3C2FC5C805D8F88240E2209ED639A143924329202B2E81242B487A53AC"
+    },
+    {
+      "path": "release/components/combat_attribution/monster_hp_resource_policy.inc",
+      "size": 16413,
+      "sha256": "7A5BE2E4B33B084A02927005C4B888E1111FD2B67AFE5DB12EC8339917C351FA"
+    },
+    {
+      "path": "release/components/combat_attribution/projectile_runtime.inc",
+      "size": 5351,
+      "sha256": "4755E27DB0E4ED4DF97A2961557F7169EE5DDA0B633F5F5FB219BB272964FE12"
+    },
+    {
+      "path": "release/components/combat_economy/coin_drop_runtime.inc",
+      "size": 4258,
+      "sha256": "3ACBEDBEC7C471D4ADC6EB3D7118FA9D1A9C028ED6605F2980956BCB54964644"
+    },
+    {
+      "path": "release/components/combat_economy/collision_damage_runtime.inc",
+      "size": 9585,
+      "sha256": "23052D1635734F875560FD8210DA0D2E9A9AD98F5233E43B10AB53754146E107"
+    },
+    {
+      "path": "release/components/combat_economy/combat_economy_policy.inc",
+      "size": 4388,
+      "sha256": "6FEE2C681FF7C09F318885CF2833EA11A08B2BB66331445CE0D86CC4E10F0DA2"
+    },
+    {
+      "path": "release/components/combat_economy/incoming_pon_attack_data.inc",
+      "size": 118076,
+      "sha256": "0FF030038760A140893FFA1FBE700031DD7000AAEDCE080C3149E6D721401DA2"
+    },
+    {
+      "path": "release/components/dungeon/unlock_patch.inc",
+      "size": 2401,
+      "sha256": "43526D0192BCCB6DCAE06B18A47BD82B98D9C2F625FD8D27D3C4C14A48B96564"
+    },
+    {
+      "path": "release/components/dungeon_progression/progression_runtime.inc",
+      "size": 13016,
+      "sha256": "106F4E493592BED525C41A6943F99775F61D74750454E3D69B9523904321982A"
+    },
+    {
+      "path": "release/components/dungeon_unlock/unlock_patch.inc",
+      "size": 1551,
+      "sha256": "CF68742DB733E662CCE8A7E8590FEAC5BAB84E4D69189D61E9EECF27A5986783"
+    },
+    {
+      "path": "release/components/fixtures/c44c_selina.inc",
+      "size": 11021,
+      "sha256": "C082114C186B78CBEC734B34AC04C9517EEBEF9F3E49D646755DAC7AE399E603"
+    },
+    {
+      "path": "release/components/fixtures/cfec_exact.inc",
+      "size": 4317,
+      "sha256": "D4AE690A6F840B1ACC43AA7089CD0F5141EA8881EC090351E616A47536808E9B"
+    },
+    {
+      "path": "release/components/fixtures/full_profile.inc",
+      "size": 18138,
+      "sha256": "CDA17ED25AD579606B7BAE76CDA36015756E9462FE52DE1C9BB2589485115A01"
+    },
+    {
+      "path": "release/components/fixtures/standalone_exact.inc",
+      "size": 19829,
+      "sha256": "38B6431E038830CA9F172834A5989E062171E0483C30BE2838175B6E2DE84075"
+    },
+    {
+      "path": "release/components/fixtures/standalone_ref_payloads.inc",
+      "size": 17396,
+      "sha256": "32634877E9DAAA877F8A96A6D3B9A6BF7AA18948F7874903DAA497D31129F149"
+    },
+    {
+      "path": "release/components/flight_items/flightitem_runtime.inc",
+      "size": 3019,
+      "sha256": "B52A4BC63F200742B2CC00979C88D93228B128F379D2CC251869264AFEE114E5"
+    },
+    {
+      "path": "release/components/flight_items/protocol_overrides.inc",
+      "size": 1793,
+      "sha256": "E0575BFF3CC68D624FAA12956FC8D1F5C2C5897DE73AC964827775BE6633ABE7"
+    },
+    {
+      "path": "release/components/game_items/gameitem_effect_data.inc",
+      "size": 69335,
+      "sha256": "7C3BFA38885F0F0838A12D887DF01A3D12854A839BC061729F63C220B2375F3D"
+    },
+    {
+      "path": "release/components/game_session/gs_runtime.inc",
+      "size": 125843,
+      "sha256": "D844A396B61F140EE92F4D1BC17D93E7B6D4345F9C167ABAB3C73F60F69E7D87"
+    },
+    {
+      "path": "release/components/game_session/revival_runtime.inc",
+      "size": 1036,
+      "sha256": "2623D4EC1FC3BDFF52BE28F25E1149B1C19C25C3D37A35E7A2BB20D129EC9941"
+    },
+    {
+      "path": "release/components/game_session/revival_state.inc",
+      "size": 3389,
+      "sha256": "441A037DA90E2CA20FF353D0E13E2B854003350901C2B95F1587B014B96E455B"
+    },
+    {
+      "path": "release/components/interiors/interior_catalog.inc",
+      "size": 22604,
+      "sha256": "D71749EE7F6875ADD030538675D2EFE4E356E8BB1241D09EC3F92651C4D0A10A"
+    },
+    {
+      "path": "release/components/inventory_instances/item_lifesteal_runtime.inc",
+      "size": 3504,
+      "sha256": "E650BB0FB10DEB29A0869B6282C3276EA0B625AC3E9FC72CC4742088C9E22C11"
+    },
+    {
+      "path": "release/components/inventory_instances/petitem_runtime.inc",
+      "size": 16742,
+      "sha256": "312D186C3926B35981B6A96CCC2794F18DC5B5AE6D7F8EB91697E2BBFBB86914"
+    },
+    {
+      "path": "release/components/inventory_instances/shop_runtime.inc",
+      "size": 9659,
+      "sha256": "EAF7F3514D26FA32C84BF2E937AE972E4F2608783CC8BA0A8E5F7DA0B6D1E249"
+    },
+    {
+      "path": "release/components/multiplayer/peer_runtime.inc",
+      "size": 9117,
+      "sha256": "BBB8B0053A2822B0C91C2D3AB6FE8A27069AA118FBA730A6B87B5663CDC36473"
+    },
+    {
+      "path": "release/components/multiplayer/realtime_runtime.inc",
+      "size": 32789,
+      "sha256": "41E635C3F08D760F9751F1E990032360E93B27BFE4E34AD0A8CEA3E4EACA74FA"
+    },
+    {
+      "path": "release/components/multiplayer/room_policy.inc",
+      "size": 18032,
+      "sha256": "1A13CB6C1A6FA2EABEF5F547333AC2212A13479D83369A5F58BAF8A7ADDD73FF"
+    },
+    {
+      "path": "release/components/multiplayer/start_runtime.inc",
+      "size": 3191,
+      "sha256": "3C87F4D66A518CBBAD33463D3EDCBE7282EE99EDBC4F826138C25819E9AE4744"
+    },
+    {
+      "path": "release/components/multiplayer/teamplay_runtime.inc",
+      "size": 1789,
+      "sha256": "1777865AF3090A62B6FE7E6291493A2B1518F67052CFFA1342E29F3D8263F8DE"
+    },
+    {
+      "path": "release/components/multiplayer_combat/player_combat_stats.inc",
+      "size": 1257,
+      "sha256": "E35E974A54C5BDCB38D043171B16EBFCAC92BA39D212F5D0D798345F19475748"
+    },
+    {
+      "path": "release/components/multiplayer_combat/realtime_runtime.inc",
+      "size": 36382,
+      "sha256": "CF26C1B4A25431DFBE79D7F3AA66F7900A970F35A05D4DD6A4F96D7AD6E99700"
+    },
+    {
+      "path": "release/components/multiplayer_combat/start_runtime.inc",
+      "size": 3191,
+      "sha256": "3C87F4D66A518CBBAD33463D3EDCBE7282EE99EDBC4F826138C25819E9AE4744"
+    },
+    {
+      "path": "release/components/multiplayer_combat/teamplay_runtime.inc",
+      "size": 1789,
+      "sha256": "1777865AF3090A62B6FE7E6291493A2B1518F67052CFFA1342E29F3D8263F8DE"
+    },
+    {
+      "path": "release/components/network/network_main.inc",
+      "size": 15889,
+      "sha256": "BE563E088310F24DAF2B79966944AF0106F8B347BD80B9896E2F082D2258FDCE"
+    },
+    {
+      "path": "release/components/network/network_main_testports.inc",
+      "size": 15889,
+      "sha256": "8AA9FB99CAE1B03E456206953B2E000A5C2E390D29B2C253E6499FE82426803D"
+    },
+    {
+      "path": "release/components/pet/attack_mode_powerup.inc",
+      "size": 1100,
+      "sha256": "123FAF89AB5B45208797B71B5DC471EBF0710876CA5F4CE7EB8E767F76D77E15"
+    },
+    {
+      "path": "release/components/pet_crafting/pet_growth_catalog.inc",
+      "size": 30559,
+      "sha256": "CF219C9CE2F001C3D9B127503C182AB1D1A064635776F55D84E00996F5A65C4E"
+    },
+    {
+      "path": "release/components/pet_crafting/synthesis_runtime.inc",
+      "size": 9079,
+      "sha256": "40A4B5DBFA3EB56632D69C79CC0D685C0EDB630C0E5A4680E2F3530A3EC14192"
+    },
+    {
+      "path": "release/components/pet_gems/pet_gem_effect_catalog.inc",
+      "size": 1265539,
+      "sha256": "9EF94D793C1BA568C963EA4B9C06ADA85DF47B189CB9E4F1DB2B6AA07BF7B358"
+    },
+    {
+      "path": "release/components/pet_growth/petitem_runtime.inc",
+      "size": 207,
+      "sha256": "08F87AE563BD54954AE91AB47F3B1C038DA0ED9C95FB1BEF5B84F79C9A53290E"
+    },
+    {
+      "path": "release/components/profile/shopping_inventory_state.inc",
+      "size": 15458,
+      "sha256": "A61E0403CBCB765DD48D6FC8642F2CB660B3551884E73EB875277F61944818FC"
+    },
+    {
+      "path": "release/components/protocol/experience_carriers.inc",
+      "size": 1710,
+      "sha256": "C210A667933C40A47082100D63110F04DB1A00CEC59B6E467E41C1A8B7CBE921"
+    },
+    {
+      "path": "release/components/protocol/protocol.inc",
+      "size": 90020,
+      "sha256": "98EA06342094B884D80F4F3509EAAB10CE78EAA82238824A7BCF70FA608F4CC9"
+    },
+    {
+      "path": "release/components/protocol/protocol_state_sync.inc",
+      "size": 7520,
+      "sha256": "45059C1581FEEF06A922F18D7958E77B212AF94D2B9DB499C04FAADAA9D47DA5"
+    },
+    {
+      "path": "release/components/protocol/protocol_state_sync_base.inc",
+      "size": 9755,
+      "sha256": "8D70C04C0918AEBC305877DF82B3F9948817BA3EF375EEF2DD1E5E294E9117AD"
+    },
+    {
+      "path": "release/components/protocol_extensions/protocol_overrides.inc",
+      "size": 19056,
+      "sha256": "F0B1F313D3573986ADA7A30106903CEFB2601033EAD52B77EBB88F2DD6D13703"
+    },
+    {
+      "path": "release/components/quickbar/quickbar_runtime.inc",
+      "size": 22579,
+      "sha256": "9008202EF14F78685F3D806F4D62DA2C6AABC87298608CE247CEB97F656196F2"
+    },
+    {
+      "path": "release/components/settlement/battle_score_runtime.inc",
+      "size": 1221,
+      "sha256": "EC89BD360B96BA942A9735A3A5A552ACB857719DF6E9C01CCB9C9667F0B62B5B"
+    },
+    {
+      "path": "release/components/shop_catalogs/shop_item_catalog.inc",
+      "size": 1608,
+      "sha256": "3D1AD4F3E9966AD4C186F0A3FB5C7BCA531E670C930DE217FC67BB8E2EBD363B"
+    },
+    {
+      "path": "release/components/shop_catalogs/shop_protocol.inc",
+      "size": 1724,
+      "sha256": "2979BAC329166DFC03A4B9059244FDCFEF8370E4949BA9BC126753981D6727F5"
+    },
+    {
+      "path": "release/components/skill_lifecycle/skill_effect_cleanup_runtime.inc",
+      "size": 4609,
+      "sha256": "2E381AE9254D5DBC5B10EDBB8BE9313EEEDDCF883D4658CBB9B0C2428A0DCF8F"
+    },
+    {
+      "path": "release/components/skills/attack_policy.inc",
+      "size": 821,
+      "sha256": "4295FC7414948304A4EED8FB10DAE5016F6B6916F24489C7DCE1861419898046"
+    },
+    {
+      "path": "release/components/skills/profile_state.inc",
+      "size": 8679,
+      "sha256": "616CDD668754B130C76684CA674E9B611D8FFC94E663155D87EA24F21C5081C7"
+    },
+    {
+      "path": "release/components/skills/progress_runtime.inc",
+      "size": 5039,
+      "sha256": "608C1D9598FE84697E5704CF0997094A68429EF51BE5F629C85F7A38B3257D61"
+    },
+    {
+      "path": "release/components/skills/slot_state.inc",
+      "size": 615,
+      "sha256": "C62F1CDAE2F59F4DE0CD84CBB28A0546BDE9CD3BB3BC9920FE61E52129FAB907"
+    },
+    {
+      "path": "release/components/stage_damage/damage_runtime.inc",
+      "size": 8075,
+      "sha256": "26E8C9E63CF7D64336161366735A995DA7255635732D2D4CC0F46494F5168043"
+    },
+    {
+      "path": "release/components/stage_damage/stage_damage_catalog.inc",
+      "size": 948784,
+      "sha256": "A5CA2B8B724D7D17F0F5473812E43DD7DB22CE4DA7395F9E7AE59589D3DAF23B"
+    },
+    {
+      "path": "release/components/target_resources/hp_resource_runtime.inc",
+      "size": 24608,
+      "sha256": "8B6D78F1EC12ED3B04FA5C5F80BC8128B7917BB5FE47068F8E675B4400586619"
+    },
+    {
+      "path": "release/components/target_resources/lumineos_resource_identity.inc",
+      "size": 693,
+      "sha256": "7C199B6CECA6D90C3BFE5FD63E7FB2E704DB3EEE0C5A77DA28BA779CBF49B8EE"
+    },
+    {
+      "path": "release/components/targets/attack_candidates.inc",
+      "size": 85500,
+      "sha256": "2B48403BCA18D53CA8984C24DC9E2B9CDB1A1564810E4FC7D4A47EC0E66FE9E1"
+    },
+    {
+      "path": "release/components/targets/crate_drop_policy.inc",
+      "size": 4217,
+      "sha256": "CBAB4E299AC2DFCFAC91638DEF630BFAB6932D8AD5C134177E739B9B5894C48C"
+    },
+    {
+      "path": "release/components/targets/crate_drop_profiles.inc",
+      "size": 195685,
+      "sha256": "46DB1C9BA7F1473B32E2EC0B0D1EBDDC8889787E2696F90F3BC149F0A68FCA38"
+    },
+    {
+      "path": "release/components/targets/hp_resource_global_data.inc",
+      "size": 24986020,
+      "sha256": "619DA131507D5AB98B0642D0B3D831A2BE12FF12CD203D613256851B5AA726B4"
+    },
+    {
+      "path": "release/components/targets/runtime_crate_alias_policy.inc",
+      "size": 1713,
+      "sha256": "AA30F00EC3F6A9048DFED29BB3FB1FA6DF5B918E3EF5CBDAA33995F64CB04212"
+    },
+    {
+      "path": "release/components/village/multiplayer_social.inc",
+      "size": 4061,
+      "sha256": "9EBB6E8DC3DB12C9C5D4A2B7A0ABCA198325E887375C383753ADB7BD182758BA"
+    },
+    {
+      "path": "release/components/village/social_core.inc",
+      "size": 4461,
+      "sha256": "ABBC29DCC8EDD949BD57DD72ABCC80399B22B66C4185B39E6F66EDD7163B20E2"
+    },
+    {
+      "path": "release/components/winter_boss/boss_hp_sync_runtime.inc",
+      "size": 48592,
+      "sha256": "A2DB599BAD5FEDB7F687BFE7A312DC4C248B6D161CDF83EF1B41CF228640B858"
+    },
+    {
+      "path": "release/teamplay_common.inc",
+      "size": 14316,
+      "sha256": "F474956B4E589CA0A51F58779D899FDA9C9D378F23948C5438F6F58D817101F9"
+    }
+  ]
+}

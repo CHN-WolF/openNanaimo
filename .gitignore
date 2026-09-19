@@ -1,0 +1,45 @@
+# Private runtime state (compatibility storage names are not release versions)
+/adapter_*.log
+/*_stderr.log
+/nanaimo_launcher_profile.ini
+/nanaimo_launcher_profile.json
+/adapter_ip.txt
+/accounts.dat
+/inventory_admin_backups/
+/*_state*.dat
+/*_state*.bak
+/*_state*.new
+/card_inventory_*.dat
+/card_key_*.dat
+/card_synthesis_rewards_*.dat
+/gui*_*.dat
+/quickbar_state_*.dat
+/quickbar_state_*.handles
+/skill_progress_state_*.dat
+/StateOption/gamestartoption.ini
+/release/*.exe
+__pycache__/
+*.pyc
+/build/
+/dist/
+/exports/
+/.private/
+/adapter/*.rebuilt.exe
+# Official installers are supplied separately, never as patch payload
+/installer/
+
+# User-supplied client and installer archives are never part of the source repository.
+/game.exe
+/nanaimo_client.exe
+/*.zip
+/*.7z
+/*.rar
+/github_openNanaimo/
+
+# Locally supplied third-party toolchains are not repository payloads.
+/tools/python/
+/tools/tcc/
+
+/adapter_pet_items_*
+
+/adapter_cash_bundle_migration_*

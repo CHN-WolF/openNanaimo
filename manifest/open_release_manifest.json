@@ -1,0 +1,80 @@
+{
+  "channel": "release",
+  "description": "Korean flight-shooting game nanaimo launcher and local protocol adapter",
+  "runtime_acceptance": false,
+  "validation_scope": "Local file contract and deterministic rebuild; not clean official-install or gameplay acceptance",
+  "critical_files": {
+    "Village_map_image/Village_map_image.pack": {
+      "size": 17011373,
+      "sha256": "69EF0FA688DBCB4EE2A36151F76F78A5A3D4F051253ABE81EA824F37749FCD56"
+    },
+    "adapter/nanaimo_adapter.exe": {
+      "size": 18281984,
+      "sha256": "017B284DABE6FC701A8E70C2F42042C125ACD610CD9D0DC56171ABB2E85C2B25"
+    },
+    "adapter/nanaimo_adapter_testports.exe": {
+      "size": 18281984,
+      "sha256": "E8B2900859171C62667C71D86E902C451FD6AE6640A904ECEC9F9C36788361E5"
+    },
+    "flying/hd0_ep22_dg00_st01.sstg": {
+      "size": 103124,
+      "sha256": "899B1820EC0F49E032589AEAAA582086D5471C4BB1982EFB104E96FEC74D6D27"
+    },
+    "flying/hd0_ep22_dg01_st01.sstg": {
+      "size": 103124,
+      "sha256": "899B1820EC0F49E032589AEAAA582086D5471C4BB1982EFB104E96FEC74D6D27"
+    },
+    "flying/pon/mis_ep22_dg01_m_196.pon": {
+      "size": 21508,
+      "sha256": "D25279362ACD02505AEA542DDD05BD9A6A38C1023BF60BD66859E4F8D9AD1EC4"
+    },
+    "flying/pon/mis_ep22_dg01_m_196_02.pon": {
+      "size": 21508,
+      "sha256": "D25279362ACD02505AEA542DDD05BD9A6A38C1023BF60BD66859E4F8D9AD1EC4"
+    },
+    "game.exe": {
+      "size": 14198272,
+      "sha256": "6E3985CB7BEBA0207DEB6201BFB05D01CF8D548D3B674D8E6BD6A6F2DEB72B90"
+    },
+    "gui_launcher/client_connect.ps1": {
+      "size": 4779,
+      "sha256": "D767CAB492D152504B10C8F765B0EF297C159332C4407AA28089F531C1E82757"
+    },
+    "gui_launcher/inventory_admin_backend.py": {
+      "size": 11045,
+      "sha256": "374E79B82D26FEA6C74C4D324B792DC70C38EBE88BC9F051A49615C7AB05E533"
+    },
+    "gui_launcher/inventory_admin_gui.ps1": {
+      "size": 23183,
+      "sha256": "99077F08A21F0E6379D67B3C0DD9EAAE2CB11D61FF4A1F10F94F07C91828C207"
+    },
+    "gui_launcher/launch_modes/gamestartoption.network.ini": {
+      "size": 193,
+      "sha256": "5930276C765992A27CA85E7FBB07F78CFF56FB427CCBEEA36F31287F90955117"
+    },
+    "gui_launcher/nanaimo_launcher.ps1": {
+      "size": 92388,
+      "sha256": "E26206A0EDE3BDEB8A32044FDDB3970A5120CD561F0629C0237AC871627AAEC1"
+    },
+    "gui_launcher/resource_patches/superboss_projectile_alias.json": {
+      "size": 1588,
+      "sha256": "3B4544218D63CFFFF1A57CEFC1EC77324D4E8D260CB5878561E87CDBEB67EF24"
+    },
+    "scripts/verify_client_baseline.py": {
+      "size": 4404,
+      "sha256": "62F7555C3AB4D04D3F1BD08BF6972FEFF710F20443E45D263C4425CD0AC36993"
+    },
+    "start_nanaimo_launcher.bat": {
+      "size": 164,
+      "sha256": "EAABAC6548E7B59A0C14B087CE96E8E37374849642FABC810AAB6B35FD14AC14"
+    }
+  },
+  "source_closure_count": 89,
+  "public_export_policy": {
+    "mode": "explicit-reviewed-allowlist-only",
+    "exclude_private_profiles_states_logs_backups": true,
+    "exclude_official_installers_and_full_client_assets": true,
+    "working_tree_is_public_package": false,
+    "manifest": "manifest/patch_allowlist.json"
+  }
+}

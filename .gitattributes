@@ -1,0 +1,2 @@
+# Preserve exact bytes required by source/runtime SHA-256 contracts.
+* -text

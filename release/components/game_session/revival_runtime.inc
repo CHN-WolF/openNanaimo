@@ -1,0 +1,5 @@
+#ifndef NANAIMO_GAME_SESSION_REVIVAL_RUNTIME_INC
+#define NANAIMO_GAME_SESSION_REVIVAL_RUNTIME_INC
+static int game_session_consume_revival_bundle(unsigned code,unsigned identity,unsigned*remaining){unsigned old=0u,now=0u;if(!game_session_revival_reserve_bundle(code,&old,&now))return 0;if(!inventory_instances_instance_exchange(code,identity,0u,remaining)){game_session_revival_rollback(old);printf("  [REVIVE] bundle rollback code=%u identity=%u uses=%u reason=instance-reject\n",code,identity,old);fflush(0);return 0;}printf("  [REVIVE] bundle activated code=%u identity=%u uses=%u->%u remaining_bundles=%u\n",code,identity,old,now,remaining?*remaining:0u);fflush(0);return 1;}
+static void game_session_send_cf84_revive(SOCKET c,unsigned actor_uid){char p[4096];mkpkt(p,0xCF84,0x18,1);stable_resource_put16(p,0x08,0x3Cu);stable_resource_put16(p,0x0A,actor_uid);stable_put32(p,0x10,0u);stable_put32(p,0x14,0u);sendbuf(c,p,0x18);printf("  S0xCF84 REVIVE uid=%u variant=60 len=24 x10=0 x14=0 t=%lds\n",actor_uid,sec());fflush(0);}
+#endif
