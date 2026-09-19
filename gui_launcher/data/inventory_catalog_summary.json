@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "counts": {
+    "inventory_clothing.json": 3885,
+    "inventory_pets.json": 868,
+    "inventory_pet_gems.json": 18931,
+    "inventory_game_items.json": 21892,
+    "inventory_furniture.json": 781,
+    "inventory_cards.json": 420
+  },
+  "sources": {
+    "inter._D3": {
+      "file": "inter._D3",
+      "bytes": 167552,
+      "sha256": "EA3B1B1726FA999973338716C0F3E78E65FEF77992D38FCD7C0724381DF0234B"
+    },
+    "ddakg._D4": {
+      "file": "ddakg._D4",
+      "bytes": 123760,
+      "sha256": "338B9153192937070806BAE50E0E684E56907CBB2C44C65B34A9F0382492E63E"
+    },
+    "PA._D9": {
+      "file": "PA._D9",
+      "bytes": 3535984,
+      "sha256": "468DAD2E02CA2DB72F0BFD45BA5F85C8814F1F7DEF8A2A4EAF7C459AD0D59002"
+    },
+    "gi._D6": {
+      "file": "gi._D6",
+      "bytes": 413760,
+      "sha256": "4EEFD439D499B85D04C62D224BF9DF9374FEF369A3A80B4058DFC4A1DE9093BB"
+    },
+    "SP._D34": {
+      "file": "SP._D34",
+      "bytes": 288,
+      "sha256": "7D765B33E29EC6A8B6DC85C226B6C51199BA6B01ED42F64C138259AA2651BCE9"
+    },
+    "MI._D22": {
+      "file": "MI._D22",
+      "bytes": 2240,
+      "sha256": "98A9E1F2C09AE5ECD6FA4F83F50A3D1F4B4A263DD1541C27D8BBB2EC913CC22F"
+    },
+    "IE._D23": {
+      "file": "IE._D23",
+      "bytes": 3088,
+      "sha256": "5F0DFCEE636F06F2913D897D21B8DD027890432C7FDCAEEF54FA28E2244BC8A3"
+    },
+    "SF._D21": {
+      "file": "SF._D21",
+      "bytes": 848,
+      "sha256": "C927F522AF5C0879593616AA78A3BE2097EB55643464F526862F8F440BC944A4"
+    },
+    "htoken._D25": {
+      "file": "htoken._D25",
+      "bytes": 1200,
+      "sha256": "64A88D62FC3DCA7796471ED89E00100F961BBF0E0341216CABFFCE51385D6F54"
+    },
+    "GoldDust._D17": {
+      "file": "GoldDust._D17",
+      "bytes": 3248,
+      "sha256": "2D579FF91070814A56ECD355D28F07CC9FFA5375ECD257D819442474F4F7B0E5"
+    },
+    "token._D15": {
+      "file": "token._D15",
+      "bytes": 39440,
+      "sha256": "38298AAE1AE03879C67EE225641127D3140B1479D0B33577F42D95A057A824C5"
+    },
+    "CI._D28": {
+      "file": "CI._D28",
+      "bytes": 1232,
+      "sha256": "E6BB62AB7C285621F750B22309D04A8EEAA84F029250870FABD4C2B67D98C2B7"
+    }
+  }
+}

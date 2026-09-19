@@ -50,76 +50,6 @@
       "reason": "User-supplied game resource must match the launcher resource checks; not an export payload."
     },
     {
-      "path": "gui_launcher/data/equipment.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/inventory_cards.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/inventory_catalog_summary.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/inventory_clothing.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/inventory_furniture.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/inventory_game_items.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/inventory_pet_gems.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/inventory_pets.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/pet_attack_modes.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/pets.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
       "path": "gui_launcher/data/projectile_client_compat.json",
       "required_for_current_runtime": true,
       "status": "blocked",
@@ -183,48 +113,6 @@
       "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
     },
     {
-      "path": "gui_launcher/resource_patches/superboss_projectile_alias.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "User-supplied local resource registry used by launcher integrity checks; not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/previews/equipment_icons.json",
-      "required_for_current_runtime": false,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
-    },
-    {
-      "path": "gui_launcher/data/previews/equipment_icons.png",
-      "required_for_current_runtime": false,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
-    },
-    {
-      "path": "gui_launcher/data/previews/pet_icons.json",
-      "required_for_current_runtime": false,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
-    },
-    {
-      "path": "gui_launcher/data/previews/pet_icons.png",
-      "required_for_current_runtime": false,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
-    },
-    {
-      "path": "gui_launcher/data/previews/preview_summary.json",
-      "required_for_current_runtime": false,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
-    },
-    {
       "path": "gui_launcher/data/previews/projectile_frames.json",
       "required_for_current_runtime": false,
       "status": "blocked",
@@ -244,6 +132,88 @@
       "status": "blocked",
       "export": "never_by_this_exporter",
       "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
+    }
+  ],
+  "provided_in_repository": [
+    {
+      "path": "gui_launcher/data/equipment.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/inventory_cards.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/inventory_catalog_summary.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/inventory_clothing.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/inventory_furniture.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/inventory_game_items.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/inventory_pet_gems.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/inventory_pets.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/pet_attack_modes.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/pets.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/resource_patches/superboss_projectile_alias.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/previews/equipment_icons.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/previews/equipment_icons.png",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/previews/pet_icons.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/previews/pet_icons.png",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
+    },
+    {
+      "path": "gui_launcher/data/previews/preview_summary.json",
+      "bundled_in_repository": true,
+      "reason": "Bundled in the repository at the rights holder's direction; previously declared as separately supplied."
     }
   ],
   "never_export": [

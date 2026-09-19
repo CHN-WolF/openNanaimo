@@ -1,0 +1,26 @@
+[
+  {
+    "name": "pet_icons",
+    "unique_sources": 144,
+    "decoded": 144,
+    "failures": {},
+    "mapped_ids": 868,
+    "available_ids": 860,
+    "atlas_size": [
+      2048,
+      320
+    ]
+  },
+  {
+    "name": "equipment_icons",
+    "unique_sources": 1772,
+    "decoded": 1772,
+    "failures": {},
+    "mapped_ids": 3885,
+    "available_ids": 3883,
+    "atlas_size": [
+      2048,
+      3584
+    ]
+  }
+]

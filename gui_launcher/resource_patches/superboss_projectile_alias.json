@@ -1,0 +1,30 @@
+{
+  "id": "superboss_projectile_alias",
+  "installed": true,
+  "classification": "PRIVATE_COMPATIBILITY_FALLBACK_NOT_RECOVERED_ORIGINAL_02",
+  "runtime_acceptance": false,
+  "installed_on": "release",
+  "date": "2026-09-13T00:43:39.640693",
+  "scope": "Existing196 family base projectile reused byte-for-byte at the absent02 path; 196_01/196_03 MMO three shot timing/position records each remain unchanged. Original02 graphics/trajectory/parameters are NOT recovered or asserted equal.",
+  "assets": [
+    {
+      "relative_path": "flying/pon/mis_ep22_dg01_m_196.pon",
+      "size": 21508,
+      "sha256": "D25279362ACD02505AEA542DDD05BD9A6A38C1023BF60BD66859E4F8D9AD1EC4"
+    },
+    {
+      "relative_path": "flying/pon/mis_ep22_dg01_m_196_02.pon",
+      "size": 21508,
+      "sha256": "D25279362ACD02505AEA542DDD05BD9A6A38C1023BF60BD66859E4F8D9AD1EC4"
+    }
+  ],
+  "evidence_roots": [
+    "external-evidence/static/superboss-pon-dependencies-20260913",
+    "external-evidence/runtime/superboss-pon-dependencies-20260913",
+    "external-evidence/validation/superboss-pon-dependencies-20260913"
+  ],
+  "original_missing_path": "flying/pon/mis_ep22_dg01_m_196_02.pon",
+  "source_path": "flying/pon/mis_ep22_dg01_m_196.pon",
+  "rollback": "Remove only the verified added alias/registry and coordinated GUI resource-patch guard during controlled no-client rollback; never remove the original PON, candidate or raw failures.",
+  "evidence_availability": "Private originals are not included; these labels are sanitized historical attribution, not local paths."
+}
