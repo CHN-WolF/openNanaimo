@@ -50,13 +50,6 @@
       "reason": "User-supplied game resource must match the launcher resource checks; not an export payload."
     },
     {
-      "path": "gui_launcher/data/projectile_client_compat.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
       "path": "flying/pon/nanaimo_cmp_005_0024.pon",
       "required_for_current_runtime": true,
       "status": "blocked",
@@ -104,34 +97,6 @@
       "status": "blocked",
       "export": "never_by_this_exporter",
       "reason": "User-supplied game resource must match the launcher resource checks; not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/projectile_pon_catalog.json",
-      "required_for_current_runtime": true,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived catalog required by the launcher; supplied separately and not an export payload."
-    },
-    {
-      "path": "gui_launcher/data/previews/projectile_frames.json",
-      "required_for_current_runtime": false,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
-    },
-    {
-      "path": "gui_launcher/data/previews/projectile_frames.png",
-      "required_for_current_runtime": false,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
-    },
-    {
-      "path": "gui_launcher/data/previews/projectiles",
-      "required_for_current_runtime": false,
-      "status": "blocked",
-      "export": "never_by_this_exporter",
-      "reason": "Resource-derived preview data; not an export payload. Local runtime requirements depend on the selected launcher features."
     }
   ],
   "provided_in_repository": [
