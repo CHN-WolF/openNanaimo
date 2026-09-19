@@ -35,8 +35,8 @@
     {
       "path": "README.md",
       "layer": "docs",
-      "size": 8206,
-      "sha256": "8a1d1b7fbdff0064d8a0c600619c15330c1c7b521a712e87646a17ad0684463a",
+      "size": 8572,
+      "sha256": "adcb41da550c5b317ce5c287a372466a3a9431a16e42637ba51cfab576719c4f",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -107,8 +107,8 @@
     {
       "path": "docs/\u8fd0\u884c\u4f9d\u8d56.md",
       "layer": "docs",
-      "size": 4310,
-      "sha256": "f15c6828b1afeb587cbc0913880377374065498ce048ad69224c642137ef26d2",
+      "size": 4479,
+      "sha256": "bd809d09361f3ee22ac758669d1ecf507374291847f2cbe793b0c8863d6cb33c",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
