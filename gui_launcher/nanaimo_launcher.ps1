@@ -337,7 +337,7 @@ if($SelfTestLaunchModes){
 }
 
 $form=New-Object Windows.Forms.Form
-$form.Text='nanaimo Korean Flight Shooter Launcher';$form.Size=New-Object Drawing.Size(1120,940);$form.StartPosition='CenterScreen';$form.MinimumSize=New-Object Drawing.Size(1000,870)
+$form.Text='Nanaimo Korean Flight Shooter Launcher';$form.Size=New-Object Drawing.Size(1120,940);$form.StartPosition='CenterScreen';$form.MinimumSize=New-Object Drawing.Size(1000,870)
 $tabs=New-Object Windows.Forms.TabControl;$tabs.Dock='Fill';$form.Controls.Add($tabs)
 $tabStart=New-Object Windows.Forms.TabPage;$tabStart.Text='启动配置';$tabs.TabPages.Add($tabStart)
 $tabLaunchInfo=New-Object Windows.Forms.TabPage;$tabLaunchInfo.Text='本次启动详情';$tabs.TabPages.Add($tabLaunchInfo)
@@ -345,7 +345,7 @@ $tabResources=New-Object Windows.Forms.TabPage;$tabResources.Text='数值与道�
 $tabPets=New-Object Windows.Forms.TabPage;$tabPets.Text='宠物查表';$tabs.TabPages.Add($tabPets)
 $tabEquip=New-Object Windows.Forms.TabPage;$tabEquip.Text='装扮查表';$tabs.TabPages.Add($tabEquip)
 
-$title=New-Object Windows.Forms.Label;$title.Text='韩服飞行射击游戏 nanaimo 启动器';$title.Font=New-Object Drawing.Font('Microsoft YaHei UI',16,[Drawing.FontStyle]::Bold);$title.AutoSize=$true;$title.Location=New-Object Drawing.Point(28,24);$tabStart.Controls.Add($title)
+$title=New-Object Windows.Forms.Label;$title.Text='韩国飞行射击游戏 Nanaimo 启动器';$title.Font=New-Object Drawing.Font('Microsoft YaHei UI',16,[Drawing.FontStyle]::Bold);$title.AutoSize=$true;$title.Location=New-Object Drawing.Point(28,24);$tabStart.Controls.Add($title)
 $hint=New-Object Windows.Forms.Label;$hint.Text='等级现由通关结算推进：每次成功 CF88 结算 +100 EXP，下一级需要当前等级×100；此处等级仅在该角色没有进度档时作为初始种子。';$hint.AutoSize=$true;$hint.Location=New-Object Drawing.Point(30,62);$tabStart.Controls.Add($hint)
 
 function Add-Label($parent,$text,$x,$y,$w=150){$l=New-Object Windows.Forms.Label;$l.Text=$text;$l.Location=New-Object Drawing.Point($x,$y);$l.Size=New-Object Drawing.Size($w,25);$parent.Controls.Add($l);return $l}
@@ -494,7 +494,7 @@ function Update-LaunchPreview([switch]$ComputeHashes){
         'Adapter button: save profile; start/stop only the local adapter; never launch the game.',
         'Client button: stop detected local adapters; save profile; validate files; prepare configuration; restart local adapter; register profile; launch game.','',
         ('Working directory: '+$Root),'',
-        '这是韩服飞行射击游戏 nanaimo 的启动器。'
+        '这是韩国飞行射击游戏 Nanaimo 的启动器。'
     )
     $launchInfoBox.Text=$lines-join "`r`n"
 }
