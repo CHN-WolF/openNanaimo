@@ -18,6 +18,20 @@ CLIENT=Path(os.environ.get('NANAIMO_L8_CLIENT', ROOT/'build/lumineos-client'))
 
 
 class LumineosCombatTests(unittest.TestCase):
+    def test_contact_generation_keeps_peer_section_order(self):
+        original=[];replacement=[]
+        for size in (28,16,34,30):
+            row=lambda ep,value: bytes((0,ep))+bytes((value,))*(size-2)
+            original.append([row(1,1),row(23,2),row(22,3)])
+            replacement.append([row(23,4),row(23,5)])
+        encode=lambda sections: b'DCC7'+b''.join(struct.pack('<I',len(s))+b''.join(s) for s in sections)
+        result=gen.merge_dcc_sections(encode(original),replacement)
+        expected=encode([[s[0],*r,s[2]] for s,r in zip(original,replacement)])
+        self.assertEqual(result,expected)
+        self.assertEqual(gen.merge_dcc_sections(result,replacement),expected)
+        original[0].append(original[0][1])
+        with self.assertRaises(ValueError):gen.merge_dcc_sections(encode(original),replacement)
+
     def test_native_all_slots_and_fail_closed_boundaries(self):
         source=r'''
 #define main unused_server_main
