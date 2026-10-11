@@ -64,14 +64,14 @@ class KitTests(unittest.TestCase):
 
     def test_current_source_closure(self):
         plan = kit.source_plan()
-        self.assertEqual(len(plan), 1905)
-        self.assertEqual(sum(r['size'] for r in plan.values()), 97843573)
+        self.assertEqual(len(plan), 2350)
+        self.assertEqual(sum(r['size'] for r in plan.values()), 112987147)
         self.assertIn('pi._D7', plan)
         self.assertFalse(any(n.lower().endswith(('.exe', '.dll', '.ini', '.dat')) for n in plan))
 
     def test_inventory_coverage(self):
-        # 24+27 + 526+486 + PET + 882+474 records, plus header.
-        self.assertEqual(len(kit.inventory().decode('utf-8-sig').splitlines()), 2424)
+        # 24+27 + 526+486 + PET + current L7/L8 files and preserved records.
+        self.assertEqual(len(kit.inventory().decode('utf-8-sig').splitlines()), 2495)
 
     def test_shipped_archive_matches_current_tools_and_recipes(self):
         archive = kit.ROOT / 'resource-packs/nanaimo-korean-resource-kit.zip'
@@ -81,8 +81,8 @@ class KitTests(unittest.TestCase):
         self.assertEqual(kit.port.digest(archive.read_bytes()), expected)
         with zipfile.ZipFile(archive) as z:
             index = json.loads(z.read('kit-manifest.json'))
-            self.assertEqual(index['source_resource_count'], 1905)
-            self.assertEqual(len(json.loads(z.read('l7-l8-bundle/manifest.json'))['files']), 882)
+            self.assertEqual(index['source_resource_count'], 2350)
+            self.assertEqual(len(json.loads(z.read('l7-l8-bundle/manifest.json'))['files']), 1328)
             names = [*('scripts/' + n for n in kit.TOOLS),
                      *('manifest/' + n for n in (*kit.RECIPES, 'korean_resource_kit.json')),
                      *kit.EXTRA_DOCS, 'docs/L7-L8资源移植.md']

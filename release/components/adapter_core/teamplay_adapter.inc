@@ -113,7 +113,9 @@ static unsigned handle_target_hit_report_monster_hp(SOCKET c,int port,
     if(d.action==MONSTER_HP_ACTION_SEND_D00E){
         unsigned code=0u,subtype=0u;const char*resource=(d.hit.resource_index!=HP_SYNC_NO_ROW)?hp_sync_resource_name(d.hit.resource_index):0;const struct hp_sync_target_def*td=0;const struct hp_sync_profile_def*card_profile=0;td=hp_sync_global_static_def(monster_hp,selector,&card_profile,0,0);
         combat_economy_select_ordinary_terminal_reward(td,card_profile,resource,selector,(unsigned)(d.hit.old_hp>0?d.hit.old_hp:0),(unsigned)(d.hit.new_hp>0?d.hit.new_hp:0),monster_hp_value,&subtype,&code);
-        if(d.reason==MONSTER_HP_REASON_CRATE_FIRST)teamplay_note_drop(0x80000000u|selector);
+        if(d.reason==MONSTER_HP_REASON_CRATE_FIRST ||
+           crate_drop_policy_is_l7_scene_item_resource(resource))
+            teamplay_note_drop(0x80000000u|selector);
         if(source_index>=16u)enqueue_d00e_card(0,0,0,d.wire_selector,request_control0,subtype,code,score_ctx->total);else enqueue_d00e_card(owner_key,source_index,effect_bits,d.wire_selector,request_control0,subtype,code,score_ctx->total);
     }else if(d.action==MONSTER_HP_ACTION_WIRE_OVERFLOW){printf("  [GS %d] MONSTER_HP selector=%u exceeds D00E WORD domain; no truncation\n",port,selector);fflush(0);}else enqueue_d00e_score(d.wire_selector,request_control0,score_ctx->total,0u,BATTLE_SCORE_KIND_ORDINARY);
     return applied;
@@ -145,6 +147,10 @@ static struct hp_sync_target_state *meat_collision_bound_state(struct hp_sync_co
     b=hp_sync_find_runtime(ctx,selector);
     if(b&&b->state.initialized&&b->state.provenance==HP_SYNC_PROV_RUNTIME_BOUND){if(binding_kind)*binding_kind=MEAT_BIND_RUNTIME;return &b->state;}
     if(b&&b->state.initialized&&b->state.provenance==HP_SYNC_PROV_STATIC_GLOBAL){if(binding_kind)*binding_kind=MEAT_BIND_STATIC_GLOBAL;return &b->state;}
+    if(hp_sync_preloaded_def(ctx,selector)){
+        s=hp_sync_state_for(ctx,selector);
+        if(s&&s->provenance==HP_SYNC_PROV_RUNTIME_BOUND){if(binding_kind)*binding_kind=MEAT_BIND_RUNTIME;return s;}
+    }
     global_def=hp_sync_global_static_def(ctx,selector,0,0,0);
     if(global_def){s=hp_sync_state_for(ctx,selector);if(s&&s->provenance==HP_SYNC_PROV_STATIC_GLOBAL){if(binding_kind)*binding_kind=MEAT_BIND_STATIC_GLOBAL;return s;}}
     return 0;
@@ -175,10 +181,12 @@ static void handle_meat_collision_report(SOCKET c,int port,
         result->terminal_repeat=1u;result->old_hp=state?state->hp:0;result->new_hp=result->old_hp;
         g_meat_collision.terminal_repeat_count++;
         if(hp_sync_d00e_wire_selector(selector,&wire)){
-            result->wire_selector=(unsigned)wire;result->response_d00e=1u;
-            enqueue_d00e_card(0u,0u,0u,(unsigned)wire,request_control0,0u,0u,score_ctx->total);
+            /* Same selector terminal cardinality as D00D: a repeated contact
+               acknowledges status0, never retires another presentation row. */
+            result->wire_selector=(unsigned)wire;
+            enqueue_d00e_score((unsigned)wire,request_control0,score_ctx->total,0u,BATTLE_SCORE_KIND_ORDINARY);
         }
-        printf("  [MEAT153] collision carrier=%s selector=%u binding=%u candidate_dispatched=0 damage_applied=0 terminal_repeat=1 hp=%d->%d score=%u response_d00e=%u policy=bound-terminal-repeat\n",carrier,selector,binding,result->old_hp,result->new_hp,score_ctx->total,result->response_d00e);fflush(0);
+        printf("  [MEAT153] collision carrier=%s selector=%u binding=%u candidate_dispatched=0 damage_applied=0 terminal_repeat=1 hp=%d->%d score=%u response_d00e=%u policy=bound-terminal-score-ack\n",carrier,selector,binding,result->old_hp,result->new_hp,score_ctx->total,result->response_d00e);fflush(0);
         return;
     }
     stable_monster_hp_zero_attack(&atk);atk.value=(int)damage;atk.have_value=damage?1u:0u;atk.provenance=MONSTER_HP_ATTACK_TEST_OVERRIDE;atk.owner=0u;atk.source=0u;atk.resource="<meat-contact-ledger-policy>";

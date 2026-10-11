@@ -1084,10 +1084,10 @@ public sealed partial class NetworkAdapterService
         if (acceptedDungeonTransition && deathRetryTransition)
         {
             session.NativeDungeonDeathLatched = false;
-            // Restore the new battle's resources, but retain the old-battle
+            // Apply death-return resources, but retain the old-battle
             // damage barrier until the request-bound CFEC (or CF80) arrives.
             session.NativeBattleResources = ResetNativeDungeonDeathRetryResources(
-                session.NativeBattleResources) is { } retryResources
+                session.NativeBattleResources, session.Character) is { } retryResources
                     ? retryResources with { SettlementFrozen = true }
                     : null;
             session.NativeBattleAttackMode = session.NativeBattleResources?.AttackMode;

@@ -4,6 +4,56 @@ namespace OpenNanaimo.Adapter.Services;
 
 public sealed partial class NetworkAdapterService
 {
+    // Byte-array identity keeps the scope captured before an async request
+    // attached to its exact response, rather than re-stamping it at enqueue time.
+    private sealed record ArenaResponseScope(Guid Epoch, Guid? RoundId);
+    private readonly System.Runtime.CompilerServices.ConditionalWeakTable<byte[], ArenaResponseScope>
+        _arenaResponseScopes = new();
+
+    private async Task<byte[]?> HandleArenaFrameWithDeliveryAsync(byte[] frame, ushort opcode,
+        string channel, string remote, string? remoteIp, ConnectionSession session, CancellationToken token)
+    {
+        Guid epoch;
+        Guid? round;
+        lock (_arenaRoomGate)
+        {
+            epoch = session.ArenaDeliveryEpoch;
+            round = _arenaRooms.TryGetValue(session.ArenaRoomId, out var room)
+                && room.Members.ContainsKey(session.SessionId) ? room.RoundId : null;
+        }
+        var response = await HandleNativeFrameCoreAsync(frame, opcode, channel, remote, remoteIp, session, token);
+        if (response is not null && round is not null)
+        {
+            var responseOpcode = ReadFirstNativeOpcode(response);
+            // These responses belong to the requested room, not to a room a
+            // concurrent peer reset or rejoin may have established during await.
+            // Join/leave/reset acknowledgements authorize their own boundaries.
+            if (responseOpcode is 0xCF71 or 0xCF72 or 0xCF7E or 0xCFEC or 0xCF80
+                or 0xCF98 or 0xCF8A or 0xCFD2 or 0xCFD6 or 0xCFDA
+                or 0xD00E or 0xD010 or 0xD015 or 0xD035 or 0xD037)
+                _arenaResponseScopes.Add(response, new ArenaResponseScope(epoch,
+                    responseOpcode is 0xCF98 or 0xCF8A ? round : null));
+        }
+        return response;
+    }
+
+    private bool IsCurrentArenaResponse(ConnectionSession target, byte[] response)
+    {
+        if (!_arenaResponseScopes.TryGetValue(response, out var scope)) return true;
+        lock (_arenaRoomGate)
+            return _arenaRooms.TryGetValue(target.ArenaRoomId, out var room)
+                && room.Members.ContainsKey(target.SessionId) && target.ArenaDeliveryEpoch == scope.Epoch
+                && (scope.RoundId is null || room.RoundId == scope.RoundId);
+    }
+
+    private bool IsCurrentArenaDelivery(ConnectionSession target, Guid? epoch)
+    {
+        if (epoch is null) return true;
+        lock (_arenaRoomGate)
+            return _arenaRooms.TryGetValue(target.ArenaRoomId, out var room)
+                && target.ArenaDeliveryEpoch == epoch && room.Members.ContainsKey(target.SessionId);
+    }
+
     private static bool ArenaAcceptsGameplay(ArenaRoom room, ConnectionSession member) =>
         room.Started && room.EndingSessionIds.Count == 0 && room.PvpResultPayload.Length == 0
         && room.Members.ContainsKey(member.SessionId) && member.Character is not null

@@ -13,6 +13,17 @@ internal static class PetProgressionChecks
             checks++;
         }
 
+        Check(ShopCatalog.TryGetPetGrowthStage(2, 1, out var observedGrowth)
+            && observedGrowth.ExperiencePerLevel == 6480 && observedGrowth.MaximumLevel == 2,
+            "CF86 stage one uses raw growth row one");
+        var observed = new PetState(15000017, 1, 2, 0, 324, 0, 0, 0, -1);
+        var rewarded = PetProgression.AddExperience(observed, 648).State;
+        Check(rewarded.CurrentStage == 1 && rewarded.Level == 0 && rewarded.Experience == 972,
+            "existing earned experience survives the denominator correction");
+        var halfway = PetProgression.AddExperience(observed with { Experience = 0 }, 3240).State;
+        Check(halfway.Level == 0 && halfway.Experience == 3240 && halfway.CurrentStage == 1,
+            "half a client level does not prematurely advance the server level");
+
         foreach (var pet in ShopCatalog.All.Where(x => x.Category == 15))
         {
             var initial = PetProgression.NormalizeState(new PetState(pet.ItemCode, 0, 0, 0, 0, 0, 0, 0, 48));

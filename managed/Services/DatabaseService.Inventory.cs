@@ -24,12 +24,15 @@ public sealed partial class DatabaseService
 
     /// <summary>
     /// Consumes a selected Category 14 food instance and applies its catalog HP/MP
-    /// restoration to this character atomically. Uses the same compact ordinal contract
+    /// restoration to this character and an optional authenticated couple partner
+    /// atomically. Uses the same compact ordinal contract
     /// as DeleteGameInventoryItemAsync. Full resources still consume a valid item, as
     /// in ConsumeDungeonQuickItemAsync; no client-supplied restoration is trusted.
     /// Optional current resources come from the server live ledger; protocol fields
     /// carry item identity. Null retains the stored DB value for that resource. Both are clamped
     /// against selected-pet effective maxima inside the consumption transaction.
+    /// A partner must still own its online account/session and active relationship;
+    /// any partner failure rolls back the debit and both resource writes.
     /// </summary>
     public async Task<DungeonQuickItemConsumeResult> ConsumeInventoryFoodAsync(
         long accountId,
@@ -39,13 +42,113 @@ public sealed partial class DatabaseService
         byte inventoryIndex,
         CancellationToken cancellationToken = default,
         int? authoritativeCurrentHp = null,
-        int? authoritativeCurrentMp = null)
+        int? authoritativeCurrentMp = null,
+        DungeonQuickItemTarget? couplePartner = null)
     {
+        var sharedResults = new List<DungeonQuickItemTargetResult>();
         var result = await ConsumeGameInventoryItemCoreAsync(
-            accountId, characterId, sessionId, itemCode, inventoryIndex, true, cancellationToken, authoritativeCurrentHp, authoritativeCurrentMp);
+            accountId, characterId, sessionId, itemCode, inventoryIndex, true, cancellationToken,
+            authoritativeCurrentHp, authoritativeCurrentMp, couplePartner: couplePartner, sharedResults: sharedResults);
         return result.Success && result.Target is not null
-            ? new DungeonQuickItemConsumeResult(true, result.Quantity, [result.Target])
+            ? new DungeonQuickItemConsumeResult(true, result.Quantity, [result.Target, .. sharedResults])
             : DungeonQuickItemConsumeResult.Failed;
+    }
+
+    private async Task<DungeonQuickItemTargetResult?> ApplyCoupleFoodRecoveryAsync(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        long sourceCharacterId,
+        long accountId,
+        long characterId,
+        string sessionId,
+        ushort hpRestore,
+        ushort mpRestore,
+        int? authoritativeCurrentHp = null,
+        int? authoritativeCurrentMp = null,
+        uint ring = 0,
+        CancellationToken cancellationToken = default)
+    {
+        if (accountId <= 0 || characterId <= 0 || string.IsNullOrEmpty(sessionId)
+            || hpRestore == 0 && mpRestore == 0)
+            return null;
+
+        var maxima = await GetEffectiveInventoryResourceMaximaAsync(
+            connection, transaction, characterId, cancellationToken);
+        if (maxima is null)
+            return null;
+
+        int currentHp;
+        int currentMp;
+        await using (var state = connection.CreateCommand())
+        {
+            state.Transaction = transaction;
+            state.CommandText = """
+                SELECT character.CurrentHp, character.CurrentMp
+                FROM Characters AS character
+                INNER JOIN Accounts AS account ON account.Id = character.AccountId
+                WHERE character.Id = $characterId
+                  AND character.AccountId = $accountId
+                  AND character.IsOnline = 1
+                  AND character.ActiveSessionId = $sessionId
+                  AND account.IsOnline = 1
+                  AND account.ActiveSessionId = $sessionId
+                  AND EXISTS (
+                      SELECT 1 FROM CoupleRelations AS couple
+                      WHERE couple.EndedAt IS NULL AND couple.RingItemCode = $ring
+                        AND ((couple.Character1Id = $sourceId AND couple.Character2Id = character.Id)
+                          OR (couple.Character2Id = $sourceId AND couple.Character1Id = character.Id)))
+                LIMIT 1
+                """;
+            state.Parameters.AddWithValue("$characterId", characterId);
+            state.Parameters.AddWithValue("$accountId", accountId);
+            state.Parameters.AddWithValue("$sessionId", sessionId);
+            state.Parameters.AddWithValue("$sourceId", sourceCharacterId);
+            state.Parameters.AddWithValue("$ring", ring);
+            await using var reader = await state.ExecuteReaderAsync(cancellationToken);
+            if (!await reader.ReadAsync(cancellationToken))
+                return null;
+            currentHp = authoritativeCurrentHp ?? reader.GetInt32(0);
+            currentMp = authoritativeCurrentMp ?? reader.GetInt32(1);
+        }
+
+        currentHp = Math.Clamp(currentHp, 0, maxima.Value.Hp);
+        currentMp = Math.Clamp(currentMp, 0, maxima.Value.Mp);
+        if (currentHp == 0)
+            return null;
+        var nextHp = Math.Min(maxima.Value.Hp, currentHp + CoupleBenefitPolicy.ScaleRecovery(hpRestore, ring));
+        var nextMp = Math.Min(maxima.Value.Mp, currentMp + CoupleBenefitPolicy.ScaleRecovery(mpRestore, ring));
+        var now = DateTime.UtcNow.ToString("O");
+        await using (var update = connection.CreateCommand())
+        {
+            update.Transaction = transaction;
+            update.CommandText = """
+                UPDATE Characters
+                SET CurrentHp = $currentHp,
+                    CurrentMp = $currentMp,
+                    LastSavedAt = $now
+                WHERE Id = $characterId
+                  AND AccountId = $accountId
+                  AND IsOnline = 1
+                  AND ActiveSessionId = $sessionId
+                """;
+            update.Parameters.AddWithValue("$currentHp", nextHp);
+            update.Parameters.AddWithValue("$currentMp", nextMp);
+            update.Parameters.AddWithValue("$now", now);
+            update.Parameters.AddWithValue("$characterId", characterId);
+            update.Parameters.AddWithValue("$accountId", accountId);
+            update.Parameters.AddWithValue("$sessionId", sessionId);
+            if (await update.ExecuteNonQueryAsync(cancellationToken) != 1)
+            {
+                return null;
+            }
+        }
+
+        return new DungeonQuickItemTargetResult(
+            characterId,
+            checked((ushort)Math.Clamp(nextHp - currentHp, 0, ushort.MaxValue)),
+            checked((ushort)Math.Clamp(nextMp - currentMp, 0, ushort.MaxValue)),
+            nextHp,
+            nextMp);
     }
 
     public async Task<(bool Success, ushort Quantity, long Hans)> RedeemHansGiftCertificateAsync(
@@ -160,7 +263,9 @@ public sealed partial class DatabaseService
         CancellationToken cancellationToken,
         int? authoritativeCurrentHp = null,
         int? authoritativeCurrentMp = null,
-        bool specialDelete = false)
+        bool specialDelete = false,
+        DungeonQuickItemTarget? couplePartner = null,
+        List<DungeonQuickItemTargetResult>? sharedResults = null)
     {
         if (accountId <= 0 || characterId <= 0 || string.IsNullOrEmpty(sessionId)
             || !ShopCatalog.TryGet(itemCode, out var item)
@@ -286,7 +391,20 @@ public sealed partial class DatabaseService
             if (await touch.ExecuteNonQueryAsync(cancellationToken) != 1)
                 return (false, checked((ushort)Math.Min(quantity, ushort.MaxValue)), null);
         }
+        DungeonQuickItemTargetResult? partnerResult = null;
+        if (restoreFood && couplePartner is not null)
+        {
+            partnerResult = await ApplyCoupleFoodRecoveryAsync(connection, transaction, characterId,
+                couplePartner.AccountId, couplePartner.CharacterId, couplePartner.SessionId,
+                item.QuickHpRestore, item.QuickMpRestore,
+                couplePartner.AuthoritativeCurrentHp, couplePartner.AuthoritativeCurrentMp,
+                coupleRing, cancellationToken);
+            if (partnerResult is null)
+                return (false, checked((ushort)Math.Min(quantity, ushort.MaxValue)), null);
+        }
         await transaction.CommitAsync(cancellationToken);
+        if (partnerResult is not null)
+            sharedResults?.Add(partnerResult);
         return (true, checked((ushort)Math.Min(remaining, ushort.MaxValue)), target);
     }
 

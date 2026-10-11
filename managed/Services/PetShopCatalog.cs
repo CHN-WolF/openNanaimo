@@ -171,7 +171,10 @@ internal static class ShopCatalog
         if (_petGrowthStages.TryGetValue(growthClass, out var stages)
             && currentStage is >= 1 and <= 3)
         {
-            stage = stages[currentStage - 1];
+            // CF86/CF88 pass the wire stage directly to 0x9F4830: row 1 is
+            // the second resource row. Keep the existing terminal-stage policy
+            // on the last authored row; the client has no authored row 3.
+            stage = stages[Math.Min((int)currentStage, stages.Length - 1)];
             return true;
         }
         stage = default;

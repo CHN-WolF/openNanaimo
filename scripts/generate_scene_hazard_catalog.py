@@ -195,13 +195,13 @@ def audit(registry):
 
     required = {
         "scopes": 288,
-        "type4": 44531,
+        "type4": 44441,
         "association_candidates": 31788,
         "exact_associated": 29916,
         "broken_association": 1887,
-        "standalone": 12743,
+        "standalone": 12653,
         "registered_hazards": sum(p["expected_selected_rows"] for p in registry["policies"]),
-        "unclassified": 14615 - sum(p["expected_selected_rows"] for p in registry["policies"]),
+        "unclassified": 14525 - sum(p["expected_selected_rows"] for p in registry["policies"]),
     }
     for key, expected in required.items():
         if counts[key] != expected:

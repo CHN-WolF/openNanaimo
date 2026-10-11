@@ -220,7 +220,8 @@ if (args.Contains("--pet-growth-self-test"))
     {
         var petGrowthDatabase = new DatabaseService(root);
         await petGrowthDatabase.InitializeAsync();
-        await DungeonSaveChecks.RunAsync(petGrowthDatabase, CancellationToken.None);
+        await DungeonSaveChecks.RunAsync(petGrowthDatabase, CancellationToken.None,
+            Path.GetFullPath(Option("--native", Path.Combine(AppContext.BaseDirectory, "nanaimo_gameplay_bridge.exe"))));
     }
     finally
     {

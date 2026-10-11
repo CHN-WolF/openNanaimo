@@ -120,8 +120,9 @@ internal static class DeathRetryChecks
             Check(begin(session, start), "initial battle is armed once");
             for (var round = 0; round < 3; round++)
             {
+                var remainingMp = (ushort)(round * 20);
                 Set(session, "NativeDungeonDeathLatched", true);
-                Set(session, "NativeBattleResources", new BattleResourceSnapshot(0, 40, 2)
+                Set(session, "NativeBattleResources", new BattleResourceSnapshot(0, remainingMp, 2)
                     { MaximumHp = 160, MaximumMp = 100, Epoch = 1 });
                 Check(await Surrender() is { Length: 8 } ack && U16(ack, 6) == 0xCF96,
                     "death surrender returns CF96 without leaving the room");
@@ -131,7 +132,9 @@ internal static class DeathRetryChecks
                     && (bool)revival.GetType().GetField("BattleSurrendered")!.GetValue(revival)!,
                     "surrender disables revival billing while retaining result retry provenance");
                 Check(await Route(retry) && worker.ResetRequests == round, "surrender alone does not authorize retry");
-                Check(await Route(NativeDungeonClient.Frame(0xCF87, new byte[4]))
+                var settlement = NativeDungeonClient.Frame(0xCF87, new byte[4]);
+                BinaryPrimitives.WriteUInt16LittleEndian(settlement.AsSpan(8), remainingMp);
+                Check(await Route(settlement)
                     && (bool)Get(session, "NativeDungeonSettlementAwaitingAction")!, "failure settlement opens result actions");
                 Check(await Route(NativeDungeonClient.Frame(0xCF8B, [0, 0, 2, 0]))
                     && worker.ResetRequests == round, "failed settlement cannot advance to next dungeon");
@@ -143,8 +146,10 @@ internal static class DeathRetryChecks
                     && (long)Get(session, "NativeSettlementCycle")! == cycle + 1,
                     "captured CF8C advances one result cycle and clears death");
                 var resources = (BattleResourceSnapshot)Get(session, "NativeBattleResources")!;
-                Check(resources.CurrentHp == 160 && resources.CurrentMp == 100 && resources.AttackMode == 0
-                    && resources.SettlementFrozen, "retry restores resources but keeps old-battle damage frozen");
+                var returned = HealthRecoveryPolicy.ResolveDungeonDeathReturn(character, remainingMp);
+                Check(resources.CurrentHp == Math.Min(160, returned.CurrentHp)
+                    && resources.CurrentMp == remainingMp && resources.AttackMode == 0
+                    && resources.SettlementFrozen, "retry retains death-return resources and old-battle damage barrier");
                 Check(await Route(retry) && worker.ResetRequests == round + 1, "duplicate retry does not reset again");
                 if (round == 1)
                 {
@@ -163,6 +168,9 @@ internal static class DeathRetryChecks
                     NativeDungeonClient.Frame(0xCF80, []), 1L, CancellationToken.None);
                 Check(!((BattleResourceSnapshot)Get(session, "NativeBattleResources")!).SettlementFrozen,
                     "next loading confirmation unfreezes combat resources");
+                resources = (BattleResourceSnapshot)Get(session, "NativeBattleResources")!;
+                Check(resources.CurrentHp == Math.Min(160, returned.CurrentHp) && resources.CurrentMp == remainingMp,
+                    "CFEC/CF80 loading cannot refill death retry HP or MP");
                 Check(!begin(session, start), "duplicate start does not arm another battle");
                 Check(!(bool)revival.GetType().GetField("BattleSurrendered")!.GetValue(revival)!,
                     "next battle clears the previous surrender marker");

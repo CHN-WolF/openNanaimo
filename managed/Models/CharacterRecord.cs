@@ -114,7 +114,11 @@ public sealed class CharacterQuickSlotRecord
 public sealed record DungeonQuickItemTarget(
     long AccountId,
     long CharacterId,
-    string SessionId);
+    string SessionId)
+{
+    public int? AuthoritativeCurrentHp { get; init; }
+    public int? AuthoritativeCurrentMp { get; init; }
+}
 
 public sealed record DungeonQuickItemTargetResult(
     long CharacterId,

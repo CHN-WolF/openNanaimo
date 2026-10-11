@@ -648,7 +648,8 @@ def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:
     gameplay = {}
     for name, va, old, new in social_gameplay_patch_sites():
         data, gameplay[name] = _migrate_site(data, va, new,
-            (old,) + entertainment_result_compat.legacy_encodings(va), 'patch_' + name,
+            (old,) + entertainment_result_compat.legacy_encodings(va)
+                + arena_result_compat.legacy_encodings(va), 'patch_' + name,
             'the social gameplay compatibility site differs')
     data, result_entry = dungeon_result_compat.patch(data, _patch_site, _migrate_site)
     data, power = restore_native_power(data)

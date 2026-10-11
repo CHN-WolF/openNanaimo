@@ -46,6 +46,7 @@ internal static partial class Program
         }
         if (args.Contains("--entertainment-only"))
         {
+            await CheckEntertainmentLobbyAsync();
             await CheckEntertainmentRewardsAsync();
             await CheckGameplayReviewAsync();
             Console.WriteLine($"ENTERTAINMENT_REGRESSION_PASS checks={_checks}");
@@ -66,6 +67,7 @@ internal static partial class Program
             return;
         }
         await CheckNativeMentorshipAsync();
+        await CheckEntertainmentLobbyAsync();
         await CheckProductionMentorshipAsync();
         await CheckGameplayReviewAsync();
         await CheckEntertainmentRewardsAsync();
@@ -303,11 +305,10 @@ internal static partial class Program
                 .Invoke(Fixture.Service, [request, BinaryPrimitives.ReadUInt16LittleEndian(request.AsSpan(6)),
                     "WorldAdapter", "127.0.0.1:30000", "127.0.0.1", Session, timeout.Token])!;
             if (response is null) return null;
-            var writeType = typeof(NetworkAdapterService).GetNestedType("OutboundNativeWrite", BindingFlags.NonPublic)!;
-            var write = Activator.CreateInstance(writeType, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
-                null, [response, "WorldAdapter", 30000, "127.0.0.1", true, false, "mentorship regression"], null)!;
-            await (ValueTask)typeof(NetworkAdapterService).GetMethod("QueueOutboundWriteAsync", PrivateInstance)!
-                .Invoke(Fixture.Service, [Session, write, timeout.Token])!;
+            // Use the same direct-response path as the production request loop rather
+            // than reflecting the private write record's evolving constructor signature.
+            await (ValueTask)typeof(NetworkAdapterService).GetMethod("QueueDirectNativeResponseAsync", PrivateInstance)!
+                .Invoke(Fixture.Service, [Session, response, "WorldAdapter", 30000, "127.0.0.1", true, timeout.Token])!;
             return await ReadFrameAsync(Client.GetStream(), timeout.Token);
         }
 

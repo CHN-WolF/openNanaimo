@@ -432,8 +432,8 @@ static void gs_thread(void* arg){
                             if(map_identity_apply_cf8b(&map_identity,current_stage_index))current_slot=map_identity.absolute_slot;
 #endif
                             if(injury_dead||combat_hp==0u){
-                                combat_hp=pet_crafting_pet_effective_hp_max();g_profile_hp_current=combat_hp;
-                                g_profile_mp_current=pet_crafting_pet_effective_mp_max();
+                                combat_hp=dungeon_death_return_hp(g_profile_hp_max);g_profile_hp_current=combat_hp;
+                                g_profile_mp_current=dungeon_death_return_mp(g_profile_mp_current,g_profile_mp_max);
                                 attack_mode_powerup_reset(&power_ctx,0u,boss_ctx.battle_epoch);
                             }
                             injury_armed=0;injury_dead=0;death_latched=0;retry_acknowledged=0;lifesteal_remainder=0u;mp_absorb_remainder=0u;
@@ -690,6 +690,8 @@ static void gs_thread(void* arg){
                         }
                     } else if(type==0xC378){
                         printf("  [GS %d] GOT C378 one-way profile-state request (no C379 exists)\n",port); fflush(0);
+                    } else if(teamplay_late_room_entry_blocked((unsigned)type)){
+                        printf("  [MULTI_ROOM] late entry rejected uid=%u opcode=0x%04X shared_boss_phase=%u; active room retained\n",multiplayer_current_uid(),type,boss_ctx.phase);fflush(0);
                     } else if(type==0xCF6C){
                         native_cf72_reset_actor(multiplayer_idx);
                         apartment_epoch_ready=0;apartment_scene_active=0;
@@ -1012,7 +1014,9 @@ meat_collision_activate(skill_code,grade,dungeon_room_epoch,boss_ctx.battle_epoc
                                 active=meat_collision_active(dungeon_room_epoch,boss_ctx.battle_epoch,now);
                                 meat_collision_log_contact_fields(port,dungeon_room_epoch,boss_ctx.battle_epoch,now,request_kind,w0a,d0c,d10,d14,d18,candidate,carrier);
                                 if(active){
-                                    if(request_kind==40u)send_nonlocal_echo=0;
+                                    /* Both contact branches construct full D010/36.
+                                       Never append the legacy D010/28 echo. */
+                                    send_nonlocal_echo=0;
                                     handle_meat_collision_report(c,port,monster_hp_ctx,crate_policy,&score_ctx,teamplay_authoritative_stage(current_stage),dungeon_room_epoch,boss_ctx.battle_epoch,candidate,(unsigned)((unsigned char)buf[off]|((unsigned char)buf[off+1]<<8)),g_meat_collision.code,g_meat_collision.grade,carrier,&mr);
                                     /* An active meat window still answers every
                                        kind20 contact with a full D010/36.  The player is immune, so WORD+0x12
@@ -1173,8 +1177,8 @@ shop_catalogs_send_boss_result(c,&boss_result,score_ctx.total,&boss_final_retire
                                    its authored Super-Boss or grant next-stage progress.
                                    CF7F remains the owner of the new combat epoch. */
                                 effective_real=current_stage_index;
-                                combat_hp=pet_crafting_pet_effective_hp_max();g_profile_hp_current=combat_hp;
-                                g_profile_mp_current=pet_crafting_pet_effective_mp_max();
+                                combat_hp=dungeon_death_return_hp(g_profile_hp_max);g_profile_hp_current=combat_hp;
+                                g_profile_mp_current=dungeon_death_return_mp(g_profile_mp_current,g_profile_mp_max);
                                 injury_armed=0;injury_dead=0;death_latched=0;retry_acknowledged=0;lifesteal_remainder=0u;mp_absorb_remainder=0u;
                                 attack_mode_powerup_reset(&power_ctx,0u,boss_ctx.battle_epoch);
                             }

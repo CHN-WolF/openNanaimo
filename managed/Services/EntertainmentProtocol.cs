@@ -28,7 +28,9 @@ internal readonly record struct EntertainmentRoomListEntry(
 internal readonly record struct EntertainmentWaitUserEntry(
     ushort UserUid,
     string Name,
-    byte GameType);
+    ushort Gender);
+
+internal readonly record struct EntertainmentRankingEntry(string Name, uint Score);
 
 internal readonly record struct EntertainmentEndGameRecord(
     ushort UserUid,
@@ -149,10 +151,36 @@ internal static class EntertainmentProtocol
         return payload;
     }
 
-    public static byte[] BuildRanking() => new byte[RankingResponseLength];
+    public static byte[] BuildRanking(uint bestScore, ushort page, IReadOnlyList<EntertainmentRankingEntry> rows)
+    {
+        if (rows.Count > 10)
+            throw new InvalidDataException("CF14 supports ten ranking rows per page.");
+        var payload = new byte[RankingResponseLength];
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(0, 4), bestScore);
+        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(4, 2), page);
+        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(6, 2), checked((ushort)rows.Count));
+        for (var index = 0; index < rows.Count; index++)
+        {
+            var record = payload.AsSpan(8 + 28 * index, 28);
+            EncodeFixed(rows[index].Name, record[..24]);
+            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(24, 4), rows[index].Score);
+        }
+        return payload;
+    }
+
+    public static byte[] BuildInvitation(string inviterName, ushort roomId, string password)
+    {
+        var payload = new byte[44];
+        EncodeFixed(inviterName, payload.AsSpan(0, 16));
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(16, 4), roomId);
+        EncodeFixed(password, payload.AsSpan(20, 24));
+        return payload;
+    }
 
     public static byte[] BuildWaitUsers(IReadOnlyList<EntertainmentWaitUserEntry> users)
     {
+        if (users.Count > 10)
+            throw new InvalidDataException("The native invitation dialog supports ten waiting users.");
         var payload = new byte[4 + users.Count * WaitUserRecordLength];
         BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(0, 4), checked((uint)users.Count));
         for (var index = 0; index < users.Count; index++)
@@ -160,7 +188,7 @@ internal static class EntertainmentProtocol
             var record = payload.AsSpan(4 + index * WaitUserRecordLength, WaitUserRecordLength);
             EncodeFixed(users[index].Name, record.Slice(0, 16));
             BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(16, 2), users[index].UserUid);
-            record[18] = users[index].GameType;
+            BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(18, 2), users[index].Gender);
         }
         return payload;
     }
@@ -169,8 +197,8 @@ internal static class EntertainmentProtocol
         byte result,
         bool owner,
         ushort roomId,
-        uint ownerUid,
-        string ownerName)
+        uint highestScore,
+        string recordHolderName)
     {
         var payload = new byte[CreateResponseLength];
         payload[0] = result;
@@ -178,30 +206,32 @@ internal static class EntertainmentProtocol
             return payload;
         payload[1] = owner ? (byte)1 : (byte)0;
         BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(2, 2), roomId);
-        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(8, 4), ownerUid);
-        EncodeFixed(ownerName, payload.AsSpan(12, 24));
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(8, 4), highestScore);
+        EncodeFixed(recordHolderName, payload.AsSpan(12, 24));
         return payload;
     }
 
     public static byte[] BuildEnterResponse(
         byte result,
-        byte gameType,
+        byte difficulty,
         ushort roomId,
         string title,
         string password,
-        uint ownerUid,
-        string ownerName)
+        uint highestScore,
+        string recordHolderName)
     {
         var payload = new byte[EnterResponseLength];
         payload[0] = result;
         if (result != 10)
             return payload;
-        payload[1] = gameType;
+        // 77DE90/full+9 -> 41B3E7 -> A750A0 -> profile+0xE6C.
+        // GAME INFO (65DB70 -> A750C0) reads this room difficulty, not game type.
+        payload[1] = difficulty;
         BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(2, 2), roomId);
         EncodeFixed(title, payload.AsSpan(4, 24));
         EncodeFixed(password, payload.AsSpan(28, 8));
-        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(36, 4), ownerUid);
-        EncodeFixed(ownerName, payload.AsSpan(40, 24));
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(36, 4), highestScore);
+        EncodeFixed(recordHolderName, payload.AsSpan(40, 24));
         return payload;
     }
 

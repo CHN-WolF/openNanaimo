@@ -1,0 +1,1593 @@
+{
+  "schema": 1,
+  "resource_identity": {
+    "id": "972fb15e9ae2ccbbbc2e23b84e4066356748d8e27426a1f9a8c083416a7668e1",
+    "verified": 1328,
+    "preserved_l7_combat": 99,
+    "runtime_accepted": false
+  },
+  "runtime_accepted": false,
+  "scopes": [
+    {
+      "stage": 0,
+      "slot": 0,
+      "targets": 857,
+      "smmo": "hd0_ep22_dg00_st00_L_00.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 0,
+      "slot": 1,
+      "targets": 835,
+      "smmo": "hd0_ep22_dg00_st00_L_01.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 0,
+      "slot": 2,
+      "targets": 835,
+      "smmo": "hd0_ep22_dg00_st00_L_02.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 0,
+      "slot": 3,
+      "targets": 857,
+      "smmo": "hd0_ep22_dg00_st00_M_00.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 0,
+      "slot": 4,
+      "targets": 835,
+      "smmo": "hd0_ep22_dg00_st00_M_01.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 0,
+      "slot": 5,
+      "targets": 835,
+      "smmo": "hd0_ep22_dg00_st00_M_02.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 0,
+      "slot": 6,
+      "targets": 857,
+      "smmo": "hd0_ep22_dg00_st00_H_00.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 0,
+      "slot": 7,
+      "targets": 835,
+      "smmo": "hd0_ep22_dg00_st00_H_01.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 0,
+      "slot": 8,
+      "targets": 835,
+      "smmo": "hd0_ep22_dg00_st00_H_02.smmo",
+      "boss_components": [
+        8
+      ],
+      "boss_hp": 3060000
+    },
+    {
+      "stage": 1,
+      "slot": 0,
+      "targets": 891,
+      "smmo": "hd0_ep22_dg01_st01_L_00.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    },
+    {
+      "stage": 1,
+      "slot": 1,
+      "targets": 925,
+      "smmo": "hd0_ep22_dg01_st01_L_01.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    },
+    {
+      "stage": 1,
+      "slot": 2,
+      "targets": 919,
+      "smmo": "hd0_ep22_dg01_st01_L_02.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    },
+    {
+      "stage": 1,
+      "slot": 3,
+      "targets": 891,
+      "smmo": "hd0_ep22_dg01_st01_M_00.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    },
+    {
+      "stage": 1,
+      "slot": 4,
+      "targets": 925,
+      "smmo": "hd0_ep22_dg01_st01_M_01.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    },
+    {
+      "stage": 1,
+      "slot": 5,
+      "targets": 919,
+      "smmo": "hd0_ep22_dg01_st01_M_02.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    },
+    {
+      "stage": 1,
+      "slot": 6,
+      "targets": 891,
+      "smmo": "hd0_ep22_dg01_st01_H_00.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    },
+    {
+      "stage": 1,
+      "slot": 7,
+      "targets": 925,
+      "smmo": "hd0_ep22_dg01_st01_H_01.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    },
+    {
+      "stage": 1,
+      "slot": 8,
+      "targets": 919,
+      "smmo": "hd0_ep22_dg01_st01_H_02.smmo",
+      "boss_components": [
+        91,
+        28
+      ],
+      "boss_hp": 4289329
+    }
+  ],
+  "inputs": {
+    "flying/hd0_ep22_dg00_st00.sstg": {
+      "size": 59956,
+      "sha256": "FE8D8209A39BF3C71642DEAE453C9251A16D6718BD2FC23A96B726E673E85D93"
+    },
+    "flying/hd0_ep22_dg00_st01.sstg": {
+      "size": 98444,
+      "sha256": "0F50B551670DD401480E56E9DDFA6D9CD9220193CE942EB8E9A89709051612A4"
+    },
+    "flying/hd0_ep22_dg01_st01.sstg": {
+      "size": 98444,
+      "sha256": "0F50B551670DD401480E56E9DDFA6D9CD9220193CE942EB8E9A89709051612A4"
+    },
+    "flying/mmo/ep22_ending_00.bmo": {
+      "size": 560,
+      "sha256": "DAE49DE277EAD6F7645EA5AC0DFB6934FE6DC0CD7349600D41371FC0AE2E67A0"
+    },
+    "flying/mmo/ep22_ending_00.mmo": {
+      "size": 8716,
+      "sha256": "CA6F368E6313933F43A2C5097DDBFF721179C14FDA7182C263648800DC981BBC"
+    },
+    "effs/game/shootinggamebasic/ep22_ending_00.eff": {
+      "size": 5668,
+      "sha256": "23E47F33C317FA65341F9B408BB01BE5AF9472628D3EA21BC8D1C777965C392D"
+    },
+    "flying/hd0_ep22_dg00_st00_L_00.smmo": {
+      "size": 5496,
+      "sha256": "B7C46CF0935510085F42870A71AA2863470E85B09CCD037A01FA239B8F9BD693"
+    },
+    "flying/mmo/item_block_00.mmo": {
+      "size": 951,
+      "sha256": "0AB4A756BB07C969D27E6C4750DE792DE6CACCF432A0E5BCD36330C78F134658"
+    },
+    "effs/game/shootinggamebasic/item_block_00.eff": {
+      "size": 1600,
+      "sha256": "00010DECB874191499E20033761E79AC6744B1200DF68C7B0088D0AA94E22670"
+    },
+    "flying/mmo/ep22_dg00_d_bio_00.mmo": {
+      "size": 807,
+      "sha256": "66D2B01490D199A0589996457A34C9CB2071701F76B0328D1F912C35CE022216"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_bio_00.eff": {
+      "size": 576,
+      "sha256": "FCF5DF1009DDA20F799F67418B7C2F6F6DE419B9DB8493B89C3F8332E235BCE2"
+    },
+    "flying/mmo/ep22_dg00_d_bio_01.mmo": {
+      "size": 807,
+      "sha256": "1293EA670BF9BFB47D0363A3783FB9A68165A46C1653DF250EE1F423F73E56D3"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_bio_01.eff": {
+      "size": 1120,
+      "sha256": "3B6F440E4EADF5531F5DA85FD3534E033C1DB888C537774AD2A04F398E13C2B7"
+    },
+    "flying/mmo/ep22_dg00_d_bio_02.mmo": {
+      "size": 807,
+      "sha256": "9490AE211A7188BF1A370A1287EE5731C734DBE08F989ADFA09D4F31812951F0"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_bio_02.eff": {
+      "size": 800,
+      "sha256": "F620C793C77813258F9CFB9BFE2BDFF4A80780B19C81BB2FBA76D31728B0BB01"
+    },
+    "flying/mmo/ep22_dg00_d_bio_03.mmo": {
+      "size": 18471,
+      "sha256": "F925FD878886C31AFF4E1EFC35765571A4A67F12DC893A65B7694DF85A10EC83"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_bio_03.eff": {
+      "size": 14400,
+      "sha256": "4A8A366B29227D56DB31EE1581B4BA21A30DC864562FBD9F81C0B311255F66B1"
+    },
+    "flying/mmo/ep22_dg00_d_bio_04.mmo": {
+      "size": 1546,
+      "sha256": "6828A4BC90AFF89A0764DBE31F6EF88398B1753793686B43EF711B052D7B6B3B"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_bio_04.eff": {
+      "size": 1164,
+      "sha256": "EC17761287F20460F95953E024849C3CCF637E8B3294F1127D9B9E6948763C7E"
+    },
+    "flying/mmo/ep22_dg00_d_bio_05.mmo": {
+      "size": 4502,
+      "sha256": "5186B96F69AB14BAB7F28F153E7106F3EEA52E74337F16EA2E4A183C9E155A3C"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_bio_05.eff": {
+      "size": 4316,
+      "sha256": "8C3D5C4E5A02398697B48C30EA245B70FE7E9C922F2192C753F47E0DBFA7B934"
+    },
+    "flying/mmo/ep22_dg00_d_mito_00.mmo": {
+      "size": 807,
+      "sha256": "CC593BC79294053B48AE0AAE30B2CFBBDE39EAA43FD4CF9D0AFAF4D50CF14FD2"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_mito_00.eff": {
+      "size": 976,
+      "sha256": "FDFD796ECF1C9E8F2C440E00FD85D2387B1CD93481DF1F30DC7D472C06102966"
+    },
+    "flying/mmo/ep22_dg00_d_mito_01.mmo": {
+      "size": 807,
+      "sha256": "834E6CB56FB9845C9933102DFCC421EFBCB6AEA75EF5F42CC7B766873151C0B6"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_mito_01.eff": {
+      "size": 576,
+      "sha256": "E06D8180B3F57E7A7B036CCD539ACD0B16106B98953EE5DA631A6E8B810796A5"
+    },
+    "flying/mmo/ep22_dg00_d_mito_02.mmo": {
+      "size": 1474,
+      "sha256": "12175159F11A7619DA03F163FC12A46A63F44564C26AB198B0063BE55A338C71"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_mito_02.eff": {
+      "size": 1356,
+      "sha256": "A6160AE4011EF7A5785AB64A3D92C98DB4F3D638C06CABA13D096879B18088DA"
+    },
+    "flying/mmo/ep22_dg00_d_mito_03.mmo": {
+      "size": 807,
+      "sha256": "7386EA6851EC3BE84D10819190C9D75E5251C0D38C75CD0771215AA22CD64086"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_mito_03.eff": {
+      "size": 576,
+      "sha256": "03578BD99D5CFA648EC5DC5E3E65E41BEB37A39ED4D5AE948CEA06478419487F"
+    },
+    "flying/mmo/ep22_dg00_d_mito_04.mmo": {
+      "size": 807,
+      "sha256": "3A53A66790F35C494224DAA3C813A3FF5BF4041195CE2B34D41F7D017FD48C30"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_mito_04.eff": {
+      "size": 752,
+      "sha256": "7A86AEBABD877AD2616AABA97900F0F91C77397A16A81A1CC7B4C3F9AC92DCED"
+    },
+    "flying/mmo/ep22_dg00_d_mito_05.mmo": {
+      "size": 807,
+      "sha256": "F2AF1E3CD7C500640F7CC1CF20B7F84F9F16D044B96205E1F5C51B4FC963B6E4"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_d_mito_05.eff": {
+      "size": 576,
+      "sha256": "5043F1CCDC2DC49E942FBC0B593A6C8CE734EAD291A68484A87CF85494C12016"
+    },
+    "flying/mmo/ep22_dg00_m_192_00.mmo": {
+      "size": 3509,
+      "sha256": "B4CD909686EDB2CAAEF6B7B8A98C056829E686B8F5ABDEC72EA742D118459D56"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_192_00.eff": {
+      "size": 2584,
+      "sha256": "979F2D3598E6165C13E9EE623F17A27C831E39C677619A98FDC38819E5E29A63"
+    },
+    "flying/mmo/ep22_dg00_m_192_01.mmo": {
+      "size": 3293,
+      "sha256": "793F391E03F91552C67315F89276339D5036A72F3EC09E1B0B60A1D9825A065C"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_192_01.eff": {
+      "size": 2872,
+      "sha256": "FDFA47FD9C1DF4E92E6EB163ACD3554C9390AA91F9695DE54D980FDCF4C91AFD"
+    },
+    "flying/mmo/ep22_dg00_m_192_02.mmo": {
+      "size": 1239,
+      "sha256": "4A5FCA01451482D146EE5793F22FD81BC6186793702E1A29582E631B97693A90"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_192_02.eff": {
+      "size": 576,
+      "sha256": "90FECD30FFA4AE5E8AA200B8340D7EF3CE1014521814359E462A89AFA147FB3E"
+    },
+    "flying/mmo/ep22_dg00_m_192_03.mmo": {
+      "size": 1239,
+      "sha256": "3D340E200AACCB84B9F19F19A37BAECE103C5F79C4586C003024BA64475C8181"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_192_03.eff": {
+      "size": 880,
+      "sha256": "B2509F9AD3C7B8D752481E23EFD252B8B2A2200638D2B07E4246BA3213AEFCF9"
+    },
+    "flying/mmo/ep22_dg00_m_193_00.mmo": {
+      "size": 3077,
+      "sha256": "AA00F02C248EEC695701B0C228B3F53706261DE1F715B3CD35BC93F4A1381014"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_193_00.eff": {
+      "size": 1832,
+      "sha256": "25F40C3DC8D1D6B43CE6E68A0A5B014D7B0A1FCD0232A4B4897A81D20D5FE43F"
+    },
+    "flying/mmo/ep22_dg00_m_193_01.mmo": {
+      "size": 3149,
+      "sha256": "C57376B259B8A670683D8C44DE85CEDB1BBA3309ABD5DD8785B857DCE23FBA6F"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_193_01.eff": {
+      "size": 2824,
+      "sha256": "9F52BAA21665DB109C6D4D737288300A8CD463A44A0D7E2211E2E62AAEA24F3C"
+    },
+    "flying/mmo/ep22_dg00_m_193_02.mmo": {
+      "size": 1167,
+      "sha256": "CE34F21E16C9CDE07BECB84B61BE935D4C49860681FCC6445A20383BFE281CB7"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_193_02.eff": {
+      "size": 576,
+      "sha256": "B0CF60410362E7E3F7BD0C57E174FE53AEBEDA0ABA62CB3ACAC30216EDFBA0F5"
+    },
+    "flying/mmo/ep22_dg00_m_193_03.mmo": {
+      "size": 1167,
+      "sha256": "0AD191A36B51E2A6E376D0E2565DF301362BA7CA9D60DB0FBD10363B54E90751"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_193_03.eff": {
+      "size": 1472,
+      "sha256": "C2EDD53CB26DAE2ADEF246DB110B7EC919E02FC401D50BD3837EEF9B93B26432"
+    },
+    "flying/mmo/ep22_dg00_m_194_00.mmo": {
+      "size": 3619,
+      "sha256": "FBB0809BD907F4848ADA674E54C02B58CF4845D525ADC9E142A2E04793C5DAE6"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_194_00.eff": {
+      "size": 3296,
+      "sha256": "75E7E026F9A6DB567A746497C961AFBFF321BC4FD132CE46161154C4D9869D59"
+    },
+    "flying/mmo/ep22_dg00_m_194_01.mmo": {
+      "size": 3619,
+      "sha256": "44024388036FB6E6CB1B9F9F7EC63CD3033A77A6D84B0FB95E0677233F4DDDDB"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_194_01.eff": {
+      "size": 3296,
+      "sha256": "2DB20031AC1A036077049B4CCAC34F3B5836D4FA1AC80BA5E7CBB4FF2D6BD486"
+    },
+    "flying/mmo/ep22_dg00_m_194_02.mmo": {
+      "size": 3619,
+      "sha256": "0752353ACCE1CF66A0D3AD4B06B85EC38E0CEC65BF203CB01414F32BD12E63FA"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_194_02.eff": {
+      "size": 3328,
+      "sha256": "14BC886439D9C64610EE9FC0239F0244F9BA00324E5E69961D09E168645D6103"
+    },
+    "flying/mmo/ep22_dg00_m_194_03.mmo": {
+      "size": 14196,
+      "sha256": "5591A40AC24B6111C86999183D141F8114733942712481D3D8FC9717F33F49CA"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_m_194_03.eff": {
+      "size": 10516,
+      "sha256": "5FAA0E7D584FC34FF61FFE4A6D290645DF8134308EB6B3B83BA3C34984B5623E"
+    },
+    "flying/mmo/ep22_dg00_mb_192_00.mmo": {
+      "size": 1599,
+      "sha256": "5668723E9FEEC42BA7E419FC9BA10EE2B7AFA2263F15DFFD4096BC58BA522A5E"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_192_00.eff": {
+      "size": 2368,
+      "sha256": "83ACCC3EE6AB63B8386326653E2C393985D3E97F74B6713E8ED59ABF73E1DC69"
+    },
+    "flying/mmo/ep22_dg00_mb_192_01.mmo": {
+      "size": 1743,
+      "sha256": "3C1C552CF6018BE3D84BFD8DCCD80E59A68649D9CFEE1671533CD2631C29C26A"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_192_01.eff": {
+      "size": 2192,
+      "sha256": "4597E1BA8810C9FD8B51B319F58401C167B8D89D9D947B6505C23A86AE508060"
+    },
+    "flying/mmo/ep22_dg00_mb_192_02.mmo": {
+      "size": 1599,
+      "sha256": "EDB7301122F07B915200B73506C7CD3531FC858635E8E8775251C9FD1B789C67"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_192_02.eff": {
+      "size": 1616,
+      "sha256": "52EE618C8816F9AE4EF1580FF942F3B6DEED5219E1AC872566AF90ECFEBCC0CA"
+    },
+    "flying/mmo/ep22_dg00_mb_193_00.mmo": {
+      "size": 1959,
+      "sha256": "1469352AF6D24DEEB876651FF4C5B9367F3D88038D272A10DB832760768B5214"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_193_00.eff": {
+      "size": 1168,
+      "sha256": "85B64EE1B26DCEAD98D9675BB2F073B33D235300D4D7E66AB96B292E4F7BA830"
+    },
+    "flying/mmo/ep22_dg00_mb_193_01.mmo": {
+      "size": 2319,
+      "sha256": "143CB3D21856F15213177BA92DC2E16DA08927F2819C7A74C92BE418999122A3"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_193_01.eff": {
+      "size": 2336,
+      "sha256": "14F4179878896BD8AA0D1552B2E7AF49C16173C4154773F7A65D648E6CDA3272"
+    },
+    "flying/mmo/ep22_dg00_mb_193_02.mmo": {
+      "size": 5654,
+      "sha256": "402BC309DF7B28BBE129E08D1A277FE1495B2D1E6F68D04367B7E7249ABE15BD"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_193_02.eff": {
+      "size": 4972,
+      "sha256": "1E029666551263DABCD49C122320952ECA1EAAE6F6B67B30161DCE2D0AB6CF0D"
+    },
+    "flying/mmo/ep22_dg00_mb_194_00.mmo": {
+      "size": 1887,
+      "sha256": "46257B6DBB4165CB3E18B47AFF7EB9FDE3D5D72CD058DF23CA96BD317DBB714E"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_194_00.eff": {
+      "size": 2688,
+      "sha256": "92C2DE8832EF8902D1291FAAAB6539DE0419100F4238D591D37696391D8B7C26"
+    },
+    "flying/mmo/ep22_dg00_mb_194_01.mmo": {
+      "size": 1671,
+      "sha256": "2BB5D8E4DC32B61A010E6861A71385C889A2B1BAB2D85D4F2B344A91EFCCD4F1"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_194_01.eff": {
+      "size": 1280,
+      "sha256": "DE8FADFB764A303B2145320EA07CB12CF78B43D614506CDE999634C1C342BEC0"
+    },
+    "flying/mmo/ep22_dg00_mb_194_02.mmo": {
+      "size": 2933,
+      "sha256": "20472BD5B1A5F0A16115FF5BF148390D3ABF6CD4369A97841BC230299AD96D7B"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_mb_194_02.eff": {
+      "size": 3720,
+      "sha256": "D9E7D2023810DA81B24DA0801989B7F6E0FBE845EF5349032B065C42AF8E64DF"
+    },
+    "flying/mmo/ep22_dg00_obj_way1.mmo": {
+      "size": 12741,
+      "sha256": "21D98AC35DD1C3CA8388BB17A9111077E087E640318F3A581D2032A374BA7732"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_way.eff": {
+      "size": 11176,
+      "sha256": "F34B0C788BA25422ACC8F0C5C318EBD65836D06BC7B49881F3D2BFAFA697A02A"
+    },
+    "flying/mmo/ep22_dg00_obj_way2.mmo": {
+      "size": 16743,
+      "sha256": "2F8E168665BA2DA5BE856381E4AE567613C80543BB9517D25D2D81B13216A161"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_way_01.eff": {
+      "size": 14880,
+      "sha256": "BC364F1C1624093253E626EA6F084B629A7DE2459865030BB6E4BEB6D9954E11"
+    },
+    "flying/mmo/ep22_dg00_obj_biggate.mmo": {
+      "size": 3744,
+      "sha256": "9FB189343587A19DE5F9A3453F647E2E9C98E5C702AB51CA24A901B629DAD62B"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_biggate.eff": {
+      "size": 2628,
+      "sha256": "C4F55396FF73F90FEE301042BF7F270A1E0DCA38435BF146D223ACB2C6B65067"
+    },
+    "flying/mmo/ep22_dg00_obj_convey.mmo": {
+      "size": 3835,
+      "sha256": "27F3218613D7B200F99AEB73761CCFA54AAC77BAD9A224034D94AA7AF7F4820D"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_convey.eff": {
+      "size": 3568,
+      "sha256": "9777E44F8EED436DFF73FE6475EBF09F912D0B8B2ECB02524E3962D6BCF92EBC"
+    },
+    "flying/mmo/ep22_dg00_obj_convey1.mmo": {
+      "size": 2285,
+      "sha256": "4325193BC201C5C652EFC18916662DF42F368CEB082178906A2303528CEA2F25"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_convey1.eff": {
+      "size": 2072,
+      "sha256": "E545FF094422527E427C0C2A0A279C587D7F6812886F736C6F5F88306B01F2C1"
+    },
+    "flying/mmo/ep22_dg00_obj_convey2.mmo": {
+      "size": 2952,
+      "sha256": "43DC4EF311CEC41B4C62F9826C4FBF280532EC559F21A58B80837BF7B5C645DB"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_convey2.eff": {
+      "size": 2756,
+      "sha256": "5F2536E392EEC524D53DEFB0FE459A4294E9AABE26F45D6BDB25E2BF8CB8E7FA"
+    },
+    "flying/mmo/ep22_dg00_obj_waygate.mmo": {
+      "size": 3077,
+      "sha256": "2B8AB78349945F22F3C7E973DCE5737466D7406B240A3362375C0E64253EFB8B"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_waygate.eff": {
+      "size": 2040,
+      "sha256": "5AB372FE64ED79F6B4C059791365AE589DDBECDFAD36B377E463E81CB942B0FC"
+    },
+    "flying/mmo/eventbox_00.mmo": {
+      "size": 951,
+      "sha256": "AFCF050A9F05CE163D614D13648D1BAEB21CD5C8BC307BDE0393B1F283962250"
+    },
+    "effs/game/shootinggamebasic/eventbox_00.eff": {
+      "size": 576,
+      "sha256": "E8DBD5ED67E2084A8F75972F49AB7447AE66A49197D034DD07EC61450D7EC089"
+    },
+    "flying/mmo/eventbox_01.mmo": {
+      "size": 951,
+      "sha256": "574421182379A66170FBEB25ECFBDFFFAD3F7ADD606F97BBCAC03366D547E727"
+    },
+    "effs/game/shootinggamebasic/eventbox_01.eff": {
+      "size": 576,
+      "sha256": "4209C7DE4DAE7965945DDEAC06672177FB11A743F3FE711678344719CB3D083F"
+    },
+    "flying/mmo/eventbox_02.mmo": {
+      "size": 951,
+      "sha256": "E95B3D8F44DAFC553E378EC88B8C75C1920232D8F282085828E31351AA885C0E"
+    },
+    "effs/game/shootinggamebasic/eventbox_02.eff": {
+      "size": 576,
+      "sha256": "4209C7DE4DAE7965945DDEAC06672177FB11A743F3FE711678344719CB3D083F"
+    },
+    "flying/mmo/eventbox_03.mmo": {
+      "size": 951,
+      "sha256": "C7B527590D52D8780B76DD2EC82DD78CB3187C2845E38BE3D0FBEB914FA7B28C"
+    },
+    "effs/game/shootinggamebasic/eventbox_03.eff": {
+      "size": 576,
+      "sha256": "4209C7DE4DAE7965945DDEAC06672177FB11A743F3FE711678344719CB3D083F"
+    },
+    "flying/mmo/eventbox_04.mmo": {
+      "size": 951,
+      "sha256": "5B775419B8E6131413ABE809178092C27050BCC114A153627DF20F15FA026329"
+    },
+    "effs/game/shootinggamebasic/eventbox_04.eff": {
+      "size": 576,
+      "sha256": "4209C7DE4DAE7965945DDEAC06672177FB11A743F3FE711678344719CB3D083F"
+    },
+    "flying/mmo/eventbox_1year_00.mmo": {
+      "size": 951,
+      "sha256": "74519D09317FBB43C65751BC10AD048AB0B891185B4743E5DAF08E07D4EF2912"
+    },
+    "effs/game/shootinggamebasic/eventbox_1year_00.eff": {
+      "size": 576,
+      "sha256": "788F3DD9BD770DF706AC98B6F5157C7E72AE37C7C2A7A65936D9C15F09CCF543"
+    },
+    "flying/mmo/eventbox_1year_01.mmo": {
+      "size": 951,
+      "sha256": "7C5427F4FD01798CA31607289F44DC2E11169B55412EACD01094FBF044FDB56E"
+    },
+    "flying/mmo/eventbox_1year_02.mmo": {
+      "size": 951,
+      "sha256": "B8AE89695193ED486C179D0DFDCF8BF4F05475EFE7FD3F3FD47CFDFBA3C45A04"
+    },
+    "flying/mmo/eventbox_1year_03.mmo": {
+      "size": 951,
+      "sha256": "B02B1450DBC636D97A46F6F4510C3A6A32E81A81C17C87F954CCDAF0993C9325"
+    },
+    "flying/mmo/eventbox_1year_04.mmo": {
+      "size": 951,
+      "sha256": "0C45EB1C9945416C09220C2FBD12935D2F66C66F44F2756C882E0FCD9A7E0EEF"
+    },
+    "flying/mmo/ep22_dg00_obj_box.mmo": {
+      "size": 1239,
+      "sha256": "E1CEF590DF9A0079171301F9841CAD4D264A5F59FEE20B85A8DA9D1FC78EB2B2"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_box.eff": {
+      "size": 576,
+      "sha256": "34A859DDEFD8781B13A149417C7C94C644E986325F6449DA36D2D47D2B0BB7AD"
+    },
+    "flying/mmo/ep22_mb_T_00.mmo": {
+      "size": 11308,
+      "sha256": "EEC17EE44355F56A287839031E2E78A2EDE010751E9F700AF75C6005E9575512"
+    },
+    "effs/game/shootinggamebasic/ep22_mb_T_00.eff": {
+      "size": 8916,
+      "sha256": "18EA30C97CF2F7ADAF3C0ED1057B6EE3D1C20ADB734FA6D5305854E5D750439D"
+    },
+    "flying/mmo/ep22_mb_R_00.mmo": {
+      "size": 29613,
+      "sha256": "DF0572F67846C35D01D7CA5227D2C077E2C51DEF33398C3FC36254657DB2848C"
+    },
+    "effs/game/shootinggamebasic/ep00_mb_R_00.eff": {
+      "size": 48536,
+      "sha256": "8DC97AE1D089FBDAA36827E49CF231ADE7A6A002A82F27A83BB8A4299B9252FB"
+    },
+    "flying/mmo/ep22_mb_C_woman.mmo": {
+      "size": 26259,
+      "sha256": "F4EC3AEDD718C527DE767895D9599CD889DF3CA2E2FD7A92BE68023BDBAD5B5F"
+    },
+    "effs/game/shootinggamebasic/ep00_mb_C_woman.eff": {
+      "size": 27232,
+      "sha256": "53A40736C0861E7E056C43A6B703C961B1B45C0B674112E1858DFA3A5E104D25"
+    },
+    "flying/mmo/ep22_mb_C_man.mmo": {
+      "size": 26259,
+      "sha256": "8566E14F7A5CB12CE980845F081841BB493CD418F48C0053CA3906C3003156CA"
+    },
+    "effs/game/shootinggamebasic/ep00_mb_C_man.eff": {
+      "size": 27232,
+      "sha256": "4E4C83922B1D030D336A4017C65FD23F07855707F40CB459C7AC5286A7B7135B"
+    },
+    "flying/mmo/ep22_dg00_M_00.mmo": {
+      "size": 951,
+      "sha256": "08ADC09EDE0BECD284B8273D6362F5D251269961BD0D03BC80818BD1816CABB1"
+    },
+    "effs/game/shootinggamebasic/ep00_dg00_M_03.eff": {
+      "size": 640,
+      "sha256": "36316D3EFB251E1C48C789EFDF6B386F85E979718C1BF4203E2DC4330E12F908"
+    },
+    "flying/hd0_ep22_dg00_st00_L_01.smmo": {
+      "size": 5496,
+      "sha256": "8CDEB48BB4DA0F0488AFB5B5E86082ED749D63D61AC6C4A9E8CCA68F63808D79"
+    },
+    "flying/hd0_ep22_dg00_st00_L_02.smmo": {
+      "size": 5496,
+      "sha256": "B93942F646FA31FAB0B00DAEE376E9439CC992006C4A51B8142D8141E6CE4246"
+    },
+    "flying/hd0_ep22_dg00_st00_M_00.smmo": {
+      "size": 5496,
+      "sha256": "8613657E16F9EE1571D08E57870DD9E5368301C9FAAF256100441490EA9BEA2B"
+    },
+    "flying/hd0_ep22_dg00_st00_M_01.smmo": {
+      "size": 5496,
+      "sha256": "9157FB31C057768EC78605507F8F3EE489E7F48D0C2A4AF446EB0DE8205DBA17"
+    },
+    "flying/hd0_ep22_dg00_st00_M_02.smmo": {
+      "size": 5496,
+      "sha256": "E3BF5EF44708B484C030561048C8033C77E864432F8AF8BAFBB46DBF8F9BCE09"
+    },
+    "flying/hd0_ep22_dg00_st00_H_00.smmo": {
+      "size": 5496,
+      "sha256": "D638A028644D25DD8784CEBB3AE4118E6DAC9BEDF57890BE5360F1419CEB8E7E"
+    },
+    "flying/hd0_ep22_dg00_st00_H_01.smmo": {
+      "size": 5496,
+      "sha256": "F8F2799193F5F358B2CDC443C26895DA8DF5E02870507F430EC41F2FA13BD796"
+    },
+    "flying/hd0_ep22_dg00_st00_H_02.smmo": {
+      "size": 5496,
+      "sha256": "5DA7FA2640A47ABB8569EC040C4CAD8564C05A0786B9613913577F2C462953EC"
+    },
+    "flying/mmo/ep22_bbm_00_00.bmo": {
+      "size": 1076,
+      "sha256": "C830E3B67330358CFA64BAE07FED00E919B42596031714EE6701ECF8D8760F69"
+    },
+    "flying/mmo/ep22_bbm_00_00.mmo": {
+      "size": 73941,
+      "sha256": "2CBCE7F4D3C5A07F89450D9A8412171A23710FB1BBFAE62A718A0DE6A7A1F2E3"
+    },
+    "effs/game/shootinggamebasic/ep22_bbm_00_00.eff": {
+      "size": 97288,
+      "sha256": "1E46AB4BDF838C534F59893936EC9C047D4F1DC436654E1BE77726FD9779A0B8"
+    },
+    "flying/mmo/ep22_bbm_00_01.mmo": {
+      "size": 23496,
+      "sha256": "EFDECC5A583942E7B3C3B4BB7E501B00CFC8F04381D221B39C8D50FB0C3E051E"
+    },
+    "effs/game/shootinggamebasic/ep22_bbm_00_01.eff": {
+      "size": 27732,
+      "sha256": "B6F9DEFFA73633C55FA01EFF1B023A05A65C2B21D8AE0DC095A16080B3C34B5A"
+    },
+    "flying/hd0_ep22_dg01_st01_L_00.smmo": {
+      "size": 4952,
+      "sha256": "B4061D633CFEE28D1203480E2F0479BDB276F52B6250998833361D8952F69838"
+    },
+    "flying/mmo/ep22_dg01_d_blackpong_00.mmo": {
+      "size": 6719,
+      "sha256": "269A28CBE1CF08D8BEA8B1DDADB3D36317FEA0B07434C4BE5EBDB91BD91E50CB"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_blackpong_00.eff": {
+      "size": 6752,
+      "sha256": "859CCEF173FE33DA6A214675831D6005156DA67BB00FF9657C70DD0DE7223B57"
+    },
+    "flying/mmo/ep22_dg01_d_blackpong_01.mmo": {
+      "size": 807,
+      "sha256": "472D4F9254EE2448E0A18B5BA477855EFED24DBDB7BF4A540F2B480BB8E82E12"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_blackpong_01.eff": {
+      "size": 576,
+      "sha256": "009FC219EFF2CE7556036F93F3D09640C36F9C354202BDA4C13D87BCD073F433"
+    },
+    "flying/mmo/ep22_dg01_d_blackpong_02.mmo": {
+      "size": 807,
+      "sha256": "BB84C2DBC499DE5AD1E2C3D0B4B8DF628D1CE8AFED69AC0B25E2620D7CD30C06"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_blackpong_02.eff": {
+      "size": 1216,
+      "sha256": "69F61A3B7C3DB373E52A9C02D4A95FF3BCFEA2B0C5E4E83EAD53ECEF526FEEF9"
+    },
+    "flying/mmo/ep22_dg01_d_blackpong_03.mmo": {
+      "size": 4502,
+      "sha256": "170DF7B33BC49222D13E99439B5ED69E20F95224DC20123407EBCAC4D5C1B3C8"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_blackpong_03.eff": {
+      "size": 3356,
+      "sha256": "5709452FF5E6FA68FBE655BBB5B3390871CA4306BAAF6E9D34290F9F5BB3AE4E"
+    },
+    "flying/mmo/ep22_dg01_d_blackpong_04.mmo": {
+      "size": 18471,
+      "sha256": "1D0F2DAB496B9B1170AB14811028CBDB0BCA1CB710A684D648F6B943623830FF"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_blackpong_04.eff": {
+      "size": 17392,
+      "sha256": "41F39E411280DF12ED132CF018E4FBAA18C1D851367CC4074B69E0D9DEC09E3A"
+    },
+    "flying/mmo/ep22_dg01_d_blackpong_05.mmo": {
+      "size": 807,
+      "sha256": "30A3CE64B43BE709592AC1F438B553EC2028D7A827A2BB19810618748708F12E"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_blackpong_05.eff": {
+      "size": 576,
+      "sha256": "148880691DC478224A95C314F6080D672974FD7C707F267B671A845D693B3CBE"
+    },
+    "flying/mmo/ep22_dg01_d_poison_00.mmo": {
+      "size": 807,
+      "sha256": "9A0B0A6B49DF2840850007A2C290094D70D2E0D26A1C87156042233F8BE5C632"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_poison_00.eff": {
+      "size": 688,
+      "sha256": "81517D7AF0D987E9317FD97DD2B5CC87D3CD27DE731F068FD97FE26AE3798D2E"
+    },
+    "flying/mmo/ep22_dg01_d_poison_01.mmo": {
+      "size": 1474,
+      "sha256": "101EC0E47C8180C000FB02068E7576FB3B747492FCE19F56524F334B05630FD7"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_poison_01.eff": {
+      "size": 1356,
+      "sha256": "48DFF3E1B863D135F59B93740703A00E6F93A4B6B3F252A3987BBD609B9FBFC5"
+    },
+    "flying/mmo/ep22_dg01_d_poison_02.mmo": {
+      "size": 1546,
+      "sha256": "A3E838D4F62D676F190A3F36142DA4F8C5327D57C9F488DA8FA451E4D7F9EA9D"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_poison_02.eff": {
+      "size": 2476,
+      "sha256": "95B3AC5AAB260EFF8C92F0632B01F4C3CBC00E8791E8E33F0646BC54D98F038D"
+    },
+    "flying/mmo/ep22_dg01_d_poison_03.mmo": {
+      "size": 807,
+      "sha256": "2A8BF05E15900212175EAE9E7711A4928DF69A9C72CEDFA6F4238DF3189854D9"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_poison_03.eff": {
+      "size": 576,
+      "sha256": "53C74D8A0B472CF10BB673F729597D0759ACE55736A997443F51E95CA4EB0EC8"
+    },
+    "flying/mmo/ep22_dg01_d_poison_04.mmo": {
+      "size": 807,
+      "sha256": "157F62F770CFD5519DCA8DCE8B20EF7A69066AC4383F8A585272F07A8EC9F92D"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_poison_04.eff": {
+      "size": 1184,
+      "sha256": "4585D438C0F53EC9DD65006892450CEC641659B3F01DD4132BE65F5BFBD95847"
+    },
+    "flying/mmo/ep22_dg01_d_poison_05.mmo": {
+      "size": 807,
+      "sha256": "39A1C2F395246E8E1EDCBB2C08CAAEFE7A95CD988D0172EFF069455782057F38"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_d_poison_05.eff": {
+      "size": 800,
+      "sha256": "265F45806A59E9506DE88B573543556FD124A9D52482F919BDCC175C9C343826"
+    },
+    "flying/mmo/ep22_dg01_m_195_00.mmo": {
+      "size": 2266,
+      "sha256": "9CF9317B33BEB5E362433A5F5B210E57546EAAA043DA858F544E6193AAB9CE42"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_195_00.eff": {
+      "size": 1196,
+      "sha256": "A594D640C6BC1DDF852A0EFEDA31E38A6F10BD0DACFF38546EB8C7D8AE15F58C"
+    },
+    "flying/mmo/ep22_dg01_m_195_01.mmo": {
+      "size": 3221,
+      "sha256": "5A04AB5B2A1A7E94E820EF47779303CFF2F1CB015DB34A6E7CD0D9CC91B2A93D"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_195_01.eff": {
+      "size": 2040,
+      "sha256": "FB70334640FAB5AD4C67C3C0989BAE0F5E0E54FCA12E477357DFB7426A05CDE9"
+    },
+    "flying/mmo/ep22_dg01_m_195_02.mmo": {
+      "size": 1095,
+      "sha256": "20FA9C20C7F500660333FB84AB8432E1F5F61F630C736C77CB87FF64C9A29636"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_195_02.eff": {
+      "size": 960,
+      "sha256": "665D646DF093B1A8F1329115FD38C37EC63DFBE2AF5B621681DF4177D78D57BE"
+    },
+    "flying/mmo/ep22_dg01_m_195_03.mmo": {
+      "size": 1167,
+      "sha256": "EBD543CCB584EE4900253F1123D80446BD755C6E91C25000689F28251E5DE995"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_195_03.eff": {
+      "size": 960,
+      "sha256": "835DCB65A445EC65A2BF7A8E093F0FD68D0BCE681F9CD5029147F5A6AC2E58BD"
+    },
+    "flying/mmo/ep22_dg01_m_196_00.mmo": {
+      "size": 1167,
+      "sha256": "D3F58067B4D2686A796F35597300996EF439C3BCBD7852D7E20A487237CED631"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_196_00.eff": {
+      "size": 576,
+      "sha256": "973ADDDAFA2B4B8C1B5A1C45956F91715B122A963B96A3FE0A3623E1F626FDEF"
+    },
+    "flying/mmo/ep22_dg01_m_196_01.mmo": {
+      "size": 1167,
+      "sha256": "0ED1D69E106035F6559EC5CA2C23A11C545E4BDF1973421C8B0D9808785F9F02"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_196_01.eff": {
+      "size": 576,
+      "sha256": "E3B5CB028884E0B4CD49F97BDB1AED619547444BA3398FCEDB41E8A211175579"
+    },
+    "flying/mmo/ep22_dg01_m_196_02.mmo": {
+      "size": 1095,
+      "sha256": "A5D81D3228A1E262298E1A65488DE3BDDCDCFC91E8A555BFC75B5417A52CAA68"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_196_02.eff": {
+      "size": 768,
+      "sha256": "94B6797F614CEEFED5391B9DE101059578C7E38F932EB2251A7320F83D9B988E"
+    },
+    "flying/mmo/ep22_dg01_m_196_03.mmo": {
+      "size": 1167,
+      "sha256": "4677703973E537F0ABB582589FAB42BEE1211CD0371F63006C0FB3731B15058E"
+    },
+    "flying/mmo/ep22_dg01_m_197_00.mmo": {
+      "size": 1167,
+      "sha256": "CAC7F7810AF3C670E91546916C0A2C3805631AF14EE737B9092CEB3978B8C0E6"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_197_00.eff": {
+      "size": 576,
+      "sha256": "1CADC30C904980D424D262BB00EED4B202A321B73AE17C0515C47EC7CC598CEC"
+    },
+    "flying/mmo/ep22_dg01_m_197_01.mmo": {
+      "size": 1167,
+      "sha256": "36B9C2B4651B5F5FFFD817BE9F66DFE7E869E463283E4B664061444F263A06C7"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_197_01.eff": {
+      "size": 576,
+      "sha256": "1CADC30C904980D424D262BB00EED4B202A321B73AE17C0515C47EC7CC598CEC"
+    },
+    "flying/mmo/ep22_dg01_m_197_02.mmo": {
+      "size": 1167,
+      "sha256": "5353B458F37B7C5143C14DA5BDBC718E7FA1A678E7DF6A46ED16E2F9830EEE96"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_197_02.eff": {
+      "size": 576,
+      "sha256": "1CADC30C904980D424D262BB00EED4B202A321B73AE17C0515C47EC7CC598CEC"
+    },
+    "flying/mmo/ep22_dg01_m_197_03.mmo": {
+      "size": 1167,
+      "sha256": "3F10DAB046901ADD0D662473CAB72A67A20421B290DC2BF9602EFA0BA6E8F8BD"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_m_197_03.eff": {
+      "size": 576,
+      "sha256": "1CADC30C904980D424D262BB00EED4B202A321B73AE17C0515C47EC7CC598CEC"
+    },
+    "flying/mmo/ep22_dg01_mb_195_00.mmo": {
+      "size": 2319,
+      "sha256": "074FD78527BCD26E512EEE4F6BD8215A812E8D8E0AC464A63C566A09D18CF177"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_195_00.eff": {
+      "size": 832,
+      "sha256": "9A58C5535596416289D5D8E43CE83220EB9E7D60499D317F7EFD6B6E4E699D6E"
+    },
+    "flying/mmo/ep22_dg01_mb_195_01.mmo": {
+      "size": 2175,
+      "sha256": "64F67B8C90D23B0A5012849F915A313ED450540A4E82E7C1F21B9749938D5DDC"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_195_01.eff": {
+      "size": 1280,
+      "sha256": "F570769DC5FE5279670354D56465301EF9078BC69BA95EC838D7FBE7955B52B8"
+    },
+    "flying/mmo/ep22_dg01_mb_195_02.mmo": {
+      "size": 4680,
+      "sha256": "36A34D0F431BC318E6B56DD9D158FE6EF7635C29E932BE8F583B2EE6D396870C"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_195_02.eff": {
+      "size": 4100,
+      "sha256": "B7AA4C88C3385CE904444C1E9BEF094D473F55C824F9449E7D540B7DB53B9F2E"
+    },
+    "flying/mmo/ep22_dg01_mb_196_00.mmo": {
+      "size": 2319,
+      "sha256": "2C750A148B120EE379894F81E6283F21C7984E104AB98C60628EE90CEF01A59E"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_196_00.eff": {
+      "size": 1744,
+      "sha256": "5B67EC63FD4C411C707CCCBF2D5DBA4C2F8E3118D8C8E836DC766A7B1476E51B"
+    },
+    "flying/mmo/ep22_dg01_mb_196_01.mmo": {
+      "size": 2103,
+      "sha256": "5ECED55BD42B9570A257AA5545E72F5B8CC14CC46C4BCBFAA4D1152D956BBEA1"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_196_01.eff": {
+      "size": 2336,
+      "sha256": "3EE6D837E05B8CD78D4650CB872DB92D66B4587392E66CEE90544A0873798981"
+    },
+    "flying/mmo/ep22_dg01_mb_196_02.mmo": {
+      "size": 5438,
+      "sha256": "44EB3D13D07156C94FD40C9DF49BC7DD8E5F9C5695BC42144C6F8564D9F73D5A"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_196_02.eff": {
+      "size": 4972,
+      "sha256": "74AFA2BF73410887B4C1066B9CE0E0523A0AD17D6A9917973B524F9BFB509222"
+    },
+    "flying/mmo/ep22_dg01_mb_197_00.mmo": {
+      "size": 10683,
+      "sha256": "27C9E4FB77FB6730E9EEBB50A37264A918DD2CD02C9FC9862C1A9F0168F7F54F"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_197_00.eff": {
+      "size": 12080,
+      "sha256": "71C251200F80F9AD744C09B5F4D573FAC6B3F8CD8E59BF8B4199B93FDCD6D1DB"
+    },
+    "flying/mmo/ep22_dg01_mb_197_01.mmo": {
+      "size": 10683,
+      "sha256": "7C47A6199CF61E6B1B493BCE8CE7AABB12C9741E96E638ADCAD587CD83BFF098"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_197_01.eff": {
+      "size": 12176,
+      "sha256": "560E099B6F624FCEEE86427BB2A87BF9FD0FE6A63313CA96527F0891AC5313F8"
+    },
+    "flying/mmo/ep22_dg01_mb_197_02.mmo": {
+      "size": 10683,
+      "sha256": "6C757BC682DFDC6710E4D82E854C3E6493BC22A41B82EA3F2BB45474EB0A48CC"
+    },
+    "effs/game/shootinggamebasic/ep22_dg01_mb_197_02.eff": {
+      "size": 12144,
+      "sha256": "1FE47B854195448DC924D485BFD243F3551A14677015EC35FAA2A18CC9516277"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_gate1.mmo": {
+      "size": 6753,
+      "sha256": "79C085FA083C5B8124B8F2BBEF57F9A5CB4E601D2AA1431027ADC1656732CEA6"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_gate1.eff": {
+      "size": 3912,
+      "sha256": "B36116BD9281625D9960FE0F20DFFB19E86A16360EAE964C16B24EE88CD9FBCA"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_gate2.mmo": {
+      "size": 1402,
+      "sha256": "CA56B0AC159277BB8735FBF4E07D348A16441F0999D3E49FDA419131ADD3D292"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_gate2.eff": {
+      "size": 1132,
+      "sha256": "ED0906E7CA59450E9FB1AD39588CC6080B0986A53996F1E985A7B9233686561F"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_gate_00.mmo": {
+      "size": 5404,
+      "sha256": "FCF26147CA79B6B3D88EBDA0283078B32AD62C7CE23E39F84E03C61C28BB80C9"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_gate0.eff": {
+      "size": 5124,
+      "sha256": "97401CFB51779A0B41F9414E6B5105F2F69C85260F20B9F1B99DC76CBC8CDCFE"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_way1.mmo": {
+      "size": 11604,
+      "sha256": "071D502D3E558D33685D27804166A46B97145437C28F159D82FD3E9611A8BE4E"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_way1.eff": {
+      "size": 8916,
+      "sha256": "D1153A0A31D2A21F58A670DA4C3FA9E5C98653B3162B95B48629A58A6B42C121"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_way2.mmo": {
+      "size": 11604,
+      "sha256": "78331580665616706801D3F16AF49C9987F57B7505B04CAD4856D837C2C51776"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_way2.eff": {
+      "size": 8916,
+      "sha256": "0123743708534DD767EEA9195A196B82342D7A41B0877197BFF69FF2C6534B33"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_way3.mmo": {
+      "size": 11604,
+      "sha256": "8733AE84035DF608C023A0CBB4A908A8A700C159DE79ED2B1E60FD9F276E1D79"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_way3.eff": {
+      "size": 8916,
+      "sha256": "DB5CDAFA8DE0C41C27A1511C2D38EE6E9BF5AF77611B5795933A7A4499E80F51"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_box.mmo": {
+      "size": 1239,
+      "sha256": "3F0724C6E0F177C82E400575DA88C9DB5122C9BCDFCDD23B8B9B29F1731E233B"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_box.eff": {
+      "size": 576,
+      "sha256": "05930328E62C53B0331D6DB1A1BB3E95624E04D91C7621096359E05F47B82574"
+    },
+    "flying/mmo/ani_mon_d_01_01_up.mmo": {
+      "size": 5169,
+      "sha256": "1B433A4105A8BC298E55860E18C5BCD6887237E9434451DFD74E4495DFC886BE"
+    },
+    "effs/game/shootinggamebasic/ani_mon_d_01_01_up.eff": {
+      "size": 4440,
+      "sha256": "EECAA8DB8EFE625C769EBE61B3908ECBA25934BF90DE6FA7EB2430E1255CE4A9"
+    },
+    "flying/mmo/ep22_dg01_M_00.mmo": {
+      "size": 951,
+      "sha256": "8EB5A35DE30D5F92D190521E633C7BCCCC3E8B5D0EB9FA2E0F088A82D82C6C0D"
+    },
+    "effs/game/shootinggamebasic/ep00_dg00_M_00.eff": {
+      "size": 768,
+      "sha256": "5FEA0AD70719F62AA8011697257C74BF6C3541011F0302D5568B9F91E8287ECD"
+    },
+    "flying/hd0_ep22_dg01_st01_L_01.smmo": {
+      "size": 4952,
+      "sha256": "3F529F07D705FEB6BC0A077C6766C428F08DF805C9A45CB1CB4D10090952D294"
+    },
+    "flying/hd0_ep22_dg01_st01_L_02.smmo": {
+      "size": 5064,
+      "sha256": "DAE599B6EF23819128EB462F97240648BF3536CA3C3188E745F871B23078C0AF"
+    },
+    "flying/hd0_ep22_dg01_st01_M_00.smmo": {
+      "size": 4952,
+      "sha256": "CE7F52ECEED7FDAC1E72FEDCF5C40454C690AC1651BB68581927659E7A0A4331"
+    },
+    "flying/hd0_ep22_dg01_st01_M_01.smmo": {
+      "size": 4952,
+      "sha256": "CFF4B113E92BC1F1936A7C45FEF176573558C49E3F5572372AAF3354AC948864"
+    },
+    "flying/hd0_ep22_dg01_st01_M_02.smmo": {
+      "size": 5064,
+      "sha256": "6A6B30A99C1113103A44E8AD3CA96EDAE84830CCE51839B75F4D465336CD0CE9"
+    },
+    "flying/hd0_ep22_dg01_st01_H_00.smmo": {
+      "size": 4952,
+      "sha256": "AA8C758FF145B97548CF5463F393A54A4C71BC98011742ACB0C8F0615C62D9F4"
+    },
+    "flying/hd0_ep22_dg01_st01_H_01.smmo": {
+      "size": 4952,
+      "sha256": "470C9D919B8C2734FC6FB8C71BD1B0EEBD310E0F6051407B2FE11C6A4ABC5DC2"
+    },
+    "flying/hd0_ep22_dg01_st01_H_02.smmo": {
+      "size": 5064,
+      "sha256": "CBA93197F24A0856E311ACAD7CB0A9CE1E58BF96FACC51FAEAA42C6E4C65D520"
+    },
+    "flying/mmo/ep00_pm4_escape_type02.mmo": {
+      "size": 4737,
+      "sha256": "2F2BCBBFD14B5B29A73A2D0A715363AB7E74B6EAF7DF15366FFE371C25934A31"
+    },
+    "effs/game/shootinggamebasic/ep00_pm4_escape_type02.eff": {
+      "size": 5736,
+      "sha256": "88EBAA813DF6E8D41BA9FAE602CDEFDD146C5DFBAF44FDF2389C36D1257C89E4"
+    },
+    "flying/mmo/ep22_dg00_obj_box1.mmo": {
+      "size": 2645,
+      "sha256": "4ADCE5FE03635438A9C03E2BA4E9C0DBB3D14DDBEFA1B954834BBF63B4C1E38C"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_box1.eff": {
+      "size": 2216,
+      "sha256": "FCD363DB835AD2F47426A9B1B530BCDD587EFAE0F5A9C2482095BAF1A79DC3BF"
+    },
+    "flying/mmo/ep22_dg00_obj_waygate1.mmo": {
+      "size": 1402,
+      "sha256": "8F6216B0DA06370EB7D0001EE79047E8AE8D76BEA7B178D8DD715AD5262E3824"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_waygate1.eff": {
+      "size": 1404,
+      "sha256": "840394B2B724F14DFE6DCBF1B4395036DCEACCB53C821925AD3A5A2FB426CA52"
+    },
+    "flying/mmo/ep22_dg00_obj_capsule1.mmo": {
+      "size": 10342,
+      "sha256": "0FE97A912F152E60F6AFABB7CC8E8E63CE9B73F9361263E455D7855612620B2B"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_capsule1.eff": {
+      "size": 10732,
+      "sha256": "ADAB291FDB8189ACF3E7C0A429B450C0839D31D6B5372B00E50818D1AD9066BE"
+    },
+    "flying/mmo/ep22_dg00_obj_biggate1.mmo": {
+      "size": 1402,
+      "sha256": "650BD36DC4F13E1BD46C5E19C1156E4C14826C41578612685B31E02BB8EF4130"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_obj_biggate1.eff": {
+      "size": 1276,
+      "sha256": "55456F37801A48E1C3406F4D00E846FE1D0D8925BC4DAD75CFEE7FB0B5E82EA6"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_way_up.mmo": {
+      "size": 2069,
+      "sha256": "34A398EEDEA3377DEEA04AB694C82E0E1496AF930CC726460A3376ED9B7694DA"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_way_up.eff": {
+      "size": 1752,
+      "sha256": "BFCA4CD2179B67001DD9BAD09622D8D7542BA0A85745D98D756CE5D8263639E9"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_way_down.mmo": {
+      "size": 2069,
+      "sha256": "5D9DA7DBB66214ABDF94B87F8A29F99F46BABF649B6C6D8F255AE293F7D81251"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01obj_way_down.eff": {
+      "size": 1768,
+      "sha256": "EB4E9FCA33F5C1EEC832F7AD41519558FF3581394717A1D50272494AFBED7444"
+    },
+    "flying/mmo/ep22_dg00_st01_obj_box1.mmo": {
+      "size": 2645,
+      "sha256": "C88EB06CB4CE02FDF65934D1526ADA61F8FA46FB5FD92FB7B1C9DC18D1A1CF46"
+    },
+    "effs/game/shootinggamebasic/ep22_dg00_st01_obj_box1.eff": {
+      "size": 2216,
+      "sha256": "9C8E8E1DC65D5863999518EDE568011A7F1A94FA7A9FE04B29FA82E6F8E5C376"
+    },
+    "flying/pon/mis_ep00_mb_C_m_sound.pon": {
+      "size": 2164,
+      "sha256": "DF8E928D322E35E016E90D83E9316AB055D1FD7F48CA40ED629F6369D624664B"
+    },
+    "effs/game/shootinggamebasic/mis_ep00_mb_C_m_sound.eff": {
+      "size": 576,
+      "sha256": "5110CE783DFE430CCB84227CAFD63200B325F58049F8CBF4038B7096E849615B"
+    },
+    "flying/pon/mis_ep00_mb_C_wm_sound.pon": {
+      "size": 2164,
+      "sha256": "AA7562CC2AC82261FE524B5E57F72B7DF1F0EBFBE7F5961FD73C3066BD3CB909"
+    },
+    "effs/game/shootinggamebasic/mis_ep00_mb_C_wm_sound.eff": {
+      "size": 576,
+      "sha256": "5110CE783DFE430CCB84227CAFD63200B325F58049F8CBF4038B7096E849615B"
+    },
+    "flying/pon/mis_ep00_mb_R_sound.pon": {
+      "size": 2164,
+      "sha256": "D58CDB769C09D3BB3442B0D33BE566F7445996E99197CC24FBA5AB8EEA1F2CB8"
+    },
+    "effs/game/shootinggamebasic/mis_ep00_mb_R_sound.eff": {
+      "size": 576,
+      "sha256": "5110CE783DFE430CCB84227CAFD63200B325F58049F8CBF4038B7096E849615B"
+    },
+    "flying/pon/mis_ep00_mb_T_sound.pon": {
+      "size": 2164,
+      "sha256": "E19C93095034DB3B2D7AA0350930D30F822BFA11E16EF26F7B845912CF9E06EE"
+    },
+    "effs/game/shootinggamebasic/mis_ep00_mb_T_sound.eff": {
+      "size": 576,
+      "sha256": "5110CE783DFE430CCB84227CAFD63200B325F58049F8CBF4038B7096E849615B"
+    },
+    "flying/pon/mis_ep00_mb_T_22_nw.pon": {
+      "size": 5388,
+      "sha256": "125AF7B750D003C8A3533F4A1D3D4740F33835C3B7A6AC72A6E67F737F4660DD"
+    },
+    "effs/game/shootinggamebasic/mis_ep00_mb_T_21_nw.eff": {
+      "size": 1864,
+      "sha256": "35BA5B36A251EA113458D16A97DD551E699D25E021FE1F9C47E4284566E258E2"
+    },
+    "flying/pon/mis_ep00_mb_T_22_pw.pon": {
+      "size": 7000,
+      "sha256": "DFE0DE17BC47E5B738B5FDC9B6A5BF5C91662B702A897667C42991E63FB6C305"
+    },
+    "effs/game/shootinggamebasic/mis_ep00_mb_T_21_pw.eff": {
+      "size": 2564,
+      "sha256": "BE38022DFC9B6B42CB91D00EBAC35E4F5AFB25621EB247310E0A1C71C0B8EA23"
+    },
+    "flying/pon/mis_ef_pwenergy_boom.pon": {
+      "size": 5388,
+      "sha256": "8006694424E9ED64A78BC24D43B5CB38906FF31A15B014225B92C416D1FDA94E"
+    },
+    "effs/game/shootinggamebasic/mis_ef_pwenergy_boom.eff": {
+      "size": 1864,
+      "sha256": "758685912F8FCB4136BED9C7E59451E1FBD1CF17805415537ADF28550705C748"
+    },
+    "flying/pon/mis_ep22_dg00_m_192.pon": {
+      "size": 7000,
+      "sha256": "2BFD472AAEFFDB99DE8F97CEF83900FBE91AAD8923CE350A1C88174595D0200F"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_m_192.eff": {
+      "size": 2388,
+      "sha256": "469CA550A9241A95A5D1C380022260261D094FE976E25D031F848671C880EAE6"
+    },
+    "flying/pon/mis_ep22_bbm_00_02_00u.pon": {
+      "size": 5388,
+      "sha256": "6CA82923F0462EEF8DBD54ABEDC1E11E041F4E52910E1FABD4AB366473F92B16"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_00_02_00u.eff": {
+      "size": 1896,
+      "sha256": "F3B66C6AB6F78C473AD7E61F72FD36712A39C88D2BF41DCBB7D55DA258F6EAA3"
+    },
+    "flying/pon/mis_ep22_ending_02.pon": {
+      "size": 74704,
+      "sha256": "2DC6839FE4327D62C331E3C10AE2F0546979637FC0989F5155B90502BB0E1312"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_ending_02.eff": {
+      "size": 29724,
+      "sha256": "E7B2729C3B51059CE91350E1D105883FA3A32A709416FF52ACBEF95DEE3E0908"
+    },
+    "flying/pon/mis_ep22_ending_04.pon": {
+      "size": 74704,
+      "sha256": "6DA0CA21C01C6F882956E3578C2C09CCEC306D11835191B997C2910D3A9FF6F1"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_ending_04.eff": {
+      "size": 29724,
+      "sha256": "C6B2B25090AC4212B8CF8789A99910E8BF9B409CD1B228A2850C7A167D864BE3"
+    },
+    "flying/pon/mis_ep22_ending_01.pon": {
+      "size": 19896,
+      "sha256": "8E6B2F204303EAF67E9C2F4A95135589D2CE8D9560503B3ACAE9B6A372F5A830"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_ending_01.eff": {
+      "size": 8308,
+      "sha256": "BC1032AF983D5A90C7818D9856DD7CC535F79D1FAC608B0B8096E3158709BCE9"
+    },
+    "flying/pon/mis_ep22_ending_beam_01.pon": {
+      "size": 44076,
+      "sha256": "171C2FF34A0051932EDD876223F85F0891FDA7304D582E12417380A8621CB3DD"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_ending_beam_01.eff": {
+      "size": 23480,
+      "sha256": "CEA3AEAA0C23B7073DBAAA6DDC96781C28CE2DC74C31D8C92DA4B41D2FC12669"
+    },
+    "flying/pon/mis_ep22_ending_05.pon": {
+      "size": 108556,
+      "sha256": "9539F74AFC5043979AA382C1E9A68DBA1EC436F7DB8A862704541358D3AB3967"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_ending_05.eff": {
+      "size": 49416,
+      "sha256": "EA5B7DA3D229CB7D9BBD63F83A299601B40C1A4491D6DCC777839304A3E668DF"
+    },
+    "flying/pon/mis_ep22_ending_00_ef.pon": {
+      "size": 47300,
+      "sha256": "FCA17572393CC0DC0ED8D942AC4B81E4EA7C44239067BC36CE69D2143C0C70E4"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_ending_00_ef.eff": {
+      "size": 20048,
+      "sha256": "80C62B682F76ED2E284F8927DCEAC6F35CDACF41AAE71DCD261ACAE0D02215F0"
+    },
+    "flying/pon/mis_ep22_dg00_mb_194_01.pon": {
+      "size": 82764,
+      "sha256": "951EE2C1F9F4C22399E05FF41B7756E96D8556C93B0FE723843064D781EF7568"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_mb_194_01.eff": {
+      "size": 32584,
+      "sha256": "64E5B666CE3CD6A3DAFA8C4F2EB8DE6D4D12ADD0D7663EAFE27C237872C0FD7F"
+    },
+    "flying/pon/mis_ep22_dg00_mb_194_00.pon": {
+      "size": 10224,
+      "sha256": "BC80C6B095C986861A8F5072A9FE7605EFBC5258261B0DFFEE53AA301DBCD48F"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_mb_194_00.eff": {
+      "size": 3628,
+      "sha256": "ED5B96ED0D1E79155B15B892F66B14A4450D6C3A3D759DF2F21068A41448CA39"
+    },
+    "flying/pon/mis_ep22_dg00_mb_193_00.pon": {
+      "size": 94048,
+      "sha256": "BC3E4E520D7DBB825423D9D889AE5247C8015361617AC593FFD8586D29BE9A81"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_mb_193_00.eff": {
+      "size": 36108,
+      "sha256": "CEEA4595DB167BAEA1646BF11C3BD08CC7C2AC1B5FC676A6206C83AFAF459B3A"
+    },
+    "flying/pon/mis_ep22_dg00_mb_193_01.pon": {
+      "size": 45688,
+      "sha256": "F9656D5D66B1BC162078D54788DCEF9906E55A5C27BB06F8B06A1FC08F2F27B0"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_mb_193_01.eff": {
+      "size": 18276,
+      "sha256": "941580D2F6BBD61A32C5E922E187570C6C4FC3AEA9C549DCC99CDEA4901AD07E"
+    },
+    "flying/pon/mis_ep22_dg00_m_193_01.pon": {
+      "size": 21508,
+      "sha256": "A49B53212A190A7905AC8FC050AFD8A14A5D4017040B68FC9658125C27FD6F76"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_m_193_01.eff": {
+      "size": 8784,
+      "sha256": "DC3DCE9F66DCED044DB2DD7D6B05BE7767D1E7CF9329A98E9481B0D577D420E8"
+    },
+    "flying/pon/mis_ep22_dg00_mb_192_00.pon": {
+      "size": 23120,
+      "sha256": "05C84F1FF183EF0DE580603DBE13EBD148339AD094AE72E61418A4C90B5FD476"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_mb_192_00.eff": {
+      "size": 10236,
+      "sha256": "ACBDFE492418DEED39DCBBDC8E0D3EF63368B8C850EAA450D211150E6164AFF4"
+    },
+    "flying/pon/mis_ep22_dg00_mb_192_01.pon": {
+      "size": 27956,
+      "sha256": "26DB29AEC5E37865366DD488B1D2B0B9796C0D075A69E5BC5E8550EE0AFE028F"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_mb_192_01.eff": {
+      "size": 11184,
+      "sha256": "7F36577F9D827AEAE44338BF0A5D63CE6B558DD82477F7D8A26552A58E479CB4"
+    },
+    "flying/pon/mis_ep22_dg00_m_193.pon": {
+      "size": 21508,
+      "sha256": "A079C32B510EC847FE6A31767DB63436B5921223BDAB420EC40120628FCF091E"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_m_193.eff": {
+      "size": 8784,
+      "sha256": "65350326EAABF4FE8303DCB48A2FD4971D1E2E9BBED56A8E6F30425DA7DB977D"
+    },
+    "flying/pon/mis_ep22_dg00_m_193_02.pon": {
+      "size": 21508,
+      "sha256": "A9EC97E6E0F211E27D3E41631AE2553804A1B5CCFF448A8A3C5907E0B21924A1"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg00_m_193_02.eff": {
+      "size": 8784,
+      "sha256": "E65CDCCD203C0D927386377CC874EB49B6EB4A391968AD16AEB50C09AFC685E4"
+    },
+    "flying/pon/mis_ep22_dg01_m_195.pon": {
+      "size": 10224,
+      "sha256": "DEBF36836FF22BD6E30B4344A01A4D30B0D9CD0B2C1CAF35E09FD00516CF7BE9"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_m_195.eff": {
+      "size": 3596,
+      "sha256": "01574565D66BCBDB1A60EA7EDC8AAD5CD8C0BBE8A6A053A140901FC1F765408C"
+    },
+    "flying/pon/mis_ep22_bbm_01_00_03_03.pon": {
+      "size": 61808,
+      "sha256": "DC49AE62F8B1E9A589B287FB0740F5EF7652EA11A3A6CBA21506AF6212F53189"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_01_00_03_03.eff": {
+      "size": 24732,
+      "sha256": "3B8B1D1CE480E39BE8C3ADEE8EDCE5EFE55D3BD9F2A9F41E64D19CC019D0277B"
+    },
+    "flying/pon/mis_ep22_bbm_01_00_03_02.pon": {
+      "size": 11836,
+      "sha256": "35CE8DB9592ABBA6B55049AB5D25BAC8424FDEFA5FCC66C9B6480E7D71B6BC27"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_01_00_03_02.eff": {
+      "size": 4504,
+      "sha256": "5DF56AB959375473316319ED8B33BD2691F584CF224F0230F0FA3CA2909F4F04"
+    },
+    "flying/pon/mis_ep22_bbm_01_00_03_01.pon": {
+      "size": 13448,
+      "sha256": "1098D9A68E637DD77F2E30946CB02A3D2EF09BAE247B57FECD3B7F57C359C573"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_01_00_03_01.eff": {
+      "size": 5156,
+      "sha256": "2E866106AB95C93C35A239AACB2317047CC0DF524BACF8D6DEB67E7B88186ED9"
+    },
+    "flying/pon/mis_ep22_bbm_01_00_03_00.pon": {
+      "size": 23120,
+      "sha256": "1FD3C83D5C450071BC63C0AB278E6BB82645323A1B0689300620628EFB5EC026"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_01_00_03_00.eff": {
+      "size": 9068,
+      "sha256": "C0C33707BF3D1C3889AAF07DC4462238A4EA13AB02B70A01EC17A57F2CB29FB3"
+    },
+    "flying/pon/mis_ep22_bbm_01_00_00.pon": {
+      "size": 356804,
+      "sha256": "C560060D2FCA3A8DEBDC9C55D339DB97EC0974BEFA61E7F8E9C807F13724B185"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_01_00_00.eff": {
+      "size": 148752,
+      "sha256": "B02947D1967C78A185C839A5A31D6052FE42CBD324DD5CD459BA7EC5D9A9FE50"
+    },
+    "flying/pon/mis_ep22_bbm_01_00_02.pon": {
+      "size": 144020,
+      "sha256": "05FD8DCF8EBB99C7A50FAA6FB5A4F84C16FA59ADE68246D9B0566B4E5C385A5F"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_01_00_02.eff": {
+      "size": 56944,
+      "sha256": "73E07E2328C3553B171A7BC9D752A0E12C99E11D098E82399B70F95F6D338E6D"
+    },
+    "flying/pon/mis_ep22_bbm_01_00_01.pon": {
+      "size": 90824,
+      "sha256": "590C75B6F26E2A3A85075E9D0840FFEB2DF98A0C0ABA9682716C10DEBEDEC131"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_01_00_01.eff": {
+      "size": 36724,
+      "sha256": "C27DED1BE2E916D93D133489BD7FA8BFB316B4FB86D76C586B029B2E2D15C712"
+    },
+    "flying/pon/mis_ep22_bbm_00_01_01.pon": {
+      "size": 142408,
+      "sha256": "67F0383FD20F08408A57881D1D0FAA3861CF45FB13627B9CFCED94121FD1BFCE"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_00_01_01.eff": {
+      "size": 58916,
+      "sha256": "0953C989A9EC266B4B23469271AE467ECE3FCD7EBC0063C9EBDDFBF906BFDAD0"
+    },
+    "flying/pon/mis_ep22_bbm_00_00_03.pon": {
+      "size": 32792,
+      "sha256": "857FDEA2DA1D1946DD972FA49121CD639BF89ADBCCA9B0AB1E0130EC491E9264"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_00_00_03.eff": {
+      "size": 13188,
+      "sha256": "06547B79D45830DBF476B56E6559D6904CF5B420CB9E291E98A53CEA3421522D"
+    },
+    "flying/pon/mis_ep22_bbm_00_00_02.pon": {
+      "size": 184320,
+      "sha256": "F16435BBB566E5EA74E6AFC1A859FE8D2BC6F560FF818E91BCCBAAD51E26CDCD"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_00_00_02.eff": {
+      "size": 76636,
+      "sha256": "8E91362298A6A47CBE5FD62C35934DD914DC21628FC5ADAB8E522D5BE2AF802D"
+    },
+    "flying/pon/mis_ep22_bbm_00_01_02.pon": {
+      "size": 115004,
+      "sha256": "8E83DD8A2CF7592331F446F702B03664B310FD012E85605B743DEED996DCA46A"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_00_01_02.eff": {
+      "size": 52648,
+      "sha256": "65B2C7DC7DA92F0DAE08B0B788D9BDC6FD1E8C0AB741FA4DEB7E059D3C38BC1D"
+    },
+    "flying/pon/mis_ep22_bbm_00_00_00.pon": {
+      "size": 76316,
+      "sha256": "AE266FCBB07685B5B255CDA787383C5D5AA24578C776F76D3E23C0608A6DA2F3"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_00_00_00.eff": {
+      "size": 28088,
+      "sha256": "C312295EE2F1F6D5D3B660E05EE376795F1B8C93BA6288206C13D282CE6547A5"
+    },
+    "flying/pon/mis_ep22_bbm_00_01_00.pon": {
+      "size": 326176,
+      "sha256": "DB34F2BDD43D8D82250FD2ACA31770FBA6F22AE551E88D7015E05E29E87226B0"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_00_01_00.eff": {
+      "size": 146988,
+      "sha256": "7F10CDAA862E32363D81FD198387F37A65CEEB8DBD1D93C68E844454BD3666CD"
+    },
+    "flying/pon/mis_ep22_bbm_00_00_01.pon": {
+      "size": 119840,
+      "sha256": "7258C34F30B8C0C07A527EDD5B56EB2A2BB2EE9B57F9FFBDFADD64E12DE9E211"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_bbm_00_00_01.eff": {
+      "size": 53244,
+      "sha256": "FADB7DD9A7C3D7604B90615AA121AAADE965F3C0877F799E88588BAD9778BDE9"
+    },
+    "flying/pon/mis_ep22_dg01_mb_197_01.pon": {
+      "size": 65032,
+      "sha256": "2DEB5533F5AEFE23A95295E5907B519786F947B7778E661988B41729BB5AD80A"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_mb_197_01.eff": {
+      "size": 25268,
+      "sha256": "9E999FDFAC9FBB34A4C9C088345BBB1CD9DF025C730E4ED8C192925C71506BB0"
+    },
+    "flying/pon/mis_ep22_dg01_mb_197_00.pon": {
+      "size": 13448,
+      "sha256": "2FCDBF27178A22536710FD7E2DCCDA1EEE7D1E2AC613216F74069989A43C67B7"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_mb_197_00.eff": {
+      "size": 5348,
+      "sha256": "F50A1DDF7D9CECC2A69F699C6DADE83166E0E60D69BEC8BD8B68DEA33CE0C940"
+    },
+    "flying/pon/mis_ep22_dg01_mb_196_01.pon": {
+      "size": 84376,
+      "sha256": "7C727EAA3F78A8A4FF017692CD466CE6F257CACE44C3D59D1DC051F266D3D4CB"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_mb_196_01.eff": {
+      "size": 33540,
+      "sha256": "62D32A78E0EB74F15BDA060CC2496870EAD804B4E59B6300A18FD633241F634A"
+    },
+    "flying/pon/mis_ep22_dg01_mb_196_00.pon": {
+      "size": 69868,
+      "sha256": "22B6DD56E4A36BE6FCCCCBEA3F0E724F8BD8E52F7FA1A5442E9D57B36EE308C2"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_mb_196_00.eff": {
+      "size": 27336,
+      "sha256": "490E023DD78095EA75F4A326A2FA010E16091636576FCCBD7E9C2D07465C6BA9"
+    },
+    "flying/pon/mis_ep22_dg01_mb_195_01.pon": {
+      "size": 44076,
+      "sha256": "22FE37F7C7B5849A2683270984C518A4438C594F50B6E3685EC736C1D8D44660"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_mb_195_01.eff": {
+      "size": 17848,
+      "sha256": "B334A9D21B493FB02D5E0F9498FCA4660DC990626680595E1D0C6D9104485C6E"
+    },
+    "flying/pon/mis_ep22_dg01_mb_195_00.pon": {
+      "size": 44076,
+      "sha256": "F959BC43B6F63D9300E26A636E09090F83DECCC7562E3F0A3FA9AB6593A8D5CA"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_mb_195_00.eff": {
+      "size": 15544,
+      "sha256": "D75E44142669FD642C539857C93699EC386C39FBDD47894B03E0B39E357F2F60"
+    },
+    "flying/pon/mis_ep22_dg01_m_197.pon": {
+      "size": 8612,
+      "sha256": "26A6AC6748303055FAB5AAD9595850097713BACA6FA0868BFD3156E4DCE06A0A"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_m_197.eff": {
+      "size": 3504,
+      "sha256": "6AB71D5357628A0F1D17AAF6422E3F3B3F6CFC18E4F44E84BDAFF14D02960A54"
+    },
+    "flying/pon/mis_ep22_dg01_m_196_02.pon": {
+      "size": 21508,
+      "sha256": "9DC102E0FD8E83BD55DB26B3744EAF2C8C6CC4403EB0692FDD479273239277AA"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_m_196.eff": {
+      "size": 8784,
+      "sha256": "86E9490CF07D714C73A392406BEA5ABC8B3B39BDF60B29B8DF24F65D9BE3FF10"
+    },
+    "flying/pon/mis_ep22_dg01_m_196_01.pon": {
+      "size": 21508,
+      "sha256": "7EA1205937D5DDAD89D27274AF6DA52DCAA10A79C4045EDBD093112BF6676727"
+    },
+    "effs/game/shootinggamebasic/mis_ep22_dg01_m_196_01.eff": {
+      "size": 8784,
+      "sha256": "72B847F8932F78E99F7C3A17435137029A4CE555DDCE96591034DC58E4C42903"
+    },
+    "flying/pon/mis_ep22_dg01_m_196.pon": {
+      "size": 21508,
+      "sha256": "9DC102E0FD8E83BD55DB26B3744EAF2C8C6CC4403EB0692FDD479273239277AA"
+    }
+  },
+  "outputs": {
+    "release/components/targets/hp_resource_global_data.inc": {
+      "size": 25823548,
+      "sha256": "77C2590F5A7DBDE547715F1BE70A9739012379FFB65CD5D3125FA83118D2CDC2"
+    },
+    "release/components/boss/component_data.inc": {
+      "size": 745550,
+      "sha256": "B1EFFD88F750D6B004DB8E10A3D59AF5BAA9B6A4AC1F51A4F5A47CB12C18CADB"
+    },
+    "adapter_runtime/\u8d44\u6e90/\u6570\u636e/dungeon_combat_catalog.bin": {
+      "size": 11810960,
+      "sha256": "2E12C1219AC611596E3530F0B6FA5AC9BA7A7BCBE49A8B87743A7553D752497A"
+    },
+    "release/components/stage_damage/stage_damage_catalog.inc": {
+      "size": 979960,
+      "sha256": "87193E2841517C757273926DE4D34D84F00628F00592BCD58719DE2D61913298"
+    },
+    "release/components/targets/terminal_item_drop_data.inc": {
+      "size": 2391,
+      "sha256": "FAE566C8F17DB13B62ED72F6FAC36ADCA54D9FF897FB8B070410EE80042FD27C"
+    },
+    "release/components/combat_economy/combat_score_resource_data.inc": {
+      "size": 1949845,
+      "sha256": "B1ED132341108F79304B05E567E5AA6795753F38BDE6088036831CA63797B925"
+    },
+    "release/components/target_resources/preloaded_target_catalog.json": {
+      "size": 3609366,
+      "sha256": "D242A4216946D9CD8250753540F29D295A5E4BD9E2507661A0B910A15AC39101"
+    },
+    "release/components/target_resources/preloaded_target_catalog.inc": {
+      "size": 982913,
+      "sha256": "7B9DD9FD8C5A4DCEFA1F9611DF87D7D0E83975E1E19A0748DFA0440ADCD6D932"
+    },
+    "release/components/stage_damage/scene_hazard_registry.json": {
+      "size": 80061,
+      "sha256": "27D3DAA533FA521025C9CC7BF090E1B8DE767C312C8B4A7BF7FDA33871885BCE"
+    },
+    "release/components/stage_damage/scene_hazard_catalog.inc": {
+      "size": 92757,
+      "sha256": "E02CD1EF3AD11F2F2881A38A488EE0A097978CC52F8CE0D1D7F7F01CACA2A9B8"
+    },
+    "release/components/stage_damage/monster_contact_catalog.inc": {
+      "size": 1322553,
+      "sha256": "29B8EBFBBD125BAA4F6CEEDD1402174ABB229CD3AEDB8DEB96DD730428CC4701"
+    },
+    "release/components/stage_damage/boss_contact_catalog.inc": {
+      "size": 100060,
+      "sha256": "2022152C9227DED65365C39D231457B692B19EC105CA9B510602656EDBE87D9F"
+    }
+  }
+}

@@ -38,7 +38,9 @@ public sealed partial class NetworkAdapterService
             && (IsNativeInventoryMutation(opcode) || opcode is 0xC378 or 0xC42F or 0xC44B or 0xC3CB or 0xC3E7);
         if (synchronize)
             await CommitNativeCheckpointAsync(session, null, token);
-        var response = await HandleNativeFrameCoreAsync(frame, opcode, channel, remote, remoteIp, session, token);
+        var response = channel == "ArenaAdapter" && session.ArenaGameType is >= 1 and <= 4
+            ? await HandleArenaFrameWithDeliveryAsync(frame, opcode, channel, remote, remoteIp, session, token)
+            : await HandleNativeFrameCoreAsync(frame, opcode, channel, remote, remoteIp, session, token);
         if (synchronize && response is not null && IsNativeInventoryMutation(opcode))
             response = CombineNativeFrames(response, await SynchronizeNativeInventoryAsync(session, token));
         return response;

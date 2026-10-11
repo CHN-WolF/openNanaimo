@@ -183,7 +183,7 @@ public sealed partial class NetworkAdapterService
         if (session.NativeDungeonDeathLatched)
         {
             session.NativeDungeonDeathLatched = false;
-            session.NativeBattleResources = ResetNativeDungeonDeathRetryResources(session.NativeBattleResources)
+            session.NativeBattleResources = ResetNativeDungeonDeathRetryResources(session.NativeBattleResources, session.Character!)
                 is { } resources ? resources with { SettlementFrozen = true } : null;
             session.NativeBattleAttackMode = session.NativeBattleResources?.AttackMode;
         }

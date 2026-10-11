@@ -81,7 +81,9 @@ public sealed partial class NetworkAdapterService
         await RefreshSessionCharacterAsync(session, token);
         if (previous is null || session.Character is not { } refreshed)
             return;
-        var live = session.NativeBattleResources ?? session.NonCombatResourceSnapshot;
+        // Managed room combat owns CharacterRecord; its old town snapshot is not authoritative.
+        var live = session.NativeBattleResources
+            ?? (session.DungeonRoomId == 0 ? session.NonCombatResourceSnapshot : null);
         var preserved = PreserveInventoryVitalsOnRefresh(previous, refreshed, live);
         if (preserved is null)
             return;

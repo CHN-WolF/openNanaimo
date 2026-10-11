@@ -1,4 +1,5 @@
 using OpenNanaimo.Adapter.Services;
+using OpenNanaimo.Adapter.Models;
 
 static void Check(bool condition, string message)
 {
@@ -30,9 +31,23 @@ var frozen = new BattleResourceSnapshot(0, 120, 2)
     MaximumHp = 2000, MaximumMp = 800, SettlementFrozen = true,
     HpAuthority = BattleHpAuthority.Settlement
 };
-var retry = NetworkAdapterService.ResetNativeDungeonDeathRetryResources(frozen)!;
-Check(retry.CurrentHp == 2000 && retry.CurrentMp == 800 && retry.AttackMode == 0
+var character = new CharacterRecord { MaxHp = 1200, MaxMp = 500 };
+var retry = NetworkAdapterService.ResetNativeDungeonDeathRetryResources(frozen, character)!;
+Check(retry.CurrentHp == 200 && retry.CurrentMp == 120 && retry.AttackMode == 0
     && !retry.SettlementFrozen && retry.HpAuthority == BattleHpAuthority.Inherited,
-    "accepted retry starts a clean battle resource epoch");
+    "accepted retry uses base death-return HP and retained MP with effective maxima unchanged");
+foreach (var maximumHp in new[] { 0, 1, 5, 6, 7, 1200, 65535 })
+    foreach (ushort mp in new ushort[] { 0, 120, 500, 800 })
+    {
+        character.MaxHp = maximumHp;
+        var returned = HealthRecoveryPolicy.ResolveDungeonDeathReturn(character, mp);
+        var result = NetworkAdapterService.ResetNativeDungeonDeathRetryResources(frozen with { CurrentMp = mp }, character)!;
+        Check(result.CurrentHp == Math.Min(frozen.MaximumHp, returned.CurrentHp)
+            && result.CurrentMp == returned.CurrentMp && result.MaximumHp == frozen.MaximumHp
+            && result.MaximumMp == frozen.MaximumMp,
+            $"retry matches town-return policy at base HP {maximumHp} and remaining MP {mp}");
+    }
+Check(NetworkAdapterService.ResetNativeDungeonDeathRetryResources(null, character) is null,
+    "retry does not synthesize a missing resource snapshot");
 await DeathRetryChecks.RunAsync();
 Console.WriteLine("DEATH_SETTLEMENT_REVIVAL_REGRESSION_PASS");

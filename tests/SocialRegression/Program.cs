@@ -18,6 +18,13 @@ internal static partial class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         WireIdentityAllocator.Reset();
+        if (args.Contains("--couple-food-only"))
+        {
+            await CheckCoupleFoodScenesAsync();
+            await CheckNativeCoupleFoodScenesAsync();
+            Console.WriteLine($"COUPLE_FOOD_SCENES_PASS checks={_checks}");
+            return;
+        }
         if (args.Contains("--experience-bonuses-only"))
         {
             await CheckExperienceBonusesAsync();
@@ -44,6 +51,8 @@ internal static partial class Program
         await CheckManagedCouplesAsync(fixture);
         await CheckCoupleEncountersAsync();
         await CheckManagedCoupleRecoveryAsync();
+        await CheckCoupleFoodScenesAsync();
+        await CheckNativeCoupleFoodScenesAsync();
         await CheckNativeSocialAsync(fixture);
         await CheckSeparationAsync(fixture);
         Console.WriteLine($"SOCIAL_REGRESSION_PASS checks={_checks}");

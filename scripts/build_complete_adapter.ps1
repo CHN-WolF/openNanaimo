@@ -26,6 +26,25 @@ if (Test-Path -LiteralPath $petRecipePath -PathType Leaf) {
     }
 }
 
+# Native target selectors and managed DCC7 are one build input generation.
+# A successful compile with an older --ResourceDataRoot is not a valid build.
+$combatDataRoot = if ($ResourceDataRoot) { [IO.Path]::GetFullPath($ResourceDataRoot) } else {
+    Join-Path $root ('adapter_runtime\' + [char]0x8D44 + [char]0x6E90 + '\' + [char]0x6570 + [char]0x636E)
+}
+$combatCatalog = Join-Path $combatDataRoot 'dungeon_combat_catalog.bin'
+$scoreHeader = Get-Content -LiteralPath (Join-Path $root 'release\components\combat_economy\combat_score_resource_data.inc') -Raw -Encoding UTF8
+$combatHash = [regex]::Match($scoreHeader, '#define COMBAT_SCORE_DCC7_SHA256 "([A-F0-9]{64})"').Groups[1].Value
+if (-not $combatHash -or -not(Test-Path -LiteralPath $combatCatalog -PathType Leaf) -or
+    (Get-FileHash -LiteralPath $combatCatalog -Algorithm SHA256).Hash -ne $combatHash) {
+    throw 'Combat catalog differs from the native target generation; use current repository resource data, not an older L7 build.'
+}
+
+$hpTable = Join-Path $root 'release\components\targets\hp_resource_global_data.inc'
+$hpHash = [regex]::Match($scoreHeader, '#define COMBAT_SCORE_HP_TABLE_SHA256 "([A-F0-9]{64})"').Groups[1].Value
+if (-not $hpHash -or (Get-FileHash -LiteralPath $hpTable -Algorithm SHA256).Hash -ne $hpHash) {
+    throw 'Native HP/selector table differs from combat-score generation; regenerate the matching catalogs before building.'
+}
+
 $tccCandidates = @(
     $TccPath,
     (Join-Path $root 'tools\tcc\tcc.exe')

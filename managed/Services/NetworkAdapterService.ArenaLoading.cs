@@ -17,6 +17,7 @@ public sealed partial class NetworkAdapterService
                 reason = "already-confirmed";
                 return false;
             }
+            RestoreArenaP2PEndpointLocked(room, requester);
             if (room.GameDataPayload.Length != ArenaProtocol.GameDataResponseLength
                 || !requester.P2PInfoRegistered || !requester.ArenaP2PProtocolConfirmed)
             {
@@ -47,7 +48,7 @@ public sealed partial class NetworkAdapterService
             if (ReferenceEquals(member, directRecipient)) continue;
             source.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(member, 0xCF80, [],
                 "arena member loading complete", RequestTag: room.LoadingRequestTags[member.SessionId],
-                ArenaRoundId: room.RoundId));
+                ArenaRoundId: room.RoundId, ArenaDeliveryEpoch: member.ArenaDeliveryEpoch));
         }
         return true;
     }

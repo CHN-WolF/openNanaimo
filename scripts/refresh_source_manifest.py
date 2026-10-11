@@ -90,6 +90,12 @@ def collect(root=ROOT):
             path = root / rel
             if not path.is_file(): raise ValueError('missing character experience input: ' + rel)
             seen.add(path.resolve())
+    if (root / 'release/components/targets/hp_resource_global_data.inc').resolve() in seen:
+        for rel in ('scripts/generate_l7_combat.py', 'scripts/audit_l7_combat_resources.py',
+                    'scripts/test_l7_combat_resources.py', 'scripts/generate_boss_contact_catalog.py'):
+            path = root / rel
+            if not path.is_file(): raise ValueError('missing L7 derivation input: ' + rel)
+            seen.add(path.resolve())
     complete_build = root / 'scripts/build_complete_adapter.ps1'
     if complete_build.is_file():
         seen.add(complete_build.resolve())

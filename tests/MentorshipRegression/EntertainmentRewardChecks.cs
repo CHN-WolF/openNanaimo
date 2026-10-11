@@ -18,13 +18,14 @@ internal static partial class Program
             Check(EntertainmentRewardPolicy.IsBasicCard(13000001u + (uint)i)
                 == !CardCatalog.IsGoldPowder(13000001u + (uint)i), "entertainment card eligibility " + (i + 1));
         await CheckEntertainmentRoomRewardsAsync();
+        await CheckEntertainmentPetBoardGateAsync();
         await using var f = await Fixture.CreateAsync();
         await f.ExecuteAsync("UPDATE Characters SET PetVariant=1,EquippedPetItemCode=15000001 WHERE Id=$id; "
             + "INSERT INTO CharacterItems(CharacterId,ItemCode,Quantity,PetCurrentStage,PetMaximumStage,PetLevel,PetExperience,UpdatedAt) "
             + "VALUES($id,15000001,1,1,2,0,0,'test') ON CONFLICT(CharacterId,ItemCode) DO UPDATE SET "
             + "Quantity=1,PetCurrentStage=1,PetMaximumStage=2,PetLevel=0,PetExperience=0", ("$id", Character(f.Teacher).Id));
         Set(f.Teacher, "Character", (await f.Database.GetCharacterByIdAsync(Character(f.Teacher).Id))!);
-        var soloPetReward = EntertainmentRewardPolicy.GetPetExperience(PetProgression.GetState(Character(f.Teacher), 15000001), 0);
+        var soloPetReward = EntertainmentRewardPolicy.GetPetExperience(PetProgression.GetState(Character(f.Teacher), 15000001), 0, 1);
         var host = Activator.CreateInstance(SessionType, nonPublic: true)!;
         foreach (var property in new[] { "AccountId", "Username", "Character", "ChannelId", "RemoteIp" })
             Set(host, property, Get(f.Teacher, property));
@@ -40,7 +41,10 @@ internal static partial class Program
             "new lobby keeps its UID separate from the zero personal record");
         var create = new byte[44]; Encoding.ASCII.GetBytes("Score policy").CopyTo(create, 0);
         BinaryPrimitives.WriteUInt16LittleEndian(create.AsSpan(24), 100);
-        await Send(0xCF6C, create);
+        var created = (await Send(0xCF6C, create))!;
+        Check(BinaryPrimitives.ReadUInt32LittleEndian(created.AsSpan(16)) == 0
+            && created.AsSpan(20, 24).ToArray().All(value => value == 0),
+            "a game without a registered record creates GAME INFO zero with no invented holder");
         var rooms = (IDictionary)typeof(NetworkAdapterService).GetField("_entertainmentRooms", PrivateInstance)!.GetValue(f.Service)!;
         var room = rooms[Get(host, "EntertainmentRoomId")!]!;
         var waiting = await Send(0xCF6E, []);
@@ -101,7 +105,7 @@ internal static partial class Program
             && await f.ScalarAsync("SELECT SUM(Quantity) FROM CharacterCards") == 5,
             "all five prize receipts and inventory grants commit together");
         Check(await f.ScalarAsync("SELECT SUM(PetExperience) FROM ActivityRewardReceipts") == soloPetReward,
-            "single-player settlement receives the first-place twenty-percent pet award");
+            "single-player settlement receives the ten-percent pet award");
         lobby = await Send(0xCF0B, []);
         Check(BinaryPrimitives.ReadUInt32LittleEndian(lobby!.AsSpan(16)) == 4558
             && await f.Database.GetEntertainmentBestScoreAsync(Character(host).Id, 1) == 4558
@@ -128,11 +132,33 @@ internal static partial class Program
         Check((uint)scores[Id(host)]! == ushort.MaxValue && capCount == 43 && nextCards.Count == capCount,
             "score saturation is overflow safe and cannot repeat a threshold grant");
 
+        var recreated = (await Send(0xCF6C, create))!;
+        Check(BinaryPrimitives.ReadUInt32LittleEndian(recreated.AsSpan(16)) == 4558
+            && Encoding.ASCII.GetString(recreated, 20, 7) == "Teacher",
+            "recreated GAME INFO reads the saved actual score rather than a round's selection count or UID");
+        Set(host, "ArenaGameType", (byte)2);
+        var unplayedGame = (await Send(0xCF6C, create))!;
+        Check(BinaryPrimitives.ReadUInt32LittleEndian(unplayedGame.AsSpan(16)) == 0
+            && unplayedGame.AsSpan(20, 24).ToArray().All(value => value == 0),
+            "GAME INFO highest record isolates an unplayed entertainment type");
+        Set(host, "ArenaGameType", (byte)1);
+
         var actor = Actor(f.Teacher);
-        async Task<CharacterRecord?> Grant(string key, uint[] grantCards, int score = 1000) => await f.Database.ApplyDungeonRewardAsync(
+        async Task<CharacterRecord?> Grant(string key, uint[] grantCards, int score = 1000,
+            int memberCount = 1, int place = 0) => await f.Database.ApplyDungeonRewardAsync(
             actor.AccountId, actor.CharacterId, actor.SessionId, 0, 0, 0, 0, score, 0, 0, 0, 0,
             completed: false, activitySettlementKey: key, entertainmentCards: grantCards,
-            entertainmentGameType: 1, entertainmentPlace: 0);
+            entertainmentGameType: 1, entertainmentPlace: place, entertainmentMemberCount: memberCount,
+            entertainmentSuccessfulBoards: 3);
+        foreach (var memberCount in new[] { int.MinValue, -1, 0, 7, int.MaxValue })
+            Check(await Grant("entertainment:invalid-population", [], memberCount: memberCount) is null,
+                "database rejects invalid entertainment population " + memberCount);
+        for (var memberCount = 1; memberCount <= 6; memberCount++)
+            foreach (var place in new[] { -1, memberCount })
+                Check(await Grant("entertainment:invalid-placement", [], memberCount: memberCount, place: place) is null,
+                    "database rejects out-of-room entertainment placement " + memberCount + "/" + place);
+        Check(await f.ScalarAsync("SELECT COUNT(*) FROM ActivityRewardReceipts") == 1,
+            "invalid entertainment population and placement cannot commit an activity receipt");
         Check(await Grant("entertainment:invalid", [22000011]) is null
             && await Grant("entertainment:invalid", [50000001]) is null,
             "database rejects lucky and event rewards without committing an activity receipt");
@@ -180,28 +206,169 @@ internal static partial class Program
 
     private static async Task CheckEntertainmentRoomRewardsAsync()
     {
-        var percentages = new uint[] { 20, 15, 10, 5, 5, 5 };
-        Check(Enumerable.Range(0, 6).Select(EntertainmentRewardPolicy.GetPetRewardPercent).SequenceEqual(percentages),
-            "six placements use the requested pet reward percentages");
-        Check(EntertainmentRewardPolicy.GetPetExperience(default, 0) == 0
-            && EntertainmentRewardPolicy.GetPetRewardPercent(-1) == 0
-            && EntertainmentRewardPolicy.GetPetRewardPercent(6) == 0, "missing pet and invalid placements receive no experience");
+        Check(ShopCatalog.TryGetPetGrowthStage(2, 1, out var stageOne) && stageOne.ExperiencePerLevel == 6480
+            && ShopCatalog.TryGetPetGrowthStage(2, 2, out var stageTwo) && stageTwo.ExperiencePerLevel == 8640,
+            "wire pet stage directly selects the zero-based client growth row");
+        var observedPet = new PetState(15000017, 1, 2, 0, 0, 0, 0, 0, -1);
+        Check(EntertainmentRewardPolicy.GetPetExperience(observedPet, 0, 1) == 648
+            && PetProgression.GetNativeClearReward(observedPet) == 648,
+            "class-two stage-one clear grants ten percent of the client 6480 denominator, not 324");
+        uint[][] percentages = [[10], [13, 10], [16, 13, 10], [19, 16, 13, 10],
+            [22, 19, 16, 13, 10], [25, 22, 19, 16, 13, 10]];
+        for (var memberCount = 1; memberCount <= 6; memberCount++)
+        {
+            Check(Enumerable.Range(0, memberCount)
+                .Select(place => EntertainmentRewardPolicy.GetPetRewardPercent(place, memberCount))
+                .SequenceEqual(percentages[memberCount - 1]), "pet reward percentages for population " + memberCount);
+            Check(EntertainmentRewardPolicy.GetPetRewardPercent(-1, memberCount) == 0
+                && EntertainmentRewardPolicy.GetPetRewardPercent(memberCount, memberCount) == 0,
+                "out-of-room placements receive no experience " + memberCount);
+        }
+        foreach (var memberCount in new[] { int.MinValue, -1, 0, 7, int.MaxValue })
+            Check(EntertainmentRewardPolicy.GetPetRewardPercent(0, memberCount) == 0,
+                "invalid room population receives no experience " + memberCount);
+        Check(EntertainmentRewardPolicy.GetPetExperience(default, 0, 1) == 0, "missing pet receives no experience");
         foreach (var pet in ShopCatalog.All.Where(item => item.Category == 15))
         for (byte stage = 1; stage <= 3; stage++)
         {
             var state = PetProgression.NormalizeState(new PetState(pet.ItemCode, stage, 3, 0, 0, 0, 0, 0, -1));
             if (!ShopCatalog.TryGetPetGrowthStage(pet.PetGrowthClass, state.CurrentStage, out var growth)) continue;
-            for (var place = 0; place < 6; place++)
-                Check(EntertainmentRewardPolicy.GetPetExperience(state, place)
-                    == (ulong)growth.ExperiencePerLevel * percentages[place] / 100,
-                    "stage-based pet reward " + pet.ItemCode + "/" + state.CurrentStage + "/" + place);
+            for (var memberCount = 1; memberCount <= 6; memberCount++)
+            for (var place = 0; place < memberCount; place++)
+                Check(EntertainmentRewardPolicy.GetPetExperience(state, place, memberCount)
+                    == (ulong)growth.ExperiencePerLevel * percentages[memberCount - 1][place] / 100,
+                    "stage-based pet reward " + pet.ItemCode + "/" + state.CurrentStage + "/" + memberCount + "/" + place);
         }
 
+        for (var memberCount = 1; memberCount <= 6; memberCount++)
+            await CheckEntertainmentRoomRewardsAsync(memberCount);
+    }
+
+    private static async Task CheckEntertainmentPetBoardGateAsync()
+    {
+        await using var f = await Fixture.CreateAsync();
+        foreach (var world in new[] { f.Teacher, f.Student })
+        {
+            await f.ExecuteAsync("UPDATE Characters SET PetVariant=1,EquippedPetItemCode=15000017,PetLevel=0,PetExperience=0 WHERE Id=$id; "
+                + "INSERT INTO CharacterItems(CharacterId,ItemCode,Quantity,PetCurrentStage,PetMaximumStage,PetLevel,PetExperience,UpdatedAt) "
+                + "VALUES($id,15000017,1,1,2,0,0,'test') ON CONFLICT(CharacterId,ItemCode) DO UPDATE SET "
+                + "Quantity=1,PetCurrentStage=1,PetMaximumStage=2,PetLevel=0,PetExperience=0", ("$id", Character(world).Id));
+            Set(world, "Character", (await f.Database.GetCharacterByIdAsync(Character(world).Id))!);
+        }
+        object Auxiliary(object world)
+        {
+            var member = Activator.CreateInstance(SessionType, nonPublic: true)!;
+            foreach (var property in new[] { "AccountId", "Username", "Character", "ChannelId", "RemoteIp" })
+                Set(member, property, Get(world, property));
+            Set(member, "OnlineTracked", true);
+            Set(member, "AuxiliaryGameSession", true);
+            Set(member, "ArenaGameType", (byte)1);
+            return member;
+        }
+        var host = Auxiliary(f.Teacher);
+        Task<byte[]?> Send(object member, ushort opcode, byte[] data) => Dispatch(f, member, opcode, data, "ArenaAdapter");
+        var create = new byte[44]; Encoding.ASCII.GetBytes("Board gate").CopyTo(create, 0);
+        BinaryPrimitives.WriteUInt16LittleEndian(create.AsSpan(24), 100);
+        await Send(host, 0xCF6C, create);
+        var rooms = (IDictionary)typeof(NetworkAdapterService).GetField("_entertainmentRooms", PrivateInstance)!.GetValue(f.Service)!;
+        var room = rooms[Get(host, "EntertainmentRoomId")!]!;
+        var successCounts = new[] { 0, 0, 0, 1, 2, 3, 4, 0 };
+        for (var scenario = 0; scenario < successCounts.Length; scenario++)
+        {
+            var before = (await f.Database.GetCharacterByIdAsync(Character(host).Id))!;
+            var petBefore = PetProgression.GetState(before, before.EquippedPetItemCode);
+            Check(await Send(host, 0xCFE5, []) is not null, "board gate starts a fresh round " + scenario);
+            Check(((IDictionary)Get(room, "SuccessfulBoardsBySession")!).Count == 0,
+                "successful-board eligibility resets at the round boundary " + scenario);
+            Check(await Send(host, 0xD007, [0, 1, 1, 22]) is null,
+                "preload completion cannot unlock pet experience " + scenario);
+            await Send(host, 0xCF7F, []);
+            for (byte board = 0; board < successCounts[scenario]; board++)
+                Check(await Send(host, 0xD007, [board, 1, 1, 22]) is not null, "distinct successful board accepted " + scenario + "/" + board);
+            if (scenario == 1)
+                Check(await Send(host, 0xD007, [0, 0, 0, 22]) is not null, "zero-type completion is not a successful board");
+            if (scenario == 2)
+                Check(await Send(host, 0xD007, [0, 2, 1, 22]) is not null, "mismatched completion types do not count as success");
+            if (scenario == 4)
+            {
+                Check(await Send(host, 0xD007, [1, 1, 1, 22]) is null, "duplicate success cannot make two boards into three");
+                Check(await Send(host, 0xD007, [2, 1, 0, 22]) is not null, "timeout board report remains valid but ineligible");
+                Check(await Send(host, 0xD007, [2, 1, 1, 22]) is null, "failed board retry cannot be relabelled as success");
+            }
+            if (scenario == 7)
+                for (byte combo = 1; combo <= 15; combo++)
+                    Check(await Send(host, 0xD005, [10, 0, combo, 0]) is not null, "hits can score without completing a board " + combo);
+            var successes = (IDictionary)Get(room, "SuccessfulBoardsBySession")!;
+            Check((successes.Contains(Id(host)) ? (int)successes[Id(host)]! : 0) == successCounts[scenario],
+                "only distinct nonzero matching completion reports count " + scenario);
+            foreach (var lives in new uint[] { 2, 1, 0 })
+            {
+                var report = new byte[4]; BinaryPrimitives.WriteUInt32LittleEndian(report, lives);
+                Check(await Send(host, 0xD003, report) is not null, "miss consumes a chance without completing a board " + scenario + "/" + lives);
+            }
+            InvokeMentorship<object>(f.Service, "CollectEntertainmentDeadlines", DateTime.UtcNow);
+            Check(await Send(host, 0xD007, [5, 1, 1, 22]) is null, "late completion cannot alter frozen eligibility " + scenario);
+            var result = await Send(host, 0xCF85, []);
+            Check(result is { Length: 80 }, "ineligible rounds still return a complete result " + scenario);
+            var reward = successCounts[scenario] >= 3 ? EntertainmentRewardPolicy.GetPetExperience(petBefore, 0, 1) : 0;
+            Check(reward == (successCounts[scenario] >= 3 ? 648u : 0u),
+                "observed solo pet receives a literal ten-percent reward only after three boards " + scenario);
+            var expected = PetProgression.AddExperience(petBefore, reward).State;
+            var saved = (await f.Database.GetCharacterByIdAsync(before.Id))!;
+            Check(PetProgression.GetState(saved, saved.EquippedPetItemCode) == expected
+                && BinaryPrimitives.ReadUInt32LittleEndian(result!.AsSpan(44)) == expected.Experience,
+                "three-board threshold controls persisted pet and result experience " + scenario);
+            Check(await f.ScalarAsync("SELECT PetExperience FROM ActivityRewardReceipts WHERE CharacterId=" + before.Id + " ORDER BY rowid DESC LIMIT 1") == reward,
+                "settlement receipt records the gated reward " + scenario);
+            Check((await Send(host, 0xCF85, []))!.AsSpan(8).SequenceEqual(result!.AsSpan(8)),
+                "result retry preserves zero or granted pet reward " + scenario);
+            Check(await f.ScalarAsync("SELECT COUNT(*) FROM ActivityRewardReceipts") == scenario + 1,
+                "eligibility does not bypass settlement idempotency " + scenario);
+        }
+        Check(await f.ScalarAsync("SELECT SUM(Quantity) FROM CharacterCards") >= 1,
+            "scoring card rewards remain independent of the pet completion gate");
+
+        var actor = Actor(f.Teacher);
+        var unchanged = (await f.Database.GetCharacterByIdAsync(actor.CharacterId))!;
+        Check(await f.Database.ApplyDungeonRewardAsync(actor.AccountId, actor.CharacterId, actor.SessionId,
+            0, 0, 0, 0, 0, 0, 0, 9999, 0, completed: false,
+            activitySettlementKey: "entertainment:no-completion", entertainmentGameType: 1) is not null,
+            "database omission of completion proof defaults to a zero pet award");
+        var noProof = (await f.Database.GetCharacterByIdAsync(actor.CharacterId))!;
+        Check(PetProgression.GetState(noProof, noProof.EquippedPetItemCode)
+            == PetProgression.GetState(unchanged, unchanged.EquippedPetItemCode),
+            "caller-supplied pet reward cannot bypass the database completion gate");
+
+        var guest = Auxiliary(f.Student);
+        BinaryPrimitives.WriteUInt16LittleEndian(create.AsSpan(24), 200);
+        await Send(host, 0xCF6C, create);
+        room = rooms[Get(host, "EntertainmentRoomId")!]!;
+        var enter = new byte[12]; BinaryPrimitives.WriteUInt16LittleEndian(enter, 20);
+        BinaryPrimitives.WriteUInt16LittleEndian(enter.AsSpan(2), checked((ushort)(int)Get(host, "EntertainmentRoomId")!));
+        await Send(guest, 0xCF75, enter); Set(guest, "EntertainmentReady", true);
+        await Send(host, 0xCFE5, []); await Send(host, 0xCF7F, []); await Send(guest, 0xCF7F, []);
+        var guestBefore = (await f.Database.GetCharacterByIdAsync(Character(guest).Id))!;
+        for (byte combo = 1; combo <= 15; combo++) await Send(host, 0xD005, [10, 0, combo, 0]);
+        for (byte board = 0; board < 3; board++) await Send(guest, 0xD007, [board, 1, 1, 22]);
+        await Send(host, 0xD003, new byte[4]); await Send(guest, 0xD003, new byte[4]);
+        InvokeMentorship<object>(f.Service, "CollectEntertainmentDeadlines", DateTime.UtcNow);
+        var mixed = await Send(host, 0xCF85, []);
+        Check(mixed is { Length: 144 } && BinaryPrimitives.ReadUInt16LittleEndian(mixed.AsSpan(16)) == Character(host).Id,
+            "ineligible high scorer retains original rank and room population");
+        Check(await f.ScalarAsync("SELECT PetExperience FROM ActivityRewardReceipts WHERE CharacterId=" + actor.CharacterId + " ORDER BY rowid DESC LIMIT 1") == 0,
+            "another member's three successful boards cannot qualify the first-place member");
+        Check(await f.ScalarAsync("SELECT PetExperience FROM ActivityRewardReceipts WHERE CharacterId=" + guestBefore.Id + " ORDER BY rowid DESC LIMIT 1")
+            == EntertainmentRewardPolicy.GetPetExperience(PetProgression.GetState(guestBefore, guestBefore.EquippedPetItemCode), 1, 2),
+            "qualified second place retains the original two-player ten-percent award");
+    }
+
+    private static async Task CheckEntertainmentRoomRewardsAsync(int memberCount)
+    {
         await using var f = await Fixture.CreateAsync();
         var members = new List<object>();
         var expectedPetRewards = new List<uint>();
         var expectedPetStates = new List<PetState>();
-        for (var place = 0; place < 6; place++)
+        for (var place = 0; place < memberCount; place++)
         {
             var world = await f.CreateSessionAsync("entertainment-six-" + place, "Enter" + place, 25, 1);
             var petCode = 15000001u;
@@ -217,7 +384,7 @@ internal static partial class Program
                 ("$id", Character(world).Id), ("$pet", petCode), ("$stage", stage), ("$level", level), ("$exp", experience));
             Set(world, "Character", (await f.Database.GetCharacterByIdAsync(Character(world).Id))!);
             var state = PetProgression.GetState(Character(world), petCode);
-            var reward = EntertainmentRewardPolicy.GetPetExperience(state, place);
+            var reward = EntertainmentRewardPolicy.GetPetExperience(state, place, memberCount);
             expectedPetRewards.Add(reward);
             expectedPetStates.Add(PetProgression.AddExperience(state, reward).State);
             var auxiliary = Activator.CreateInstance(SessionType, nonPublic: true)!;
@@ -233,13 +400,13 @@ internal static partial class Program
         var host = members[0];
         await Send(host, 0xCF6C, create);
         var roomId = checked((ushort)(int)Get(host, "EntertainmentRoomId")!);
-        for (var place = 0; place < 6; place++)
+        for (var place = 0; place < memberCount; place++)
         {
             if (place > 0)
             {
                 var enter = new byte[12]; BinaryPrimitives.WriteUInt16LittleEndian(enter, 20);
                 BinaryPrimitives.WriteUInt16LittleEndian(enter.AsSpan(2), roomId);
-                Check((await Send(members[place], 0xCF75, enter))![8] == 10, "six-player room accepts member " + place);
+                Check((await Send(members[place], 0xCF75, enter))![8] == 10, "ranked room accepts member " + place);
                 Set(members[place], "EntertainmentReady", true);
             }
             var listing = await Send(host, 0xCF0F, [0, 0, 100, 100]);
@@ -251,20 +418,29 @@ internal static partial class Program
         var rooms = (IDictionary)typeof(NetworkAdapterService).GetField("_entertainmentRooms", PrivateInstance)!.GetValue(f.Service)!;
         var room = rooms[(int)roomId]!;
         var scores = new uint[] { 4000, 3000, 2000, 1000, 900, 800 };
-        for (var place = 0; place < 6; place++)
+        for (var place = 0; place < memberCount; place++)
+        {
+            Set(room, "LuckyPoints", (ushort)0);
+            for (byte board = 0; board < 3; board++)
+                Check(await Send(members[place], 0xD007, [board, 1, 1, 22]) is not null,
+                    "ranked member clears the required board " + place + "/" + board);
             typeof(NetworkAdapterService).GetMethod("AddEntertainmentScoreLocked", BindingFlags.Static | BindingFlags.NonPublic)!
-                .Invoke(null, [room, members[place], scores[place]]);
+                .Invoke(null, [room, members[place], scores[place] - 300]);
+        }
         Set(room, "StartedUtc", DateTime.UtcNow.AddSeconds(-105));
         InvokeMentorship<object>(f.Service, "CollectEntertainmentDeadlines", DateTime.UtcNow);
         // A changed persisted stage must outrank the auxiliary connection's stale pet snapshot.
-        var changedId = Character(members[4]).Id;
-        await f.ExecuteAsync("UPDATE CharacterItems SET PetCurrentStage=2,PetLevel=0,PetExperience=0 WHERE CharacterId=$id AND ItemCode=15000001", ("$id", changedId));
-        var changedPet = PetProgression.GetState((await f.Database.GetCharacterByIdAsync(changedId))!, 15000001);
-        expectedPetRewards[4] = EntertainmentRewardPolicy.GetPetExperience(changedPet, 4);
-        expectedPetStates[4] = PetProgression.AddExperience(changedPet, expectedPetRewards[4]).State;
+        if (memberCount >= 5)
+        {
+            var changedId = Character(members[4]).Id;
+            await f.ExecuteAsync("UPDATE CharacterItems SET PetCurrentStage=2,PetLevel=0,PetExperience=0 WHERE CharacterId=$id AND ItemCode=15000001", ("$id", changedId));
+            var changedPet = PetProgression.GetState((await f.Database.GetCharacterByIdAsync(changedId))!, 15000001);
+            expectedPetRewards[4] = EntertainmentRewardPolicy.GetPetExperience(changedPet, 4, memberCount);
+            expectedPetStates[4] = PetProgression.AddExperience(changedPet, expectedPetRewards[4]).State;
+        }
         var result = await Send(host, 0xCF85, []);
-        Check(result is { Length: 400 }, "six frozen result rows have complete field coverage");
-        for (var place = 0; place < 6; place++)
+        Check(result?.Length == 16 + 64 * memberCount, "frozen result rows have complete field coverage " + memberCount);
+        for (var place = 0; place < memberCount; place++)
         {
             var saved = (await f.Database.GetCharacterByIdAsync(Character(members[place]).Id))!;
             var expected = expectedPetStates[place];
@@ -276,10 +452,14 @@ internal static partial class Program
             Check(await f.Database.GetEntertainmentBestScoreAsync(saved.Id, 1) == scores[place], "personal best belongs to member " + place);
             Check((await Send(members[place], 0xCF85, []))!.AsSpan(8).SequenceEqual(result!.AsSpan(8)), "result retry preserves rank and rewards " + place);
         }
-        Check(expectedPetStates[0].CurrentStage == 2 && await f.ScalarAsync("SELECT COUNT(*) FROM ActivityRewardReceipts") == 6,
-            "stage rollover and six-member settlement remain single-commit");
-        await Send(members[5], 0xCF73, []);
-        var afterLeave = await Send(host, 0xCF0F, [0, 0, 100, 100]);
-        Check(BinaryPrimitives.ReadUInt16LittleEndian(afterLeave!.AsSpan(38)) == 5, "leaving removes one actual displayed member");
+        Check(expectedPetStates[0].CurrentStage == 2 && await f.ScalarAsync("SELECT COUNT(*) FROM ActivityRewardReceipts") == memberCount,
+            "stage rollover and ranked settlement remain single-commit " + memberCount);
+        if (memberCount > 1)
+        {
+            await Send(members[^1], 0xCF73, []);
+            var afterLeave = await Send(host, 0xCF0F, [0, 0, 100, 100]);
+            Check(BinaryPrimitives.ReadUInt16LittleEndian(afterLeave!.AsSpan(38)) == memberCount - 1,
+                "leaving removes one actual displayed member " + memberCount);
+        }
     }
 }

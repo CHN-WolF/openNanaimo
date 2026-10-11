@@ -138,9 +138,13 @@ internal static partial class Program
         Check((await Send(guest, 0xCF75, soloEnter))![8] == 20, "single-player capacity is enforced");
         Check(await Send(host, 0xCFE5, []) is not null, "single player starts with the same board lifecycle");
         BinaryPrimitives.WriteUInt16LittleEndian(create.AsSpan(24), 200);
+        BinaryPrimitives.WriteUInt16LittleEndian(create.AsSpan(30), 11);
         Check(await Send(host, 0xCF6C, create) is not null, "entertainment creates an owned room");
         var room = Room("_entertainmentRooms", host, "EntertainmentRoomId");
         var roomId = checked((ushort)(int)Get(room, "Id")!);
+        var createRequest = Get(room, "CreateRequest")!;
+        Check((ushort)Get(createRequest, "Level")! == 11,
+            "entertainment room keeps the owner's requested board curve as room authority");
         var listing = await Send(host, 0xCF0F, [0, 0, 100, 100]);
         Check(listing is { Length: 52 } && listing[37] == 200
             && BinaryPrimitives.ReadUInt16LittleEndian(listing.AsSpan(48)) == roomId,
@@ -153,7 +157,22 @@ internal static partial class Program
         BinaryPrimitives.WriteUInt16LittleEndian(enter.AsSpan(2), roomId);
         Check((await Send(guest, 0xCF75, enter))![8] == 40, "password room rejects an empty password");
         Encoding.ASCII.GetBytes("123").CopyTo(enter, 4);
-        Check((await Send(guest, 0xCF75, enter))![8] == 10, "password room accepts the matching password");
+        var enteredRoom = (await Send(guest, 0xCF75, enter))!;
+        Check(enteredRoom[8] == 10, "password room accepts the matching password");
+        Check(enteredRoom.Length == 72 && enteredRoom[9] == 11,
+            "CF76/full+9 carries the owner's room difficulty, not the entertainment game type");
+        Check(((IList)Get(guest, "PendingSessionBroadcasts")!).Cast<object>()
+            .All(item => (ushort)Get(item, "Opcode")! != 0xCF6C),
+            "room entry never sends the unsupported S2C CF6C room-info frame");
+        ((IList)Get(host, "PendingSessionBroadcasts")!).Clear();
+        var settingsResponse = (await Send(host, 0xCF79, settings))!;
+        var settingsBroadcast = ((IList)Get(host, "PendingSessionBroadcasts")!).Cast<object>()
+            .Single(item => (ushort)Get(item, "Opcode")! == 0xCF7A
+                && ReferenceEquals(Get(item, "Target"), guest));
+        Check(settingsResponse.Length == 44
+            && BinaryPrimitives.ReadUInt32LittleEndian(settingsResponse.AsSpan(40)) == 11
+            && ((byte[])Get(settingsBroadcast, "Payload")!).AsSpan().SequenceEqual(settingsResponse.AsSpan(8)),
+            "title/password updates preserve the same CF7A difficulty for host and guest");
         Set(guest, "EntertainmentReady", true);
         ((IList)Get(host, "PendingSessionBroadcasts")!).Clear();
         var initialBoard = await Send(host, 0xCFE5, []);
@@ -163,6 +182,10 @@ internal static partial class Program
         Check(sharedBoards.Length == 1 && ((byte[])Get(sharedBoards[0], "Payload")!).AsSpan().SequenceEqual(initialBoard!.AsSpan(8))
             && (Guid)Get(sharedBoards[0], "EntertainmentRoundId")! == (Guid)Get(room, "RoundId")!,
             "room owner supplies the same initial board to the joining member");
+        var ownerLayout = initialBoard![8 + 4 + 83];
+        var memberLayout = ((byte[])Get(sharedBoards[0], "Payload")!)[4 + 83];
+        Check(ownerLayout == 16 && memberLayout == ownerLayout,
+            $"the shared first board uses the owner's selected board curve for every member (owner={ownerLayout}, member={memberLayout})");
         Check(await Send(host, 0xCF85, []) is null, "instant settlement requests cannot farm rewards");
         Check(await Send(host, 0xD007, [1, 2, 2, 10]) is null, "preload cannot accrue game scores");
         Check(await Send(host, 0xCF7F, []) is null, "first loading confirmation waits for the room");
@@ -245,13 +268,10 @@ internal static partial class Program
             "settlement displays only the first three basic cards");
         Check(await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 4,
             "entertainment basic card receipts are idempotent");
-        var petBeforeReward = new PetState(15000001, 1, 2, 0, 0, 0, 0, 0, -1);
-        var expectedPetTotal = EntertainmentRewardPolicy.GetPetExperience(petBeforeReward, 0)
-            + EntertainmentRewardPolicy.GetPetExperience(petBeforeReward, 1);
-        Check(await f.ScalarAsync("SELECT SUM(PetExperience) FROM ActivityRewardReceipts") == expectedPetTotal,
-            "entertainment first and second place use stage-based twenty and fifteen percent awards");
-        Check((await f.Database.GetCharacterByIdAsync(Character(host).Id))!.PetExperience > 0,
-            "entertainment pet experience is durable");
+        Check(await f.ScalarAsync("SELECT SUM(PetExperience) FROM ActivityRewardReceipts") == 0,
+            "one successful board per member cannot grant entertainment pet experience");
+        Check((await f.Database.GetCharacterByIdAsync(Character(host).Id))!.PetExperience == 0,
+            "ineligible entertainment pet experience stays unchanged despite card rewards");
         Check(await f.ScalarAsync("SELECT COUNT(*) FROM DungeonProgress") == 0,
             "entertainment rewards remain separate from dungeon progress");
 

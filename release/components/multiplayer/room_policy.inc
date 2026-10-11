@@ -285,6 +285,16 @@ static int g_teamplay_settlement_broadcasted=0;
 static unsigned g_teamplay_failure_order[MULTI_MAX_PLAYERS];
 static unsigned g_teamplay_personal_result_order[MULTI_MAX_PLAYERS];
 static int g_teamplay_battle_initialized=0;
+/* A worker is one shared room. New connections cannot enter a battle that
+   already owns a Boss ledger; CF6C would otherwise clear that shared state. */
+static int teamplay_late_room_entry_blocked(unsigned type){
+    int idx=g_multi_current,i;unsigned phase=multiplayer_shared_boss_context()->phase;
+    if(type!=0xCF6Cu&&type!=0xCF70u&&type!=0xCF77u&&type!=0xCF7Fu)return 0;
+    if(idx<0||idx>=MULTI_MAX_PLAYERS||g_multi_conn[idx].room_active)return 0;
+    if(phase!=BOSS_HP_SYNC_PHASE_RUNNING&&phase!=BOSS_HP_SYNC_PHASE_TERMINAL)return 0;
+    for(i=0;i<MULTI_MAX_PLAYERS;i++)if(i!=idx&&g_multi_conn[i].active&&g_multi_transport_alive[i]&&g_multi_conn[i].room_active)return 1;
+    return 0;
+}
 static unsigned g_teamplay_final_request_low[MULTI_MAX_PLAYERS];
 static int teamplay_start_all_arrived(void){int i,seen=0;for(i=0;i<MULTI_MAX_PLAYERS;i++)if(g_multi_conn[i].active&&g_multi_transport_alive[i]&&g_multi_conn[i].room_active){seen=1;if(g_teamplay_cf7f_arrived[i]!=g_teamplay_start_epoch)return 0;}return seen;}
 static int teamplay_start_request_is_duplicate(void){

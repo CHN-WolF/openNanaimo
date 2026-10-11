@@ -15,6 +15,7 @@
 #ifndef NANAIMO_CRATE_DROP_POLICY_INC
 #define NANAIMO_CRATE_DROP_POLICY_INC
 
+
 #include "crate_drop_profiles.inc"
 
 #define CRATE_DROP_KIND_NONE       0u
@@ -38,6 +39,30 @@ struct crate_drop_policy_context {
     unsigned seen_count;
     struct crate_drop_seen_row seen[CRATE_DROP_DEDUPE_CAP];
 };
+
+/* KR L7 barrel/conveyor objects create category-40 scene items, but are not
+ * item_block_00.mmo/reward_kind=5 rows. Keep this exact resource whitelist
+ * separate from the visual-crate ledger. */
+static int crate_drop_policy_text_equal(const char *a, const char *b) {
+    if (!a || !b) return 0;
+    while (*a && *a == *b) { ++a; ++b; }
+    return *a == *b;
+}
+
+static int crate_drop_policy_is_l7_scene_item_resource(const char *resource) {
+    static const char *const names[] = {
+        "ep22_dg00_obj_box.mmo",
+        "ep22_dg00_st01_obj_box.mmo",
+        "ep22_dg00_obj_convey.mmo",
+        "ep22_dg00_obj_convey1.mmo",
+        "ep22_dg00_obj_convey2.mmo"
+    };
+    unsigned i;
+    if (!resource) return 0;
+    for (i = 0; i < sizeof(names) / sizeof(names[0]); ++i)
+        if (crate_drop_policy_text_equal(resource, names[i])) return 1;
+    return 0;
+}
 
 static void crate_drop_policy_init(struct crate_drop_policy_context *ctx, unsigned mode) {
     ctx->mode=mode; ctx->stage=0; ctx->difficulty=0; ctx->segment=0;

@@ -8712,10 +8712,16 @@ public sealed partial class DatabaseService
             changed ? await GetCharacterTasksAsync(accountId, characterId, sessionId, cancellationToken) : []);
     }
 
+    private static uint GetObjectiveProgressUnits(QuestObjectiveDefinition objective)
+        => objective.ObjectiveType is 2 or 9 or 20 or 21 or 22 or 23 or 25 or 37 or 5
+            ? 1u : objective.RequiredCount;
+
     private static uint GetQuestRequiredProgress(QuestDefinition quest)
-        => quest.Objectives.Aggregate(1u, (required, objective) => Math.Max(required,
-            objective.ObjectiveType is 2 or 9 or 20 or 21 or 22 or 23 or 25 or 37 or 5
-                ? 1u : objective.RequiredCount));
+        => quest.Objectives.Count > 1
+            ? checked(quest.Objectives.Aggregate(0u, (required, objective) =>
+                checked(required + GetObjectiveProgressUnits(objective))))
+            : quest.Objectives.Aggregate(1u, (required, objective) =>
+                Math.Max(required, GetObjectiveProgressUnits(objective)));
 
     public async Task<QuestProgressMutationResult> EvaluateQuestObjectivesAsync(
         long accountId,
@@ -8750,12 +8756,12 @@ public sealed partial class DatabaseService
             equippedPetCode = checked((uint)reader.GetInt64(1));
         }
 
-        var active = new List<(uint QuestId, uint Progress, byte RuntimeState, ushort Ready)>();
+        var active = new List<(uint QuestId, uint Progress, byte RuntimeState, ushort Ready, byte ObjectiveIndex)>();
         using (var query = connection.CreateCommand())
         {
             query.Transaction = transaction;
             query.CommandText = """
-                SELECT QuestId, Progress3, RuntimeState, Progress1 FROM CharacterTasks
+                SELECT QuestId, Progress3, RuntimeState, Progress1, State3 FROM CharacterTasks
                 WHERE CharacterId = $characterId AND SlotType IN (0, 1) AND Progress2 <> 0
                 """;
             query.Parameters.AddWithValue("$characterId", characterId);
@@ -8765,7 +8771,8 @@ public sealed partial class DatabaseService
                     checked((uint)reader.GetInt64(0)),
                     checked((uint)reader.GetInt64(1)),
                     checked((byte)reader.GetInt32(2)),
-                    checked((ushort)reader.GetInt32(3))));
+                    checked((ushort)reader.GetInt32(3)),
+                    checked((byte)reader.GetInt32(4))));
         }
         if (active.Count == 0)
         {
@@ -8878,23 +8885,30 @@ public sealed partial class DatabaseService
         var changed = false;
         var newlyCompleted = false;
         var now = DateTime.UtcNow.ToString("O");
-        foreach (var (questId, progress, runtimeState, ready) in active)
+        foreach (var (questId, progress, runtimeState, ready, objectiveIndex) in active)
         {
             if (!QuestCatalog.TryGetQuest(questId, out var quest) || quest.Objectives.Count == 0)
                 continue;
-            var required = 1u;
+            var required = GetQuestRequiredProgress(quest);
+            var completed = 0u;
             var met = true;
-            foreach (var objective in quest.Objectives)
+            var firstUnmetIndex = -1;
+            for (var index = 0; index < quest.Objectives.Count; index++)
             {
+                var objective = quest.Objectives[index];
                 // A clear objective is satisfied by one clear, and several of its variants
                 // (types 21/22/23) store a zero or a code in the count field, so the count
                 // cannot be used as the target for them.
-                var singleAchievement = objective.ObjectiveType is 2 or 9 or 20 or 21 or 22 or 23 or 25 or 37 or 5;
-                required = Math.Max(required, singleAchievement ? 1u : objective.RequiredCount);
-                if (completedObjectives.Contains((questId, objective.ObjectiveId))) continue;
+                var objectiveUnits = GetObjectiveProgressUnits(objective);
+                if (completedObjectives.Contains((questId, objective.ObjectiveId)))
+                {
+                    completed = checked(completed + objectiveUnits);
+                    continue;
+                }
                 if (!ObjectiveMet(objective, progress))
                 {
                     met = false;
+                    if (firstUnmetIndex < 0) firstUnmetIndex = index;
                     continue;
                 }
                 if (QuestCatalog.TryGetDungeonClearCondition(objective, out _, out _, out _)
@@ -8909,27 +8923,42 @@ public sealed partial class DatabaseService
                     remember.Parameters.AddWithValue("$objective", objective.ObjectiveId);
                     remember.Parameters.AddWithValue("$now", now);
                     changed |= await remember.ExecuteNonQueryAsync(cancellationToken) == 1;
+                    completedObjectives.Add((questId, objective.ObjectiveId));
                 }
+                completed = checked(completed + objectiveUnits);
             }
-            if (!met)
-                continue;
-            // Repair legacy completed rows too: the client disables its submit button
-            // when Progress1 is zero even if Progress3 and RuntimeState are complete.
-            var progressNeeded = progress < required;
-            var stateNeeded = runtimeState != QuestRuntimeStateObjectiveReached;
-            if (!progressNeeded && !stateNeeded && ready != 0)
+
+            // Progress3 retains the aggregate count, not the objective selector. Keep
+            // a previously completed task complete while repairing old rows that
+            // stored only Progress3=1 for all three story clears.
+            var complete = ready != 0 || (met && completed >= required);
+            var targetProgress = ready != 0
+                ? required
+                : Math.Min(required, completed);
+            var targetReady = complete ? (ushort)1 : (ushort)0;
+            var targetRuntimeState = complete ? QuestRuntimeStateObjectiveReached : runtimeState;
+            // C59C record +3 selects QT's current objective (4D8E30 -> 9901B0).
+            // Keep the last valid index on completion; the client dereferences it.
+            var targetObjectiveIndex = checked((byte)(complete || firstUnmetIndex < 0
+                ? quest.Objectives.Count - 1 : firstUnmetIndex));
+            var progressNeeded = progress != targetProgress;
+            var readyNeeded = ready != targetReady;
+            var stateNeeded = runtimeState != targetRuntimeState || objectiveIndex != targetObjectiveIndex;
+            if (!progressNeeded && !readyNeeded && !stateNeeded)
                 continue;
 
             using var update = connection.CreateCommand();
             update.Transaction = transaction;
             update.CommandText = """
-                UPDATE CharacterTasks SET Progress3 = $progress, Progress1 = 1,
-                    RuntimeState = $runtimeState, UpdatedAt = $now
+                UPDATE CharacterTasks SET Progress3 = $progress, Progress1 = $ready,
+                    RuntimeState = $runtimeState, State3 = $objectiveIndex, UpdatedAt = $now
                 WHERE CharacterId = $characterId AND QuestId = $questId
                   AND Progress3 = $oldProgress AND SlotType IN (0, 1)
                 """;
-            update.Parameters.AddWithValue("$progress", required);
-            update.Parameters.AddWithValue("$runtimeState", QuestRuntimeStateObjectiveReached);
+            update.Parameters.AddWithValue("$progress", targetProgress);
+            update.Parameters.AddWithValue("$ready", targetReady);
+            update.Parameters.AddWithValue("$runtimeState", targetRuntimeState);
+            update.Parameters.AddWithValue("$objectiveIndex", targetObjectiveIndex);
             update.Parameters.AddWithValue("$now", now);
             update.Parameters.AddWithValue("$characterId", characterId);
             update.Parameters.AddWithValue("$questId", questId);
@@ -8940,7 +8969,7 @@ public sealed partial class DatabaseService
                 return new QuestProgressMutationResult(false, false, false, []);
             }
             changed = true;
-            newlyCompleted |= ready == 0;
+            newlyCompleted |= complete && ready == 0;
         }
 
         if (!changed)
@@ -9532,7 +9561,9 @@ public sealed partial class DatabaseService
         IReadOnlyList<uint>? entertainmentCards = null,
         byte? entertainmentGameType = null,
         int entertainmentPlace = 0,
-        uint? arenaScore = null)
+        uint? arenaScore = null,
+        int entertainmentMemberCount = 1,
+        int entertainmentSuccessfulBoards = 0)
     {
         if (accountId <= 0 || characterId <= 0 || string.IsNullOrWhiteSpace(sessionId)
             || hdIndex > 1
@@ -9545,7 +9576,9 @@ public sealed partial class DatabaseService
             || petExperienceReward < 0 || hansReward < 0)
             return null;
         if (entertainmentGameType is not null && (entertainmentGameType is < 1 or > 3
-            || entertainmentPlace is < 0 or >= EntertainmentProtocol.MaximumMembers
+            || entertainmentMemberCount is < 1 or > EntertainmentProtocol.MaximumMembers
+            || entertainmentPlace < 0 || entertainmentPlace >= entertainmentMemberCount
+            || entertainmentSuccessfulBoards < 0
             || score > ushort.MaxValue || completed || activitySettlementKey is null
             || !activitySettlementKey.StartsWith("entertainment:", StringComparison.Ordinal)))
             return null;
@@ -9595,8 +9628,11 @@ public sealed partial class DatabaseService
         }
 
         if (entertainmentGameType is not null)
-            petExperienceReward = await GetEntertainmentPetExperienceAsync(
-                connection, transaction, characterId, equippedPetItemCode, entertainmentPlace, cancellationToken);
+            petExperienceReward = entertainmentSuccessfulBoards >= EntertainmentRewardPolicy.MinimumSuccessfulBoards
+                ? await GetEntertainmentPetExperienceAsync(
+                connection, transaction, characterId, equippedPetItemCode, entertainmentPlace,
+                entertainmentMemberCount, cancellationToken)
+                : 0;
 
         if (activitySettlementKey is not null)
         {

@@ -133,6 +133,17 @@ def patch_sstg_bgm(b, name):
  assert after['bgm']==name
  return result,offset
 
+def patch_sstg_identity(b, identity, accepted):
+ before=sstg(b)
+ if tuple(before['identity']) not in accepted:
+  raise ValueError('unexpected KR SSTG identity')
+ plain=bytearray(xor(b,40))
+ struct.pack_into('<4I',plain,len(plain)-16,*identity)
+ result=xor(plain,40);after=sstg(result)
+ if result[:-16]!=b[:-16] or tuple(after['identity'])!=tuple(identity):
+  raise ValueError('SSTG identity patch changed combat data')
+ return result
+
 # EFF2 schema closed in KR 96CB50 -> 96E6B0 (native row count at +16).
 def eff2(b):
  r=Reader(b);assert r.u32()==2;compression=r.u32();r.u32();duration=r.u32();count=r.u32();assert compression==0

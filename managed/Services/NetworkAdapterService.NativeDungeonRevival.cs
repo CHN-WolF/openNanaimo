@@ -246,15 +246,20 @@ public sealed partial class NetworkAdapterService
     }
 
     internal static BattleResourceSnapshot? ResetNativeDungeonDeathRetryResources(
-        BattleResourceSnapshot? resources)
-        => resources is null ? null : resources with
+        BattleResourceSnapshot? resources,
+        OpenNanaimo.Adapter.Models.CharacterRecord character)
+    {
+        if (resources is null) return null;
+        var returned = HealthRecoveryPolicy.ResolveDungeonDeathReturn(character, resources.CurrentMp);
+        return resources with
         {
-            CurrentHp = resources.MaximumHp,
-            CurrentMp = resources.MaximumMp,
+            CurrentHp = checked((ushort)Math.Min(resources.MaximumHp, returned.CurrentHp)),
+            CurrentMp = checked((ushort)Math.Min(resources.MaximumMp, returned.CurrentMp)),
             AttackMode = 0,
             SettlementFrozen = false,
             HpAuthority = BattleHpAuthority.Inherited
         };
+    }
 
     // Only a verified worker debit is allowed to replace the local death HP.
     // Ordinary checkpoints must retain D010/pickup/settlement authority.

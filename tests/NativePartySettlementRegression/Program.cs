@@ -256,6 +256,31 @@ internal static partial class Program
                     "each continued member battle commits one fresh award");
                 Set(member, "NativeBattleResources", ((BattleResourceSnapshot)Get(member, "NativeBattleResources")!) with { SettlementFrozen = true });
             }
+            Set(owner, "NativeDungeonSettlementAwaitingAction", true);
+            Set(member, "NativeDungeonSettlementAwaitingAction", true);
+            Set(member, "NativeDungeonDeathLatched", true);
+            Set(member, "NativeBattleResources", ((BattleResourceSnapshot)Get(member, "NativeBattleResources")!)
+                with { CurrentHp = 0, CurrentMp = 37, SettlementFrozen = true });
+            var deathRetry = NativeDungeonClient.Frame(0xCF8B, [1, 0, 1, 0]);
+            var deathReset = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
+            deathReset[0x28] = 1; deathReset[0x2E] = 2;
+            Check(Call<Array>(service, "ArmNativePartyContinuation", owner, deathRetry).Length == 1,
+                "death retry arms the defeated teammate once");
+            Call<object?>(service, "ObserveNativePartyContinuation", member, deathReset);
+            var returned = HealthRecoveryPolicy.ResolveDungeonDeathReturn(Character(member), 37);
+            var retried = (BattleResourceSnapshot)Get(member, "NativeBattleResources")!;
+            Check(retried.CurrentHp == Math.Min(retried.MaximumHp, returned.CurrentHp)
+                && retried.CurrentMp == returned.CurrentMp
+                && retried.AttackMode == 0 && retried.SettlementFrozen,
+                "defeated teammate uses its own death-return HP and remaining MP");
+            Call<object?>(service, "ObserveNativePartyContinuation", member, deathReset);
+            Check((BattleResourceSnapshot)Get(member, "NativeBattleResources")! == retried,
+                "duplicate teammate reset cannot refill resources");
+            await Call<Task>(service, "HandleNativeWorkerFrameAsync", member, NativeDungeonClient.Frame(0xCF80, []), 1L, Token);
+            retried = (BattleResourceSnapshot)Get(member, "NativeBattleResources")!;
+            Check(!retried.SettlementFrozen && retried.CurrentHp == Math.Min(retried.MaximumHp, returned.CurrentHp)
+                && retried.CurrentMp == returned.CurrentMp, "teammate start retains partial HP and MP");
+
             var viewer = await Session("DefeatedViewer");
             try
             {

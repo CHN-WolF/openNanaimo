@@ -200,6 +200,10 @@ def build(source, client, output, recipe_path=RECIPE):
             checked = codec.sstg(data)
             if checked['slots'] != model['slots'] or tuple(checked['identity']) != (0, 100, 7, stage):
                 raise ValueError('SSTG selected slot or wire identity changed')
+        elif transform == 'sstg-l7':
+            stage = int(Path(row.get('source_path', rel)).stem[-2:])
+            accepted = ((0, 0, 0, 0),) if stage == 0 else ((0, 100, 6, 1),)
+            data = codec.patch_sstg_identity(raw, (0, 100, 6, stage), accepted)
         elif transform == 'village-pages':
             merged = scenes.merge(current.read_bytes(), raw)
             if not scenes.is_native_layout(merged, compat.VillagePack(merged)):
@@ -218,7 +222,7 @@ def build(source, client, output, recipe_path=RECIPE):
         if file_hash(safe(client, row['path'])) != row['sha256']:
             raise ValueError('L7 combat baseline changed: ' + row['path'])
     manifest = dict(schema=SCHEMA, recipe_sha256=digest(Path(recipe_path).read_bytes()),
-                    scope='L7 visuals and BGM only; L8 resource content; original-client acceptance pending',
+                    scope=recipe.get('scope', 'L7/L8 resource content; original-client acceptance pending'),
                     runtime_accepted=False, files=[], preserve_l7_combat=recipe['preserve_l7_combat'])
     output.mkdir(parents=True)
     for rel, before, data, transform in staged:

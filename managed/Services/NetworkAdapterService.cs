@@ -434,6 +434,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         public bool AuxiliaryGameSession { get; set; }
         public byte ArenaGameType { get; set; }
         public int ArenaRoomId { get; set; }
+        public Guid ArenaDeliveryEpoch { get; set; } = Guid.NewGuid();
         public byte ArenaSlotIndex { get; set; }
         public bool ArenaReady { get; set; }
         public byte ArenaTeamCode { get; set; }
@@ -494,7 +495,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         string Reason,
         Guid? EntertainmentRoundId = null,
         byte? RequestTag = null,
-        Guid? ArenaRoundId = null);
+        Guid? ArenaRoundId = null,
+        Guid? ArenaDeliveryEpoch = null);
 
     private sealed record OutboundNativeWrite(
         byte[] Frames,
@@ -503,7 +505,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         string Remote,
         bool UseTransportSequence,
         bool IsBroadcast,
-        string? Reason);
+        string? Reason,
+        Guid? ArenaDeliveryEpoch = null);
 
     private readonly record struct TownInstanceKey(int ChannelId, byte TownId, byte TownPage);
 
@@ -796,10 +799,15 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         public Dictionary<(string Attacker, string Victim), ushort> PvpDamageByMatchup { get; } = [];
         public Dictionary<string, ushort> CurrentHpBySession { get; } = new(StringComparer.Ordinal);
         public Dictionary<string, int> ScoreBySession { get; } = new(StringComparer.Ordinal);
+        // A same-room rematch keeps the native client connection alive and the
+        // client may omit CFD1 on the next loading cycle. Keep the endpoint at
+        // the room-member boundary; an explicit leave removes it below.
+        public Dictionary<string, P2PPeerEndpoint> P2PEndpointsBySession { get; } = new(StringComparer.Ordinal);
         public Dictionary<uint, int> TargetHpByUid { get; } = [];
         public Dictionary<(string Session, ushort Uid), byte> ArenaItems { get; } = [];
         public SemaphoreSlim SettlementGate { get; } = new(1, 1);
         public Guid RoundId { get; set; }
+        public Guid DeliveryEpoch { get; set; } = Guid.NewGuid();
         public Dictionary<string, CharacterRecord> SettledCharacters { get; } = new(StringComparer.Ordinal);
         public Dictionary<string, uint> ExperienceRewards { get; } = new(StringComparer.Ordinal);
         public HashSet<string> LevelUpSessions { get; } = new(StringComparer.Ordinal);
@@ -1828,17 +1836,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     var nativeResponse = await HandleNativeFrameAsync(nativeFrame, nativeOpcode, channel, remote, remoteIp, session, linked.Token);
                     if (nativeResponse is not null)
                     {
-                        await QueueOutboundWriteAsync(
-                            session,
-                            new OutboundNativeWrite(
-                                nativeResponse,
-                                channel,
-                                port,
-                                remote,
-                                !isAuthenticationControl,
-                                false,
-                                null),
-                            linked.Token);
+                        await QueueDirectNativeResponseAsync(session, nativeResponse, channel,
+                            port, remote, !isAuthenticationControl, linked.Token);
                     }
                     await FlushPendingBroadcastsAsync(session, linked.Token);
                 }
@@ -3103,15 +3102,13 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 ushort identity = BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(4));
                 // The captured trailing WORD is nonzero: it is not part of identity.
                 await RefreshInventoryCharacterAsync(session, token);
-                bool valid = session.DungeonRoomId == 0 && (!session.NativeForwarding || IsNativeReadyRoomInventory(session))
+                bool valid = CanUseInventoryFood(session)
                     && TryResolveSessionInventoryIdentity(session, identity, out _, out var code)
                     && code == itemCode;
                 var result = DungeonQuickItemConsumeResult.Failed;
-                if (valid && TryResolveSessionInventoryIdentity(session, identity, out var ordinal, out _))
-                    result = await _database.ConsumeInventoryFoodAsync(session.AccountId, session.Character!.Id,
-                        session.SessionId, itemCode, ordinal, token,
-                        authoritativeCurrentHp: session.Character.CurrentHp,
-                        authoritativeCurrentMp: session.Character.CurrentMp);
+                byte[] foodResourceFrames = [];
+                if (valid)
+                    (result, foodResourceFrames) = await ConsumeCoupleFoodAsync(frame, session, itemCode, identity, token);
                 var acknowledgement = BuildNativeFrame(frame, 0xC43E,
                     BuildSlottedInventoryDeleteResultPayload(result.Success, itemCode, identity, 12, 8), session);
                 if (!result.Success)
@@ -3122,11 +3119,16 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 AccountStateChanged?.Invoke();
                 // Town sub_5406E0 consumes WORD HP/MP deltas, not absolute values.
                 // The full-health original captures legitimately contain two zero deltas.
-                var recovered = result.Targets.Single();
+                var recovered = result.Targets.Single(target => target.CharacterId == session.Character!.Id);
                 var recoveryPayload = new byte[4];
-                BinaryPrimitives.WriteUInt16LittleEndian(recoveryPayload, recovered.HpRestored);
-                BinaryPrimitives.WriteUInt16LittleEndian(recoveryPayload.AsSpan(2), recovered.MpRestored);
-                return CombineNativeFrames(acknowledgement, BuildNativeFrame(frame, 0xC43F, recoveryPayload, session));
+                if (session.DungeonRoomId == 0 && session.NativeDungeon is null)
+                {
+                    BinaryPrimitives.WriteUInt16LittleEndian(recoveryPayload, recovered.HpRestored);
+                    BinaryPrimitives.WriteUInt16LittleEndian(recoveryPayload.AsSpan(2), recovered.MpRestored);
+                }
+                var foodCompletion = CombineNativeFrames(acknowledgement, BuildNativeFrame(frame, 0xC43F, recoveryPayload, session));
+                return session.DungeonRoomId != 0 || session.NativeDungeon is not null
+                    ? CombineNativeFrames(foodCompletion, foodResourceFrames) : foodCompletion;
             }
 
             case 0xC433: // REQ_DEL_GAMEITEM -> ANS_DEL_GAMEITEM
@@ -3301,8 +3303,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
 
                 if (tokenCatalogItem.Category == 14)
                 {
-                    await RefreshSessionCharacterAsync(session, token);
-                    if (!TryResolveSessionInventoryIdentity(session, tokenSelector, out var foodStorageIndex, out var selectedGameItemCode)
+                    await RefreshInventoryCharacterAsync(session, token);
+                    if (!TryResolveSessionInventoryIdentity(session, tokenSelector, out _, out var selectedGameItemCode)
                         || selectedGameItemCode != tokenItemCode
                         || tokenCatalogItem.QuickHpRestore == 0 && tokenCatalogItem.QuickMpRestore == 0)
                     {
@@ -3314,11 +3316,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                             session);
                     }
 
-                    var consumeResult = await _database.ConsumeInventoryFoodAsync(
-                        session.AccountId, session.Character!.Id, session.SessionId,
-                        tokenItemCode, foodStorageIndex, token,
-                        authoritativeCurrentHp: session.Character.CurrentHp,
-                        authoritativeCurrentMp: session.Character.CurrentMp);
+                    var (consumeResult, foodResourceFrames) = await ConsumeCoupleFoodAsync(frame, session, tokenItemCode, tokenSelector, token);
                     if (!consumeResult.Success)
                     {
                         _log($"{channel}:{remote} backpack item use rejected: item={tokenItemCode} identity={tokenSelector}");
@@ -3339,7 +3337,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         0xC46E,
                         BuildTokenUseResultPayload(true, tokenItemCode, tokenSelector),
                         session);
-                    return BuildInventoryMutationRefresh(frame, foodAcknowledgement, session, shoppingCoupon: false);
+                    return CombineNativeFrames(
+                        BuildInventoryMutationRefresh(frame, foodAcknowledgement, session, shoppingCoupon: false),
+                        foodResourceFrames);
                 }
 
                 if (tokenCatalogItem.Category == 46)
@@ -5454,24 +5454,59 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     session);
 
             case 0xCF13: // REQ_GAME_RANKING -> ANS_GAME_RANKING
+            {
                 if (!IsEntertainmentSession(channel, session)
                     || !session.OnlineTracked
+                    || !session.AuxiliaryGameSession
                     || session.Character is null
-                    || payload.Length is not (0 or 4))
+                    || payload.Length != 4)
                     return null;
-                return BuildNativeFrame(frame, 0xCF14, EntertainmentProtocol.BuildRanking(), session);
+                var page = BinaryPrimitives.ReadUInt32LittleEndian(payload);
+                if (page > ushort.MaxValue) return null;
+                return BuildNativeFrame(frame, 0xCF14, EntertainmentProtocol.BuildRanking(
+                    await _database.GetEntertainmentBestScoreAsync(session.Character.Id, session.ArenaGameType, token),
+                    (ushort)page,
+                    await _database.GetEntertainmentRankingAsync(session.ArenaGameType, (ushort)page, token)), session);
+            }
 
             case 0xCF19: // REQ_GAME_WAIT_USERS -> ANS_GAME_WAIT_USERS
+            {
                 if (!IsEntertainmentSession(channel, session)
                     || !session.OnlineTracked
+                    || !session.AuxiliaryGameSession
                     || session.Character is null
-                    || payload.Length is not (0 or 4))
+                    || payload.Length != 4)
                     return null;
+                var direction = BinaryPrimitives.ReadUInt16LittleEndian(payload);
+                var cursor = BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(2));
+                if (direction is not (100 or 200)) return null;
                 return BuildNativeFrame(
                     frame,
                     0xCF1A,
-                    BuildEntertainmentWaitUsersPayload(session),
+                    BuildEntertainmentWaitUsersPayload(session, direction, cursor),
                     session);
+            }
+
+            case 0xCF8F: // Native entertainment invitation -> CF90 on the target lobby connection.
+            {
+                if (!IsEntertainmentSession(channel, session) || !session.OnlineTracked
+                    || !session.AuxiliaryGameSession || session.Character is null || payload.Length != 20
+                    || !TryDecodeFixedGbkString(payload.AsSpan(0, 16), false, out var inviteName))
+                    return null;
+                var uid = BinaryPrimitives.ReadUInt32LittleEndian(payload.AsSpan(16));
+                if (uid > ushort.MaxValue) return null;
+                var invitee = FindEntertainmentInvitationTarget(session, (ushort)uid);
+                if (invitee?.Character is null || invitee.Character.Name != inviteName
+                    || await _database.IsPrivateChatBlockedAsync(session.Character.Id, invitee.Character.Id, token)
+                    || !TryCreateEntertainmentInvitation(session, invitee))
+                    return null;
+                var room = GetEntertainmentRoom(session);
+                if (room is null) return null;
+                session.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(invitee, 0xCF90,
+                    EntertainmentProtocol.BuildInvitation(session.Character.Name, checked((ushort)room.Id), room.Password),
+                    "native entertainment invitation"));
+                return null;
+            }
 
             case 0xCF0D: // REQ_FLYSHOOTING_LOBBY_INFO -> ANS_FLYSHOOTING_LOBBY_INFO
                 if (!string.Equals(channel, "ArenaAdapter", StringComparison.Ordinal)
@@ -5570,11 +5605,11 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                             session,
                             entertainmentCreateRequest);
                         QueueEntertainmentLobbyRoomListRefresh(session, "entertainment room created");
-                        _log($"{channel}:{remote} Entertainment room created: room={entertainmentRoom.Id} type={entertainmentRoom.GameType} owner={session.Character.Name} mode={entertainmentRoom.CreateRequest.Mode}");
+                        _log($"{channel}:{remote} Entertainment room created: room={entertainmentRoom.Id} type={entertainmentRoom.GameType} owner={session.Character.Name} mode={entertainmentRoom.CreateRequest.Mode} level={entertainmentRoom.CreateRequest.Level}");
                         return BuildNativeFrame(
                             frame,
                             0xCF6D,
-                            BuildEntertainmentCreateResponse(entertainmentRoom, session.Character),
+                            await BuildEntertainmentCreateResponseAsync(entertainmentRoom, token),
                             session);
                     }
                     if (!session.OnlineTracked
@@ -5704,6 +5739,11 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                             payload.AsSpan(4, 8).Clear();
                         }
                         byte entertainmentJoinResult = 50;
+                        var invitedBy = GetEntertainmentInvitationInviter(session, requestedRoomId);
+                        if (invitedBy is not null && await _database.IsPrivateChatBlockedAsync(
+                                session.Character.Id, invitedBy.Id, token))
+                            return BuildNativeFrame(frame, 0xCF76,
+                                EntertainmentProtocol.BuildEnterResponse(50, 0, 0, string.Empty, string.Empty, 0, string.Empty), session);
                         if (enterMode is not (10 or 20) || !session.AuxiliaryGameSession
                             || !TryDecodeFixedGbkString(payload.AsSpan(4, 8), true, out var entertainmentPassword)
                             || !TryJoinEntertainmentRoom(
@@ -5722,11 +5762,13 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                                 0xCF76,
                                 EntertainmentProtocol.BuildEnterResponse(entertainmentJoinResult, 0, 0, string.Empty, string.Empty, 0, string.Empty),
                                 session);
+                        lock (_entertainmentRoomGate)
+                            _entertainmentInvitationsByInvitee.Remove(session.SessionId);
                         QueueEntertainmentLobbyRoomListRefresh(session, "entertainment room member joined");
                         return BuildNativeFrame(
                             frame,
                             0xCF76,
-                            BuildEntertainmentEnterResponse(joinedEntertainmentRoom, entertainmentOwner.Character),
+                            await BuildEntertainmentEnterResponseAsync(joinedEntertainmentRoom, token),
                             session);
                     }
                     if (!session.AuxiliaryGameSession
@@ -6237,6 +6279,21 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 session.P2PIpAddress = p2pIpAddress;
                 session.P2PPort = p2pPort;
                 session.P2PInfoRegistered = true;
+                if (isArenaP2P)
+                {
+                    lock (_arenaRoomGate)
+                    {
+                        if (_arenaRooms.TryGetValue(session.ArenaRoomId, out var arenaRoom)
+                            && arenaRoom.Members.ContainsKey(session.SessionId))
+                        {
+                            arenaRoom.P2PEndpointsBySession[session.SessionId] = new P2PPeerEndpoint(
+                                session.ArenaSlotIndex,
+                                GetSceneEntityId(session.Character),
+                                p2pIpAddress,
+                                p2pPort);
+                        }
+                    }
+                }
                 var p2pSlotIndex = isEntertainmentP2P
                     ? session.EntertainmentSlotIndex
                     : isArenaP2P ? session.ArenaSlotIndex : session.DungeonSlotIndex;
@@ -6869,6 +6926,14 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var effectiveDefense = (flags & 0x80) != 0
                     ? checked((int)(combatTemplate.Defense * 0.5))
                     : combatTemplate.Defense;
+                if (DungeonCombatCatalog.IsL7ExplosiveBarrel(
+                        collisionRoom.HdIndex,
+                        collisionRoom.BattleEpisode,
+                        collisionRoom.BattleDungeon,
+                        collisionRoom.BattleStage,
+                        npcResourceUid,
+                        combatTemplate))
+                    effectiveDefense = 0;
                 uint[] collisionScores;
                 int baseAttack;
                 uint activeSkillCode;
@@ -13673,6 +13738,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         var target = notification.Target;
         if (!target.OnlineTracked || target.Stream is null)
             return;
+        if (!IsCurrentArenaDelivery(target, notification.ArenaDeliveryEpoch))
+            return;
         if (notification.EntertainmentRoundId is { } round)
         {
             lock (_entertainmentRoomGate)
@@ -13704,7 +13771,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     target.RemoteIp ?? "unknown",
                     true,
                     true,
-                    notification.Reason),
+                    notification.Reason,
+                    notification.ArenaDeliveryEpoch),
                 token);
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
@@ -13713,6 +13781,11 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             _log($"ArenaAdapter:{target.RemoteIp} 骞挎挱澶辫触 opcode=0x{notification.Opcode:X4} reason={notification.Reason}: {ex.Message}");
         }
     }
+
+    private ValueTask QueueDirectNativeResponseAsync(ConnectionSession session, byte[] response,
+        string channel, int port, string remote, bool useTransportSequence, CancellationToken token)
+        => QueueOutboundWriteAsync(session, new OutboundNativeWrite(response, channel, port, remote,
+            useTransportSequence, false, null), token);
 
     private async ValueTask QueueOutboundWriteAsync(
         ConnectionSession session,
@@ -13741,6 +13814,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         {
             await foreach (var write in session.OutboundWrites.Reader.ReadAllAsync(token))
             {
+                if (!IsCurrentArenaDelivery(session, write.ArenaDeliveryEpoch)
+                    || !IsCurrentArenaResponse(session, write.Frames))
+                    continue;
                 if (write.UseTransportSequence)
                     FinalizeNativeFramesForSend(write.Frames, session);
                 await stream.WriteAsync(write.Frames, token);
@@ -15167,6 +15243,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         }
 
         room.Members.Remove(member.SessionId);
+        room.P2PEndpointsBySession.Remove(member.SessionId);
         room.LoadingRequestTags.Remove(member.SessionId);
         if (!room.Started && room.LoadingRequestTags.Count == 0) room.GameDataPayload = [];
         if (room.FinalMembers.Length == 0) room.EndValuesBySession.Remove(member.SessionId);
@@ -15217,7 +15294,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 recipient,
                 0xCF71,
                 BuildGameRoomUserPayload(entity.Character, owner.Character, entity.ArenaSlotIndex),
-                "arena owner authority refresh"));
+                "arena owner authority refresh", ArenaDeliveryEpoch: recipient.ArenaDeliveryEpoch));
             queueSource.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(
                 recipient,
                 0xCF7E,
@@ -15225,14 +15302,14 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     entity.Character,
                     entity.ArenaReady,
                     entity.ArenaTeamCode),
-                "arena owner authority ready/team refresh"));
+                "arena owner authority ready/team refresh", ArenaDeliveryEpoch: recipient.ArenaDeliveryEpoch));
             if (entity.ArenaMulticastInitialized)
             {
                 queueSource.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(
                     recipient,
                     0xCFDA,
                     BuildMulticastingGameEventPayload(entity.Character),
-                    "arena owner authority entity activation"));
+                    "arena owner authority entity activation", ArenaDeliveryEpoch: recipient.ArenaDeliveryEpoch));
             }
         }
     }
@@ -15240,6 +15317,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
     private static void ResetArenaRoomState(ConnectionSession member)
     {
         member.ArenaRoomId = 0;
+        member.ArenaDeliveryEpoch = Guid.NewGuid();
         member.ArenaSlotIndex = 0;
         member.ArenaReady = false;
         member.ArenaTeamCode = 0;
@@ -15276,7 +15354,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     initialized.Character,
                     initialized.ArenaReady,
                     initialized.ArenaTeamCode),
-                "local arena ready/team snapshot"));
+                "local arena ready/team snapshot", ArenaDeliveryEpoch: initialized.ArenaDeliveryEpoch));
             foreach (var peer in room.Members.Values)
             {
                 if (peer.SessionId == initialized.SessionId
@@ -15308,14 +15386,14 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             recipient,
             0xCF71,
             BuildGameRoomUserPayload(entity.Character, ownerCharacter, entity.ArenaSlotIndex),
-            reason));
+            reason, ArenaDeliveryEpoch: recipient.ArenaDeliveryEpoch));
         if (entity.ArenaMulticastInitialized)
         {
             source.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(
                 recipient,
                 0xCFDA,
                 BuildMulticastingGameEventPayload(entity.Character),
-                "existing arena member entity activation"));
+                "existing arena member entity activation", ArenaDeliveryEpoch: recipient.ArenaDeliveryEpoch));
         }
         if (entity.ArenaReady || entity.ArenaTeamCode != 0)
         {
@@ -15323,7 +15401,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 recipient,
                 0xCF7E,
                 BuildGameReadyPayload(entity.Character, entity.ArenaReady, entity.ArenaTeamCode),
-                "existing arena ready/team snapshot"));
+                "existing arena ready/team snapshot", ArenaDeliveryEpoch: recipient.ArenaDeliveryEpoch));
         }
     }
 
@@ -15527,6 +15605,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             CancellationToken token)
     {
         ArenaRoom room;
+        Guid requestedRound;
+        Guid requestedDeliveryEpoch;
         lock (_arenaRoomGate)
         {
             if (!_arenaRooms.TryGetValue(requester.ArenaRoomId, out room!)
@@ -15535,6 +15615,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 || (room.Started && !room.EndingSessionIds.Contains(requester.SessionId)))
                 return null;
 
+            requestedRound = room.RoundId;
+            requestedDeliveryEpoch = requester.ArenaDeliveryEpoch;
             room.ResultSessionIds.Add(requester.SessionId);
         }
         await room.SettlementGate.WaitAsync(token);
@@ -15546,7 +15628,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             lock (_arenaRoomGate)
             {
                 if (!_arenaRooms.TryGetValue(requester.ArenaRoomId, out var current) || !ReferenceEquals(current, room)
-                    || !room.Members.ContainsKey(requester.SessionId))
+                    || !room.Members.ContainsKey(requester.SessionId)
+                    || room.RoundId != requestedRound
+                    || requester.ArenaDeliveryEpoch != requestedDeliveryEpoch)
                     return null;
                 if (room.PvpResultPayload.Length != 0)
                     return BuildOrGetArenaResultLocked(room);
@@ -15673,8 +15757,12 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             return false;
 
         room.Started = false;
+        room.DeliveryEpoch = Guid.NewGuid();
         room.GameDataPayload = [];
         room.LoadingRequestTags.Clear();
+        // CF8C rebuilds the ready-room actors on both clients.
+        room.EntityInitializedSessions.Clear();
+        room.EntityAnnouncements.Clear();
         // Retain the frozen result through reset for delayed member requests.
         // A new CF7F start, not the first CF8B, retires this result epoch.
         room.EliminationWinnerSessionId = null;
@@ -15688,8 +15776,11 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         room.ClaimedDrops.Clear();
         foreach (var member in room.Members.Values)
         {
+            RestoreArenaP2PEndpointLocked(room, member);
+            member.ArenaDeliveryEpoch = room.DeliveryEpoch;
             member.ArenaReady = false;
             member.ArenaTeamCode = GetDefaultArenaTeamCode(member.ArenaSlotIndex);
+            member.ArenaMulticastInitialized = false;
             // The retail owner does not resend CFD1 when remaining in this room.
             // Only round-scoped confirmation is retired; leave/disconnect clears the endpoint.
             member.ArenaP2PProtocolConfirmed = false;
@@ -15741,6 +15832,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 return false;
             }
 
+            foreach (var member in room.Members.Values)
+                RestoreArenaP2PEndpointLocked(room, member);
             var loadingMember = room.Members.Values.FirstOrDefault(member =>
                 !member.P2PInfoRegistered || !member.ArenaP2PProtocolConfirmed);
             if (loadingMember is not null)
@@ -15869,6 +15962,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 .Where(member => member.SessionId != requester.SessionId)
                 .OrderBy(member => member.ArenaSlotIndex)
                 .ToArray();
+            foreach (var member in otherMembers)
+                RestoreArenaP2PEndpointLocked(room, member);
             var peers = otherMembers
                 .Where(member => member.Character is not null
                                  && member.P2PInfoRegistered
@@ -15882,6 +15977,29 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 .ToArray();
             return (otherMembers.Length, peers);
         }
+    }
+
+    private static void RestoreArenaP2PEndpointLocked(ArenaRoom room, ConnectionSession member)
+    {
+        if (member.P2PInfoRegistered
+            && member.P2PIpAddress is not null
+            && member.P2PPort != 0)
+        {
+            room.P2PEndpointsBySession[member.SessionId] = new P2PPeerEndpoint(
+                member.ArenaSlotIndex,
+                GetSceneEntityId(member.Character!),
+                member.P2PIpAddress,
+                member.P2PPort);
+            return;
+        }
+
+        if (!room.P2PEndpointsBySession.TryGetValue(member.SessionId, out var endpoint)
+            || member.Character is null)
+            return;
+
+        member.P2PIpAddress = endpoint.IpAddress;
+        member.P2PPort = endpoint.Port;
+        member.P2PInfoRegistered = true;
     }
 
     private void QueueArenaBroadcast(
@@ -15900,7 +16018,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 if (!includeSource && target.SessionId == source.SessionId)
                     continue;
                 source.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(
-                    target, opcode, payload.ToArray(), reason));
+                    target, opcode, payload.ToArray(), reason, ArenaDeliveryEpoch: target.ArenaDeliveryEpoch));
             }
         }
     }
@@ -16902,9 +17020,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         CharacterRecord character,
         BattleResourceSnapshot? visibleResources)
     {
-        // Retail opcode D8FF is USER_HP_MP_AUTO_HEALING in town and
-        // EVENT_USER_HP_MP_AUTO_HEALING in a dungeon. Both consumers read
-        // max HP/MP and current HP/MP at native frame +0x10..+0x16.
+        // Town D8FF consumes maxima/current at frame +0x10..+0x16.
+        // Dungeon 6EBAC0 returns D8FF without applying it; food there uses
+        // CF94, not this town carrier or a protection-clearing CF72 refresh.
         var maximumHp = visibleResources?.MaximumHp > 0
             ? visibleResources.MaximumHp
             : checked((ushort)Math.Clamp(character.MaxHp, 1, ushort.MaxValue));
@@ -19241,7 +19359,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         or 0xCF09 or 0xCF0B or 0xCF0D or 0xCF0F or 0xCF11 or 0xCF13 or 0xCF17 or 0xCF19 or 0xCF1D
         or 0xCF6C or 0xCF6E or 0xCF70 or 0xCF73 or 0xCF75 or 0xCF77 or 0xCF79
         or 0xCF7B or 0xCF7D or 0xCF7F or 0xCF81 or 0xCF83 or 0xCF85 or 0xCF89 or 0xCF8B or 0xCF8D
-        or 0xCF93 or 0xCF97 or 0xCF99
+        or 0xCF8F or 0xCF93 or 0xCF97 or 0xCF99
         or 0xCFD1 or 0xCFD3 or 0xCFD5 or 0xCFD7 or 0xCFD9 or 0xCFE5 or 0xCFEB
         or 0xD00D or 0xD00F or 0xD014 or 0xD034 or 0xD036
         or 0xC4E0 or 0xC4E1;
@@ -19250,7 +19368,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
     {
         0x2713 or 0x2717 or 0x2719 or 0x271B or 0x2725 or 0x2730 or 0x2732 => "GameAdapter",
         0xCF0B or 0xCF0D or 0xCF11 or 0xCF13 or 0xCF17 or 0xCF19
-            or 0xCF79 or 0xCF85 or 0xCF89 or 0xCF97 or 0xCFE5 or 0xD014 or 0xD036 => "ArenaAdapter",
+            or 0xCF79 or 0xCF85 or 0xCF89 or 0xCF8F or 0xCF97 or 0xCFE5 or 0xD014 or 0xD036 => "ArenaAdapter",
         0x03E8 or 0x044C or 0x0514 or 0x0578 or 0x05DC or 0x0640 or 0xC351 or 0xC353 or 0xC354 or 0xC358 or 0xC365 or 0xC367 or 0xC369 or 0xC36C or 0xC376 or 0xC387 or 0xC388 or 0xC576 or 0xC577 or 0xC578 or 0xC57A or 0xC57D or 0xC57F or 0xC581 or 0xC583 or 0xC584 or 0xC585 or 0xC586 or 0xC587 or 0xCB21 or 0xCB22 or 0xCB23 or 0xCF09 or 0xCF0F or 0xCF15 or 0xCF1D or 0xCF6C or 0xCF6E or 0xCF70 or 0xCF73 or 0xCF75 or 0xCF77 or 0xCF7B or 0xCF7D or 0xCF7F or 0xCF87 or 0xCF8B or 0xCF8D or 0xCF93 or 0xCF95 or 0xCF99 or 0xCF9B or 0xD00D or 0xD00F or 0xD011 or 0xD034
             or 0xCFD1 or 0xCFD3 or 0xCFD5 or 0xCFD9 or 0xCFEB
             or 0xC378 or 0xC37A or 0xC3CB or 0xC3CD or 0xC3CF or 0xC3D1 or 0xC3D4 or 0xC3D6 or 0xC3D8 or 0xC3E7 or 0xC3E9 or 0xC3ED or 0xC3EF or 0xC3F3 or 0xC3FB or 0xC3FD or 0xC3FF or 0xC401 or 0xC431 or 0xC433 or 0xC469 or 0xC46B or 0xC46D or 0xC46F or 0xC47A or 0xC480 or 0xC491

@@ -57,6 +57,27 @@ internal static partial class Program
             Check((bool)Get(owner, "P2PInfoRegistered")! && (ushort)Get(owner, "P2PPort")! == 3534,
                 "same-connection reset preserves the owner endpoint without another CFD1");
             Check(!(bool)Get(owner, "ArenaP2PProtocolConfirmed")!, "new round requires a fresh protocol confirmation");
+            // A client-side rematch cleanup can clear the session's endpoint
+            // fields even though the room connection remains valid. The room
+            // epoch must still be able to reconstruct the loading tuple.
+            Set(owner, "P2PIpAddress", null); Set(owner, "P2PPort", (ushort)0);
+            Set(owner, "P2PInfoRegistered", false); Set(owner, "ArenaP2PProtocolConfirmed", false);
+            Set(owner, "ArenaReady", true); Set(guest, "ArenaReady", true);
+            Set(owner, "ArenaTeamCode", (byte)0); Set(guest, "ArenaTeamCode", (byte)0);
+            Check(await Send(owner, 0xCFEB, [0, 0, 1, 0]) is { Length: 808 },
+                "same-room rematch republishes game data after endpoint cleanup");
+            await Send(owner, 0xCFD5, [1, 0, 0, 0]);
+            await Send(guest, 0xCFD5, [1, 0, 0, 0]);
+            Check(await Send(guest, 0xCF7F, [], 7) is null && !(bool)Get(room, "Started")!,
+                "endpoint recovery keeps the first rematch CF7F waiting");
+            Check(await Send(owner, 0xCF7F, [], 19) is { Length: 8 }
+                && (bool)Get(room, "Started")!
+                && (bool)Get(owner, "P2PInfoRegistered")!,
+                "endpoint recovery releases the second-round loading barrier");
+            Set(room, "PvpResultPayload", new byte[4]);
+            ((HashSet<string>)Get(room, "ResultSessionIds")!).Add(Id(owner));
+            Check(await Send(owner, 0xCF8B, [0, 1, 1, 0]) is { Length: 48 },
+                "endpoint recovery round can be reset normally");
             Invoke(service, "RemoveArenaRoomMember", guest, null);
             Check(!(bool)Get(guest, "P2PInfoRegistered")!, "real leave clears the departed endpoint");
             Check((bool)Invoke(service, "TryJoinArenaRoom", guest, roomId, "", null)!, "departed guest can rejoin the same listed room");

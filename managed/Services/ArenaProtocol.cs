@@ -60,9 +60,16 @@ internal readonly record struct ArenaGameEventRequest(
     byte Argument4)
 {
     // Retail event 10 passes the collision object's +0x140 value as the
-    // constructor's second argument, serialized at request +2. Request +8
-    // is outside every initialized constructor field and is stack residue.
-    public ushort PlayerDamage => EventCode == 10 ? PrimaryUid : (ushort)0;
+    // constructor's second argument, serialized at request +2. For scene
+    // collisions, the same WORD is an object selector, not a damage amount.
+    // Request +8 is outside every initialized constructor field and is stack
+    // residue.
+    public ushort PlayerDamage => EventCode switch
+    {
+        10 => PrimaryUid,
+        20 or 60 => ArenaProtocol.SkyArenaSceneCollisionDamage,
+        _ => 0
+    };
 
     public ushort TargetDamage => EventCode switch
     {
@@ -94,6 +101,14 @@ internal static class ArenaProtocol
     public const int GameEventResponseLength = 36;
     public const byte SkyArenaItemTypeMinimum = 10;
     public const byte SkyArenaItemTypeMaximum = 17;
+    public const ushort SkyArenaSceneCollisionDamage = 100;
+    // Private-server policy, not an inferred original-server death formula.
+    // The WORD is per recipient; their total must fit the victim's ledger.
+    public const ushort SkyArenaKillScoreTransferMaximum = 500;
+
+    public static ushort CalculatePvpKillScoreTransfer(int victimScore, int recipientCount)
+        => recipientCount <= 0 ? (ushort)0
+            : checked((ushort)Math.Clamp(victimScore / recipientCount, 0, SkyArenaKillScoreTransferMaximum));
 
     internal static byte[] BuildPlayerHitResult(ushort kind, ushort objectId, ushort collisionIndex,
         byte attackerSlot, byte victimSlot, ushort remainingHp, ushort scoreTransfer = 0)

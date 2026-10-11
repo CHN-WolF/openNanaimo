@@ -6,6 +6,8 @@ internal static partial class Program
     public static async Task Main()
     {
         await CheckRoomListsAsync();
+        await CheckRoundBoundariesAsync();
+        await CheckDeliveryEpochsAsync();
         await CheckReentryAsync();
         await CheckRankingAsync();
         var payload = new byte[20];
@@ -16,7 +18,25 @@ internal static partial class Program
         Check(ArenaProtocol.TryParseGameEvent(payload, out var request), "arena event 50 parses");
         Check(request.PrimaryUid == 1950 && request.ValueAt8 == 29820, "event metadata remains separate from damage");
         Check(request.TargetDamage == 0, "object collisions do not select an arbitrary opponent");
+        var terrainPayload = new byte[20];
+        BinaryPrimitives.WriteUInt16LittleEndian(terrainPayload.AsSpan(0, 2), 20);
+        BinaryPrimitives.WriteUInt16LittleEndian(terrainPayload.AsSpan(2, 2), 291);
+        Check(ArenaProtocol.TryParseGameEvent(terrainPayload, out var terrain)
+            && terrain.PlayerDamage == ArenaProtocol.SkyArenaSceneCollisionDamage,
+            "arena kind20 scene collision applies fixed player damage separately from selector");
+        BinaryPrimitives.WriteUInt16LittleEndian(terrainPayload.AsSpan(0, 2), 60);
+        Check(ArenaProtocol.TryParseGameEvent(terrainPayload, out var hazard)
+            && hazard.PlayerDamage == ArenaProtocol.SkyArenaSceneCollisionDamage,
+            "arena kind60 scene collision applies fixed player damage separately from selector");
         var obstaclePayload = new byte[20];
+        Check(ArenaProtocol.CalculatePvpKillScoreTransfer(0, 1) == 0
+            && ArenaProtocol.CalculatePvpKillScoreTransfer(500, 1) == 500
+            && ArenaProtocol.CalculatePvpKillScoreTransfer(500, 2) == 250
+            && ArenaProtocol.CalculatePvpKillScoreTransfer(501, 2) == 250
+            && ArenaProtocol.CalculatePvpKillScoreTransfer(1, 2) == 0
+            && ArenaProtocol.CalculatePvpKillScoreTransfer(500, 0) == 0
+            && ArenaProtocol.CalculatePvpKillScoreTransfer(int.MaxValue, 1) == 500,
+            nameof(ArenaProtocol.CalculatePvpKillScoreTransfer));
         BinaryPrimitives.WriteUInt16LittleEndian(obstaclePayload.AsSpan(0, 2), 20);
         Check(ArenaProtocol.TryParseGameEvent(obstaclePayload, out var obstacle)
             && obstacle.TargetDamage == 0,

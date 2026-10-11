@@ -54,10 +54,10 @@ internal static class NativeDungeonRevivalChecks
             {
                 MaximumHp = 2000, MaximumMp = 800, SettlementFrozen = true,
                 HpAuthority = BattleHpAuthority.Settlement
-            });
-        Check(retry is { CurrentHp: 2000, CurrentMp: 800, AttackMode: 0, SettlementFrozen: false,
+            }, new CharacterRecord { MaxHp = 1200, MaxMp = 500 });
+        Check(retry is { CurrentHp: 200, CurrentMp: 120, AttackMode: 0, SettlementFrozen: false,
                 HpAuthority: BattleHpAuthority.Inherited },
-            "failed-settlement retry resets the new battle resource epoch");
+            "failed-settlement retry uses death-return HP and retained MP, not effective maxima");
         await CheckEchoGate();
         await CheckStaleSessionWalletRefresh();
         await CheckCoinsThenEggs();

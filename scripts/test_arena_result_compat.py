@@ -19,14 +19,15 @@ class ArenaResultTests(unittest.TestCase):
                 for page in (4, 6, 7):
                     with self.subTest(mode=mode, game_type=game_type, page=page):
                         m = uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_32)
-                        m.mem_map(0x400000, 0x400000); m.mem_map(0x2000000, 0x30000)
+                        m.mem_map(0x400000, 0xA00000); m.mem_map(0x2000000, 0x30000)
                         m.mem_write(recipe.RESET_CAVE_VA, recipe.reset_encodings()[1])
-                        manager, stack, end = 0x2000000, 0x202E000, 0x202F000
+                        manager, arena, stack, end = 0x2000000, 0x2010000, 0x202E000, 0x202F000
                         def put(a, v): m.mem_write(a, struct.pack('<I', v))
                         def get(a): return struct.unpack('<I', m.mem_read(a, 4))[0]
                         m.mem_write(manager + 3, bytes([mode])); m.mem_write(manager + 7, b'\x01')
                         put(manager + 8, game_type); put(manager + 0x10F0, page)
                         put(manager + 0x34, 10000); put(manager + 0x40, 100)
+                        put(0xD72FC0, arena); put(arena + 0x1C, 7)
                         m.reg_write(x86.UC_X86_REG_ESP, stack); put(stack, end)
                         m.reg_write(x86.UC_X86_REG_EFLAGS, 0x202)
                         regs = (x86.UC_X86_REG_EBX, x86.UC_X86_REG_ECX, x86.UC_X86_REG_EDX,
@@ -35,18 +36,24 @@ class ArenaResultTests(unittest.TestCase):
                         calls = []
                         def intercept(machine, address, size, unused):
                             if address == end: machine.emu_stop(); return
-                            if address != 0x419BBE: return
+                            if address not in (0x419BBE, 0x74FFE0): return
                             calls.append(address); sp = machine.reg_read(x86.UC_X86_REG_ESP)
-                            machine.reg_write(x86.UC_X86_REG_EAX, manager)
+                            if address == 0x74FFE0:
+                                self.assertEqual(machine.reg_read(x86.UC_X86_REG_ECX), arena)
+                                put(arena + 0x1C, 0)
+                                machine.reg_write(x86.UC_X86_REG_EAX, arena)
+                            else:
+                                machine.reg_write(x86.UC_X86_REG_EAX, manager)
                             machine.reg_write(x86.UC_X86_REG_EIP, get(sp))
                             machine.reg_write(x86.UC_X86_REG_ESP, sp + 4)
                         m.hook_add(uc.UC_HOOK_CODE, intercept)
                         m.emu_start(recipe.RESET_CAVE_VA, end + 1, count=80)
-                        eligible = mode == 1 and 1 <= game_type <= 4 and page == 6
+                        eligible = mode == 1 and 1 <= game_type <= 4
                         self.assertEqual(bytes(m.mem_read(manager + 7, 1)), b'\0' if eligible else b'\1')
                         self.assertEqual(get(manager + 0x40), 10000 if eligible else 100)
                         self.assertEqual(get(manager + 0x10F0), page)
-                        self.assertEqual(calls, [0x419BBE])
+                        self.assertEqual(calls, [0x419BBE, 0x74FFE0] if eligible else [0x419BBE])
+                        self.assertEqual(get(arena + 0x1C), 0 if eligible else 7)
                         self.assertEqual(m.reg_read(x86.UC_X86_REG_EAX), manager)
                         self.assertEqual(m.reg_read(x86.UC_X86_REG_ESP), stack + 4)
                         self.assertEqual(m.reg_read(x86.UC_X86_REG_EFLAGS), 0x202)
@@ -58,9 +65,29 @@ class ArenaResultTests(unittest.TestCase):
         previous = bytearray(raw)
         for _, va, old, new in recipe.patch_sites()[:2]:
             off = compat._va_offset(raw, va, len(old))
-            previous[off:off + len(new)] = new
+            previous[off:off + len(new)] = recipe.encodings(legacy=True)[1] if va == recipe.CAVE_VA else new
         upgraded = compat.patch_dungeon_state_controls(bytes(previous))[0]
         self.assertEqual(upgraded, compat.patch_dungeon_state_controls(raw)[0])
+
+    def test_installed_rematch_recipe_migrates_and_preserves_unknown_conflicts(self):
+        raw, _ = synthetic_pe()
+        target = compat.patch_dungeon_state_controls(raw)[0]
+        previous = bytearray(target)
+        old = recipe.reset_encodings(legacy=True)[1]
+        off = compat._va_offset(target, recipe.RESET_CAVE_VA, len(old))
+        previous[off:off + len(old)] = old
+        self.assertEqual(compat.patch_dungeon_state_controls(bytes(previous))[0], target)
+        previous[off + 8] ^= 1
+        with self.assertRaises(compat.CompatibilityError):
+            compat.patch_dungeon_state_controls(bytes(previous))
+
+    def test_mixed_legacy_rematch_recipe_migrates(self):
+        raw, _ = synthetic_pe()
+        target = compat.patch_dungeon_state_controls(raw)[0]
+        previous = bytearray(target)
+        off = compat._va_offset(target, recipe.RESET_CAVE_VA, recipe.RESET_CAVE_SPAN)
+        previous[off:off + recipe.RESET_CAVE_SPAN] = recipe.RESET_MIXED_LEGACY
+        self.assertEqual(compat.patch_dungeon_state_controls(bytes(previous))[0], target)
 
     def test_patch_idempotence_and_conflicts(self):
         raw, _ = synthetic_pe()
@@ -79,7 +106,8 @@ class ArenaResultTests(unittest.TestCase):
         by_name = {r['operation']: r for r in rows}
         for name, va, old, new in recipe.patch_sites():
             row = by_name['patch_' + name]
-            self.assertEqual((row['va'], row['target'], row['known']), (va, new.hex(), [old.hex()]))
+            self.assertEqual((row['va'], row['target'], row['known']),
+                (va, new.hex(), [old.hex()] + [b.hex() for b in recipe.legacy_encodings(va)]))
 
     @unittest.skipUnless(uc, 'x86 execution engine required')
     def test_native_entry_preserves_rows_registers_and_input(self):
@@ -87,8 +115,9 @@ class ArenaResultTests(unittest.TestCase):
             for page in (0, 3, 4, 6, 7, 10):
                 with self.subTest(mode=mode, page=page):
                     m = uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_32)
-                    m.mem_map(0x400000, 0x400000); m.mem_map(0x2000000, 0x30000)
+                    m.mem_map(0x400000, 0xA00000); m.mem_map(0x2000000, 0x30000)
                     m.mem_write(recipe.CAVE_VA, recipe.encodings()[1])
+                    m.mem_write(recipe.CLEANUP_CAVE_VA, recipe.cleanup_encoding())
                     manager, keyboard, stack, end = 0x2000000, 0x2010000, 0x202E000, 0x202F000
                     def put(a, v): m.mem_write(a, struct.pack('<I', v))
                     def get(a): return struct.unpack('<I', m.mem_read(a, 4))[0]

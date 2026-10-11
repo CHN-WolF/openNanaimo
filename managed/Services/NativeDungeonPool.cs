@@ -5,7 +5,7 @@ using System.Net.Sockets;
 
 namespace OpenNanaimo.Adapter.Services;
 
-public sealed class NativeDungeonPool(string executable, string dataDirectory) : IAsyncDisposable
+public sealed class NativeDungeonPool(string executable, string dataDirectory, bool usePrimaryWorker = true) : IAsyncDisposable
 {
     private sealed class Room
     {
@@ -48,7 +48,7 @@ public sealed class NativeDungeonPool(string executable, string dataDirectory) :
             if (_disposed) throw new ObjectDisposedException(nameof(NativeDungeonPool));
             if (!_rooms.TryGetValue(key, out var room))
             {
-                var primaryUnused = !_rooms.Values.Any(r => r.Port == 52050);
+                var primaryUnused = usePrimaryWorker && !_rooms.Values.Any(r => r.Port == 52050);
                 var primaryReady = primaryUnused && await EnsurePrimaryReadyAsync(token);
                 room = primaryReady ? new Room { Port = 52050 } : await StartRoomAsync(token);
                 _rooms.Add(key, room);

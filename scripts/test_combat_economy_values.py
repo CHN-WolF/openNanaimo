@@ -186,7 +186,7 @@ int main(void){
         CHECK(teamplay_settlement_member_rating(0,1,50000,sp->total_max,-1)==5u);
         CHECK(teamplay_settlement_member_rating(1,0,0,sp->total_max,-1)==0u);
     }
-    CHECK(HP_SYNC_PROFILE_COUNT==864u&&positive==308623u&&affected==18u&&type4==132028u);
+    CHECK(HP_SYNC_PROFILE_COUNT==864u&&positive==308623u&&affected==18u&&type4==131848u);
     printf("COMBAT_SCORE_REACHABILITY_PASS profiles=%u scoring_rows=%u type4=%u affected=%u\n",HP_SYNC_PROFILE_COUNT,positive,type4,affected);
     return 0;
 }

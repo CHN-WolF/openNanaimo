@@ -36,18 +36,44 @@ internal static class HealthRecoveryChecks
             TodayVisitIndex = 0, TotalVisitIndex = 0, RecommendationPoints = 0,
             HasStreetAddress = false, HasLandCard = false
         };
-        Check(HealthRecoveryPolicy.GetApartmentParameters(ownerWithPopularHouse) == new HealthRecoveryParameters(500, 50)
-              && HealthRecoveryPolicy.GetApartmentParameters(visitorInSameRoom) == new HealthRecoveryParameters(500, 50)
+        Check(HealthRecoveryPolicy.GetApartmentParameters(ownerWithPopularHouse) == new HealthRecoveryParameters(2500, 500)
+              && HealthRecoveryPolicy.GetApartmentParameters(visitorInSameRoom) == new HealthRecoveryParameters(2500, 500)
               && HealthRecoveryPolicy.GetApartmentParameters(quietRoom) == new HealthRecoveryParameters(70, 20),
-            "apartment visit tiers apply the same persisted room rate to owners and visitors");
+            "apartment total-based recovery applies the same persisted room rate to owners and visitors");
 
-        foreach (var visits in new long[] { 0, 9, 10, 49, 50, 199, 200, 499, 500, long.MaxValue })
+        var emptyCharacter = new CharacterRecord
+        {
+            Level = 4, MaxHp = ushort.MaxValue, MaxMp = ushort.MaxValue, CurrentHp = 0, CurrentMp = 0
+        };
+        var emptyResources = new BattleResourceSnapshot(0, 0, 0)
+        {
+            MaximumHp = ushort.MaxValue, MaximumMp = ushort.MaxValue
+        };
+        foreach (var (visits, hp, mp) in new (long Total, int Hp, int Mp)[]
+        {
+            (long.MinValue, 70, 20), (-1, 70, 20), (0, 70, 20), (9, 70, 20), (10, 70, 20),
+            (13, 70, 20), (14, 70, 20), (15, 75, 20), (19, 95, 20), (20, 100, 20), (21, 105, 21),
+            (49, 245, 49), (50, 250, 50), (60, 300, 60), (61, 305, 61), (199, 995, 199),
+            (200, 1000, 200), (499, 2495, 499), (500, 2500, 500),
+            (13106, 65530, 13106), (13107, 65535, 13107), (13108, 65535, 13108),
+            (65534, 65535, 65534), (65535, 65535, 65535), (65536, 65535, 65535),
+            (long.MaxValue, 65535, 65535)
+        })
         {
             var rate = ApartmentPopularityPolicy.GetRecoveryParameters(visits);
-            var display = NetworkAdapterService.BuildApartmentAutoHealingPayload(character, null, rate);
+            Check(rate == new HealthRecoveryParameters(hp, mp),
+                "room rate uses total times five HP and total MP with floors and WORD saturation at " + visits);
+            var context = ownerWithPopularHouse with { TotalVisitIndex = visits };
+            var resolved = HealthRecoveryPolicy.Resolve(emptyCharacter, HealthRecoveryScene.Apartment, true, false, context);
+            var recovered = emptyResources.ApplyNonCombatRecovery(rate.HpStep, rate.MpStep);
+            Check(resolved.Eligible && resolved.HpRestored == hp && resolved.MpRestored == mp
+                && recovered.CurrentHp == hp && recovered.CurrentMp == mp,
+                "profile and effective resources apply the same total-based recovery at " + visits);
+            var display = NetworkAdapterService.BuildApartmentAutoHealingPayload(emptyCharacter, recovered, rate);
             Check(display.Length == 20 && BinaryPrimitives.ReadUInt16LittleEndian(display.AsSpan(16)) == rate.HpStep
                 && BinaryPrimitives.ReadUInt16LittleEndian(display.AsSpan(18)) == rate.MpStep
-                && rate.HpStep >= 70 && rate.MpStep >= 20,
+                && BinaryPrimitives.ReadUInt16LittleEndian(display.AsSpan(12)) == hp
+                && BinaryPrimitives.ReadUInt16LittleEndian(display.AsSpan(14)) == mp,
                 "room thermometer carries the exact recovery rate at visit boundary " + visits);
         }
 
@@ -220,24 +246,24 @@ internal static class HealthRecoveryChecks
             long ownerAccountId = await database.OpenLocalAccountAsync("health-recovery-owner");
             long ownerCharacterId = await database.CreateLocalCharacterAsync(ownerAccountId, "PopularRoom", 0);
             var visitDay = new DateTimeOffset(2026, 9, 28, 12, 0, 0, TimeSpan.Zero);
-            for (var dayOffset = 9; dayOffset >= 0; dayOffset--)
+            for (var dayOffset = 20; dayOffset >= 0; dayOffset--)
                 await database.RecordApartmentVisitAsync(accountId, characterId, sessionId, ownerCharacterId,
                     visitDay.AddDays(-dayOffset));
             var duplicateVisit = await database.RecordApartmentVisitAsync(
                 accountId, characterId, sessionId, ownerCharacterId, visitDay);
-            Check(duplicateVisit.Today == 1 && duplicateVisit.Total == 10,
+            Check(duplicateVisit.Today == 1 && duplicateVisit.Total == 21,
                 "room visit index persists one entry per visitor and UTC day");
             var apartmentState = await database.GetApartmentRecoveryStateAsync(
                 characterId, ownerCharacterId, visitDay);
             Check(apartmentState.Eligible && !apartmentState.IsOwner
-                  && apartmentState.TodayVisitIndex == 1 && apartmentState.TotalVisitIndex == 10
-                  && apartmentState.HpPerTick == 150 && apartmentState.MpPerTick == 20,
+                  && apartmentState.TodayVisitIndex == 1 && apartmentState.TotalVisitIndex == 21
+                  && apartmentState.HpPerTick == 105 && apartmentState.MpPerTick == 21,
                 "persisted room popularity resolves a verifiable visitor recovery rate");
             await WriteResourcesAsync(database.DatabasePath, characterId, 5400, 520, 900, 375);
             var popularTick = await database.ApplyApartmentHealthRecoveryStepAsync(
                 accountId, characterId, sessionId, ownerCharacterId);
-            Check(popularTick.Applied && popularTick.CurrentHp == 1050 && popularTick.CurrentMp == 395,
-                "apartment persistence applies the room owner's popularity tier");
+            Check(popularTick.Applied && popularTick.CurrentHp == 1005 && popularTick.CurrentMp == 396,
+                "apartment persistence applies the room owner's total-based HP and MP recovery");
 
             await WriteResourcesAsync(database.DatabasePath, characterId, 5400, 520, 1000, 385);
             var reconnectState = new CharacterRuntimeState(1000, 385, 1, 0, 400, 96, 1);

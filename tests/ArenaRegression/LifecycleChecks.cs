@@ -126,19 +126,30 @@ internal static partial class Program
             var coincidentHit = await Send(members[2], 0xD014, coincident);
             Check(coincidentHit is not null && BinaryPrimitives.ReadUInt16LittleEndian(coincidentHit.AsSpan(6)) == 0xD015,
                 "a projectile code matching the victim UID does not consume an item when its attacker is declared");
+            Check(BinaryPrimitives.ReadUInt16LittleEndian(coincidentHit!.AsSpan(20)) == 0
+                && BinaryPrimitives.ReadUInt16LittleEndian(coincidentHit.AsSpan(22)) == 0,
+                "ordinary injury never publishes an unbooked score transfer");
             var ambiguous = new byte[8]; BinaryPrimitives.WriteUInt16LittleEndian(ambiguous, 20);
             Check(await Send(members[2], 0xD014, ambiguous) is null,
                 "a four-player collision with no declared source cannot choose an arbitrary opponent");
             hp[Id(members[2])] = (ushort)1;
+            hp[Id(members[1])] = (ushort)0;
             var attack = new byte[8]; BinaryPrimitives.WriteUInt16LittleEndian(attack, 20);
             BinaryPrimitives.WriteUInt16LittleEndian(attack.AsSpan(2), 247);
             BinaryPrimitives.WriteUInt16LittleEndian(attack.AsSpan(6), WireIdentityAllocator.GetSceneEntityId(Character(members[0]).Id));
             var lethal = await Send(members[2], 0xD014, attack);
             Check(lethal is not null && lethal[18] == 200 && (ushort)hp[Id(members[2])]! > 0,
                 "timed PvP death emits terminal damage and restores an attackable HP ledger");
-            Check(BinaryPrimitives.ReadUInt16LittleEndian(lethal!.AsSpan(20)) == 0
-                && BinaryPrimitives.ReadUInt16LittleEndian(lethal.AsSpan(22)) == 0,
-                "lethal and nonlethal hits cannot transfer stars without an authoritative score transaction");
+            Check(BinaryPrimitives.ReadUInt16LittleEndian(lethal!.AsSpan(20)) == 250
+                && BinaryPrimitives.ReadUInt16LittleEndian(lethal.AsSpan(22)) == 250,
+                "lethal score WORDs carry the same per-recipient amount as the ledger");
+            var scoreLedger = (IDictionary)Get(room, "ScoreBySession")!;
+            Check((int)scoreLedger[Id(members[0])]! == 850
+                && (int)scoreLedger[Id(members[1])]! == 250
+                && (int)scoreLedger[Id(members[2])]! == 0
+                && (int)scoreLedger[Id(members[3])]! == 500,
+                "terminal score transfer includes defeated opposing members and conserves the victim loss");
+            hp[Id(members[1])] = (ushort)1;
             var expBefore = members.Select(m => Character(m).Experience).ToArray();
             Check(await Send(members[0], 0xCF89, new byte[4]) is null, "results require an accepted terminal boundary");
             foreach (var member in members) Check(await Send(member, 0xCF97, []) is not null, "each member receives one terminal acknowledgement");
@@ -149,12 +160,12 @@ internal static partial class Program
             Check(results[0] is not null && results[0]!.AsSpan(8).SequenceEqual(results[1]!.AsSpan(8)),
                 "concurrent result requests share the same frozen settlement");
             var result = results[0]!;
-            var scores = new uint[] { 600, 0, 500, 500 };
+            var scores = new uint[] { 850, 250, 0, 500 };
             for (var i = 0; i < 4; i++)
             {
                 var at = 12 + 56 * i;
-                Check(BinaryPrimitives.ReadUInt16LittleEndian(result.AsSpan(at + 2)) == (i < 2 ? 0 : 1),
-                    "winning team uses aggregate stars instead of the highest individual score");
+                Check(BinaryPrimitives.ReadUInt16LittleEndian(result.AsSpan(at + 2)) == (i < 2 ? 1 : 0),
+                    "winning team uses authoritative aggregate stars after the lethal transfer");
                 Check(BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(at + 12)) == scores[i]
                     && BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(at + 16)) == scores[i] / 4,
                     "CF8A keeps displayed stars separate from actual awarded experience");

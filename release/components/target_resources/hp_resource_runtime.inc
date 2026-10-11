@@ -121,6 +121,13 @@ struct hp_sync_hit_result {
     unsigned wire_selector_exact;
 };
 
+static const char *hp_sync_resource_name(unsigned resource_index);
+static int hp_sync_resource_name_equal(const char *a,const char *b){
+    if(!a||!b)return 0;
+    while(*a&&*a==*b){++a;++b;}
+    return *a==*b;
+}
+
 static int hp_sync_trunc_mul_ratio(int value, unsigned num, unsigned den) {
     long long product;
     if (den == 0u) den = 1u;
@@ -457,6 +464,27 @@ static int hp_sync_apply_attack(struct hp_sync_context *ctx, unsigned selector,
        ctx->stage_index==1u&&ctx->difficulty==2u&&
        (s->target_type==0u||s->target_type==1u)&&s->reward_kind==0u&&
        s->max_hp>10&&s->max_hp<=30&&basis>=9999&&attack>0)basis=0;
+#endif
+#if TEAMPLAY_FEATURE_L7_HIGH_BASIS_TYPE1_PLAYABLE
+    /* KR L7 M_00 is an authored HP20/28 type1 row with basis9999. The
+       generic arithmetic otherwise makes ordinary hits remove one HP. */
+    if(ctx->hd_id==0u&&ctx->stage_id==100u&&ctx->dungeon_id==6u&&
+       (ctx->stage_index==0u||ctx->stage_index==1u)&&s->target_type==1u&&
+       s->reward_kind==0u&&s->max_hp>0&&s->max_hp<=30&&basis>=9999&&attack>0)
+        basis=0;
+#endif
+#if TEAMPLAY_FEATURE_L7_HIGH_BASIS_TYPE5_PLAYABLE
+    /* KR L7's explosive barrel (ep22_mb_T_00.mmo) is an ordinary type5
+       target with authored HP600/840 and basis9999.  Treating that basis as
+       defense reduces the resolved 3285-class hit to one point, leaving the
+       barrel visibly damaged but practically unbreakable.  Keep this tied to
+       both legacy L7 stages and the exact resource/HP shape. */
+    if(ctx->hd_id==0u&&ctx->stage_id==100u&&ctx->dungeon_id==6u&&
+       (ctx->stage_index==0u||ctx->stage_index==1u)&&s->target_type==5u&&s->max_hp==600&&
+       s->basis>=9999&&attack>0&&
+       hp_sync_resource_name(s->resource_index) &&
+       hp_sync_resource_name_equal(hp_sync_resource_name(s->resource_index),"ep22_mb_T_00.mmo"))
+        basis=0;
 #endif
     out->old_hp = s->hp; out->attack_after_modifiers = attack; out->basis_after_modifiers = basis;
     if (s->target_type == 4u) {

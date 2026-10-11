@@ -59,11 +59,11 @@ int main(void){
         }
         if(scope_mapped)mapped_scopes++;
     }
-    CHECK(scopes==288u);CHECK(mapped_scopes==267u);CHECK(type4_total==44531u);
-    CHECK(association_candidates==31788u);CHECK(standalone==12743u);CHECK(broken_association==1887u);
-    CHECK(mapped==29916u);CHECK(hazards==STAGE_DAMAGE_SCENE_HAZARD_SELECTED_ROW_COUNT);CHECK(hazards==5013u);
+    CHECK(scopes==288u);CHECK(mapped_scopes==267u);CHECK(type4_total==44441u);
+    CHECK(association_candidates==31788u);CHECK(standalone==12653u);CHECK(broken_association==1887u);
+    CHECK(mapped==29916u);CHECK(hazards==STAGE_DAMAGE_SCENE_HAZARD_SELECTED_ROW_COUNT);CHECK(hazards==4923u);
     CHECK(unclassified_type4==9602u);CHECK(type4_total-mapped-hazards==unclassified_type4);CHECK(unmapped>mapped);
-    CHECK(STAGE_DAMAGE_SCENE_HAZARD_POLICY_COUNT==703u);
+    CHECK(STAGE_DAMAGE_SCENE_HAZARD_POLICY_COUNT==688u);
     stage_damage_damage_begin(&ctx,0u,15u,2u,0u,2u,1u,1u);
     CHECK(sizeof(ep15_selectors)/sizeof(ep15_selectors[0])==16u);
     for(i=0u;i<sizeof(ep15_selectors)/sizeof(ep15_selectors[0]);i++){
@@ -157,7 +157,7 @@ class AssociatedSceneDamageTests(unittest.TestCase):
             run_result = subprocess.run(
                 [str(binary)], cwd=directory, capture_output=True, text=True, errors="replace", timeout=60)
             self.assertEqual(run_result.returncode, 0, run_result.stdout + run_result.stderr)
-            self.assertIn("ASSOCIATED_SCENE_DAMAGE_PASS scopes=288 mapped_scopes=267 type4=44531 association_candidates=31788 exact_associated=29916 broken_association=1887 standalone=12743 hazards=5013 unclassified=9602", run_result.stdout)
+            self.assertIn("ASSOCIATED_SCENE_DAMAGE_PASS scopes=288 mapped_scopes=267 type4=44441 association_candidates=31788 exact_associated=29916 broken_association=1887 standalone=12653 hazards=4923 unclassified=9602", run_result.stdout)
 
     def test_dispatch_is_exact_not_global_kind60_damage(self):
         source = (ROOT / "release/components/game_session/gs_runtime.inc").read_text("utf-8")

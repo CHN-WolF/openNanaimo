@@ -11,11 +11,11 @@ class PreloadedTargetTests(unittest.TestCase):
     def test_generated_catalog_closure(self):
         model=json.loads(catalog.REGISTRY.read_text('utf8'))
         self.assertEqual(catalog.OUTPUT.read_text('utf8'),catalog.render(model))
-        self.assertEqual(len(model['rows']),23921)
+        self.assertEqual(len(model['rows']),22913)
         self.assertEqual(len(model['scopes']),864)
         self.assertEqual(len(model['resources']),87)
         self.assertEqual(sum(bool(s['preload_count']) for s in model['scopes']),600)
-        self.assertEqual(sum(r[2]==4 for r in model['rows']),12741)
+        self.assertEqual(sum(r[2]==4 for r in model['rows']),12669)
         self.assertEqual(sum(row[2]==4 and 'pig' in model['resources'][row[7]] for row in model['rows']),90)
 
     def test_every_slot_is_contiguous_and_old_transformations_are_preserved(self):
@@ -82,7 +82,7 @@ int main(void){unsigned pi,i,j,seen=0,report_only=0,positive=0,static_scene=0,sc
    assert(state&&!state->terminal&&state->hp==row->hp);
   }
  }
- assert(seen==23921&&report_only>=12741&&scope_count==864);
+ assert(seen==22913&&report_only>=12669&&scope_count==864);
  printf("ALL_PRELOADS_PASS scopes=%u rows=%u retained=%u positive=%u static_scene=%u\n",scope_count,seen,report_only,positive,static_scene);
  return 0;
 }

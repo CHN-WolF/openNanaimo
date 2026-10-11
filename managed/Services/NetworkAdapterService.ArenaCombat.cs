@@ -60,11 +60,30 @@ public sealed partial class NetworkAdapterService
                 var appliedDamage = (ushort)Math.Min(hp, damage);
                 hp -= appliedDamage;
                 room.CurrentHpBySession[victim.SessionId] = hp;
-                response = ArenaProtocol.BuildPlayerHitResult(kind, objectId,
-                    BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(4)),
-                    attacker.ArenaSlotIndex, victim.ArenaSlotIndex, hp);
+                ushort scoreTransfer = 0;
                 if (hp == 0)
                 {
+                    // Retail terminal D015 credits every opposite-team actor,
+                    // including defeated actors, then debits amount * count.
+                    var recipients = room.Members.Values.Where(member =>
+                        member.Character is not null && member.SessionId != victim.SessionId
+                        && member.ArenaTeamCode != victim.ArenaTeamCode).ToArray();
+                    scoreTransfer = ArenaProtocol.CalculatePvpKillScoreTransfer(
+                        room.ScoreBySession.GetValueOrDefault(victim.SessionId), recipients.Length);
+                    foreach (var recipient in recipients)
+                        scoreTransfer = (ushort)Math.Min(scoreTransfer,
+                            int.MaxValue - Math.Max(0, room.ScoreBySession.GetValueOrDefault(recipient.SessionId)));
+                    if (scoreTransfer != 0)
+                    {
+                        room.ScoreBySession[victim.SessionId] -= scoreTransfer * recipients.Length;
+                        foreach (var recipient in recipients)
+                            room.ScoreBySession[recipient.SessionId] =
+                                room.ScoreBySession.GetValueOrDefault(recipient.SessionId) + scoreTransfer;
+                    }
+                    _log($"Arena lethal score transfer: room={room.Id} round={room.RoundId:N} victim={victim.Character.Id} attacker={attacker.Character!.Id} amount={scoreTransfer} recipients={recipients.Length} loss={scoreTransfer * recipients.Length}");
+                    response = ArenaProtocol.BuildPlayerHitResult(kind, objectId,
+                        BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(4)),
+                        attacker.ArenaSlotIndex, victim.ArenaSlotIndex, hp, scoreTransfer);
                     if (IsTimedScoreArena(room))
                     {
                         // The client shows the terminal hit and performs the
@@ -78,6 +97,12 @@ public sealed partial class NetworkAdapterService
                             || (attacker.ArenaTeamCode is 1 or 2 && member.ArenaTeamCode == attacker.ArenaTeamCode)))
                             room.EliminationWinnerSessionId = attacker.SessionId;
                     }
+                }
+                else
+                {
+                    response = ArenaProtocol.BuildPlayerHitResult(kind, objectId,
+                        BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(4)),
+                        attacker.ArenaSlotIndex, victim.ArenaSlotIndex, hp);
                 }
             }
             QueueArenaBroadcast(victim, 0xD015, response, false, "arena player event");

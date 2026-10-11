@@ -108,6 +108,24 @@ internal static class DungeonCombatCatalog
         return true;
     }
 
+    public static bool IsL7ExplosiveBarrel(
+        byte hd,
+        byte episode,
+        byte dungeon,
+        byte stage,
+        ushort resourceUid,
+        DungeonCombatTemplate template)
+    {
+        ResourceIdentity(hd, stage, ref episode, ref dungeon);
+        return hd == 0
+            && episode == 22
+            && ((dungeon == 0 && stage == 0 && resourceUid == 59)
+                || (dungeon == 1 && stage == 1 && resourceUid == 62))
+            && template.AttackCategory == 5
+            && template.Hp == 600
+            && template.Defense >= 9999;
+    }
+
     public static bool TryGetBoss(
         byte hd,
         byte episode,

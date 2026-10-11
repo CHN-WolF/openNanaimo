@@ -43,6 +43,23 @@ foreach (var (ep, selector, expected) in new[] { (0, 16, 2), (12, 146, 12107), (
 }
 Console.WriteLine($"COMBAT_RESOURCE_MANAGED_PASS records={count} scaled_remainder=12107 ep23_scaled=20861");
 
+int l7Checks = 0;
+for (byte stage = 0; stage < 2; stage++)
+for (byte slot = 0; slot < 9; slot++)
+{
+    ushort resourceUid = stage == 0 ? (ushort)59 : (ushort)62;
+    if (!DungeonCombatCatalog.TryGet(0, 100, 6, stage, slot, resourceUid, out var barrel)
+        || !DungeonCombatCatalog.IsL7ExplosiveBarrel(0, 100, 6, stage, resourceUid, barrel)
+        || DungeonCombatCatalog.IsL7ExplosiveBarrel(0, 100, 7, stage, resourceUid, barrel)
+        || DungeonCombatCatalog.IsL7ExplosiveBarrel(0, 100, 6, stage, (ushort)(resourceUid + 1), barrel))
+        throw new Exception($"L7 barrel identity failed: stage={stage} slot={slot}");
+    var bosses = DungeonCombatCatalog.GetBosses(0, 100, 6, stage, slot);
+    if (bosses.Count != 1 || bosses[0].Value.TotalHp != (stage == 0 ? 3_060_000 : 4_289_329))
+        throw new Exception($"L7 Korean boss generation failed: stage={stage} slot={slot}");
+    l7Checks++;
+}
+Console.WriteLine($"L7_MANAGED_CATALOG_PASS slots={l7Checks} barrel_alias=stage0-and-stage1");
+
 int ratingChecks = 0;
 void CheckRating(int score, int maximum, int partySize, bool tookDamage, bool cleared, byte expected)
 {

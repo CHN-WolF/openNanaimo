@@ -18,6 +18,24 @@ import refresh_patch_manifest as refresh
 
 
 class ExportPatchTests(unittest.TestCase):
+    def test_l7_source_closure_inputs_are_exactly_scoped(self):
+        names = ['scripts/audit_l7_combat_resources.py',
+                 'scripts/generate_boss_contact_catalog.py',
+                 'scripts/generate_l7_combat.py',
+                 'scripts/test_l7_combat_resources.py']
+        rows = [dict(path=name, size=0, sha256='0' * 64) for name in names]
+        self.assertEqual(patch.validated_closure(dict(count=len(rows), files=rows)), rows)
+        for name in ['scripts/generate_l7_unreviewed.py',
+                     'adapter_runtime/资源/数据/dungeon_combat_catalog.bin',
+                     '.private/profile.ini']:
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.validated_closure(dict(count=1, files=[dict(path=name, size=0, sha256='0' * 64)]))
+
+    def test_l7_generation_manifest_is_an_exact_source_payload(self):
+        patch.payload_policy("manifest/l7_combat.json", "source")
+        with self.assertRaises(patch.ExportError):
+            patch.payload_policy("manifest/l7_private.json", "source")
+
     def test_arena_source_closure_inputs_are_exactly_scoped(self):
         names = ['release/components/target_resources/arena_target_catalog.json',
                  'scripts/generate_arena_targets.py']

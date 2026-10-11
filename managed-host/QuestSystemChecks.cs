@@ -180,15 +180,61 @@ internal static class QuestSystemChecks
             await SetStory(71_000_006u);
             var multi1 = await db.EvaluateQuestObjectivesAsync(account, characterId, sessionId, true,
                 new QuestRunRestrictions(false, false, false, true, 2, 0, 0, 1000));
+            var multi1Task = (await db.GetCharacterTasksAsync(account, characterId, sessionId))
+                .Single(task => task.QuestId == 71_000_006u);
+            var multi1List = FindFrame(await Dispatch(0xC59B, []), 0xC59C);
+            Check(multi1Task.State3 == 1 && multi1List[8 + 224 + 3] == 1
+                && BinaryPrimitives.ReadUInt32LittleEndian(multi1List.AsSpan(8 + 224 + 12)) == 71_000_006u
+                && multi1List.Length == 252,
+                "Epi3 dungeon1 clear selects objective index one in the request-driven C59C mainline record");
             var multi2 = await db.EvaluateQuestObjectivesAsync(account, characterId, sessionId, true,
                 new QuestRunRestrictions(false, false, false, true, 2, 0, 1, 1000));
+            var multi2Task = (await db.GetCharacterTasksAsync(account, characterId, sessionId))
+                .Single(task => task.QuestId == 71_000_006u);
+            var multi2List = FindFrame(await Dispatch(0xC59B, []), 0xC59C);
+            Check(multi2Task.State3 == 2 && multi2List[8 + 224 + 3] == 2,
+                "Epi3 dungeon2 clear selects objective index two in C59C instead of changing only the aggregate count");
             var multi3 = await db.EvaluateQuestObjectivesAsync(account, characterId, sessionId, true,
                 new QuestRunRestrictions(false, false, false, true, 2, 0, 2, 1000));
             tasks = await db.GetCharacterTasksAsync(account, characterId, sessionId);
             Check(multi1.Changed && !multi1.NewlyCompleted && multi2.Changed && !multi2.NewlyCompleted
                 && multi3.Changed && multi3.NewlyCompleted
+                && multi1Task.Progress3 == 1 && multi1Task.Progress1 == 0
+                && multi2Task.Progress3 == 2 && multi2Task.Progress1 == 0
+                && tasks.Single(task => task.QuestId == 71_000_006u).Progress3 == 3
                 && tasks.Single(task => task.QuestId == 71_000_006u).Progress1 == 1,
-                "multi-dungeon story objectives retain each clear and complete only after the full set");
+                "multi-dungeon story objectives expose incremental progress and complete only after the full set");
+            Check(tasks.Single(task => task.QuestId == 71_000_006u).State3 == 2,
+                "completed multi-objective task retains the final valid index rather than dereferencing past QT objectives");
+
+            // Preserve an old out-of-order ledger while repairing its stale UI cursor.
+            await SetStory(71_000_006u);
+            await Execute("INSERT INTO CharacterQuestObjectives VALUES($id,71000006,75000144,$now),($id,71000006,75000146,$now)",
+                ("$id", characterId), ("$now", DateTime.UtcNow.ToString("O")));
+            await Execute("UPDATE CharacterTasks SET Progress3=2 WHERE CharacterId=$id AND QuestId=71000006", ("$id", characterId));
+            var repairList = FindFrame(await Dispatch(0xC59B, []), 0xC59C);
+            var repairedTask = (await db.GetCharacterTasksAsync(account, characterId, sessionId))
+                .Single(task => task.QuestId == 71_000_006u);
+            Check(repairedTask.State3 == 1 && repairedTask.Progress3 == 2 && repairedTask.Progress1 == 0
+                && repairedTask.RuntimeState == 0 && repairList[8 + 224 + 3] == 1,
+                "C59B repairs old dungeon1-plus-dungeon3 progress to the missing dungeon2 without erasing either clear");
+            var passiveRepairRepeat = await db.EvaluateQuestObjectivesAsync(account, characterId, sessionId, true,
+                QuestRunRestrictions.None);
+            Check(!passiveRepairRepeat.Changed && !passiveRepairRepeat.NewlyCompleted,
+                "repaired objective cursor is idempotent and a passive refresh does not invent a clear");
+            var cursorReopened = new DatabaseService(root);
+            await cursorReopened.InitializeAsync();
+            Check(await cursorReopened.BeginWorldSessionAsync(account, characterId, sessionId, 1, "127.0.0.1")
+                && (await cursorReopened.GetCharacterTasksAsync(account, characterId, sessionId))
+                    .Single(task => task.QuestId == 71_000_006u).State3 == 1,
+                "the repaired current objective persists across database reopen");
+            var missingClear = await db.EvaluateQuestObjectivesAsync(account, characterId, sessionId, true,
+                new QuestRunRestrictions(false, false, false, true, 2, 0, 1, 1000));
+            var allCleared = (await db.GetCharacterTasksAsync(account, characterId, sessionId))
+                .Single(task => task.QuestId == 71_000_006u);
+            Check(missingClear.NewlyCompleted && allCleared.State3 == 2
+                && allCleared.Progress3 == 3 && allCleared.Progress1 == 1,
+                "clearing the missing dungeon2 completes the preserved legacy ledger without replaying dungeon1 or dungeon3");
 
             async Task<(QuestScrollDefinition Scroll, QuestDefinition Quest)> PurchaseAndActivate(uint questId)
             {

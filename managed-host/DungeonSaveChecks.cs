@@ -6,7 +6,7 @@ using System.Reflection;
 
 internal static class DungeonSaveChecks
 {
-    public static async Task RunAsync(DatabaseService db, CancellationToken token)
+    public static async Task RunAsync(DatabaseService db, CancellationToken token, string? nativeExecutable = null)
     {
         long account = await db.OpenLocalAccountAsync("dungeon-save-check", token);
         await db.CreateLocalCharacterAsync(account, "SaveCheck", 1, token);
@@ -151,7 +151,15 @@ internal static class DungeonSaveChecks
             await new DatabaseService(Path.GetDirectoryName(db.DatabasePath)!).RestoreNativeDungeonProgressAsync(character.Id, restored, token);
             Check(restored.Bytes[5052] == 1 && restored.Bytes[5054] == 8, "reopening database restores both clear records");
             var replies = new List<byte[]>();
-            await using var bridge = new NativeDungeonClient(frame => { replies.Add(frame); return Task.CompletedTask; });
+            // A temporary SQLite fixture does not isolate the native room. Never
+            // send this test's CF6C/CF70 to the live default worker on port 52050.
+            await using var workers = new NativeDungeonPool(
+                nativeExecutable ?? Path.Combine(AppContext.BaseDirectory, "nanaimo_gameplay_bridge.exe"),
+                Path.Combine(Path.GetDirectoryName(db.DatabasePath)!, "selftest-native-rooms"),
+                usePrimaryWorker: false);
+            await using var lease = await workers.AcquireAsync("dungeon-save-check", token);
+            await using var bridge = new NativeDungeonClient(
+                frame => { replies.Add(frame); return Task.CompletedTask; }, lease.Port);
             await bridge.ConnectAsync(token);
             Put(restored, NativeDungeonState.PetLevelOffset, 7);
             var imported = await bridge.ExchangeAsync(null, restored, token);

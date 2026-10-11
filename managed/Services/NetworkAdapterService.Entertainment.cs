@@ -41,6 +41,7 @@ public sealed partial class NetworkAdapterService
         public Dictionary<string, int> CurrentBoards { get; } = new(StringComparer.Ordinal);
         public bool EndNotificationSent { get; set; }
         public Dictionary<string, byte> CompletedCells { get; } = new(StringComparer.Ordinal);
+        public Dictionary<string, int> SuccessfulBoardsBySession { get; } = new(StringComparer.Ordinal);
         public Guid RoundId { get; set; }
         public DateTime StartedUtc { get; set; }
         public bool CountdownStarted { get; set; }
@@ -292,7 +293,7 @@ public sealed partial class NetworkAdapterService
         }
     }
 
-    private byte[] BuildEntertainmentWaitUsersPayload(ConnectionSession requester)
+    private byte[] BuildEntertainmentWaitUsersPayload(ConnectionSession requester, ushort direction, ushort cursor)
     {
         var users = _activeArenaSessions.Values
             .Where(session => session.OnlineTracked
@@ -301,37 +302,68 @@ public sealed partial class NetworkAdapterService
                 && session.ArenaGameType == requester.ArenaGameType
                 && session.EntertainmentRoomId == 0
                 && session.Character is not null)
-            .OrderBy(session => session.Character!.Name, StringComparer.Ordinal)
-            .Take(100)
+            .Where(session => cursor == 0 || (direction == 100
+                ? GetSceneEntityId(session.Character!) > cursor
+                : GetSceneEntityId(session.Character!) < cursor))
+            .OrderBy(session => direction == 200 && cursor != 0
+                ? -(int)GetSceneEntityId(session.Character!) : GetSceneEntityId(session.Character!))
+            .Take(10)
             .Select(session => new EntertainmentWaitUserEntry(
                 GetSceneEntityId(session.Character!),
                 session.Character!.Name,
-                session.ArenaGameType))
+                checked((ushort)session.Character!.Gender)))
+            .OrderBy(user => user.UserUid)
             .ToArray();
         return EntertainmentProtocol.BuildWaitUsers(users);
     }
 
-    private static byte[] BuildEntertainmentCreateResponse(
-        EntertainmentRoom room,
-        CharacterRecord owner) =>
-        EntertainmentProtocol.BuildCreateResponse(
+    private CharacterRecord? GetEntertainmentInvitationInviter(ConnectionSession invitee, ushort roomId)
+    {
+        lock (_entertainmentRoomGate)
+        {
+            PruneEntertainmentInvitationsLocked();
+            if (!_entertainmentInvitationsByInvitee.TryGetValue(invitee.SessionId, out var invitation)
+                || invitation.RoomId != roomId || !invitation.Inviter.OnlineTracked
+                || !_entertainmentRooms.TryGetValue(roomId, out var room)
+                || room.OwnerSessionId != invitation.Inviter.SessionId || room.Started
+                || room.ChannelId != invitee.ChannelId || room.GameType != invitee.ArenaGameType)
+                return null;
+            return invitation.Inviter.Character;
+        }
+    }
+
+    private async Task<EntertainmentRankingEntry> GetEntertainmentRoomRecordAsync(
+        byte gameType, CancellationToken token)
+    {
+        var ranking = await _database.GetEntertainmentRankingAsync(gameType, 0, token);
+        return ranking.Count == 0 ? new EntertainmentRankingEntry(string.Empty, 0) : ranking[0];
+    }
+
+    private async Task<byte[]> BuildEntertainmentCreateResponseAsync(
+        EntertainmentRoom room, CancellationToken token)
+    {
+        var record = await GetEntertainmentRoomRecordAsync(room.GameType, token);
+        return EntertainmentProtocol.BuildCreateResponse(
             10,
             true,
             checked((ushort)room.Id),
-            checked((uint)owner.Id),
-            owner.Name);
+            record.Score,
+            record.Name);
+    }
 
-    private static byte[] BuildEntertainmentEnterResponse(
-        EntertainmentRoom room,
-        CharacterRecord owner) =>
-        EntertainmentProtocol.BuildEnterResponse(
+    private async Task<byte[]> BuildEntertainmentEnterResponseAsync(
+        EntertainmentRoom room, CancellationToken token)
+    {
+        var record = await GetEntertainmentRoomRecordAsync(room.GameType, token);
+        return EntertainmentProtocol.BuildEnterResponse(
             10,
-            room.GameType,
+            checked((byte)Math.Clamp((int)room.CreateRequest.Level, 0, byte.MaxValue)),
             checked((ushort)room.Id),
             room.Title,
             room.Password,
-            checked((uint)owner.Id),
-            owner.Name);
+            record.Score,
+            record.Name);
+    }
 
     private bool TryBuildEntertainmentWaitingRoomResponse(
         ConnectionSession requester,
@@ -498,6 +530,7 @@ public sealed partial class NetworkAdapterService
             room.RoundId = Guid.NewGuid();
             room.EndNotificationSent = false;
             room.CompletedCells.Clear();
+            room.SuccessfulBoardsBySession.Clear();
             room.StartedUtc = DateTime.UtcNow;
             room.CountdownStarted = false;
             room.LoadedSessions.Clear();
@@ -637,7 +670,11 @@ public sealed partial class NetworkAdapterService
             if (nextBoards.Length != 0)
                 requester.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(requester, 0xCFE6,
                     nextBoards, "entertainment board reserve", room.RoundId));
-            var delta = completionFlag != 0 && completionFlag == state
+            var successful = completionFlag != 0 && completionFlag == state;
+            if (successful)
+                room.SuccessfulBoardsBySession[requester.SessionId] =
+                    room.SuccessfulBoardsBySession.GetValueOrDefault(requester.SessionId) + 1;
+            var delta = successful
                 ? state * 100 + Math.Max(0, 22 - (int)elapsedSeconds) : 0;
             var luckyTotal = room.LuckyPoints + delta;
             var luckyAwardCount = luckyTotal / EntertainmentRewardPolicy.LuckyThreshold;
@@ -725,6 +762,7 @@ public sealed partial class NetworkAdapterService
         try
         {
             ConnectionSession[] members;
+            int[] successfulBoards;
             Guid round;
             lock (_entertainmentRoomGate)
             {
@@ -740,6 +778,8 @@ public sealed partial class NetworkAdapterService
                 members = room.Members.Values.Where(member => member.Character is not null)
                     .OrderByDescending(member => room.FinalScores.GetValueOrDefault(member.SessionId))
                     .ThenBy(member => member.EntertainmentSlotIndex).ToArray();
+                successfulBoards = members.Select(member =>
+                    room.SuccessfulBoardsBySession.GetValueOrDefault(member.SessionId)).ToArray();
             }
             for (var place = 0; place < members.Length; place++)
             {
@@ -755,7 +795,8 @@ public sealed partial class NetworkAdapterService
                 var saved = await _database.ApplyDungeonRewardAsync(owner.AccountId, owner.CharacterId, owner.SessionId,
                     0, 0, 0, 0, checked((int)score), 0, 0, 0, 0, token, completed: false,
                     activitySettlementKey: "entertainment:" + round.ToString("N"),
-                    entertainmentCards: rewardCards, entertainmentGameType: room.GameType, entertainmentPlace: place);
+                    entertainmentCards: rewardCards, entertainmentGameType: room.GameType, entertainmentPlace: place,
+                    entertainmentMemberCount: members.Length, entertainmentSuccessfulBoards: successfulBoards[place]);
                 if (saved is null) return null;
                 member.Character = saved;
                 owner.Session.Character = saved;
@@ -989,6 +1030,7 @@ public sealed partial class NetworkAdapterService
             .Select(item => item.Key).ToArray())
             _entertainmentInvitationsByInvitee.Remove(key);
         room.ScoresBySession.Remove(member.SessionId);
+        room.SuccessfulBoardsBySession.Remove(member.SessionId);
         room.WaitingRoomInitializedSessions.Remove(member.SessionId);
         room.EntityInitializedSessions.Remove(member.SessionId);
         room.WaitingRoomAnnouncements.RemoveWhere(key =>
@@ -1107,6 +1149,8 @@ public sealed partial class NetworkAdapterService
             var encoding = System.Text.Encoding.GetEncoding(936);
             encoding.GetBytes(title).AsSpan().CopyTo(response);
             encoding.GetBytes(password).AsSpan().CopyTo(response.AsSpan(24));
+            // CF7A/full+40 uses the same A750A0 difficulty setter as entry.
+            BinaryPrimitives.WriteUInt32LittleEndian(response.AsSpan(32, 4), room.CreateRequest.Level);
             QueueEntertainmentBroadcast(requester, 0xCF7A, response, false, "entertainment room settings");
         }
         QueueEntertainmentLobbyRoomListRefresh(requester, "entertainment room settings");

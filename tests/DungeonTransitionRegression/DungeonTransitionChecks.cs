@@ -117,6 +117,7 @@ internal static class DungeonTransitionChecks
             var account = await db.OpenLocalAccountAsync("transition-test", token);
             await db.CreateLocalCharacterAsync(account, "Transition", 1, token);
             var character = (await db.GetCharacterAsync(account, token))!;
+            var deathResources = HealthRecoveryPolicy.ResolveDungeonDeathReturn(character, 45);
             session = Activator.CreateInstance(SessionType, nonPublic: true)!;
             Check(await db.BeginWorldSessionAsync(account, character.Id, (string)Get(session, "SessionId")!, 1, "127.0.0.1", token), name + ": isolated online identity");
             var state = NativeDungeonState.Create(character, [], []);
@@ -186,7 +187,9 @@ internal static class DungeonTransitionChecks
                     var hp = new byte[28]; BinaryPrimitives.WriteUInt16LittleEndian(hp, (ushort)character.Id);
                     await (Task)Receive.Invoke(service, [session, NativeDungeonClient.Frame(0xD010, hp), 1L, token])!;
                     Check(!(bool)Get(session, "NativeDungeonDeathLatched")! && Drain(session).Count == 0
-                        && Get(session, "NativeBattleResources") is BattleResourceSnapshot { CurrentHp: 1000, CurrentMp: 500, AttackMode: 0, SettlementFrozen: true }, name + ": retry restores resources but blocks old zero-HP until reload");
+                        && Get(session, "NativeBattleResources") is BattleResourceSnapshot { AttackMode: 0, SettlementFrozen: true } retry
+                        && retry.CurrentHp == deathResources.CurrentHp && retry.CurrentMp == deathResources.CurrentMp,
+                        name + ": retry keeps death-return resources and blocks old zero-HP until reload");
                 }
             }
             if (startBattle)
@@ -211,7 +214,8 @@ internal static class DungeonTransitionChecks
                 Check(ReferenceEquals(Get(session, "NativeDungeon"), native) && Drain(session).Count == 0,
                     name + ": continuation CF1D retains worker and emits no CF1E/C368");
                 Check(death
-                    ? Get(session, "NativeBattleResources") is BattleResourceSnapshot { CurrentHp: 1000, CurrentMp: 500, AttackMode: 0 }
+                    ? Get(session, "NativeBattleResources") is BattleResourceSnapshot { AttackMode: 0 } carried
+                        && carried.CurrentHp == deathResources.CurrentHp && carried.CurrentMp == deathResources.CurrentMp
                     : Get(session, "NativeBattleResources") is BattleResourceSnapshot { CurrentHp: 123, CurrentMp: 45, AttackMode: 2 },
                     name + ": retained worker keeps HP/MP/P carry");
                 if (skipRoster)
@@ -232,7 +236,9 @@ internal static class DungeonTransitionChecks
                 {
                     await Send(NativeDungeonClient.Frame(0xCFEB, [stage, 0, 0, 0]));
                     Check(Drain(session).Select(Op).SequenceEqual(new ushort[] { 0xCFEC })
-                        && Get(session, "NativeBattleResources") is BattleResourceSnapshot { SettlementFrozen: false, CurrentHp: 1000 }, name + ": request-bound profile completes retry, suppressing pre-profile old damage");
+                        && Get(session, "NativeBattleResources") is BattleResourceSnapshot { SettlementFrozen: false } reloaded
+                        && reloaded.CurrentHp == deathResources.CurrentHp && reloaded.CurrentMp == deathResources.CurrentMp,
+                        name + ": request-bound profile retains partial HP and MP, suppressing pre-profile old damage");
                     var hp = new byte[28]; BinaryPrimitives.WriteUInt16LittleEndian(hp, (ushort)character.Id);
                     BinaryPrimitives.WriteUInt16LittleEndian(hp.AsSpan(8), 900);
                     await (Task)Receive.Invoke(service, [session, NativeDungeonClient.Frame(0xD010, hp), 1L, token])!;

@@ -74,3 +74,11 @@ Copy-Item release/components/cards/event-card-rewards.json <install-root>/adapte
 ```
 
 This file uses the same three forms documented above. Installing the reviewed pool is a separate administrative action from building the adapter or enabling card drops.
+
+## Default page weights
+
+Pages 1–4 each use a total weight of 10,000. The four page-specific pet entries
+have weights 40, 28, 20 and 12; the warrior outfit set has 400, the three-gem
+bundle 500, the decoration set 1,000, bread plus drink 4,125, and the entry
+combining item `46000008` with 200 Hans has 3,875. Item codes, quantities and
+whole-bundle delivery follow the checked-in configuration.

@@ -36,7 +36,8 @@
       "validation": "pinned-source-baseline-conversion-and-installed-content",
       "default_installation": false,
       "gameplay_integration_complete": false,
-      "code_integration": "ep23-catalogs-contextual-navigation-r8-persistence",
+      "code_integration": "ep22-ep23-catalogs-contextual-navigation-r8-persistence",
+      "l7_combat_manifest": "manifest/l7_combat.json",
       "combat_manifest": "manifest/lumineos_combat.json",
       "runtime_acceptance": false
     }
@@ -86,28 +87,28 @@
         "sha256": "6B60AF0002EF06557A41988975881DFA8BAEC7394C9CFB85C7A4759D66CD42F3"
       },
       "adapter_runtime/Nanaimo.Adapter.dll": {
-        "size": 1569792,
-        "sha256": "76D085DD8B1A08B5BB8B19EBDA91AE5F9E7F9C42E129E60D0E8D99D509109833"
+        "size": 1579520,
+        "sha256": "A86DD557734DA460EFF3224E4EBB8EBAE448A7790983C2C2BE7E09DD711C5628"
       },
       "adapter_runtime/Nanaimo.Adapter.exe": {
         "size": 151552,
-        "sha256": "F4CC0CB8BFDDB06091FC8EF5D456A17FF5226A33D0C67C66B74CC2BD0B511EEF"
+        "sha256": "61BF3F5320E8A497834E745C6D1360A91D5AE7EA384234A6BFD63D033F6EA13D"
       },
       "adapter_runtime/Nanaimo.Adapter.pdb": {
-        "size": 226280,
-        "sha256": "72CC41DB27DDE989D2E6417AA0CC67107625570F929FCF4D79EEBB4260A25293"
+        "size": 227308,
+        "sha256": "9E05D402D84AB2F59AC4F692040156AA158A329E0466D36BFF3096821F6B0D56"
       },
       "adapter_runtime/Nanaimo.Adapter.runtimeconfig.json": {
         "size": 372,
         "sha256": "D7A0BECA53834E0A387B9E5083BD1DADF5BEE565B48595A9D4CB457D15726C78"
       },
       "adapter_runtime/Nanaimo.Gameplay.dll": {
-        "size": 5569024,
-        "sha256": "3D4AE3CB87962678FB8D4EA93A3DD1D83463C9F7D05B2890C0A449CA40A3D526"
+        "size": 5605376,
+        "sha256": "845A488590144D79483FDFAB57B2A38C4DE255C8F25BBA37AF2F16AD6CAA63C9"
       },
       "adapter_runtime/Nanaimo.Gameplay.pdb": {
-        "size": 561876,
-        "sha256": "1DE2A2BFEA6B67731B385F1F9628E3E6C2E1A07F12D626ED44E94A8505F59F8D"
+        "size": 567972,
+        "sha256": "9AF9E907888749E22BFFDB10A5253FAA74492CA6B032B30151DBB26255D58180"
       },
       "adapter_runtime/SQLitePCLRaw.batteries_v2.dll": {
         "size": 5120,
@@ -771,7 +772,7 @@
       },
       "adapter_runtime/adapter_manifest.json": {
         "size": 52662,
-        "sha256": "1A6C0D9C7BDC4EC8AA74AC4197F97583D6D2EB8BDF05C49B1899D275A1A76FA6"
+        "sha256": "C945484881D82E97B83A9074955E54355A6AA1F6EED933131C5D575457F42257"
       },
       "adapter_runtime/clretwrc.dll": {
         "size": 310568,
@@ -830,8 +831,8 @@
         "sha256": "B7158D427B01C70483BB3D80C5211E387DD98E9471C8A70E4484D449DE9157E8"
       },
       "adapter_runtime/nanaimo_gameplay_bridge.exe": {
-        "size": 23627264,
-        "sha256": "A8F382B9487DF7B625DF5E211F568027FFADFA9CDC89AF11D1FBDF78DBB0F2F2"
+        "size": 23587840,
+        "sha256": "E54F7CEA455B9984CD73C36D468F4723E85CFE00001477028A9606219ED80562"
       },
       "adapter_runtime/netstandard.dll": {
         "size": 100648,
@@ -906,8 +907,8 @@
         "sha256": "338B9153192937070806BAE50E0E684E56907CBB2C44C65B34A9F0382492E63E"
       },
       "adapter_runtime/资源/数据/dungeon_combat_catalog.bin": {
-        "size": 11805956,
-        "sha256": "F3D8A7ED6069EDF4BD2D9721AD9F7E2A3D412790BE6142C94D7793053AAA0E7A"
+        "size": 11810960,
+        "sha256": "2E12C1219AC611596E3530F0B6FA5AC9BA7A7BCBE49A8B87743A7553D752497A"
       },
       "adapter_runtime/资源/数据/gi._D6": {
         "size": 413760,
@@ -931,8 +932,8 @@
   },
   "critical_files": {
     "docs/event-card-rewards.md": {
-      "size": 6454,
-      "sha256": "5836C69D8E33440991924813A7E148897187196E6AF9CD42B95836C64DD956A9"
+      "size": 6853,
+      "sha256": "9354191A631033E24EF466B4257D3BEECB6F9C98F15F8312CC8325AD5BF4F8B9"
     },
     "docs/level200/README.md": {
       "size": 4710,
@@ -943,8 +944,8 @@
       "sha256": "1C4CA9B63B2E4018A66EB86284D832DE84D51A095610641516BC4FA4F56A954F"
     },
     "docs/客户端二进制补丁.md": {
-      "size": 20069,
-      "sha256": "9A1DA749AC07D219F5AA66B4F2CE9ECF95D3FFF667D391CC6AA10F9AFF83B512"
+      "size": 26960,
+      "sha256": "A862714873B8681380913AF3540C0AD40F88BE1F69F418C5378C1F445D7B2E65"
     },
     "gui_launcher/client_connect.ps1": {
       "size": 4447,
@@ -3099,12 +3100,12 @@
       "sha256": "8660C63880B21250BBC077A22E0952B450E3B599838B765EE1A5DF72F074F60D"
     },
     "managed/Services/NetworkAdapterService.ArenaLifecycle.cs": {
-      "size": 6364,
-      "sha256": "1E27FE7AAB85B9307C61787BC47DE7EDFA2BDC8FA9B0A570F5AA6AA32AB7A49F"
+      "size": 8958,
+      "sha256": "2B7C36E74E8B2EF9A28F20F0E049ED61B6091CC2BAA474CAF2B0C51C4605C230"
     },
     "managed/Services/NetworkAdapterService.ArenaLoading.cs": {
-      "size": 2175,
-      "sha256": "6FE78DEF4720B0505672A906F3439B43603AF43EBFD8B6529BCE6B09A63A6D87"
+      "size": 2282,
+      "sha256": "2265669D495F00C10B54C06CC402D6E1D3193C323CA9493874F27D2AB38BECE7"
     },
     "manifest/hero_dragon_resources.json": {
       "size": 17803,
@@ -3114,13 +3115,17 @@
       "size": 882389,
       "sha256": "4A3F31E412C04AB2DACEA3415C27D35397223FC418F605DE5709E02A4609B444"
     },
+    "manifest/l7_combat.json": {
+      "size": 61923,
+      "sha256": "4F9AC5A0C81647B5239867E8D8777147BFBBF0548B65B9B07C620501096CB103"
+    },
     "manifest/lumineos_combat.json": {
       "size": 58341,
       "sha256": "684C2316A06AA899D585ABBAB819941461DECD021242ECCAF7A825D3371D4938"
     },
     "manifest/lumineos_resource_port.json": {
-      "size": 423994,
-      "sha256": "CCC9FDDD9DA69816F0A33854312E01693C0DD599F98D4E023B7ACBF1AD18D952"
+      "size": 598011,
+      "sha256": "CFA8ABA8C9822C7C24D1C34052D9320CB64933C7A6BAEB810C9C7271C036C51B"
     },
     "manifest/patch_runtime_requirements.json": {
       "size": 11009,
@@ -3131,28 +3136,32 @@
       "sha256": "29AAF2DA2E9BA3FFD1CB457FC1B6C5DBADBF32F9746037888A3EE87536C3DA0C"
     },
     "release/components/cards/event-card-rewards.json": {
-      "size": 3598,
-      "sha256": "C23D8F626863569D449FF94F7DA1E8D1C0FE66FD1DE5B4FDECFC1147A9BB323F"
+      "size": 3592,
+      "sha256": "CD5A9419C4C028177D283D64D73DF340872652CAD123E980A4D5D1F845EE6042"
     },
     "release/components/stage_damage/scene_hazard_registry.json": {
-      "size": 81128,
-      "sha256": "AE8DF07203BD412BB05CFE4D7E9AA34C84F3BE69487CAA4C969B5BAEC21C4759"
+      "size": 80061,
+      "sha256": "27D3DAA533FA521025C9CC7BF090E1B8DE767C312C8B4A7BF7FDA33871885BCE"
     },
     "release/components/target_resources/arena_target_catalog.json": {
       "size": 136035,
       "sha256": "ACE69F3FB42B827127B5F6F4E530953D7CAC8D97D570F995E1E20F779E923675"
     },
     "release/components/target_resources/preloaded_target_catalog.json": {
-      "size": 3720532,
-      "sha256": "C00557F77C329BAAEB5F5A17736CBAC7680C2B818FB86CE1551952A913421AE5"
+      "size": 3609366,
+      "sha256": "D242A4216946D9CD8250753540F29D295A5E4BD9E2507661A0B910A15AC39101"
     },
     "scripts/apartment_exterior_panel.py": {
       "size": 17446,
       "sha256": "1F2013880AE0079F1D529B27BFB41C0FFD153962C1BB48B424D19A0E533E6E77"
     },
     "scripts/arena_result_compat.py": {
-      "size": 3131,
-      "sha256": "2B37D707299BF74F9EE350B4EB62739C2C5264D80E87D6577FC2379128508901"
+      "size": 5811,
+      "sha256": "F1ABDD3EFA1BEF80CF8CDAF814049B665928DF3981E2EC13B31D332CF6829151"
+    },
+    "scripts/arena_state_probe.py": {
+      "size": 5501,
+      "sha256": "48AEF68189BF9BABD77C934FACF80325BF8D9DC3114F461CDB29DDB9D0D8D106"
     },
     "scripts/assets/projectile/basketball.im3": {
       "size": 46380,
@@ -3169,6 +3178,10 @@
     "scripts/assets/projectile/basketball_spin.png": {
       "size": 52808,
       "sha256": "C54CD42E98FC654408C6DA21D1663D5A05C8594CD2CBA404D7AE3D03B47DF240"
+    },
+    "scripts/audit_l7_combat_resources.py": {
+      "size": 3525,
+      "sha256": "AC90A5DB83D462003143FB41AEB7026FA02E32B49C35D849687D9DABFB98C9C4"
     },
     "scripts/deploy_adapter_runtime.py": {
       "size": 5042,
@@ -3214,6 +3227,10 @@
       "size": 4463,
       "sha256": "F9A97666EB4BB3521B4B35F38DAF2EC509DD68B64E1E1FB646644A5E0D7AF036"
     },
+    "scripts/generate_l7_combat.py": {
+      "size": 17682,
+      "sha256": "017BBB5463E663CDF41E461471D1F67FB309286AD9B8CA051197BB025E36CAD7"
+    },
     "scripts/generate_lumineos_combat.py": {
       "size": 15330,
       "sha256": "AFFA9205AE3BD95D68DCAF64287CFF4834695C66EA06B8A0D8565783B01FB412"
@@ -3228,15 +3245,15 @@
     },
     "scripts/generate_scene_hazard_catalog.py": {
       "size": 13727,
-      "sha256": "FA6F54B540B0064CD3AC17780FF7F3735F51AA36B749B7F1A58D57305C31E788"
+      "sha256": "B7911E6955069F0637053FC57BC7BF4F0AECA3B2E8AEA5BC8D4A3B6A8354B934"
     },
     "scripts/level200_compat.py": {
       "size": 2275,
       "sha256": "350179B6A72BEBFF678C49B8F5FAC090ABA9EEFE29CF53A67F0331EF877FB15F"
     },
     "scripts/lumineos_codec.py": {
-      "size": 7498,
-      "sha256": "1C9C6E88B2F3849FA5EDFDDDBB1519B62D704C68348FA62AACF4EF72C0333B69"
+      "size": 7933,
+      "sha256": "D354E65871AA33C029698BCC0B72A42955579F9DE690EC53FC2E15134305C3A3"
     },
     "scripts/lumineos_scenes.py": {
       "size": 3191,
@@ -3255,16 +3272,16 @@
       "sha256": "69B84EC7A3C8769F73D6F4B17933C3FD54171D0ED0918D9EDA080F4AB84369EB"
     },
     "scripts/port_lumineos_resources.py": {
-      "size": 18554,
-      "sha256": "4B8102EB664B88FF15E06969AE0E4E7282BDF90D740484ED76815397439998A5"
+      "size": 18815,
+      "sha256": "972BF3DD59C2BDE1DCDD21AA63F6F26769DAFFDDF1CF8FF8263B72F26B3B237F"
     },
     "scripts/prepare_card_page_update.py": {
       "size": 5581,
       "sha256": "804045B8F9FB322376514E2892E6859A083ACF20A611BB88B6572B50E1D1F55E"
     },
     "scripts/prepare_client_compatibility.py": {
-      "size": 75457,
-      "sha256": "308949CBC9D8847058B90FF86AAB1CF9FD241B3F5AE53B2F71061F02F936A889"
+      "size": 75516,
+      "sha256": "2D9BAD9B7E028EBB7A6CF5D24C114720E31AE10E472FD035AEED359BA95ED080"
     },
     "scripts/prepare_entertainment_resources.py": {
       "size": 3024,
@@ -3283,16 +3300,28 @@
       "sha256": "C39201979F023102B0D62C1BFAD95497DCFE870B020D97E79342B0ADBBBFC242"
     },
     "scripts/refresh_manifest.py": {
-      "size": 12327,
-      "sha256": "7C8DE58B7DA9D66DB28BB4E075740F789C58E101642092847CBD6A84FC8FFEBB"
+      "size": 13093,
+      "sha256": "E1EA755F323BD9C77D63D810E79B4DAE246F22F39C689584996358E9993EFEFF"
     },
     "scripts/refresh_source_manifest.py": {
-      "size": 7704,
-      "sha256": "27EC17BC9C43FABBDFB1402D3D3349EB546F3D5043619E00E55ABB7F70D6A508"
+      "size": 8151,
+      "sha256": "B2BEE4A94B8A576E3652A03667521E0FA81D127447553B21EA6E6C35ABAF44DE"
+    },
+    "scripts/review_l7_resource_port.py": {
+      "size": 11259,
+      "sha256": "F080ED88027363325BE3B61AFB2A7313C9FC2AC5CE95319CB87B3C092E3AA4F8"
     },
     "scripts/test_arena_result_compat.py": {
-      "size": 9477,
-      "sha256": "3A296D5EBD4045E2D1539395F1D9623942BCF58720388A80336AF8E7D2B93D87"
+      "size": 11281,
+      "sha256": "5F4C0396D8DF560B8B68F38FC5A1F91821F8D5829348B69DA5E86ADE5D7553DA"
+    },
+    "scripts/test_arena_round_boundary_client.py": {
+      "size": 8115,
+      "sha256": "D1C5F9667193376FC9C7E2B885B7ACC82C60E898F94E9E9D67E167FB90944EA3"
+    },
+    "scripts/test_arena_state_probe.py": {
+      "size": 2851,
+      "sha256": "AEF4F2F6E8843CDA4640741A7BB9C89AC26FEFB3FB37CCD8336F25F2C5E3578E"
     },
     "scripts/test_basic_gameplay_boundaries.py": {
       "size": 6037,
@@ -3330,6 +3359,18 @@
       "size": 7771,
       "sha256": "0774244BBCCEF14A8D94A0C4B0C7AF254718C2F9C0301CA4BB5ECB533C03C337"
     },
+    "scripts/test_dungeon_death_retry_wire.py": {
+      "size": 5309,
+      "sha256": "3880663D00F6EBBDD19532C20CDE7E03A6C4922CBEE093F409E86ADEA8AAB3A5"
+    },
+    "scripts/test_dungeon_selftest_isolation.py": {
+      "size": 3289,
+      "sha256": "633C6CBA444DA713306C26501556EDF45C096925E0CFB9D715F30DC2E2AE095B"
+    },
+    "scripts/test_entertainment_difficulty_client.py": {
+      "size": 3438,
+      "sha256": "8F1D1DEFAD83B81C26EBA3EEB9FB75141E0D203EC19CD178A0A6AE974EF3507F"
+    },
     "scripts/test_entertainment_result_client.py": {
       "size": 12874,
       "sha256": "BE805983C15308990FC19760DF2BCC221D55904573A617C74DE1C5895BFD6ECF"
@@ -3345,6 +3386,10 @@
     "scripts/test_inventory_card_catalog.py": {
       "size": 5987,
       "sha256": "5B0F45E414BEBC57CAB95F84C4838C0A9A1B4F8027ABCD798410D3C280A018EE"
+    },
+    "scripts/test_l7_combat_resources.py": {
+      "size": 10182,
+      "sha256": "BE961518ECA8544E92039FBAF9C44A16D01C93FD8EF1D42CDA3CA9C692B81B07"
     },
     "scripts/test_launcher_incremental_save.py": {
       "size": 22123,
@@ -3384,7 +3429,7 @@
     },
     "scripts/test_preloaded_targets.py": {
       "size": 8243,
-      "sha256": "61968BD58FBDEEA910EACA18D246CBEC855374390528A04E8754053FB33229DF"
+      "sha256": "844A26D75A7806813EC2C4A54D4FD955174B99E35EFBDF4E86C84F384E9BE804"
     },
     "scripts/verify_client_baseline.py": {
       "size": 3062,
@@ -3398,21 +3443,29 @@
       "size": 164,
       "sha256": "EAABAC6548E7B59A0C14B087CE96E8E37374849642FABC810AAB6B35FD14AC14"
     },
+    "tests/ArenaRegression/DeliveryEpochChecks.cs": {
+      "size": 10343,
+      "sha256": "34A337B9EC828BA9C2D6A9A9BAE159CCAC84C24F5234E674FC9510F75EF7AACC"
+    },
     "tests/ArenaRegression/LifecycleChecks.cs": {
-      "size": 16540,
-      "sha256": "47DD0F4FC8B2F15878C97ED6C48E84D7951B6348ADC915191C9E71AB9289B200"
+      "size": 17290,
+      "sha256": "E8903D45D465F6344E11124F5F975F42650A38481ECC27F48B27E310340C7C09"
     },
     "tests/ArenaRegression/RankingChecks.cs": {
       "size": 7416,
       "sha256": "8AC6B94B75DDF5FEFFCCC90398C9019B72D9EB6FDF93D94CA3F426B36D027D1C"
     },
     "tests/ArenaRegression/ReentryChecks.cs": {
-      "size": 8638,
-      "sha256": "786BA9C2EB01BE26B741954F4460B3A6E0C3C3883150F5C5536C47BCF6078F26"
+      "size": 10178,
+      "sha256": "6C332A4476FF98DF50D13D8E116AD2C95D9C7CE5B8DA49E3F9C0B53DF0213F31"
     },
     "tests/ArenaRegression/RoomListChecks.cs": {
       "size": 5371,
       "sha256": "3CF117D9425F25A699E56321FDB10CCD12B921B32709929489F1714236857E47"
+    },
+    "tests/ArenaRegression/RoundBoundaryChecks.cs": {
+      "size": 7812,
+      "sha256": "90C709DEB3CDC69DF9F9D656B9AFCA990D43ECF1C0B870DB10987C373AD22752"
     },
     "tests/CardExchangeRegression/CardTradeChecks.cs": {
       "size": 18566,
@@ -3435,24 +3488,32 @@
       "sha256": "1D535C339E3EB4A4E7838E8D237BA0ECCC3FE6A2ED5BD08B26F4A233E0476550"
     },
     "tests/DeathSettlementRevivalRegression/DeathRetryChecks.cs": {
-      "size": 11590,
-      "sha256": "078EF26793899B2F488CDB5875E7E3750D0445586BA4D10ACB0F2345E5A29777"
+      "size": 12248,
+      "sha256": "E7488E26E293625743BE529222047044AD7E8FEE3C70F6579AF07D66B5B6755D"
+    },
+    "tests/MentorshipRegression/EntertainmentLobbyChecks.cs": {
+      "size": 11946,
+      "sha256": "FA1496D9A944CA69DCD2F50985896D44C1BA3B1EF1A5BF837252B988364FB299"
     },
     "tests/MentorshipRegression/EntertainmentRewardChecks.cs": {
-      "size": 21452,
-      "sha256": "0E6E7967CDFD11AB92DD7F7DF0DC3DA8CC869BFD331193A839F376B85CA9E0D7"
+      "size": 34831,
+      "sha256": "AA4862529335605A379C33D757967E20E63FE5ED8DE8251A619F94049CE3A39B"
     },
     "tests/MentorshipRegression/GameplayReviewChecks.cs": {
-      "size": 28748,
-      "sha256": "B9386218B9BC19E318C2A36443C7FD0E6DE38FCA28213A23D069617EB5656E3E"
+      "size": 30248,
+      "sha256": "633908003C70AD601320C698E6CE9749894094C893D09667078593022879BEB4"
     },
     "tests/MentorshipRegression/MentorshipRegression.csproj": {
-      "size": 787,
-      "sha256": "798D3C510BA7F99FA798B03539A8C36D659B6517F258FCEA1231177AA03DDAAA"
+      "size": 815,
+      "sha256": "18AD53935D61895D13DE59B4C6011597F3F02C56F0963792118E918DDCE24760"
     },
     "tests/MentorshipRegression/Program.cs": {
-      "size": 50945,
-      "sha256": "2E50C76ED80407B7EFEADB8A7297BB0F3193EE264DF15B6492662B60BBC31D82"
+      "size": 50903,
+      "sha256": "D305EE463B74E20A2111B2AFB259FA3F3AA44E90ADF6D9446F8A0E31810BD163"
+    },
+    "tests/NativeDungeonPoolRegression/Program.cs": {
+      "size": 2410,
+      "sha256": "4FE38BFB1CF770A1C0076C97053C624BFAF7665B21AA27399150D49C08D844E6"
     },
     "adapter_runtime/Microsoft.CSharp.dll": {
       "size": 1005392,
@@ -3487,28 +3548,28 @@
       "sha256": "6B60AF0002EF06557A41988975881DFA8BAEC7394C9CFB85C7A4759D66CD42F3"
     },
     "adapter_runtime/Nanaimo.Adapter.dll": {
-      "size": 1569792,
-      "sha256": "76D085DD8B1A08B5BB8B19EBDA91AE5F9E7F9C42E129E60D0E8D99D509109833"
+      "size": 1579520,
+      "sha256": "A86DD557734DA460EFF3224E4EBB8EBAE448A7790983C2C2BE7E09DD711C5628"
     },
     "adapter_runtime/Nanaimo.Adapter.exe": {
       "size": 151552,
-      "sha256": "F4CC0CB8BFDDB06091FC8EF5D456A17FF5226A33D0C67C66B74CC2BD0B511EEF"
+      "sha256": "61BF3F5320E8A497834E745C6D1360A91D5AE7EA384234A6BFD63D033F6EA13D"
     },
     "adapter_runtime/Nanaimo.Adapter.pdb": {
-      "size": 226280,
-      "sha256": "72CC41DB27DDE989D2E6417AA0CC67107625570F929FCF4D79EEBB4260A25293"
+      "size": 227308,
+      "sha256": "9E05D402D84AB2F59AC4F692040156AA158A329E0466D36BFF3096821F6B0D56"
     },
     "adapter_runtime/Nanaimo.Adapter.runtimeconfig.json": {
       "size": 372,
       "sha256": "D7A0BECA53834E0A387B9E5083BD1DADF5BEE565B48595A9D4CB457D15726C78"
     },
     "adapter_runtime/Nanaimo.Gameplay.dll": {
-      "size": 5569024,
-      "sha256": "3D4AE3CB87962678FB8D4EA93A3DD1D83463C9F7D05B2890C0A449CA40A3D526"
+      "size": 5605376,
+      "sha256": "845A488590144D79483FDFAB57B2A38C4DE255C8F25BBA37AF2F16AD6CAA63C9"
     },
     "adapter_runtime/Nanaimo.Gameplay.pdb": {
-      "size": 561876,
-      "sha256": "1DE2A2BFEA6B67731B385F1F9628E3E6C2E1A07F12D626ED44E94A8505F59F8D"
+      "size": 567972,
+      "sha256": "9AF9E907888749E22BFFDB10A5253FAA74492CA6B032B30151DBB26255D58180"
     },
     "adapter_runtime/SQLitePCLRaw.batteries_v2.dll": {
       "size": 5120,
@@ -4172,7 +4233,7 @@
     },
     "adapter_runtime/adapter_manifest.json": {
       "size": 52662,
-      "sha256": "1A6C0D9C7BDC4EC8AA74AC4197F97583D6D2EB8BDF05C49B1899D275A1A76FA6"
+      "sha256": "C945484881D82E97B83A9074955E54355A6AA1F6EED933131C5D575457F42257"
     },
     "adapter_runtime/clretwrc.dll": {
       "size": 310568,
@@ -4231,8 +4292,8 @@
       "sha256": "B7158D427B01C70483BB3D80C5211E387DD98E9471C8A70E4484D449DE9157E8"
     },
     "adapter_runtime/nanaimo_gameplay_bridge.exe": {
-      "size": 23627264,
-      "sha256": "A8F382B9487DF7B625DF5E211F568027FFADFA9CDC89AF11D1FBDF78DBB0F2F2"
+      "size": 23587840,
+      "sha256": "E54F7CEA455B9984CD73C36D468F4723E85CFE00001477028A9606219ED80562"
     },
     "adapter_runtime/netstandard.dll": {
       "size": 100648,
@@ -4307,8 +4368,8 @@
       "sha256": "338B9153192937070806BAE50E0E684E56907CBB2C44C65B34A9F0382492E63E"
     },
     "adapter_runtime/资源/数据/dungeon_combat_catalog.bin": {
-      "size": 11805956,
-      "sha256": "F3D8A7ED6069EDF4BD2D9721AD9F7E2A3D412790BE6142C94D7793053AAA0E7A"
+      "size": 11810960,
+      "sha256": "2E12C1219AC611596E3530F0B6FA5AC9BA7A7BCBE49A8B87743A7553D752497A"
     },
     "adapter_runtime/资源/数据/gi._D6": {
       "size": 413760,
@@ -4327,7 +4388,7 @@
       "sha256": "0388592AD03CAE6025409410578D58F3276983E409A350033AE2B2613E6C906A"
     }
   },
-  "source_closure_count": 364,
+  "source_closure_count": 369,
   "public_export_policy": {
     "mode": "explicit-reviewed-allowlist-only",
     "exclude_private_profiles_states_logs_backups": true,

@@ -9,12 +9,11 @@ internal static class ApartmentPopularityPolicy
     internal const uint LandCardCode = 60_000_000;
 
     internal static HealthRecoveryParameters GetRecoveryParameters(long totalVisitIndex)
-        => totalVisitIndex switch
-        {
-            < 10 => new(70, 20),
-            < 50 => new(150, 20),
-            < 200 => new(200, 20),
-            < 500 => new(300, 30),
-            _ => new(500, 50)
-        };
+    {
+        // Clamp before multiplication so even corrupt totals fit the thermometer WORDs.
+        var visits = Math.Clamp(totalVisitIndex, 0L, ushort.MaxValue);
+        return new HealthRecoveryParameters(
+            (int)Math.Clamp(visits * 5, 70L, ushort.MaxValue),
+            (int)Math.Max(20L, visits));
+    }
 }

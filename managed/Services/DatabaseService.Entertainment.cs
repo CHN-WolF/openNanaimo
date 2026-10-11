@@ -30,8 +30,29 @@ public sealed partial class DatabaseService
         return result is null ? 0 : checked((uint)Convert.ToInt64(result));
     }
 
+    internal async Task<IReadOnlyList<EntertainmentRankingEntry>> GetEntertainmentRankingAsync(
+        byte gameType, ushort page, CancellationToken token = default)
+    {
+        if (gameType is < 1 or > 3) return [];
+        await using var connection = await OpenConnectionAsync(token);
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT c.Name,s.BestScore FROM EntertainmentBestScores s
+            JOIN Characters c ON c.Id=s.CharacterId
+            WHERE s.GameType=$game AND s.BestScore>0
+            ORDER BY s.BestScore DESC,s.CharacterId ASC LIMIT 10 OFFSET $offset
+            """;
+        command.Parameters.AddWithValue("$game", gameType);
+        command.Parameters.AddWithValue("$offset", (long)page * 10);
+        var rows = new List<EntertainmentRankingEntry>();
+        await using var reader = await command.ExecuteReaderAsync(token);
+        while (await reader.ReadAsync(token))
+            rows.Add(new EntertainmentRankingEntry(reader.GetString(0), checked((uint)reader.GetInt64(1))));
+        return rows;
+    }
+
     private static async Task<int> GetEntertainmentPetExperienceAsync(SqliteConnection connection,
-        SqliteTransaction transaction, long characterId, uint petCode, int place, CancellationToken token)
+        SqliteTransaction transaction, long characterId, uint petCode, int place, int memberCount, CancellationToken token)
     {
         if (!ShopCatalog.TryGet(15, petCode, out var pet)) return 0;
         var current = pet.PetModelStage;
@@ -51,7 +72,7 @@ public sealed partial class DatabaseService
             if (reader.GetInt32(1) > 0) maximum = checked((byte)reader.GetInt32(1));
         }
         var state = new PetState(petCode, current, maximum, 0, 0, 0, 0, 0, pet.PetMaxDurability);
-        return checked((int)EntertainmentRewardPolicy.GetPetExperience(state, place));
+        return checked((int)EntertainmentRewardPolicy.GetPetExperience(state, place, memberCount));
     }
 
     private static async Task SaveEntertainmentBestScoreAsync(SqliteConnection connection, SqliteTransaction transaction,

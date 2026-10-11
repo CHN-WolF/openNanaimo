@@ -12,6 +12,7 @@ class ContinuationRearmTests(unittest.TestCase):
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
+#include "release/components/dungeon_progression/settlement_result_policy.inc"
 #define TEAMPLAY_FEATURE_CF99_SUPER_REARM_CLEAR 1
 #define TEAMPLAY_FEATURE_MAP_IDENTITY_GENERIC 0
 #define ROOM_READY 1
@@ -21,6 +22,7 @@ static unsigned post_reset_epoch,dungeon_room_epoch=1,post_reset_real,post_reset
 static int port,c,off,pending,super,next_exists=1,count,ops[8];
 static unsigned char buf[12];
 static unsigned combat_hp=2000,g_profile_hp_current=2000,g_profile_mp_current=800,lifesteal_remainder,mp_absorb_remainder;
+static unsigned g_profile_hp_max=1200,g_profile_mp_max=500;
 static int injury_armed=1,injury_dead,death_latched,retry_acknowledged;
 static struct {unsigned battle_epoch;} boss_ctx={7};
 static struct {unsigned mode;} power_ctx;
@@ -56,7 +58,7 @@ combat_hp=g_profile_hp_current=0;g_profile_mp_current=123;injury_dead=1;
 death_latched=0;retry_acknowledged=1;lifesteal_remainder=19;power_ctx.mode=3;
 reset(2,1,1);assert(count==0&&combat_hp==0&&settlement_sent&&injury_dead);
 reset(1,1,1);assert(count==2&&response_stage==0&&response_dungeon==2);
-assert(combat_hp==2000&&g_profile_hp_current==2000&&g_profile_mp_current==800);
+assert(combat_hp==200&&g_profile_hp_current==200&&g_profile_mp_current==123);
 assert(!injury_armed&&!injury_dead&&!death_latched&&!retry_acknowledged&&!lifesteal_remainder&&!power_ctx.mode);
 assert(!settlement_sent&&post_reset_pending);
 /* Super-Boss retry uses the same tuple even when the button requests real0. */
@@ -69,7 +71,7 @@ puts("CONTINUATION_REARM_PASS modes=1,2 short/CF99 normal/super invalid=0,3 no-u
 '''
   with tempfile.TemporaryDirectory(prefix='nanaimo-continuation-rearm-') as temp:
    p=Path(temp);(p/'test.c').write_text(prefix+branch+suffix)
-   for cmd in [[str(ROOT/'tools/tcc/tcc.exe'),str(p/'test.c'),'-o',str(p/'test.exe')],[str(p/'test.exe')]]:
+   for cmd in [[str(ROOT/'tools/tcc/tcc.exe'),'-I',str(ROOT),str(p/'test.c'),'-o',str(p/'test.exe')],[str(p/'test.exe')]]:
     r=subprocess.run(cmd,capture_output=True,text=True);self.assertEqual(r.returncode,0,r.stdout+r.stderr);print(r.stdout)
 
  def test_clear_targets_only_current_room_cf99_writers(self):
