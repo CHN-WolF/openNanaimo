@@ -30,6 +30,9 @@ struct teamplay_room_authority {
     unsigned hd,stage,dungeon,stage_index,difficulty;
     unsigned score_by_slot[3];
     unsigned score_by_player[MULTI_MAX_PLAYERS];
+    unsigned rating_party_size,rating_player_uid[MULTI_MAX_PLAYERS];
+    unsigned char rating_damaged[MULTI_MAX_PLAYERS],rating_frozen[MULTI_MAX_PLAYERS];
+    unsigned rating_single_damaged,rating_single_frozen,rating_single_valid;
 #if TEAMPLAY_FEATURE_SHARED_HP
     struct hp_sync_context monster_hp;
     struct crate_drop_policy_context crate_policy;
@@ -129,13 +132,53 @@ static void teamplay_authority_init_once(void){
     g_teamplay_authority.initialized=1u;
 }
 static void teamplay_score_begin(unsigned battle_epoch){
+    int i;
     teamplay_authority_init_once();
     g_teamplay_authority.battle_epoch=battle_epoch;
+    g_teamplay_authority.rating_party_size=0u;
+    memset(g_teamplay_authority.rating_player_uid,0,sizeof(g_teamplay_authority.rating_player_uid));
+    memset(g_teamplay_authority.rating_damaged,0,sizeof(g_teamplay_authority.rating_damaged));
+    memset(g_teamplay_authority.rating_frozen,0,sizeof(g_teamplay_authority.rating_frozen));
+    g_teamplay_authority.rating_single_damaged=g_teamplay_authority.rating_single_frozen=0u;
+    for(i=0;i<MULTI_MAX_PLAYERS;i++)if(g_multi_conn[i].active&&g_multi_transport_alive[i]&&g_multi_conn[i].room_active){
+        g_teamplay_authority.rating_player_uid[i]=g_multi_conn[i].uid;
+        g_teamplay_authority.rating_party_size++;
+    }
+    g_teamplay_authority.rating_single_valid=g_teamplay_authority.rating_party_size==0u;
+    if(!g_teamplay_authority.rating_party_size)g_teamplay_authority.rating_party_size=1u;
     card_system_reset_epoch(battle_epoch);
 #if TEAMPLAY_FEATURE_SCORE_OUTBOX
     g_teamplay_authority.score_by_slot[0]=g_teamplay_authority.score_by_slot[1]=g_teamplay_authority.score_by_slot[2]=0u;
     memset(g_teamplay_authority.score_by_player,0,sizeof(g_teamplay_authority.score_by_player));
 #endif
+}
+static int teamplay_rating_member_known(int idx){
+    return idx>=0&&idx<MULTI_MAX_PLAYERS&&g_teamplay_authority.rating_player_uid[idx]!=0u&&
+        g_teamplay_authority.rating_player_uid[idx]==g_multi_conn[idx].uid;
+}
+static unsigned teamplay_rating_damaged(int idx){
+    if(idx<0)return g_teamplay_authority.rating_single_valid?g_teamplay_authority.rating_single_damaged:1u;
+    return teamplay_rating_member_known(idx)?g_teamplay_authority.rating_damaged[idx]:1u;
+}
+static unsigned teamplay_rating_frozen(int idx){
+    if(idx<0)return g_teamplay_authority.rating_single_frozen;
+    return teamplay_rating_member_known(idx)?g_teamplay_authority.rating_frozen[idx]:0u;
+}
+/* Only committed combat HP loss taints the current member's battle. Healing,
+   revival and profile projection never clear this latch. */
+static void teamplay_rating_record_hp_loss(unsigned battle_epoch,unsigned before,unsigned after){
+    int idx=g_multi_current;
+    if(!battle_epoch||battle_epoch!=g_teamplay_authority.battle_epoch||after>=before)return;
+    if(idx<0){if(!g_teamplay_authority.rating_single_frozen)g_teamplay_authority.rating_single_damaged=1u;}
+    else if(teamplay_rating_member_known(idx)&&!g_teamplay_authority.rating_frozen[idx])g_teamplay_authority.rating_damaged[idx]=1u;
+}
+static void teamplay_rating_freeze_member(int idx){
+    if(idx<0)g_teamplay_authority.rating_single_frozen=1u;
+    else if(teamplay_rating_member_known(idx))g_teamplay_authority.rating_frozen[idx]=1u;
+}
+static void teamplay_rating_freeze_all(void){
+    int i;g_teamplay_authority.rating_single_frozen=1u;
+    for(i=0;i<MULTI_MAX_PLAYERS;i++)if(teamplay_rating_member_known(i))g_teamplay_authority.rating_frozen[i]=1u;
 }
 /* Internal first-death notification; never forwarded as a client opcode.
    Identity, native battle epoch and absolute personal score form the receipt. */

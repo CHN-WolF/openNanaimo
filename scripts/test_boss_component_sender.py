@@ -92,6 +92,8 @@ int main(void){
     memset(g_multi_conn,0,sizeof(g_multi_conn));memset(g_multi_transport_alive,0,sizeof(g_multi_transport_alive));
     g_multi_conn[0].active=1;g_multi_conn[0].room_active=1;g_multi_transport_alive[0]=1;
     g_multi_conn[0].uid=1;g_multi_conn[0].socket=100;g_multi_conn[0].join_order=1;
+    g_multi_conn[0].profile.hp_current=1000u;
+    teamplay_score_begin(1u);
     boss_hp_sync_init(c);boss_hp_sync_begin_game_domain(c,3,0,0,0,2,6);scalar_retired=0;teamplay_boss_final_hans_reset_current();
     CHECK(!contact(0,1,6,1,0,0,0,0));
     CHECK(!contact(0,1,6,1000000,1,1,0,0));

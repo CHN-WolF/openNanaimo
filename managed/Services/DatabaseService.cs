@@ -896,6 +896,7 @@ public sealed partial class DatabaseService
         await InitializeLuckyCardUsesAsync(connection, cancellationToken);
         await InitializeEntertainmentLuckyCardsAsync(connection, cancellationToken);
         await InitializeEntertainmentScoresAsync(connection, cancellationToken);
+        await InitializeArenaScoresAsync(connection, cancellationToken);
         await InitializeEventCardUsesAsync(connection, cancellationToken);
         await InitializeCardPageUnionsAsync(connection, cancellationToken);
         await InitializeCardExchangeAsync(cancellationToken);
@@ -9530,7 +9531,8 @@ public sealed partial class DatabaseService
         string? activitySettlementKey = null,
         IReadOnlyList<uint>? entertainmentCards = null,
         byte? entertainmentGameType = null,
-        int entertainmentPlace = 0)
+        int entertainmentPlace = 0,
+        uint? arenaScore = null)
     {
         if (accountId <= 0 || characterId <= 0 || string.IsNullOrWhiteSpace(sessionId)
             || hdIndex > 1
@@ -9546,6 +9548,10 @@ public sealed partial class DatabaseService
             || entertainmentPlace is < 0 or >= EntertainmentProtocol.MaximumMembers
             || score > ushort.MaxValue || completed || activitySettlementKey is null
             || !activitySettlementKey.StartsWith("entertainment:", StringComparison.Ordinal)))
+            return null;
+        if (arenaScore is not null && (completed || entertainmentGameType is not null
+            || activitySettlementKey is null
+            || !activitySettlementKey.StartsWith("arena:", StringComparison.Ordinal)))
             return null;
 
         await using var connection = await OpenConnectionAsync(cancellationToken);
@@ -9632,6 +9638,9 @@ public sealed partial class DatabaseService
         var maxMp = Math.Max(oldMaxMp, CharacterProgression.CalculateMaxMp(level));
         var hans = oldHans > long.MaxValue - hansReward ? long.MaxValue : oldHans + hansReward;
         var now = DateTime.UtcNow.ToString("O");
+
+        if (arenaScore is { } points)
+            await SaveArenaScoreAsync(connection, transaction, characterId, activitySettlementKey!, points, now, cancellationToken);
 
         await using (var update = connection.CreateCommand())
         {

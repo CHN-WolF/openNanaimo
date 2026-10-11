@@ -143,7 +143,8 @@ class SocialSyncBoundaryTests(unittest.TestCase):
         compile_check('''#include <assert.h>
 struct boss_hp_sync_context;
 static const struct boss_hp_sync_context*multiplayer_shared_boss_context(void){return 0;}
-static unsigned combat_economy_rating(unsigned score,unsigned ok,const struct boss_hp_sync_context*ctx){return score>=100?5u:1u;}
+static unsigned combat_economy_rating_for_member(unsigned score,unsigned ok,const struct boss_hp_sync_context*ctx,int idx){return score>=100?5u:1u;}
+static void teamplay_rating_freeze_member(int idx){}
 static unsigned dungeon_settlement_visible_rating(unsigned allow){return 0;}
 ''' + function + '''
 int main(void){

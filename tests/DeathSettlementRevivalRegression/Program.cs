@@ -34,4 +34,5 @@ var retry = NetworkAdapterService.ResetNativeDungeonDeathRetryResources(frozen)!
 Check(retry.CurrentHp == 2000 && retry.CurrentMp == 800 && retry.AttackMode == 0
     && !retry.SettlementFrozen && retry.HpAuthority == BattleHpAuthority.Inherited,
     "accepted retry starts a clean battle resource epoch");
-Console.WriteLine("DEATH_SETTLEMENT_REVIVAL_REGRESSION_PASS checks=8");
+await DeathRetryChecks.RunAsync();
+Console.WriteLine("DEATH_SETTLEMENT_REVIVAL_REGRESSION_PASS");

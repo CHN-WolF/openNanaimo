@@ -18,7 +18,8 @@ internal static class DungeonRewardPolicy
     internal const int BasePetExperience = 100;
     internal const int BaseHans = 250;
 
-    internal const byte FailedRating = 1; // D
+    internal const byte FailedRating = 0; // F
+    internal const byte ClearRatingD = 1;
     internal const byte ClearRatingC = 2;
     internal const byte ClearRatingB = 3;
     internal const byte ClearRatingA = 4;
@@ -45,7 +46,9 @@ internal static class DungeonRewardPolicy
     public static byte CalculateRatingFromScore(
         int totalScore,
         int maximumScore,
-        bool cleared)
+        bool cleared,
+        int partySize = 1,
+        bool tookDamage = false)
     {
         if (!cleared)
             return FailedRating;
@@ -53,22 +56,25 @@ internal static class DungeonRewardPolicy
             throw new ArgumentOutOfRangeException(nameof(totalScore));
         if (maximumScore <= 0)
             throw new ArgumentOutOfRangeException(nameof(maximumScore));
+        if (partySize is < 1 or > 3)
+            throw new ArgumentOutOfRangeException(nameof(partySize));
 
         // CF88 carries one of the client's five D..S result tiers. The exact
         // maximum is built from the SMMO instances and initially scheduled
-        // BMO score totals for this map, so a complete full-score clear is S.
+        // BMO score totals for this map. Party size is frozen at battle start.
         var scoreBasisPoints = Math.Min(
             10_000L,
             totalScore * 10_000L / maximumScore);
-        if (scoreBasisPoints >= 10_000)
+        var multiplayer = partySize > 1;
+        if (!tookDamage && scoreBasisPoints >= (multiplayer ? 5_000 : 9_500))
             return ClearRatingS;
-        if (scoreBasisPoints >= 8_000)
+        if (scoreBasisPoints >= (multiplayer ? 4_000 : 8_000))
             return ClearRatingA;
-        if (scoreBasisPoints >= 6_000)
+        if (scoreBasisPoints >= (multiplayer ? 3_000 : 6_000))
             return ClearRatingB;
-        if (scoreBasisPoints >= 4_000)
+        if (scoreBasisPoints >= (multiplayer ? 2_000 : 4_000))
             return ClearRatingC;
-        return FailedRating;
+        return ClearRatingD;
     }
 
     public static DungeonSettlementReward Calculate(

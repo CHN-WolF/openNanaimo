@@ -41,7 +41,9 @@ int main(void){
         CHECK(combat_economy_rating(0u,1u,&boss)==1u);
         if(p->total_max){
             CHECK(combat_economy_rating(p->total_max,1u,&boss)==5u);
-            CHECK(combat_economy_rating(p->total_max-1u,1u,&boss)==4u);
+            unsigned s_threshold=(unsigned)(((unsigned long long)p->total_max*95u+99u)/100u);
+            CHECK(combat_economy_rating(s_threshold,1u,&boss)==5u);
+            CHECK(combat_economy_rating(s_threshold-1u,1u,&boss)==4u);
             for(j=2;j<=4;j++){
                 unsigned pct=j==2?40u:j==3?60u:80u;
                 unsigned threshold=(unsigned)(((unsigned long long)p->total_max*pct+99u)/100u);
@@ -178,17 +180,89 @@ int main(void){
             else if(p->slot_index==6u)CHECK(sp->total_max==31790u);
         }
         *multiplayer_shared_boss_context()=boss;
-        CHECK(teamplay_settlement_member_rating(1,1,1,sp->total_max,0)==5u);
-        CHECK(teamplay_settlement_member_rating(1,1,50000,sp->total_max,0)==5u);
-        CHECK(teamplay_settlement_member_rating(0,1,1,sp->total_max,0)==5u);
-        CHECK(teamplay_settlement_member_rating(0,1,50000,sp->total_max,0)==5u);
-        CHECK(teamplay_settlement_member_rating(1,0,0,sp->total_max,0)==0u);
+        CHECK(teamplay_settlement_member_rating(1,1,1,sp->total_max,-1)==5u);
+        CHECK(teamplay_settlement_member_rating(1,1,50000,sp->total_max,-1)==5u);
+        CHECK(teamplay_settlement_member_rating(0,1,1,sp->total_max,-1)==5u);
+        CHECK(teamplay_settlement_member_rating(0,1,50000,sp->total_max,-1)==5u);
+        CHECK(teamplay_settlement_member_rating(1,0,0,sp->total_max,-1)==0u);
     }
     CHECK(HP_SYNC_PROFILE_COUNT==864u&&positive==308623u&&affected==18u&&type4==132028u);
     printf("COMBAT_SCORE_REACHABILITY_PASS profiles=%u scoring_rows=%u type4=%u affected=%u\n",HP_SYNC_PROFILE_COUNT,positive,type4,affected);
     return 0;
 }
 """
+
+RATING_HARNESS = r'''
+#define main unused_server_main
+#include "adapter/nanaimo_gameplay_bridge.c"
+#undef main
+#define CHECK(x) do {if(!(x)){printf("FAIL %d: %s\n",__LINE__,#x);return 1;}}while(0)
+int main(void){
+    struct boss_hp_sync_context boss;unsigned i,j,party,threshold,maximum;
+    memset(&boss,0,sizeof(boss));memset(g_multi_conn,0,sizeof(g_multi_conn));
+    memset(g_multi_transport_alive,0,sizeof(g_multi_transport_alive));
+    for(party=1u;party<=3u;party++){
+        for(i=0;i<3u;i++){
+            g_multi_conn[i].active=g_multi_conn[i].room_active=g_multi_transport_alive[i]=i<party;
+            g_multi_conn[i].uid=20u+i;g_multi_conn[i].managed_room_identity=1u;
+            g_multi_conn[i].managed_room_slot=i;g_multi_conn[i].profile.hp_current=1000u;
+        }
+        g_multi_current=0;teamplay_score_begin(party);
+        CHECK(g_teamplay_authority.rating_party_size==party);
+        for(i=0;i<HP_SYNC_PROFILE_COUNT;i++){
+            const struct hp_sync_profile_def*h=&hp_sync_profiles[i];
+            boss.hd=h->hd_id;boss.stage=h->stage_id;boss.dungeon=h->dungeon_id;
+            boss.stage_index=h->stage_index;boss.absolute_slot=h->slot_index;
+            maximum=combat_economy_score_profile(&boss)->total_max;
+            CHECK(combat_economy_rating(maximum,0u,&boss)==0u);
+            CHECK(combat_economy_rating(0u,1u,&boss)==1u);
+            if(!maximum)continue;
+            for(j=2u;j<=5u;j++){
+                unsigned bp=j==5u?(party>1u?5000u:9500u):(j*2000u/(party>1u?2u:1u));
+                threshold=(unsigned)(((unsigned long long)maximum*bp+9999ull)/10000ull);
+                CHECK(combat_economy_rating(threshold,1u,&boss)==j);
+                CHECK(combat_economy_rating(threshold-1u,1u,&boss)==j-1u);
+            }
+            g_teamplay_authority.rating_damaged[0]=1u;
+            CHECK(combat_economy_rating(maximum,1u,&boss)==4u);
+            g_teamplay_authority.rating_damaged[0]=0u;
+        }
+    }
+    memset(&boss,0,sizeof(boss));maximum=combat_economy_score_profile(&boss)->total_max;
+    teamplay_score_begin(10u);CHECK(!teamplay_rating_damaged(0));
+    CHECK(teamplay_rating_damaged(-1));
+    teamplay_rating_record_hp_loss(9u,1000u,999u);CHECK(!teamplay_rating_damaged(0));
+    teamplay_rating_record_hp_loss(10u,1000u,1000u);CHECK(!teamplay_rating_damaged(0));
+    teamplay_rating_record_hp_loss(10u,1000u,1100u);CHECK(!teamplay_rating_damaged(0));
+    teamplay_rating_record_hp_loss(10u,1000u,999u);CHECK(teamplay_rating_damaged(0));
+    CHECK(!teamplay_rating_damaged(1)&&!teamplay_rating_damaged(2));
+    g_profile_hp_current=g_multi_conn[0].profile.hp_current=50000u;
+    teamplay_rating_record_hp_loss(10u,0u,50000u);CHECK(teamplay_rating_damaged(0));
+    CHECK(combat_economy_rating_for_member(maximum,1u,&boss,0)==4u);
+    CHECK(combat_economy_rating_for_member(maximum,1u,&boss,1)==5u);
+    g_multi_current=1;teamplay_rating_freeze_all();
+    teamplay_rating_record_hp_loss(10u,1000u,0u);CHECK(!teamplay_rating_damaged(1));
+    CHECK(combat_economy_rating_for_member(maximum,1u,&boss,1)==5u);
+    g_multi_conn[0].active=g_multi_transport_alive[0]=0;
+    g_multi_conn[1].managed_room_slot=0;g_multi_conn[2].managed_room_slot=1;
+    CHECK(g_teamplay_authority.rating_party_size==3u);
+    CHECK(combat_economy_rating_for_member((maximum+1u)/2u,1u,&boss,1)==5u);
+    g_multi_conn[1].uid=99u;CHECK(teamplay_rating_damaged(1));
+    CHECK(combat_economy_rating_for_member(maximum,1u,&boss,1)==4u);
+    g_multi_conn[1].uid=21u;g_multi_conn[2].active=g_multi_transport_alive[2]=0;
+    teamplay_score_begin(11u);CHECK(g_teamplay_authority.rating_party_size==1u);
+    CHECK(!teamplay_rating_damaged(1));
+    CHECK(combat_economy_rating_for_member((maximum+1u)/2u,1u,&boss,1)==2u);
+    teamplay_rating_freeze_member(1);teamplay_rating_record_hp_loss(11u,1000u,999u);
+    CHECK(!teamplay_rating_damaged(1));
+    memset(g_multi_conn,0,sizeof(g_multi_conn));g_multi_current=-1;teamplay_score_begin(12u);
+    CHECK(!teamplay_rating_damaged(-1));teamplay_rating_record_hp_loss(12u,1000u,0u);
+    CHECK(teamplay_rating_damaged(-1));CHECK(combat_economy_rating(maximum,1u,&boss)==4u);
+    teamplay_score_begin(13u);CHECK(!teamplay_rating_damaged(-1));
+    puts("DUNGEON_RATING_STATE_PASS profiles=864 party=1/2/3 damage=actual-loss freeze=terminal identity=stable");
+    return 0;
+}
+'''
 
 
 def numeric_rows(text, name):
@@ -197,6 +271,16 @@ def numeric_rows(text, name):
 
 
 class CombatEconomyValueTests(unittest.TestCase):
+    def test_production_rating_damage_party_freeze_and_identity(self):
+        with tempfile.TemporaryDirectory(prefix="dungeon-rating-state-") as td:
+            work = Path(td); source = work / "check.c"; exe = work / "check.exe"
+            source.write_text(RATING_HARNESS, encoding="utf8")
+            for command in ([str(TCC), "-I", str(ROOT), str(source), "-o", str(exe)], [str(exe)]):
+                result = subprocess.run(command, cwd=work, capture_output=True, text=True,
+                                        errors="replace", timeout=120)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("DUNGEON_RATING_STATE_PASS", result.stdout)
+
     def test_production_kill_boss_rating_team_and_epoch(self):
         with tempfile.TemporaryDirectory(prefix="combat-score-sync-") as td:
             work=Path(td); source=work/"check.c"; exe=work/"check.exe"

@@ -297,6 +297,26 @@
     },
     {
       "group": "dungeon-state",
+      "va": 7222624,
+      "target": "e85966d3ff9c6080780301751f83780801721983780804771383b8f010000006750ac64007008b4834894840619dc3cccccccccccccccccccccccccccccccccc",
+      "known": [
+        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      ],
+      "operation": "patch_arena_rematch_activity_code",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
+      "va": 7323016,
+      "target": "e8d377feff",
+      "known": [
+        "e831ded1ff"
+      ],
+      "operation": "patch_arena_rematch_activity",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
       "va": 7221632,
       "target": "e84ceed2ff9c60e85427f8ff80780301774683b8f010000004740b83b8f0100000067534eb096a068bc8e83161f8ffe8c3bbd2ff8d700c8db80c010000b940000000fcf3a58db0100200008db820020000b904000000f3a5619dc3cccccccccc",
       "known": [

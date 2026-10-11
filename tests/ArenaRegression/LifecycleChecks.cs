@@ -163,6 +163,10 @@ internal static partial class Program
             }
             var repeated = await Send(members[0], 0xCF89, falseScore);
             Check(repeated!.AsSpan(8).SequenceEqual(result.AsSpan(8)), "repeated result request returns immutable rows");
+            var ranking = await database.GetArenaRankingAsync(20);
+            Check(ranking.Count == 4 && ranking[0].Score == scores.Max()
+                && ranking.Sum(r => (long)r.Score) == scores.Sum(s => (long)s),
+                "actual CF89 settlement persists authoritative stars once for every participant");
             var reset = await Send(members[2], 0xCF8B, [0, 0, 1, 0]);
             Check(reset is not null && !(bool)Get(room, "Started")!, "one result action resets the shared round");
             foreach (var member in members.Where(m => !ReferenceEquals(m, members[2])))

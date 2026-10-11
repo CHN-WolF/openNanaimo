@@ -77,16 +77,20 @@ static unsigned combat_economy_score_boss_terminal(struct battle_score_context*s
 /* Client CF88/D012 consumes one of F/D/C/B/A/S (0..5). DCC7 supplies the
    imported per-target score and the stage maximum; server-only multipliers are
    unavailable, so the local service deliberately applies the imported value 1x (original-server provenance not proven). */
-static unsigned combat_economy_rating(unsigned score,unsigned cleared,const struct boss_hp_sync_context*c){
-    const struct combat_score_profile_def*p;unsigned long long basis;
+static unsigned combat_economy_rating_for_member(unsigned score,unsigned cleared,const struct boss_hp_sync_context*c,int idx){
+    const struct combat_score_profile_def*p;unsigned long long basis;unsigned multiplayer;
     if(!cleared)return 0u;
     p=combat_economy_score_profile(c);if(!p||!p->total_max)return 1u;
     basis=(unsigned long long)score*10000ull/(unsigned long long)p->total_max;
-    if(basis>=10000ull)return 5u;
-    if(basis>=8000ull)return 4u;
-    if(basis>=6000ull)return 3u;
-    if(basis>=4000ull)return 2u;
+    multiplayer=g_teamplay_authority.rating_party_size>1u;
+    if(!teamplay_rating_damaged(idx)&&basis>=(multiplayer?5000ull:9500ull))return 5u;
+    if(basis>=(multiplayer?4000ull:8000ull))return 4u;
+    if(basis>=(multiplayer?3000ull:6000ull))return 3u;
+    if(basis>=(multiplayer?2000ull:4000ull))return 2u;
     return 1u;
+}
+static unsigned combat_economy_rating(unsigned score,unsigned cleared,const struct boss_hp_sync_context*c){
+    return combat_economy_rating_for_member(score,cleared,c,g_multi_current);
 }
 static unsigned combat_economy_coin_amount_for_hp(unsigned monster_hp){return monster_hp/COMBAT_ECONOMY_COIN_HP_DIVISOR;}
 

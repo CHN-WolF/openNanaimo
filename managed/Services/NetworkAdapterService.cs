@@ -492,7 +492,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         ushort Opcode,
         byte[] Payload,
         string Reason,
-        Guid? EntertainmentRoundId = null);
+        Guid? EntertainmentRoundId = null,
+        byte? RequestTag = null,
+        Guid? ArenaRoundId = null);
 
     private sealed record OutboundNativeWrite(
         byte[] Frames,
@@ -656,6 +658,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         public Dictionary<long, byte[]> EndGamePayloads { get; } = [];
         public bool SettlementStarted { get; set; }
         public HashSet<long> DeadCharacters { get; } = [];
+        public HashSet<long> DamagedCharacters { get; } = [];
+        public HashSet<long> RatingFrozenCharacters { get; } = [];
         public Dictionary<long, byte> RemainingContinues { get; } = [];
         public HashSet<long> ContinuingCharacters { get; } = [];
         public Dictionary<long, DungeonActiveSkillState> ActiveSkills { get; } = [];
@@ -809,6 +813,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         public ushort SelectedMode { get; set; }
         public ushort SelectedMap { get; set; }
         public byte[] GameDataPayload { get; set; } = [];
+        public Dictionary<string, byte> LoadingRequestTags { get; } = new(StringComparer.Ordinal);
         public bool Started { get; set; }
         public DateTime CreatedUtc { get; } = DateTime.UtcNow;
 
@@ -5513,7 +5518,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     _log($"{channel}:{remote} Rejected unknown arena ranking type: type={rankingType}");
                     return null;
                 }
-                return BuildNativeFrame(frame, 0xCF18, BuildEmptyArenaRankingPayload(rankingType), session);
+                var arenaRanking = await _database.GetArenaRankingAsync(rankingType, token: token);
+                return BuildNativeFrame(frame, 0xCF18, ArenaProtocol.BuildRanking(rankingType, arenaRanking), session);
             }
 
             case 0xCF0F: // REQ_GAMELIST -> ANS_GAMELIST
@@ -6411,6 +6417,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                                 resolvedStage,
                                 resolvedMapIndex);
                             arenaGameDataRoom.SelectedMap = resolvedMapIndex;
+                            arenaGameDataRoom.LoadingRequestTags.Clear();
                             arenaGameDataRoom.GameDataPayload = arenaGameData.ToArray();
                         }
                     }
@@ -7143,7 +7150,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                                 var rating = DungeonRewardPolicy.CalculateRatingFromScore(
                                     participantScore,
                                     maximumScore.TotalScore,
-                                    cleared: true);
+                                    cleared: participant.CurrentHp > 0 && !bossRoom.Battle.DeadCharacters.Contains(participant.Id),
+                                    partySize: bossRoom.Battle.PartySizeAtStart,
+                                    tookDamage: bossRoom.Battle.DamagedCharacters.Contains(participant.Id));
                                 if (member.SlotIndex < clearRanks.Length)
                                     clearRanks[member.SlotIndex] = rating;
                                 var reward = DungeonRewardPolicy.Calculate(
@@ -7157,6 +7166,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                                 bossHansRewards[participant.Id] = reward.Hans;
                             }
                         }
+                        if (clearedNow)
+                            bossRoom.Battle.RatingFrozenCharacters.UnionWith(bossRoom.Battle.ParticipantCharacterIds);
                     }
                     if (clearedNow && CardCatalog.TrySelectDungeonBossDrop(
                             bossRoom.BattleEpisode,
@@ -7450,6 +7461,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var rewardDifficulty = endRoom.BattleLogicalDifficulty;
                 var rewardWireDifficulty = endRoom.Difficulty;
                 bool rewardCleared;
+                bool rewardTookDamage;
                 int rewardPartySize;
                 lock (_dungeonRoomGate)
                 {
@@ -7486,7 +7498,10 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                             .Select(characterId => endBattle.BossBonusScores.GetValueOrDefault(characterId))
                             .DefaultIfEmpty(0)
                             .Max());
-                    rewardCleared = endBattle.Bosses.Values.Any(boss => boss.ClearAnnounced);
+                    rewardCleared = endBattle.Bosses.Values.Any(boss => boss.ClearAnnounced)
+                        && session.Character.CurrentHp > 0
+                        && !endBattle.DeadCharacters.Contains(rewardCharacterId);
+                    rewardTookDamage = endBattle.DamagedCharacters.Contains(rewardCharacterId);
                     // Settlement belongs to the battle instance, not to the
                     // mutable waiting-room membership. A member leaving after
                     // the BOSS dies must not change the party multiplier for
@@ -7511,6 +7526,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         return null;
                     }
                     endBattle.RewardCommittingCharacters.Add(rewardCharacterId);
+                    endBattle.RatingFrozenCharacters.Add(rewardCharacterId);
                 }
                 try
                 {
@@ -7537,7 +7553,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     var rewardRating = DungeonRewardPolicy.CalculateRatingFromScore(
                         score,
                         maximumScore.TotalScore,
-                        rewardCleared);
+                        rewardCleared,
+                        rewardPartySize,
+                        rewardTookDamage);
                     var settlementReward = DungeonRewardPolicy.Calculate(
                         rewardRating,
                         rewardPartySize,
@@ -8054,6 +8072,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         if (!ReferenceEquals(damageRoom.Battle, damageBattle)
                             || damageBattle.State != DungeonBattleState.Active
                             || !damageRoom.Members.ContainsKey(session.SessionId)
+                            || damageBattle.RatingFrozenCharacters.Contains(session.Character.Id)
                             || damageBattle.DeadCharacters.Contains(session.Character.Id))
                         {
                             _log($"{channel}:{remote} Rejected dungeon collision damage after battle-state validation: room={damageRoom.Id} character={session.Character.Id} sameInstance={ReferenceEquals(damageRoom.Battle, damageBattle)} state={damageBattle.State} dead={damageBattle.DeadCharacters.Contains(session.Character.Id)}");
@@ -8069,6 +8088,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         if (damage > 0)
                         {
                             session.Character.CurrentHp = Math.Max(0, session.Character.CurrentHp - damage);
+                            if (!damageBattle.RatingFrozenCharacters.Contains(session.Character.Id))
+                                damageBattle.DamagedCharacters.Add(session.Character.Id);
                             if (session.Character.CurrentHp == 0)
                             {
                                 damageBattle.DeadCharacters.Add(session.Character.Id);
@@ -8640,13 +8661,12 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         ? string.Empty
                         : "not-an-arena-session";
                     if (!session.AuxiliaryGameSession
-                        || !TryStartArenaRoom(session, out arenaStartReason))
+                        || !TryConfirmArenaLoading(session, frame[0], out arenaStartReason))
                     {
                         _log($"{channel}:{remote} Arena start rejected: room={session.ArenaRoomId} owner={session.Character.Name} reason={arenaStartReason}");
                         return null;
                     }
 
-                    QueueArenaBroadcast(session, 0xCF80, [], false, "arena game start");
                     QueueArenaLobbyRoomListRefresh(session, "arena game started");
                     _log($"{channel}:{remote} Arena game start synchronized: room={session.ArenaRoomId} owner={session.Character.Id}");
                     return BuildNativeFrame(frame, 0xCF80, [], session);
@@ -13659,10 +13679,17 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 if (!_entertainmentRooms.TryGetValue(target.EntertainmentRoomId, out var room)
                     || room.RoundId != round || !room.Members.ContainsKey(target.SessionId)) return;
         }
+        if (notification.ArenaRoundId is { } arenaRound)
+        {
+            lock (_arenaRoomGate)
+                if (!_arenaRooms.TryGetValue(target.ArenaRoomId, out var room)
+                    || !room.Started || room.RoundId != arenaRound
+                    || !room.Members.ContainsKey(target.SessionId)) return;
+        }
         try
         {
             var requestTemplate = new byte[8];
-            requestTemplate[0] = NativeTransportTags[0];
+            requestTemplate[0] = notification.RequestTag ?? NativeTransportTags[0];
             var frame = BuildNativeFrame(
                 requestTemplate,
                 notification.Opcode,
@@ -15039,6 +15066,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
 
             room.Members[member.SessionId] = member;
             room.GameDataPayload = [];
+            room.LoadingRequestTags.Clear();
             member.ArenaRoomId = room.Id;
             member.ArenaSlotIndex = freeSlot;
             member.ArenaReady = false;
@@ -15075,6 +15103,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             RemoveArenaRoomMemberLocked(member);
             room.Members.Add(member.SessionId, member);
             room.GameDataPayload = [];
+            room.LoadingRequestTags.Clear();
             member.ArenaRoomId = room.Id;
             member.ArenaSlotIndex = freeSlot;
             member.ArenaReady = false;
@@ -15138,7 +15167,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         }
 
         room.Members.Remove(member.SessionId);
-        if (!room.Started) room.GameDataPayload = [];
+        room.LoadingRequestTags.Remove(member.SessionId);
+        if (!room.Started && room.LoadingRequestTags.Count == 0) room.GameDataPayload = [];
         if (room.FinalMembers.Length == 0) room.EndValuesBySession.Remove(member.SessionId);
         room.EndingSessionIds.Remove(member.SessionId);
         room.ResultSessionIds.Remove(member.SessionId);
@@ -15164,7 +15194,10 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             if (!room.Started) QueueArenaAuthorityRefreshLocked(room, broadcastSource ?? member, newOwner);
         }
         if (room.Members.Count != 0)
+        {
             TryCompleteArenaRoundResetLocked(room);
+            TryCompleteArenaLoadingLocked(room, broadcastSource ?? member);
+        }
         ResetArenaRoomState(member);
     }
 
@@ -15403,6 +15436,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             room.SelectedMode = selectedMode;
             room.SelectedMap = selectedMap;
             room.GameDataPayload = [];
+            room.LoadingRequestTags.Clear();
             return true;
         }
     }
@@ -15536,7 +15570,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var experience = checked((int)(score / 4));
                 var saved = await _database.ApplyDungeonRewardAsync(owner.AccountId, owner.CharacterId, owner.SessionId,
                     0, 0, 0, 0, 0, 0, experience, victories[member.SessionId] ? 20 : 10, 0, token,
-                    completed: false, activitySettlementKey: "arena:" + round.ToString("N"));
+                    completed: false, activitySettlementKey: "arena:" + round.ToString("N"),
+                    arenaScore: score);
                 if (saved is null) return null;
                 var added = checked((uint)Math.Max(0, saved.Experience - member.Character!.Experience));
                 var levelUp = saved.Level > member.Character.Level;
@@ -15639,6 +15674,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
 
         room.Started = false;
         room.GameDataPayload = [];
+        room.LoadingRequestTags.Clear();
         // Retain the frozen result through reset for delayed member requests.
         // A new CF7F start, not the first CF8B, retires this result epoch.
         room.EliminationWinnerSessionId = null;
@@ -15654,7 +15690,10 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         {
             member.ArenaReady = false;
             member.ArenaTeamCode = GetDefaultArenaTeamCode(member.ArenaSlotIndex);
-            ResetP2PState(member);
+            // The retail owner does not resend CFD1 when remaining in this room.
+            // Only round-scoped confirmation is retired; leave/disconnect clears the endpoint.
+            member.ArenaP2PProtocolConfirmed = false;
+            member.HasReportedDungeonPosition = false;
         }
         return true;
     }
@@ -16463,14 +16502,6 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         return ArenaProtocol.BuildRoomList(rooms);
     }
 
-    private static byte[] BuildEmptyArenaRankingPayload(uint rankingType)
-    {
-        // The client unconditionally reads ten 36-byte records after type.
-        var payload = new byte[4 + 10 * 36];
-        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(0, 4), rankingType);
-        return payload;
-    }
-
     private static byte[] BuildArenaCreateGamePayload(ArenaRoom room, CharacterRecord owner)
     {
         var payload = new byte[36];
@@ -16917,6 +16948,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 {
                     if (!session.NativeDungeonDeathLatched)
                         return BuildNativeFrame(frame, 0xCF96, [], session);
+                    // Surrender closes revival billing, not the later result-page retry.
+                    cycle.BattleSurrendered |= cycle.BattleStarted;
                     cycle.BattleStarted = false;
                     cycle.BattleStartArmed = false;
                     cycle.PendingPaidContinue = null;

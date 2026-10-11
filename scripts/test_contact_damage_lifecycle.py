@@ -50,6 +50,7 @@ int main(int argc,char**argv){
     rc=player_collision_apply_player_d00f_injury(100,62050,req,kind,123400,1,1,1,1,1,&hp,&dead,5000,789,&ctx,&skill,tgt);
     CHECK(rc==1&&sends==1&&size==36&&word(6)==0xD010&&word(8)==21&&word(10)==100);
     CHECK(hp==(5000u-expected)&&word(16)==hp&&word(18)==5000-hp);
+    CHECK(teamplay_rating_damaged(0));
     CHECK(frame[29]==kind&&word(12)==789);
     /* WORD+0x22 is the contact carrier the client pops over the collided target.
        Every kind20 D010 frame carries it non-zero and every kind10
@@ -71,6 +72,7 @@ int main(int argc,char**argv){
     CHECK(!player_collision_apply_player_d00f_injury(100,62050,req,kind,123400,1,1,1,1,1,&hp,&dead,5000,789,&ctx,&skill,tgt)&&sends==i);
     /* Revival restores HP/death state within the same battle epoch. */
     hp=5000;dead=0;
+    CHECK(teamplay_rating_damaged(0));
     CHECK(player_collision_apply_player_d00f_injury(100,62050,req,kind,123400,1,1,1,1,1,&hp,&dead,5000,789,&ctx,&skill,tgt)&&sends==i+1);
     CHECK(hp==(5000u-expected));i=sends;
     hp=5000;dead=0;
@@ -95,10 +97,12 @@ int main(int argc,char**argv){
     stage_damage_damage_begin(&ctx,0,1,0,0,0,1,1);
     memset(req,0,sizeof(req));req[8]=20;req[10]=203;hp=5000;dead=0;i=sends;
     memset(&skill,0,sizeof(skill));g_profile_defense_flat=10000;
+    teamplay_score_begin(1u);CHECK(!teamplay_rating_damaged(0));
     CHECK(stage_damage_player_d00f_damage(&ctx,req,20u,&lookup)==0u);
     CHECK(lookup.status==STAGE_DAMAGE_DAMAGE_EXACT_ZERO);
     rc=player_collision_apply_player_d00f_injury(100,62050,req,20u,123400,1,1,1,1,1,&hp,&dead,5000,789,&ctx,&skill,tgt);
     CHECK(hp==5000u&&!dead);
+    CHECK(!teamplay_rating_damaged(0));
     CHECK((!rc&&sends==i)||(rc&&sends==i+1&&word(18)==0u&&word(16)==5000u));
     for(i=0;i<MONSTER_CONTACT_ROW_COUNT;i++){
         const struct monster_contact_row*r=&monster_contact_rows[i];
@@ -129,6 +133,10 @@ int main(int argc,char**argv){
     CHECK(word(16)==4321u&&word(18)==0u&&word(26)==265u&&frame[29]==40u&&word(34)==3960u);
     CHECK(frame[30]==2u&&frame[31]==3u&&word(32)==265u);
     CHECK(frame[20]==0u&&frame[21]==0u&&frame[22]==0u&&frame[23]==0u&&frame[24]==0u&&frame[25]==0u&&frame[28]==0u);
+    /* No delayed combat event may change a terminal result's HP or no-hit latch. */
+    teamplay_score_begin(1u);teamplay_rating_freeze_all();hp=5000u;dead=0;i=sends;
+    CHECK(!player_collision_apply_player_d00f_injury(100,62050,req,40u,123400,1,1,1,1,1,&hp,&dead,5000,789,&ctx,&skill,0u));
+    CHECK(hp==5000u&&!dead&&sends==i&&!teamplay_rating_damaged(0));
     return 0;
 }
 '''

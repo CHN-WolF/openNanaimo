@@ -258,7 +258,7 @@ static unsigned card_drop_create(unsigned count,unsigned stage){(void)count;(voi
 #include "release/components/winter_boss/boss_hp_sync_runtime.inc"
 typedef int SOCKET;
 #define MULTI_MAX_PLAYERS 4
-static struct {int active,room_active;} g_multi_conn[4];
+static struct {int active,room_active;struct{unsigned hp_current;} profile;} g_multi_conn[4];
 static int g_multi_transport_alive[4];
 static unsigned char captured[64];
 static unsigned captured_len,sends,broadcasts,hans_calls;
@@ -268,7 +268,8 @@ static struct boss_hp_sync_context*multiplayer_shared_boss_context(void){return 
 static unsigned test_boss_hp=15000u;
 static unsigned combat_economy_boss_total_hp(const struct boss_hp_sync_context*c){(void)c;return test_boss_hp;}
 static void teamplay_score_snapshot(unsigned*s){s[0]=9480;s[1]=0;s[2]=0;}
-static unsigned combat_economy_rating(unsigned score,unsigned cleared,const struct boss_hp_sync_context*ctx){unsigned step=ctx->dungeon==2u?16000u:10000u,grade;if(!cleared)return 0u;grade=score/step;return grade>5u?5u:grade;}
+static unsigned combat_economy_rating_for_member(unsigned score,unsigned cleared,const struct boss_hp_sync_context*ctx,int idx){unsigned step=ctx->dungeon==2u?16000u:10000u,grade;if(!cleared)return 0u;grade=score/step;return grade>5u?5u:grade;}
+static void teamplay_rating_freeze_all(void){}
 static void mkpkt(char*p,unsigned op,int len,int flags){(void)flags;memset(p,0,4096);boss_hp_sync_put16((unsigned char*)p,4,(unsigned)len);boss_hp_sync_put16((unsigned char*)p,6,op);}
 static void stable_put32(char*p,unsigned off,unsigned value){boss_hp_sync_put32((unsigned char*)p,off,value);}
 static unsigned teamplay_boss_final_hans_commit(unsigned hp){assert(hp==test_boss_hp);hans_calls++;return hp/100u;}
@@ -280,7 +281,7 @@ static long sec(void){return 0;}
         suffix = r"""
 int main(void){
     struct boss_hp_sync_result r;unsigned i;
-    for(i=0;i<4;i++){g_multi_conn[i].active=1;g_multi_conn[i].room_active=1;g_multi_transport_alive[i]=1;}
+    for(i=0;i<4;i++){g_multi_conn[i].active=1;g_multi_conn[i].room_active=1;g_multi_conn[i].profile.hp_current=100;g_multi_transport_alive[i]=1;}
     memset(&r,0,sizeof(r));r.hp=11049u;r.cumulative_damage=3951u;
     send_d012_boss_hp_sync_score(0,&r,0);
     assert(captured_len==60u && boss_hp_sync_get32(captured,0x28)==11049u && !hans_calls && !card_calls);

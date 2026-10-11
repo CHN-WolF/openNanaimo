@@ -84,6 +84,8 @@ internal static class ArenaProtocol
     public const int QuickEnterRequestLength = 8;
     public const int QuickEnterResponseLength = 44;
     public const int RoomListRecordLength = 40;
+    public const int RankingRecordLength = 36;
+    public const int RankingCapacity = 10;
     public const int GameDataResponseLength = 0x320;
     public const ushort ArenaMapCount = 6;
     public const ushort DefaultArenaMap = 0;
@@ -202,6 +204,24 @@ internal static class ArenaProtocol
             BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(34, 2), room.MemberCount);
             record[37] = room.MemberCount;
             BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(38, 2), room.RoomId);
+        }
+        return payload;
+    }
+
+    public static byte[] BuildRanking(uint rankingType, IReadOnlyList<ArenaRankingRecord> records)
+    {
+        if (rankingType is not (10u or 20u)) throw new ArgumentOutOfRangeException(nameof(rankingType));
+        var payload = new byte[4 + RankingCapacity * RankingRecordLength];
+        BinaryPrimitives.WriteUInt32LittleEndian(payload, rankingType);
+        for (var i = 0; i < Math.Min(RankingCapacity, records.Count); i++)
+        {
+            var value = records[i];
+            var row = payload.AsSpan(4 + i * RankingRecordLength, RankingRecordLength);
+            EncodeFixed(value.Name, row[..24]);
+            // The client formats this DWORD as a signed score; unused +28 stays zero.
+            BinaryPrimitives.WriteUInt32LittleEndian(row[24..], Math.Min(value.Score, int.MaxValue));
+            BinaryPrimitives.WriteUInt16LittleEndian(row[32..], (ushort)Math.Clamp((int)value.Level, 1, CharacterProgression.MaximumLevel));
+            BinaryPrimitives.WriteUInt16LittleEndian(row[34..], CharacterTitleState.Normalize((byte)Math.Min(value.DungeonGrade, byte.MaxValue)));
         }
         return payload;
     }

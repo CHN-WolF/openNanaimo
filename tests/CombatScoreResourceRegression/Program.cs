@@ -42,3 +42,37 @@ foreach (var (ep, selector, expected) in new[] { (0, 16, 2), (12, 146, 12107), (
     count++;
 }
 Console.WriteLine($"COMBAT_RESOURCE_MANAGED_PASS records={count} scaled_remainder=12107 ep23_scaled=20861");
+
+int ratingChecks = 0;
+void CheckRating(int score, int maximum, int partySize, bool tookDamage, bool cleared, byte expected)
+{
+    var actual = DungeonRewardPolicy.CalculateRatingFromScore(score, maximum, cleared, partySize, tookDamage);
+    if (actual != expected)
+        throw new Exception($"Rating: score={score}/{maximum} party={partySize} damaged={tookDamage} cleared={cleared}: {actual}!={expected}");
+    ratingChecks++;
+}
+foreach (var maximum in new[] { 1, 3, 101, 10_000, int.MaxValue })
+foreach (var party in new[] { 1, 2, 3 })
+foreach (var damaged in new[] { false, true })
+{
+    foreach (var bp in new[] { 0, 2_000, 3_000, 4_000, 5_000, 6_000, 8_000, 9_500, 10_000 })
+    {
+        var boundary = (int)((maximum * (long)bp + 9_999) / 10_000);
+        foreach (var score in new[] { Math.Max(0, boundary - 1), boundary, Math.Min(int.MaxValue, (long)boundary + 1) }.Select(s => (int)s))
+        {
+            var percentage = score * 10_000L / maximum;
+            var expected = !damaged && percentage >= (party > 1 ? 5_000 : 9_500) ? (byte)5
+                : percentage >= (party > 1 ? 4_000 : 8_000) ? (byte)4
+                : percentage >= (party > 1 ? 3_000 : 6_000) ? (byte)3
+                : percentage >= (party > 1 ? 2_000 : 4_000) ? (byte)2 : (byte)1;
+            CheckRating(score, maximum, party, damaged, true, expected);
+            CheckRating(score, maximum, party, damaged, false, 0);
+        }
+    }
+}
+CheckRating(9_500, 10_000, 1, false, true, 5);
+CheckRating(9_499, 10_000, 1, false, true, 4);
+CheckRating(5_000, 10_000, 2, false, true, 5);
+CheckRating(4_999, 10_000, 2, false, true, 4);
+CheckRating(10_000, 10_000, 3, true, true, 4);
+Console.WriteLine($"DUNGEON_RATING_MANAGED_PASS checks={ratingChecks} party=1/2/3 S=95%-or-50%+no-actual-HP-loss failed=F");

@@ -29,6 +29,7 @@ public sealed partial class NetworkAdapterService
         public NativePaidContinueCommit? PendingPaidContinue;
         public bool BattleStartArmed;
         public bool BattleStarted;
+        public bool BattleSurrendered;
         public NativeRevivalTransition? Transition;
     }
 
@@ -58,6 +59,7 @@ public sealed partial class NetworkAdapterService
             cycle.PendingPaidContinue = null;
             cycle.BattleStartArmed = true;
             cycle.BattleStarted = false;
+            cycle.BattleSurrendered = false;
             cycle.Transition = null;
         }
     }
@@ -70,7 +72,8 @@ public sealed partial class NetworkAdapterService
             return false;
         var cycle = GetNativeRevivalCycle(session);
         lock (cycle.BoundaryGate)
-            if (cycle.BattleStarted && !cycle.BattleStartArmed && cycle.Transition is null)
+            if ((cycle.BattleStarted || cycle.BattleSurrendered)
+                && !cycle.BattleStartArmed && cycle.Transition is null)
                 cycle.Transition = new NativeRevivalTransition(frame.ToArray(), session.NativeDungeonDungeon,
                     session.NativeDungeonStage, session.NativeDungeonLogicalDifficulty,
                     session.NativeDungeonDeathLatched);
@@ -112,6 +115,7 @@ public sealed partial class NetworkAdapterService
                 AdvanceNativeMentorshipRound(session);
                 cycle.BattleStartArmed = true;
                 cycle.BattleStarted = false;
+                cycle.BattleSurrendered = false;
                 ArmNativeDungeonContinuationReload(session, response);
                 break;
             }
@@ -132,6 +136,7 @@ public sealed partial class NetworkAdapterService
                 return false;
             cycle.BattleStartArmed = false;
             cycle.BattleStarted = true;
+            cycle.BattleSurrendered = false;
             cycle.PendingPaidContinue = null;
             cycle.Transition = null;
             return true;

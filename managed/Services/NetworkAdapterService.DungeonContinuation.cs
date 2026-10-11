@@ -70,6 +70,7 @@ public sealed partial class NetworkAdapterService
                     {
                         cycle.BattleStartArmed = false;
                         cycle.BattleStarted = true;
+                        cycle.BattleSurrendered = false;
                         cycle.PendingPaidContinue = null;
                         cycle.Transition = null;
                         session.NativeBattleResources = session.NativeBattleResources?.ForEpoch(epoch);
@@ -111,6 +112,7 @@ public sealed partial class NetworkAdapterService
             {
                 cycle.BattleStartArmed = false;
                 cycle.BattleStarted = true;
+                cycle.BattleSurrendered = false;
                 cycle.PendingPaidContinue = null;
                 cycle.Transition = null;
                 room.AwaitingBattleStart = true;

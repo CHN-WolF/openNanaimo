@@ -6,6 +6,8 @@ internal static partial class Program
     public static async Task Main()
     {
         await CheckRoomListsAsync();
+        await CheckReentryAsync();
+        await CheckRankingAsync();
         var payload = new byte[20];
         BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(0, 2), 50);
         BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(2, 2), 1950);

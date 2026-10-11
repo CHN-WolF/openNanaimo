@@ -278,7 +278,7 @@ static int player_collision_apply_player_d00f_injury(SOCKET c,int port,const uns
 #else
     (void)skill_cleanup_ctx;
 #endif
-    if(!injury_armed||injury_room_epoch!=dungeon_room_epoch||injury_battle_epoch!=battle_epoch){
+    if(!injury_armed||injury_room_epoch!=dungeon_room_epoch||injury_battle_epoch!=battle_epoch||teamplay_rating_frozen(g_multi_current)){
         printf("  [INJURY_SCENE] suppress route=%s kind=%u reason=outside-battle-or-stale-epoch actor=%u armed=%d room=%u/%u battle=%u/%u source_field=%u collision_index=%u source_aux=%u no-D010 t=%lds\n",route,request_kind,multiplayer_current_uid(),injury_armed,injury_room_epoch,dungeon_room_epoch,injury_battle_epoch,battle_epoch,source_field_140,collision_index,source_field_14,sec());
         fflush(0);return 0;
     }
@@ -296,6 +296,7 @@ static int player_collision_apply_player_d00f_injury(SOCKET c,int port,const uns
 #ifdef MEAT_D010_DAMAGE_ZERO_PROBE
     if(*combat_hp!=0u)wire_damage=0u;
 #endif
+    teamplay_rating_record_hp_loss(battle_epoch,damage_app.hp_after+applied,damage_app.hp_after);
     printf("  [INJURY_SCENE] route=%s kind=%u -> D010 actor=%u hp=%u/%u policy_damage=%u actual_damage=%u wire_damage=%u terminal=%u score=%u source_field=%u collision_index=%u source_aux=%u room=%u battle=%u len=36 echo=0 probe_damage0=%u t=%lds\n",route,request_kind,multiplayer_current_uid(),*combat_hp,max_hp,damage,applied,wire_damage,*injury_dead?1u:0u,battle_score,source_field_140,collision_index,source_field_14,injury_room_epoch,injury_battle_epoch,(unsigned)(wire_damage!=applied),sec());
     fflush(0);send_d010_injury_injury_resource(c,req,multiplayer_current_uid(),*combat_hp,wire_damage,*injury_dead,battle_score,target_damage);return 1;
 }
@@ -969,10 +970,11 @@ meat_collision_activate(skill_code,grade,dungeon_room_epoch,boss_ctx.battle_epoc
                                 printf("  [INJURY_COLLISION] suppress D014 kind=%u reason=meat-invulnerability actor=%u hp=%u source_key=%u collision_index=%u actor_pair=%u->%u no-D015 t=%lds\n",request_kind,multiplayer_current_uid(),combat_hp,source_key,collision_index,source_actor,victim_actor,sec());fflush(0);
                             }else{
 #endif
-                            if(!injury_armed||injury_room_epoch!=dungeon_room_epoch||injury_battle_epoch!=boss_ctx.battle_epoch){printf("  [INJURY_COLLISION] suppress D014 kind=%u reason=outside-battle-or-stale-epoch actor=%u armed=%d room=%u/%u battle=%u/%u source_key=%u collision_index=%u actor_pair=%u->%u no-D015 t=%lds\n",request_kind,multiplayer_current_uid(),injury_armed,injury_room_epoch,dungeon_room_epoch,injury_battle_epoch,boss_ctx.battle_epoch,source_key,collision_index,source_actor,victim_actor,sec());fflush(0);}
+                            if(!injury_armed||injury_room_epoch!=dungeon_room_epoch||injury_battle_epoch!=boss_ctx.battle_epoch||teamplay_rating_frozen(g_multi_current)){printf("  [INJURY_COLLISION] suppress D014 kind=%u reason=outside-battle-stale-epoch-or-result-frozen actor=%u armed=%d room=%u/%u battle=%u/%u source_key=%u collision_index=%u actor_pair=%u->%u no-D015 t=%lds\n",request_kind,multiplayer_current_uid(),injury_armed,injury_room_epoch,dungeon_room_epoch,injury_battle_epoch,boss_ctx.battle_epoch,source_key,collision_index,source_actor,victim_actor,sec());fflush(0);}
                             else if(item_effects_flight_shield_active(injury_now)){printf("  [INJURY_COLLISION] suppress D014 kind=%u reason=flight-shield actor=%u hp=%u source_key=%u collision_index=%u actor_pair=%u->%u no-D015 t=%lds\n",request_kind,multiplayer_current_uid(),combat_hp,source_key,collision_index,source_actor,victim_actor,sec());fflush(0);}
                             else if(injury_dead||combat_hp==0u){injury_dead=1;printf("  [INJURY_COLLISION] suppress D014 kind=%u reason=already-dead actor=%u source_key=%u collision_index=%u actor_pair=%u->%u no-D015 t=%lds\n",request_kind,multiplayer_current_uid(),source_key,collision_index,source_actor,victim_actor,sec());fflush(0);}
                             else{unsigned raw_damage=COMBAT_ECONOMY_COLLISION_PLAYER_DAMAGE,damage=multiplayer_combat_profile_reduce_damage(raw_damage),applied=(combat_hp>damage)?damage:combat_hp;combat_hp-=applied;injury_dead=(combat_hp==0u);
+                                teamplay_rating_record_hp_loss(boss_ctx.battle_epoch,combat_hp+applied,combat_hp);
                                 printf("  [INJURY_COMBAT] D014 kind=%u -> D015 actor=%u hp=%u/%u raw_policy_damage=%u defense=%u final_policy_damage=%u actual_damage=%u terminal=%u source_key=%u collision_index=%u actor_pair=%u->%u room=%u battle=%u len=24 defense_formula=private-flat-floor1 t=%lds\n",request_kind,multiplayer_current_uid(),combat_hp,pet_crafting_pet_effective_hp_max(),raw_damage,g_profile_defense_flat,damage,applied,injury_dead?1u:0u,source_key,collision_index,source_actor,victim_actor,injury_room_epoch,injury_battle_epoch,sec());fflush(0);
                                 send_d015_collision_injury_collision_injury(c,(const unsigned char*)&buf[off],combat_hp,applied,injury_dead);}
 #if TEAMPLAY_FEATURE_MEAT_LIFECYCLE_COMPLETION
