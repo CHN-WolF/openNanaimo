@@ -192,6 +192,7 @@ public sealed partial class DatabaseService
             || (policy.GraduationMinimumLevel is int graduation && student.Level >= graduation)
             || teacher.Level < policy.MinimumTeacherLevel
             || (long)teacher.Level - student.Level < policy.MinimumLevelGap) return false;
+        if (await IsSocialInteractionBlockedAsync(connection, transaction, teacher.Id, student.Id, token)) return false;
         var roleConflicts = await MentorshipScalarAsync(connection, transaction, """
             SELECT (SELECT COUNT(*) FROM MentorshipRelations WHERE State = 0
                       AND (StudentCharacterId = $teacher OR StudentCharacterId = $student OR TeacherCharacterId = $student))

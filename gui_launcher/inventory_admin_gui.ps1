@@ -1,24 +1,88 @@
 ﻿# Inventory administration UI for the Korean Nanaimo launcher.
 # Dot-source this file, then call Initialize-InventoryAdmin and Save-InventoryAdminState.
 
-$script:InventoryBackendSessions=@{}
-function Get-InventoryBackendPipe([string]$Backend,[string]$Root){$bytes=[Text.Encoding]::UTF8.GetBytes(([IO.Path]::GetFullPath($Backend)+'|'+[IO.Path]::GetFullPath($Root)).ToLowerInvariant());$hash=[Security.Cryptography.SHA256]::Create().ComputeHash($bytes);return 'NanaimoInventory_'+(($hash|ForEach-Object{$_.ToString('x2')})-join'').Substring(0,24)}
-function Send-InventoryBackendRequest([string]$Backend,[string]$Root,[string[]]$Arguments){
-    $pipe=Get-InventoryBackendPipe $Backend $Root;$session=$script:InventoryBackendSessions[$pipe]
-    if(-not$session-or$session.HasExited){$serverArgs=@('--tools','inventory-server','--root',$Root,'--catalog-root',$Root,'--pipe',$pipe);$session=Start-Process -FilePath $Backend -ArgumentList $serverArgs -WorkingDirectory (Split-Path $Backend -Parent) -WindowStyle Hidden -PassThru;$script:InventoryBackendSessions[$pipe]=$session;Start-Sleep -Milliseconds 100}
-    $client=New-Object IO.Pipes.NamedPipeClientStream('.', $pipe, [IO.Pipes.PipeDirection]::InOut, [IO.Pipes.PipeOptions]::None)
-    try{$connected=$false;for($attempt=0;$attempt-lt120-and-not$connected;$attempt++){try{$client.Connect(250);$connected=$true}catch [TimeoutException]{if($session.HasExited){throw "Inventory backend server exited before becoming ready."};Start-Sleep -Milliseconds 250}};if(-not$connected){throw "Inventory backend server did not become ready within 60 seconds."};$writer=New-Object IO.StreamWriter($client,(New-Object Text.UTF8Encoding($false)),4096,$true);$reader=New-Object IO.StreamReader($client,(New-Object Text.UTF8Encoding($false)), $false,4096,$true);$writer.AutoFlush=$true;$request=@{args=@($Arguments)}|ConvertTo-Json -Compress;$writer.WriteLine($request);$response=$reader.ReadLine();if([string]::IsNullOrWhiteSpace($response)){throw 'Inventory backend server returned no response.'};$envelope=$response|ConvertFrom-Json;if(-not$envelope.ok){throw [string]$envelope.error};return ($envelope.result|ConvertTo-Json -Depth 12 -Compress)}catch [IO.IOException]{if($session-and-not$session.HasExited){$session.Refresh()};throw "Inventory backend connection failed: $($_.Exception.Message)"}finally{if($reader){$reader.Dispose()};if($writer){$writer.Dispose()};$client.Dispose()}
-}function Invoke-InventoryAdminBackend([string[]]$Arguments) {
-    $backend=$Arguments[0];$operation=[string]$Arguments[1]
-    if($operation -in @('profiles','snapshot','apply','clone','selftest')){
-        $rootArg=for($i=2;$i-lt$Arguments.Count-1;$i++){if($Arguments[$i]-eq'--root'){ $Arguments[$i+1];break }}
-        if([string]::IsNullOrWhiteSpace($rootArg)){throw 'Inventory backend root is missing.'}
-        $request=@($Arguments|Select-Object -Skip 1)
-        if($operation-eq'snapshot'){$filtered=New-Object Collections.Generic.List[string];for($i=0;$i-lt$request.Count;$i++){if($request[$i]-eq'--output'){$i++;continue};[void]$filtered.Add($request[$i])};$request=@($filtered)}
-        return Send-InventoryBackendRequest $backend $rootArg $request
+$script:InventoryBackendSessions=[hashtable]::Synchronized(@{})
+$script:InventoryBackendOwnerPid=$PID
+function Get-InventoryBackendPipe([string]$Backend,[string]$Root){return 'NanaimoInventory_'+[guid]::NewGuid().ToString('N')}
+function Get-InventoryBackendIdentity([string]$Backend){
+    $paths=@($Backend,(Join-Path (Split-Path $Backend -Parent) 'Nanaimo.Adapter.dll'),(Join-Path (Split-Path $Backend -Parent) 'adapter_manifest.json'))
+    return (@($paths|ForEach-Object{$f=Get-Item -LiteralPath $_;''+$f.FullName+'|'+$f.Length+'|'+$f.LastWriteTimeUtc.Ticks})-join';')
+}
+function Stop-InventoryBackendSessions {
+    foreach($key in @($script:InventoryBackendSessions.Keys)){
+        $session=$script:InventoryBackendSessions[$key]
+        if($session.Process-and-not$session.Process.HasExited){
+            # This is an owned offline tools helper, never a game/service process.
+            $session.Process.Kill();[void]$session.Process.WaitForExit(3000)
+        }
+        $script:InventoryBackendSessions.Remove($key)
     }
-    throw "Unknown inventory backend operation: $operation"
-}function Remove-InventoryAdminKnownCards($Cards,$KnownCards){
+}
+function Send-InventoryBackendRequest([string]$Backend,[string]$Root,[string[]]$Arguments){
+    $Backend=[IO.Path]::GetFullPath($Backend);$Root=[IO.Path]::GetFullPath($Root)
+    $key=($Backend+'|'+$Root).ToLowerInvariant();$identity=Get-InventoryBackendIdentity $Backend
+    $session=$script:InventoryBackendSessions[$key]
+    if($session-and$session.Identity-ne$identity){if(-not$session.Process.HasExited){$session.Process.Kill();[void]$session.Process.WaitForExit(3000)};$script:InventoryBackendSessions.Remove($key);$session=$null}
+    if(-not$session-or$session.Process.HasExited){
+        $pipe=Get-InventoryBackendPipe $Backend $Root
+        $serverArgs=@('--tools','inventory-server','--root',$Root,'--catalog-root',$Root,'--pipe',$pipe,'--owner-pid',[string]$script:InventoryBackendOwnerPid)
+        # Start-Process joins argument arrays; explicitly quote paths with spaces.
+        $quoted=@($serverArgs|ForEach-Object{ '"'+$_.Replace('"','\"')+'"' })
+        $logDir=Join-Path ([IO.Path]::GetTempPath()) $pipe;[void][IO.Directory]::CreateDirectory($logDir)
+        $process=Start-Process -FilePath $Backend -ArgumentList $quoted -WorkingDirectory (Split-Path $Backend -Parent) -WindowStyle Hidden -RedirectStandardError (Join-Path $logDir 'stderr.log') -RedirectStandardOutput (Join-Path $logDir 'stdout.log') -PassThru
+        $session=@{Pipe=$pipe;Process=$process;Identity=$identity;LogDir=$logDir};$script:InventoryBackendSessions[$key]=$session
+    }
+    $client=New-Object IO.Pipes.NamedPipeClientStream('.', $session.Pipe, [IO.Pipes.PipeDirection]::InOut, [IO.Pipes.PipeOptions]::Asynchronous)
+    $writer=$null;$reader=$null
+    try{
+        $connected=$false
+        for($attempt=0;$attempt-lt60-and-not$connected;$attempt++){
+            try{$client.Connect(250);$connected=$true}catch [TimeoutException]{
+                if($session.Process.HasExited){$errorText=Get-Content -LiteralPath (Join-Path $session.LogDir 'stderr.log') -Raw -ErrorAction SilentlyContinue;throw "Inventory backend server exited (exit=$($session.Process.ExitCode)): $errorText"}
+                Start-Sleep -Milliseconds 250
+            }
+        }
+        if(-not$connected){throw 'Inventory backend server connection timed out.'}
+        $writer=New-Object IO.StreamWriter($client,(New-Object Text.UTF8Encoding($false)),4096,$true)
+        $reader=New-Object IO.StreamReader($client,(New-Object Text.UTF8Encoding($false)),$false,4096,$true)
+        $writer.AutoFlush=$true;$writer.WriteLine((@{args=@($Arguments)}|ConvertTo-Json -Depth 4 -Compress))
+        $read=$reader.ReadLineAsync()
+        if(-not$read.Wait(120000)){throw 'Inventory request timed out; commit status is unknown. Reload before retrying.'}
+        $response=$read.Result;if([string]::IsNullOrWhiteSpace($response)){throw 'Inventory backend server returned no response; reload before retrying.'}
+        $envelope=$response|ConvertFrom-Json
+        if(-not$envelope.ok){throw [string]$envelope.error}
+        $session.CatalogLoads=[int]$envelope.catalog_loads;$session.ServerPid=[int]$envelope.server_pid
+        return ($envelope.result|ConvertTo-Json -Depth 16 -Compress)
+    }finally{
+        if($reader){$reader.Dispose()};if($writer){$writer.Dispose()};$client.Dispose()
+        # Never retry a transmitted apply/clone request automatically.
+    }
+}
+function Invoke-InventoryAdminBackendLegacy([string[]]$Arguments){
+    $backend=$Arguments[0];$backendArguments=@('--tools','inventory')+@($Arguments|Select-Object -Skip 1)
+    $savedPreference=$ErrorActionPreference
+    try{$ErrorActionPreference='Continue';$output=@(& $backend @backendArguments 2>&1);$exitCode=$LASTEXITCODE}finally{$ErrorActionPreference=$savedPreference}
+    $text=($output|ForEach-Object{$_.ToString()})-join"`r`n"
+    if($exitCode-ne0){throw "Inventory backend failed (exit=$exitCode):`r`n$text"}
+    return $text.Trim()
+}
+function Invoke-InventoryAdminBackend([string[]]$Arguments){
+    $backend=$Arguments[0];$contractPath=Join-Path (Split-Path $backend -Parent) 'adapter_manifest.json'
+    if(-not(Test-Path -LiteralPath $contractPath)){throw 'Managed launcher tools manifest missing; update the runtime package.'}
+    $contract=Get-Content -LiteralPath $contractPath -Raw -Encoding UTF8|ConvertFrom-Json
+    if([int]$contract.launcher_tools-lt1){throw 'Runtime does not support managed launcher tools; refusing legacy executable invocation.'}
+    if([int]$contract.launcher_tools-lt2){return Invoke-InventoryAdminBackendLegacy $Arguments}
+    $operation=[string]$Arguments[1];if($operation-notin@('profiles','snapshot','apply','clone','selftest')){throw "Unknown inventory backend operation: $operation"}
+    $rootArg=for($i=2;$i-lt$Arguments.Count-1;$i++){if($Arguments[$i]-eq'--root'){$Arguments[$i+1];break}}
+    if([string]::IsNullOrWhiteSpace($rootArg)){throw 'Inventory backend root is missing.'}
+    $request=@($Arguments|Select-Object -Skip 1)
+    $output=$null;$filtered=New-Object Collections.Generic.List[string]
+    for($i=0;$i-lt$request.Count;$i++){if($request[$i]-eq'--output'){$i++;$output=$request[$i];continue};[void]$filtered.Add($request[$i])}
+    $result=Send-InventoryBackendRequest $backend $rootArg @($filtered)
+    if($output){[IO.File]::WriteAllText($output,$result,(New-Object Text.UTF8Encoding($false)))}
+    return $result
+}
+function Remove-InventoryAdminKnownCards($Cards,$KnownCards){
     foreach($row in @($Cards)){if($KnownCards.ContainsKey([uint32]$row.code)){[void]$Cards.Remove($row)}}
 }
 function New-InventoryAdminGrid($parent,[int]$x,[int]$y,[int]$w,[int]$h){
@@ -188,12 +252,16 @@ function Initialize-InventoryAdmin($Tabs,[string]$Root,[string]$NameHex){
     return $ctx
 }
 
-function Save-InventoryAdminState($Context,[string]$NameHex,$Shop,$Profile=$null,[switch]$AsSidecar,[switch]$Clone,[switch]$IdentityResolved,[int]$TitleGrade=-1){
+function Save-InventoryAdminState($Context,[string]$NameHex,$Shop,$Profile=$null,[switch]$AsSidecar,[switch]$Clone,[switch]$IdentityResolved,[int]$TitleGrade=-1,[string]$TitleRoot){
     if(-not$Clone-and-not$AsSidecar-and-not$IdentityResolved){Refresh-InventoryAdminProfiles $Context}
     if(-not$NameHex){$NameHex=$Context.NameHex};if(-not$Profile){$Profile=$Context.Profile}
     $state=[ordered]@{version=2;profile=$Profile;shop=$Shop;clothing=@($Context.Clothing);pets=@($Context.Pets|ForEach-Object{[ordered]@{code=[uint32]$_.code;upgrade_material=[uint32]$_.upgrade_material;gems=@([uint32]$_.gems[0],[uint32]$_.gems[1],[uint32]$_.gems[2])}});game_items=@($Context.GameItems|ForEach-Object{[ordered]@{code=[uint32]$_.code;count=[uint32]$_.count;carrier=[string]$_.carrier}});furniture=@($Context.Furniture);cards=@($Context.Cards|ForEach-Object{[ordered]@{code=[uint32]$_.code;count=[uint32]$_.count}})}
+    if($TitleGrade-ge0){
+        $capability=Get-Content -LiteralPath (Join-Path (Split-Path $Context.Backend -Parent) 'adapter_manifest.json') -Raw -Encoding UTF8|ConvertFrom-Json
+        if([int]$capability.launcher_tools-lt2){throw 'Fixed-title atomic save requires launcher_tools=2; update the complete runtime before saving.'}
+    }
     $tmp=Write-InventoryAdminTempJson $state
-    try{$command=if($Clone){'clone'}else{'apply'};$args=@($Context.Backend,$command,'--root',$Context.Root,'--name-hex',$NameHex,'--input',$tmp);if($Clone){$args+=@('--source-name-hex',$Context.NameHex);if($null-ne$Context.CharacterId){$args+=@('--source-character-id',[string]$Context.CharacterId)}};if(-not$Clone-and-not$AsSidecar-and$null-ne$Context.CharacterId){$args+=@('--character-id',[string]$Context.CharacterId)};if($TitleGrade-ge0){$args+=@('--title-grade',[string]$TitleGrade)};$out=Invoke-InventoryAdminBackend $args;return ($out|ConvertFrom-Json)}finally{Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue}
+    try{$command=if($Clone){'clone'}else{'apply'};$args=@($Context.Backend,$command,'--root',$Context.Root,'--name-hex',$NameHex,'--input',$tmp);if($Clone){$args+=@('--source-name-hex',$Context.NameHex);if($null-ne$Context.CharacterId){$args+=@('--source-character-id',[string]$Context.CharacterId)}};if(-not$Clone-and-not$AsSidecar-and$null-ne$Context.CharacterId){$args+=@('--character-id',[string]$Context.CharacterId)};if($TitleGrade-ge0){$args+=@('--title-grade',[string]$TitleGrade);if($TitleRoot){$args+=@('--title-root',$TitleRoot)}};$out=Invoke-InventoryAdminBackend $args;return ($out|ConvertFrom-Json)}finally{Remove-Item -LiteralPath $tmp -Force -ErrorAction SilentlyContinue}
 }
 
 function Test-InventoryAdminInstallation([string]$Root){

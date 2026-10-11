@@ -39,7 +39,7 @@ internal static class Program
         Check(settlement[0x0B] == 39, "CF88 record+0x07 carries the persisted title grade");
         Check(settlement[0x0E] == character.Level, "CF88 record+0x0A remains the independent character level");
 
-        var arenaResult = Invoke<ArenaPvpResultRecord>("BuildArenaPvpResultRecord", character, (ushort)1);
+        var arenaResult = Invoke<ArenaPvpResultRecord>("BuildArenaPvpResultRecord", character, (ushort)1, 0u, 0u, (byte)0);
         var cf8a = ArenaProtocol.BuildPvpResults([arenaResult]);
         Check(cf8a[4 + 6] == 39, "CF8A record+0x06 carries the persisted title grade");
 

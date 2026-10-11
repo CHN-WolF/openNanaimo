@@ -36,7 +36,7 @@ internal static class Program
             Check(hit.Length==16 && hit[10]==(hp==0?200:100)
                 && BinaryPrimitives.ReadUInt16LittleEndian(hit.AsSpan(12))==100
                 && BinaryPrimitives.ReadUInt16LittleEndian(hit.AsSpan(14))==100,
-                "both player damage display branches carry actual damage");
+                "both player score-transfer branches carry the explicit transfer value");
         }
         foreach (var mode in new ushort[] {100,200})
         {
@@ -48,6 +48,22 @@ internal static class Program
             Check(list.Length==44 && U32(list,40)==37,"room list exposes its exact identifier at record offset 36");
         }
         var sessionType=typeof(NetworkAdapterService).GetNestedType("ConnectionSession",BindingFlags.NonPublic)!;
+        for (var count = 0; count <= EntertainmentProtocol.MaximumMembers; count++)
+        {
+            var records = Enumerable.Range(0, count).Select(i => new EntertainmentEndGameRecord(
+                (ushort)(i + 1), 120, 2, 3, (uint)(900 + i), 3000, 2000, 4000,
+                (uint)(245 + i), 22000014, 22000011, 22000018, 0, 0, 0)).ToArray();
+            var end = EntertainmentProtocol.BuildEndGameInfo(records);
+            Check(end.Length == 8 + 64 * count && U32(end, 0) == count,
+                "CF86 keeps its 16-byte frame header and complete member stride");
+            for (var i = 0; i < count; i++)
+            {
+                var at = 8 + 64 * i;
+                Check(end[at + 6] == 2 && end[at + 7] == 3 && U32(end, at + 28) == 245 + i
+                    && U32(end, at + 40) == 22000014 && U32(end, at + 48) == 22000018,
+                    "CF86 serializes distinct pet progress and unmodified lucky-card identities");
+            }
+        }
         var actor=Activator.CreateInstance(sessionType,true)!;
         void Set(string name,object value)=>sessionType.GetProperty(name)!.SetValue(actor,value);
         Set("Character",new CharacterRecord { Id=123 });

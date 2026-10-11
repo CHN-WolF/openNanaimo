@@ -17,7 +17,7 @@ def call(*args,ok=True):
 def inventory(root,op,*args,ok=True):return call('inventory',op,'--root',root,'--catalog-root',ROOT,*args,ok=ok)
 def apply(root,state,id=11,ok=True):
     path=root/'request.json';path.write_text(json.dumps(state),'utf-8')
-    return inventory(root,'apply','--character-id',id,'--input',path,ok=ok)
+    return inventory(root,'apply','--character-id',id,'--name-hex',state['name_hex'],'--input',path,ok=ok)
 @unittest.skipUnless(os.name=="nt" and EXE.is_file(), "Published managed Windows runtime required")
 class ManagedRuntimeTools(unittest.TestCase):
     def fixture(self):return fixtures.CardPreservationTests().fixture()
@@ -326,6 +326,7 @@ int main(int argc,char**argv){char b[100];FILE*f=fopen("accounts.dat","r");if(ar
             self.assertEqual(p.returncode,0,p.stderr);self.assertEqual(json.loads(p.stdout),[])
         def snap(root,hexname,character_id=None):return inventory(root,'snapshot','--name-hex',hexname,*(['--character-id',character_id] if character_id is not None else []))
         def write(root,hexname,state,character_id=None,**kwargs):
+            if not hexname and character_id is not None:hexname=state['name_hex']
             file=root/'request.json';file.write_text(json.dumps(state),'utf-8')
             try:return inventory(root,'apply','--name-hex',hexname,'--input',file,*(['--character-id',character_id] if character_id is not None else []))
             except AssertionError as e:raise ValueError(str(e)) from None

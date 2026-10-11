@@ -18,6 +18,16 @@ import refresh_patch_manifest as refresh
 
 
 class ExportPatchTests(unittest.TestCase):
+    def test_arena_source_closure_inputs_are_exactly_scoped(self):
+        names = ['release/components/target_resources/arena_target_catalog.json',
+                 'scripts/generate_arena_targets.py']
+        rows = [dict(path=name, size=0, sha256='0' * 64) for name in names]
+        self.assertEqual(patch.validated_closure(dict(count=2, files=rows)), rows)
+        for name in ['release/components/target_resources/arena_other_catalog.json',
+                     'scripts/generate_arena_unreviewed.py']:
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.validated_closure(dict(count=1, files=[dict(path=name, size=0, sha256='0' * 64)]))
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix="nanaimo-patch-test-")
         self.addCleanup(self.tmp.cleanup)

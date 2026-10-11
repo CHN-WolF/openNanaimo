@@ -187,14 +187,14 @@ internal static partial class Program
             && BinaryPrimitives.ReadUInt16LittleEndian(lucky.AsSpan(14)) == 112
             && BinaryPrimitives.ReadUInt32LittleEndian(lucky.AsSpan(16)) == 1000,
             "shared lucky points roll over and award the completing member");
-        var luckyCards = (IDictionary)Get(room, "LuckyCardsBySession")!;
+        var luckyCards = (IDictionary)Get(room, "RewardCardsBySession")!;
         var guestLuckyCards = (IList)luckyCards[Id(guest)]!;
         Check(guestLuckyCards.Count == 1
-            && (uint)guestLuckyCards[0]! is >= 22000011u and <= 22000018u,
-            "opened lucky pool awards one card per completed thousand");
-        guestLuckyCards.Add(22000012u);
-        guestLuckyCards.Add(22000013u);
-        guestLuckyCards.Add(22000014u);
+            && EntertainmentRewardPolicy.IsBasicCard((uint)guestLuckyCards[0]!),
+            "basic pool awards one card per completed lucky thousand");
+        guestLuckyCards.Add(13000012u);
+        guestLuckyCards.Add(13000013u);
+        guestLuckyCards.Add(13000014u);
         Check(await Send(guest, 0xD007, [2, 2, 2, 10]) is null,
             "duplicate cell cannot duplicate a lucky award");
         Check(await Send(host, 0xCF7F, []) is null, "duplicate loading confirmation preserves the independent deadline");
@@ -218,22 +218,38 @@ internal static partial class Program
         var result = await Send(host, 0xCF85, []);
         Check(result is not null && BinaryPrimitives.ReadUInt16LittleEndian(result.AsSpan(6)) == 0xCF86,
             "entertainment completes through its result response");
+        Check(result!.Length == 16 + 64 * 2
+            && BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(8)) == 2,
+            "CF86 covers every consumed field in both complete 64-byte result rows");
+        foreach (var member in new[] { host, guest })
+        {
+            var saved = (await f.Database.GetCharacterByIdAsync(Character(member).Id))!;
+            var pet = PetProgression.GetState(saved, saved.EquippedPetItemCode);
+            var row = Enumerable.Range(0, 2).Select(i => 16 + 64 * i).Single(at =>
+                BinaryPrimitives.ReadUInt16LittleEndian(result.AsSpan(at)) == saved.Id);
+            Check(result[row + 6] == pet.CurrentStage && result[row + 7] == pet.MaximumStage
+                && BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(row + 28)) == pet.Experience,
+                "CF86 pet stages and current experience come from the committed equipped pet");
+        }
         Check((await Send(guest, 0xCF85, []))!.AsSpan(8).SequenceEqual(result!.AsSpan(8)),
             "all members share the frozen result ordering");
         Check((await Send(host, 0xCF85, []))!.AsSpan(8).SequenceEqual(result.AsSpan(8)),
             "repeated result requests reuse the result payload");
         Check(await f.ScalarAsync("SELECT COUNT(*) FROM ActivityRewardReceipts") == 2,
             "entertainment grants one receipt per character and round");
-        Check(await f.ScalarAsync("SELECT COALESCE(SUM(Quantity), 0) FROM CharacterCards WHERE CharacterId = " + Character(guest).Id + " AND CardCode BETWEEN 22000011 AND 22000018") == 4,
-            "all entertainment lucky cards are persisted beyond the three display slots");
+        Check(await f.ScalarAsync("SELECT COALESCE(SUM(Quantity), 0) FROM CharacterCards WHERE CharacterId = " + Character(guest).Id + " AND CardCode BETWEEN 13000001 AND 13000420") == 4,
+            "all entertainment basic cards are persisted beyond the three display slots");
         Check(BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(56)) == (uint)guestLuckyCards[0]!
             && BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(60)) == (uint)guestLuckyCards[1]!
             && BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(64)) == (uint)guestLuckyCards[2]!,
-            "settlement displays only the first three lucky cards");
-        Check(await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentLuckyCardReceipts") == 4,
-            "entertainment lucky card receipts are idempotent");
-        Check(await f.ScalarAsync("SELECT SUM(PetExperience) FROM ActivityRewardReceipts") == 30,
-            "entertainment victory and participation use distinct pet awards");
+            "settlement displays only the first three basic cards");
+        Check(await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 4,
+            "entertainment basic card receipts are idempotent");
+        var petBeforeReward = new PetState(15000001, 1, 2, 0, 0, 0, 0, 0, -1);
+        var expectedPetTotal = EntertainmentRewardPolicy.GetPetExperience(petBeforeReward, 0)
+            + EntertainmentRewardPolicy.GetPetExperience(petBeforeReward, 1);
+        Check(await f.ScalarAsync("SELECT SUM(PetExperience) FROM ActivityRewardReceipts") == expectedPetTotal,
+            "entertainment first and second place use stage-based twenty and fifteen percent awards");
         Check((await f.Database.GetCharacterByIdAsync(Character(host).Id))!.PetExperience > 0,
             "entertainment pet experience is durable");
         Check(await f.ScalarAsync("SELECT COUNT(*) FROM DungeonProgress") == 0,
@@ -312,9 +328,9 @@ internal static partial class Program
         Check(first is not null && first.Length == 24 && first[14] == (byte)Get(attacker, "ArenaSlotIndex")!
             && first[15] == (byte)Get(victim, "ArenaSlotIndex")!, "PvP publishes source and victim slots with a complete response");
         var firstHp = BinaryPrimitives.ReadUInt16LittleEndian(first!.AsSpan(16));
-        Check(BinaryPrimitives.ReadUInt16LittleEndian(first.AsSpan(20)) == 5000 - firstHp
-            && BinaryPrimitives.ReadUInt16LittleEndian(first.AsSpan(22)) == 5000 - firstHp,
-            "PvP damage digits equal the authoritative HP reduction");
+        Check(BinaryPrimitives.ReadUInt16LittleEndian(first.AsSpan(20)) == 0
+            && BinaryPrimitives.ReadUInt16LittleEndian(first.AsSpan(22)) == 0,
+            "PvP injury does not transfer unbooked score through the native score WORDs");
         Check(firstHp < 4990 && firstHp > 0, "PvP uses character attack rather than a constant ten");
         Check(await Send(victim, 0xD014, hit) is null, "immediate duplicate collision is rejected");
         BinaryPrimitives.WriteUInt16LittleEndian(hit.AsSpan(2), 248);

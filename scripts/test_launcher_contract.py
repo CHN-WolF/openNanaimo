@@ -434,8 +434,8 @@ if($script:queries-ne1){throw "queries=$script:queries expected=1"}
         self.assertIn('$profileSaveBtn.add_Click', launcher)
         self.assertIn('foreach($adminTab in @($tab,$petTab,$gameTab,$fTab,$cTab))', gui)
         self.assertIn("'--character-id'", gui)
-        self.assertIn('case "profiles":', backend)
-        self.assertIn('case "clone":', backend)
+        self.assertIn('"profiles"=>Profiles(hex)', backend)
+        self.assertIn('"clone"=>CloneOperation(args,hex)', backend)
         self.assertIn('static JsonObject DbSnapshot(long id)', backend)
         self.assertIn('JsonObject DbApply(long id', backend)
 

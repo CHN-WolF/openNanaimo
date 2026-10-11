@@ -7,6 +7,21 @@ namespace OpenNanaimo.Adapter.Services;
 public sealed partial class NetworkAdapterService
 {
     private readonly ConditionalWeakTable<byte[], object> _coupleExperienceFrames = new();
+    private readonly ConditionalWeakTable<ConnectionSession, List<string>> _nativeFriendNames = new();
+
+    private async Task RestoreNativeFriendNamesAsync(byte[] frames, ConnectionSession session, CancellationToken token)
+    {
+        var names = _nativeFriendNames.GetOrCreateValue(session);
+        names.Clear();
+        foreach (var contact in (await _database.GetNativeFriendContactsAsync(session.Character!.Id, token)).Take(20))
+        {
+            PrivateChatProtocol.WriteText(frames.AsSpan(0xF4 + names.Count * 16, 16), contact.Name);
+            names.Add(contact.Name);
+        }
+        var blocks = await _database.GetNativeBlockedContactsAsync(session.Character.Id, token);
+        for (var index = 0; index < blocks.Count; index++)
+            PrivateChatProtocol.WriteText(frames.AsSpan(0x234 + index * 16, 16), blocks[index].Name);
+    }
 
     private async Task<byte[]?> HandleNativeFriendAsync(
         byte[] frame, ushort opcode, byte[] payload, ConnectionSession session, CancellationToken token)
@@ -16,22 +31,44 @@ public sealed partial class NetworkAdapterService
         {
             if (payload.Length != 0) return null;
             var contacts = await _database.GetNativeFriendContactsAsync(character.Id, token);
-            var result = new byte[4 + contacts.Count * 4];
-            BinaryPrimitives.WriteUInt16LittleEndian(result, checked((ushort)contacts.Count));
-            for (var index = 0; index < contacts.Count; index++)
-                WriteNativeFriendPresence(result.AsSpan(4 + index * 4, 4), contacts[index]);
-            return BuildNativeFrame(frame, 0xC5AD, result, session);
+            var names = _nativeFriendNames.GetOrCreateValue(session);
+            var result = new byte[4 + names.Count * 4];
+            BinaryPrimitives.WriteUInt16LittleEndian(result, checked((ushort)names.Count));
+            for (var index = 0; index < names.Count; index++)
+                if (contacts.FirstOrDefault(c => c.Name == names[index]) is { } contact)
+                    WriteNativeFriendPresence(result.AsSpan(4 + index * 4, 4), contact);
+            var responses = new List<byte[]> { BuildNativeFrame(frame, 0xC5AD, result, session) };
+            // The client creates positional UI rows before applying named changes.
+            // Reconcile only at this request boundary, after those rows exist.
+            foreach (var removed in names.Where(n => !contacts.Any(c => c.Name == n)).ToArray())
+            {
+                responses.Add(BuildNativeFrame(frame, 0xC5AF,
+                    BuildNativeFriendResult(2, new CharacterRecord { Name = removed }), session));
+                names.Remove(removed);
+            }
+            foreach (var added in contacts.Where(c => !names.Contains(c.Name)).Take(20 - names.Count))
+            {
+                responses.Add(BuildNativeFrame(frame, 0xC5AF, BuildNativeFriendResult(1, added), session));
+                names.Add(added.Name);
+            }
+            return CombineNativeFrames(responses.ToArray());
         }
         if (payload.Length != 20) return null;
         var operation = BinaryPrimitives.ReadUInt16LittleEndian(payload);
-        if (operation is not (1 or 2)
+        if (operation is not (1 or 2 or 3 or 4)
             || !PrivateChatProtocol.TryReadText(payload.AsSpan(4, 16), out var peerName)) return null;
+        var clientNames = _nativeFriendNames.GetOrCreateValue(session);
+        var duplicateName = operation == 1 && clientNames.Any(n => string.Equals(n, peerName, StringComparison.OrdinalIgnoreCase));
+        if (operation == 1 && !duplicateName && clientNames.Count >= 20)
+            return BuildNativeFrame(frame, 0xC5AF, BuildNativeFriendResult(operation, null), session);
         var changed = await _database.ApplyNativeFriendCommandAsync(
             session.AccountId, session.Character.Id, session.SessionId, operation, peerName, token);
         if (!changed.Success)
             return BuildNativeFrame(frame, 0xC5AF, BuildNativeFriendResult(operation, null), session);
 
         var peer = await _database.GetCharacterByIdAsync(changed.PeerId, token);
+        if (peer is not null && operation == 1 && !duplicateName) clientNames.Add(peer.Name);
+        if (peer is not null && operation == 2) clientNames.Remove(peer.Name);
         if (peer is not null && changed.Added)
         {
             RaiseFriendStateChanged();
@@ -44,6 +81,12 @@ public sealed partial class NetworkAdapterService
                         PrivateChatProtocol.BuildMessage("系统通知", $"{session.Character.Name}已加你为好友"),
                         "friend contact added"));
             }
+        }
+        if (duplicateName)
+        {
+            var duplicate = BuildNativeFriendResult(operation, null);
+            BinaryPrimitives.WriteUInt16LittleEndian(duplicate, 10);
+            return BuildNativeFrame(frame, 0xC5AF, duplicate, session);
         }
         // Addition and deletion acknowledge exactly the requested peer.
         // Deletion is idempotent and never emits an unsolicited contact result.
@@ -67,13 +110,12 @@ public sealed partial class NetworkAdapterService
     private void WriteNativeFriendPresence(Span<byte> field, CharacterRecord character)
     {
         field.Clear();
+        field[1] = CharacterTitleState.GetGrade(character);
+        field[3] = checked((byte)Math.Clamp(character.Level, 1, CharacterProgression.MaximumLevel));
         var presence = _activeWorldSessions.Values.FirstOrDefault(item =>
             item.CharacterId == character.Id && IsTrackedWorldSession(item.Session));
         if (presence is null) return;
         field[0] = 1;
-        field[1] = presence.Session.TownId;
-        field[2] = presence.Session.TownPage;
-        field[3] = checked((byte)Math.Clamp(presence.Session.ChannelId, 0, byte.MaxValue));
     }
 
     private async Task<byte[]?> HandlePrivateChatAsync(

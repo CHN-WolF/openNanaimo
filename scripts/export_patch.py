@@ -84,6 +84,7 @@ def payload_policy(value: str, layer: str) -> None:
             "start_nanaimo_launcher.bat", "gui_launcher/nanaimo_launcher.ps1",
             "gui_launcher/projectile_browser.ps1",
             "gui_launcher/start_social_client.ps1",
+            "gui_launcher/launcher_worker.ps1",
             "gui_launcher/lumineos_resource_identity.ps1",
             "gui_launcher/korean_pet_resource_identity.ps1",
             "gui_launcher/client_connect.ps1", "gui_launcher/inventory_admin_gui.ps1",
@@ -98,6 +99,7 @@ def payload_policy(value: str, layer: str) -> None:
             "release/components/cards/card_drop_manual_sources.json",
             "release/components/stage_damage/scene_hazard_registry.json",
             "release/components/target_resources/preloaded_target_catalog.json",
+            "release/components/target_resources/arena_target_catalog.json",
             "release/components/cards/card_drop_cn.csv",
             "release/components/dungeon_progression/character_experience.csv",
             "release/components/dungeon_progression/character_experience_v2.csv",
@@ -323,6 +325,8 @@ def validated_closure(closure: dict) -> list[dict]:
             "scripts/lumineos_codec.py",
             "release/components/stage_damage/scene_hazard_registry.json",
             "release/components/target_resources/preloaded_target_catalog.json",
+            "release/components/target_resources/arena_target_catalog.json",
+            "scripts/generate_arena_targets.py",
         }
         if not (native or managed or build_script or embedded_recipe or card_distribution):
             raise ExportError("source closure contains an ineligible project source")

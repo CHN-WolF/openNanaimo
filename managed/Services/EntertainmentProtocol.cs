@@ -23,7 +23,7 @@ internal readonly record struct EntertainmentRoomListEntry(
     string Password,
     byte State,
     byte Mode,
-    byte Level);
+    ushort MemberCount);
 
 internal readonly record struct EntertainmentWaitUserEntry(
     ushort UserUid,
@@ -33,13 +33,13 @@ internal readonly record struct EntertainmentWaitUserEntry(
 internal readonly record struct EntertainmentEndGameRecord(
     ushort UserUid,
     byte Level,
-    byte PreviousGrade,
-    byte CurrentGrade,
+    byte PetCurrentStage,
+    byte PetMaximumStage,
     uint Score,
     uint CurrentExperience,
     uint LevelStartExperience,
     uint NextLevelExperience,
-    uint GradeProgress,
+    uint PetExperience,
     uint Reward0,
     uint Reward1,
     uint Reward2,
@@ -121,13 +121,13 @@ internal static class EntertainmentProtocol
         return requestType is 100 or 200 && option is 100 or 200;
     }
 
-    public static byte[] BuildLobbyInfo(uint localUid, byte gameType, byte runtime, uint value)
+    public static byte[] BuildLobbyInfo(uint localUid, byte gameType, byte runtime, uint bestScore)
     {
         var payload = new byte[12];
         BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(0, 4), localUid);
         payload[4] = gameType;
         payload[5] = runtime;
-        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(8, 4), value);
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(8, 4), bestScore);
         return payload;
     }
 
@@ -142,7 +142,7 @@ internal static class EntertainmentProtocol
             EncodeFixed(room.Title, record.Slice(0, 24));
             record[24] = room.State;
             record[25] = room.Mode;
-            record[26] = room.Level;
+            BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(26, 2), room.MemberCount);
             EncodeFixed(room.Password, record.Slice(28, 8));
             BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(36, 2), room.RoomId);
         }
@@ -210,7 +210,7 @@ internal static class EntertainmentProtocol
         ushort ownerUid,
         ushort memberUid,
         bool ready,
-        ushort level,
+        ushort targetScore,
         ushort gauge,
         string secondaryName,
         ReadOnlySpan<byte> appearance)
@@ -224,7 +224,7 @@ internal static class EntertainmentProtocol
         // Payload +20..+22 are present in the wire record but are not read by
         // the retail CF6F consumer. Keep the reserved bytes zero.
         payload[23] = ready ? (byte)1 : (byte)0;
-        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(24, 2), level);
+        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(24, 2), targetScore);
         BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(26, 2), Math.Min(gauge, (ushort)1000));
         EncodeFixed(secondaryName, payload.AsSpan(28, 16));
         appearance.CopyTo(payload.AsSpan(44, 36));
@@ -313,13 +313,13 @@ internal static class EntertainmentProtocol
             var record = payload.AsSpan(8 + index * EndGameRecordLength, EndGameRecordLength);
             BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(0, 2), value.UserUid);
             record[5] = value.Level;
-            record[6] = value.PreviousGrade;
-            record[7] = value.CurrentGrade;
+            record[6] = value.PetCurrentStage;
+            record[7] = value.PetMaximumStage;
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(8, 4), value.Score);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(16, 4), value.CurrentExperience);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(20, 4), value.LevelStartExperience);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(24, 4), value.NextLevelExperience);
-            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(28, 4), value.GradeProgress);
+            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(28, 4), value.PetExperience);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(40, 4), value.Reward0);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(44, 4), value.Reward1);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(48, 4), value.Reward2);

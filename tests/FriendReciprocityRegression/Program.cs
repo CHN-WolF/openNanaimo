@@ -18,6 +18,7 @@ internal static class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         WireIdentityAllocator.Reset();
+        await CheckBlockAndRestoreAsync();
         foreach (var reverseFirst in new[] { true, false })
         foreach (var withExistingContact in new[] { true, false })
         {
@@ -43,6 +44,13 @@ internal static class Program
         var result = await Dispatch(fixture, owner, 0xC5AE, AddRequest(name))
             ?? throw new InvalidOperationException("Missing addition result.");
         Check(result is { Length: >= 12 }, "addition returns a result");
+        if (visible.Contains(name))
+        {
+            Check(result!.Length == 32 && BinaryPrimitives.ReadUInt16LittleEndian(result.AsSpan(8)) == 10
+                && result.AsSpan(12, 20).IndexOfAnyExcept((byte)0) < 0,
+                "duplicate does not enter the client's unconditional UI-row insertion branch");
+            return;
+        }
         Check(BinaryPrimitives.ReadUInt16LittleEndian(result!.AsSpan(8)) == 1,
             "addition status is successful");
         Check(BinaryPrimitives.ReadUInt16LittleEndian(result.AsSpan(10)) == 1,
@@ -53,8 +61,10 @@ internal static class Program
             "addition declares its complete size and response kind");
         Check(PrivateChatProtocol.TryReadText(result.AsSpan(12, 16), out var actual) && actual == name,
             "addition names the requested peer rather than the first sorted contact");
-        Check(result.AsSpan(28, 4).SequenceEqual(new byte[] { 1, 0, 0, 1 }),
-            "addition includes the current peer presence");
+        var storedPeer = (await fixture.Database.GetCharacterByIdAsync(Character(peer).Id, Token))!;
+        Check(result.AsSpan(28, 4).SequenceEqual(new byte[] {
+                (byte)((bool)Get(peer, "OnlineTracked")! ? 1 : 0), storedPeer.DungeonGrade, 0, (byte)storedPeer.Level }),
+            "addition carries the actual online flag, persisted title and character level");
         visible.Add(actual);
     }
 
@@ -115,6 +125,16 @@ internal static class Program
             && BinaryPrimitives.ReadUInt16LittleEndian(presence.AsSpan(8)) == contacts.Count
             && BinaryPrimitives.ReadUInt16LittleEndian(presence.AsSpan(6)) == 0xC5AD,
             "presence queries retain their separate count-based shape");
+        var namesField = typeof(NetworkAdapterService).GetField("_nativeFriendNames", PrivateInstance)!.GetValue(fixture.Service)!;
+        var names = (List<string>)namesField.GetType().GetMethod("GetOrCreateValue")!.Invoke(namesField, [first])!;
+        var peerOffset = 12 + names.IndexOf(Character(second).Name) * 4;
+        Check(presence![peerOffset + 1] == 23 && presence[peerOffset + 3] == Character(second).Level,
+            "contact row carries dungeon grade and character level, not town and channel");
+        Set(second, "OnlineTracked", false);
+        var offline = await Dispatch(fixture, first, 0xC5AC, []);
+        Check(offline![peerOffset] == 0 && offline[peerOffset + 1] == 23,
+            "offline contact retains its dungeon title");
+        Set(second, "OnlineTracked", true);
 
         var reopened = new DatabaseService(fixture.Root);
         foreach (var (session, expected) in new[] { (first, firstView), (second, secondView) })
@@ -171,7 +191,7 @@ internal static class Program
         malformed.AsSpan(4).Fill(0x41);
         Check(await Dispatch(fixture, owner, 0xC5AE, malformed) is null,
             "unterminated peer name is rejected");
-        foreach (var operation in new ushort[] { 0, 3, 4 })
+        foreach (var operation in new ushort[] { 0, ushort.MaxValue })
         {
             var unsupported = AddRequest(Character(peer).Name);
             BinaryPrimitives.WriteUInt16LittleEndian(unsupported, operation);
@@ -220,8 +240,9 @@ internal static class Program
                     "first deletion is acknowledged as successful");
                 Check(PrivateChatProtocol.TryReadText(response.AsSpan(12, 16), out var actual)
                     && actual == Character(peer).Name, "deletion names exactly the requested peer");
-                Check(response.AsSpan(28, 4).SequenceEqual(new byte[] { 1, 0, 0, 1 }),
-                    "deletion initializes the entire presence tail");
+                var persistedPeer = (await fixture.Database.GetCharacterByIdAsync(peerId, Token))!;
+                Check(response.AsSpan(28, 4).SequenceEqual(new byte[] { 1, persistedPeer.DungeonGrade, 0, (byte)persistedPeer.Level }),
+                    "deletion initializes the actual title and level tail");
             }
             else
             {
@@ -242,8 +263,8 @@ internal static class Program
             Check(!snapshot.Categories.SelectMany(c => c.Friends).Concat(snapshot.Unrelated)
                 .Any(c => c.CharacterId == deleted), "reopened category and contact lists do not resurrect deletion");
         }
-        Check(!(await fixture.Database.IsPrivateChatBlockedAsync(ownerId, peerId, Token)),
-            "deletion clears pair blocks even when the peer blocked the owner");
+        Check(await fixture.Database.IsPrivateChatBlockedAsync(ownerId, peerId, Token),
+            "friend deletion cannot remove the peer's independent block");
         Check(!(await fixture.Database.GetFriendRequestsForAdminAsync()).Any(r =>
             r.RequesterCharacterId == ownerId && r.RequesteeCharacterId == peerId
             || r.RequesterCharacterId == peerId && r.RequesteeCharacterId == ownerId),
@@ -260,6 +281,83 @@ internal static class Program
             "failed deletion returns operation two with cleared identity");
         // Re-adding is covered by the existing reciprocal-addition matrix; keep deletion isolated.
 
+    }
+
+    private static async Task CheckBlockAndRestoreAsync()
+    {
+        await using var fixture = await Fixture.CreateAsync();
+        var owner = fixture.First;
+        var peer = fixture.Second;
+        var block = AddRequest(Character(peer).Name);
+        BinaryPrimitives.WriteUInt16LittleEndian(block, 3);
+        var response = await Dispatch(fixture, owner, 0xC5AE, block);
+        Check(response is { Length: 32 } && response[8] == 1 && response[10] == 3,
+            "nickname block works without an existing friendship");
+        Check((await fixture.Database.GetFriendRelationsForAdminAsync()).Count == 0,
+            "blocking a stranger does not create a friendship");
+        var denied = await Dispatch(fixture, peer, 0xC5AE, AddRequest(Character(owner).Name));
+        Check(denied![8] == 0, "blocked stranger cannot add the blocker");
+        Broadcasts(peer).Clear();
+        await Dispatch(fixture, peer, 0xCB25, PrivateChatProtocol.BuildMessage(Character(owner).Name, "blocked"));
+        Check(Broadcasts(peer).Count == 0, "nickname block rejects private delivery");
+        var whisper = new byte[100];
+        BinaryPrimitives.WriteUInt16LittleEndian(whisper.AsSpan(2), 2000);
+        PrivateChatProtocol.WriteText(whisper.AsSpan(20, 16), Character(owner).Name);
+        PrivateChatProtocol.WriteText(whisper.AsSpan(36, 64), "blocked whisper");
+        var whisperResult = await Dispatch(fixture, peer, 0xCB23, whisper);
+        Check(whisperResult is { Length: 12 } && whisperResult[6] == 0x24 && Broadcasts(peer).Count == 0,
+            "nickname block rejects the independent town whisper path");
+        var login = new byte[0x2D8];
+        await Invoke<Task>(fixture.Service, "RestoreNativeFriendNamesAsync", login, owner, Token);
+        Check(PrivateChatProtocol.TryReadText(login.AsSpan(0x234, 16), out var blockedName)
+            && blockedName == Character(peer).Name, "C355 restores the actual blocked nickname");
+        var reopened = new DatabaseService(fixture.Root);
+        Check(await reopened.IsPrivateChatBlockedAsync(Character(owner).Id, Character(peer).Id, Token),
+            "nickname block survives reopening storage");
+        BinaryPrimitives.WriteUInt16LittleEndian(block, 4);
+        response = await Dispatch(fixture, owner, 0xC5AE, block);
+        Check(response![8] == 1 && response[10] == 4
+            && !await fixture.Database.IsPrivateChatBlockedAsync(Character(owner).Id, Character(peer).Id, Token),
+            "unblock removes only the owner's nickname block");
+        await PersistDungeonGradeAsync(fixture.Root, Character(peer), 3);
+        Set(peer, "OnlineTracked", false);
+        await AddAsync(fixture, owner, peer, []);
+        Set(peer, "OnlineTracked", true);
+        await Invoke<Task>(fixture.Service, "RestoreNativeFriendNamesAsync", login, owner, Token);
+        Check(PrivateChatProtocol.TryReadText(login.AsSpan(0xF4, 16), out var friendName)
+            && friendName == Character(peer).Name, "C355 restores names before positional presence queries");
+        var reciprocal = await Dispatch(fixture, peer, 0xC5AC, []);
+        Check(reciprocal is { Length: 44 } && reciprocal[8] == 0 && reciprocal[18] == 0xAF
+            && PrivateChatProtocol.TryReadText(reciprocal.AsSpan(24, 16), out var reciprocalName)
+            && reciprocalName == Character(owner).Name,
+            "reciprocal discovery constructs zero existing rows then one named row, never a blank row");
+        var duplicate = await Dispatch(fixture, peer, 0xC5AE, AddRequest(Character(owner).Name));
+        Check(duplicate![8] == 10, "adding a reconciled contact cannot append a duplicate blank row");
+        await PersistDungeonGradeAsync(fixture.Root, Character(fixture.Third), 8);
+        await AddAsync(fixture, owner, fixture.Third, [Character(peer).Name]);
+        var ordered = await Dispatch(fixture, owner, 0xC5AC, []);
+        Check(ordered is { Length: 20 } && ordered[13] == 3 && ordered[17] == 8,
+            "presence rows retain insertion order when alphabetical database order differs");
+        var deletion = AddRequest(Character(peer).Name);
+        BinaryPrimitives.WriteUInt16LittleEndian(deletion, 2);
+        await Dispatch(fixture, owner, 0xC5AE, deletion);
+        var reconciledDeletion = await Dispatch(fixture, peer, 0xC5AC, []);
+        Check(reconciledDeletion is { Length: 48 } && reconciledDeletion[8] == 1
+            && reconciledDeletion[26] == 2
+            && PrivateChatProtocol.TryReadText(reconciledDeletion.AsSpan(28, 16), out var removedName)
+            && removedName == Character(owner).Name,
+            "reciprocal deletion initializes the existing row before safely deleting its named entry");
+        var empty = await Dispatch(fixture, peer, 0xC5AC, []);
+        Check(empty is { Length: 12 } && empty[8] == 0, "deleted reciprocal contact leaves no blank row on reopening");
+        var pendingPeer = await fixture.CreateSessionAsync("pending-block", "Pending", 0);
+        var pending = await fixture.Database.CreateFriendRequestAsync(Character(owner).Id, Character(pendingPeer).Name, "hello", false);
+        Check(pending.Success, "friend request before blocking");
+        await fixture.Database.SetFriendBlockedAsync(Character(pendingPeer).Id, Character(owner).Id, true);
+        Check(!await fixture.Database.ConfirmFriendRequestAsync(Character(pendingPeer).Id, pending.SerialNo,
+            FriendProtocol.ConfirmOk, 0), "block after friend request prevents acceptance transaction");
+        await fixture.Database.SetFriendBlockedAsync(Character(pendingPeer).Id, Character(owner).Id, false);
+        Check(await fixture.Database.ConfirmFriendRequestAsync(Character(pendingPeer).Id, pending.SerialNo,
+            FriendProtocol.ConfirmOk, 0), "unblocking preserves the pending request for a legitimate acceptance");
     }
 
     private static void Check(bool condition, string message)

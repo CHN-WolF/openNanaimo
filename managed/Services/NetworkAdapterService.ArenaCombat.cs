@@ -7,13 +7,17 @@ public sealed partial class NetworkAdapterService
     private byte[]? HandleArenaPvpEvent(byte[] frame, byte[] payload, ConnectionSession victim)
     {
         if (payload.Length != 8 || !victim.OnlineTracked || !victim.AuxiliaryGameSession
-            || victim.Character is null || victim.ArenaGameType != 4) return null;
+            || victim.Character is null || victim.ArenaGameType is < 1 or > 4) return null;
         var kind = BinaryPrimitives.ReadUInt16LittleEndian(payload);
         if (kind is not (10 or 20 or 30 or 40 or 50 or 60 or 80)) return null;
+        if (kind == 10 && BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(6)) == 0
+            && BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(2)) == GetSceneEntityId(victim.Character))
+            return HandleArenaItemUse(frame, payload, victim);
         byte[] response;
         lock (_arenaRoomGate)
         {
             if (!_arenaRooms.TryGetValue(victim.ArenaRoomId, out var room) || !room.Started
+                || room.GameType != victim.ArenaGameType
                 || room.EndingSessionIds.Count != 0
                 || (!IsTimedScoreArena(room) && room.EliminationWinnerSessionId is not null)
                 || !room.Members.ContainsKey(victim.SessionId)
@@ -58,7 +62,7 @@ public sealed partial class NetworkAdapterService
                 room.CurrentHpBySession[victim.SessionId] = hp;
                 response = ArenaProtocol.BuildPlayerHitResult(kind, objectId,
                     BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(4)),
-                    attacker.ArenaSlotIndex, victim.ArenaSlotIndex, hp, appliedDamage);
+                    attacker.ArenaSlotIndex, victim.ArenaSlotIndex, hp);
                 if (hp == 0)
                 {
                     if (IsTimedScoreArena(room))
@@ -92,23 +96,22 @@ public sealed partial class NetworkAdapterService
                 member.SessionId != victim.SessionId
                 && member.Character is not null
                 && GetSceneEntityId(member.Character) == reportedAttackerUid);
-            if (reported is not null)
-                return reported;
+            return reported;
         }
 
-        return room.Members.Values
+        var opponents = room.Members.Values
             .Where(member => member.SessionId != victim.SessionId
                 && member.Character is not null
                 && room.CurrentHpBySession.GetValueOrDefault(member.SessionId) > 0
                 && (victim.ArenaTeamCode is not (1 or 2)
                     || member.ArenaTeamCode is not (1 or 2)
                     || member.ArenaTeamCode != victim.ArenaTeamCode))
-            .OrderBy(member => member.ArenaSlotIndex)
-            .FirstOrDefault();
+            .ToArray();
+        return opponents.Length == 1 ? opponents[0] : null;
     }
 
     private static bool IsTimedScoreArena(ArenaRoom room) => room.SelectedMode == 0;
 
     private static ushort GetArenaMaximumHp(ConnectionSession session) =>
-        (ushort)Math.Clamp(session.Character?.MaxHp ?? 1, 1, ushort.MaxValue);
+        session.Character is { } character ? ResolveInventoryVitals(character).MaximumHp : (ushort)1;
 }

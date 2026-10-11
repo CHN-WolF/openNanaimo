@@ -97,6 +97,9 @@ public sealed partial class DatabaseService
             || (partnerSessionId is not null && !await IsCoupleAccountSessionCurrentAsync(
                 connection, transaction, partnerAccountId, partnerCharacterId, partnerSessionId, token)))
             return Failure("A participant's active session changed.");
+        if (!separation && await IsSocialInteractionBlockedAsync(connection, transaction,
+                selection.CharacterId, partnerCharacterId, token))
+            return Failure("A participant blocked this interaction.");
         string ownerName;
         string partnerName;
         await using (var names = connection.CreateCommand())

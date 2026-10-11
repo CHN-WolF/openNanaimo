@@ -754,7 +754,15 @@ function Register-PureNewPlayer([string]$ip,[string]$requestedUsername){
 }
 function Get-LocalAdapters {
     $paths=@($Adapter,$AdapterBridge,$LegacyAdapter)
-    return @(Get-Process -ErrorAction SilentlyContinue|Where-Object{try{$_.Path-and($paths-contains$_.Path)}catch{$false}})
+    return @(Get-Process -ErrorAction SilentlyContinue|Where-Object{
+        try{
+            if(-not$_.Path-or-not($paths-contains$_.Path)){return $false}
+            $candidate=$_
+            foreach($session in @($script:InventoryBackendSessions.Values)){if($session.Process.Id-eq$candidate.Id-and-not$session.Process.HasExited){return $false}}
+            if($candidate.Path-eq$Adapter){$metadata=Get-CimInstance Win32_Process -Filter ("ProcessId="+$candidate.Id) -ErrorAction Stop;if($metadata.CommandLine-match'--tools["\s]+inventory-server'){return $false}}
+            return $true
+        }catch{$false}
+    })
 }
 function Stop-LocalAdapter {
     $running=Get-LocalAdapters
@@ -1294,5 +1302,5 @@ $script:PreviewTimer.add_Tick({$script:PreviewTimer.Stop();try{Render-LaunchPrev
 $script:LauncherWorkTimer=New-Object Windows.Forms.Timer;$script:LauncherWorkTimer.Interval=100
 $script:LauncherWorkTimer.add_Tick({Complete-LauncherWork})
 $form.add_FormClosing({param($sender,$eventArgs)if($script:LauncherWork){$eventArgs.Cancel=$true;$status.Text='后台操作尚未完成，请稍后关闭。'}})
-$form.add_FormClosed({$script:PreviewTimer.Dispose();$script:LauncherWorkTimer.Dispose()})
+$form.add_FormClosed({Stop-InventoryBackendSessions;$script:PreviewTimer.Dispose();$script:LauncherWorkTimer.Dispose()})
 [void]$form.ShowDialog()

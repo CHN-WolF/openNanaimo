@@ -38,6 +38,19 @@ internal static partial class Program
     private static async Task Main(string[] args)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        if (args.Contains("--gameplay-review-only"))
+        {
+            await CheckGameplayReviewAsync();
+            Console.WriteLine($"GAMEPLAY_REVIEW_REGRESSION_PASS checks={_checks}");
+            return;
+        }
+        if (args.Contains("--entertainment-only"))
+        {
+            await CheckEntertainmentRewardsAsync();
+            await CheckGameplayReviewAsync();
+            Console.WriteLine($"ENTERTAINMENT_REGRESSION_PASS checks={_checks}");
+            return;
+        }
         if (args.Contains("--describe-resources"))
         {
             if (ShopCatalog.TryGet(17000015, out var graduationItem))
@@ -55,9 +68,23 @@ internal static partial class Program
         await CheckNativeMentorshipAsync();
         await CheckProductionMentorshipAsync();
         await CheckGameplayReviewAsync();
+        await CheckEntertainmentRewardsAsync();
         CheckContracts();
         await using var fixture = await Fixture.CreateAsync();
         await CheckAdvertisingAsync(fixture);
+        await fixture.Database.SetFriendBlockedAsync(Character(fixture.Student).Id, Character(fixture.Teacher).Id, true);
+        Check((await fixture.Service.RequestMentorshipAsync(Id(fixture.Teacher), Character(fixture.Student).Id,
+            MentorshipDirection.TeacherInvitation)).Code == MentorshipResultCode.Ineligible,
+            "nickname block rejects mentorship invitation before delivery");
+        await fixture.Database.SetFriendBlockedAsync(Character(fixture.Student).Id, Character(fixture.Teacher).Id, false);
+        var pendingBlock = await fixture.Service.RequestMentorshipAsync(Id(fixture.Teacher), Character(fixture.Student).Id,
+            MentorshipDirection.TeacherInvitation);
+        Check(pendingBlock.Success, "mentorship invitation before blocking");
+        await fixture.Database.SetFriendBlockedAsync(Character(fixture.Student).Id, Character(fixture.Teacher).Id, true);
+        Check((await fixture.Service.RespondMentorshipAsync(Id(fixture.Student), pendingBlock.Request!.Id, true))
+            .Code == MentorshipResultCode.Ineligible, "block after invitation prevents mentorship commit");
+        await fixture.Database.SetFriendBlockedAsync(Character(fixture.Student).Id, Character(fixture.Teacher).Id, false);
+        fixture.Deliveries.Clear();
         await CheckStreamsAsync(fixture);
         await CheckNegotiationAsync(fixture);
         await CheckLessonsAsync(fixture);

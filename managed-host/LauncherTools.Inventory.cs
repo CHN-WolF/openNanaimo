@@ -40,13 +40,13 @@ internal static partial class LauncherTools
     {
         Require(args.Length>=1,"Missing inventory operation");
         // Profile discovery does not classify inventory; snapshots and writes do.
-        if(!catalogsLoaded&&(args[0] is "apply" or "clone" or "snapshot"))LoadCatalogs();
+        if(args[0] is "apply" or "clone" or "snapshot")LoadCatalogs();
         string hex=Option(args,"--name-hex").ToUpperInvariant();long? id=long.TryParse(Option(args,"--character-id"),out var parsed)?parsed:null;
         return args[0] switch
         {
             "profiles"=>Profiles(hex),
             "snapshot"=>Snapshot(hex,id),
-            "apply"=>Apply(hex,ReadJson(Option(args,"--input")),id, null, ParseTitleGrade(args)),
+            "apply"=>Apply(hex,ReadJson(Option(args,"--input")),id, null, ParseTitleGrade(args),Option(args,"--title-root",Root)),
             "clone"=>CloneOperation(args,hex),
             "selftest"=>Obj(new{status="INVENTORY_ADMIN_BACKEND_PASS",storage="sqlite",runtime="managed"}),
             _=>throw new InvalidDataException("Unknown inventory command")
@@ -57,21 +57,7 @@ internal static partial class LauncherTools
     {
         var source=Snapshot(Option(args,"--source-name-hex"),long.TryParse(Option(args,"--source-character-id"),out var sourceId)?sourceId:null);
         ValidateHex(hex);Require(!Profiles("").Any(p=>S(p,"name_hex")==hex||S(p,"username").Equals(ValidateHex(hex),StringComparison.OrdinalIgnoreCase)),"target profile already exists; select it instead");
-        return Apply(hex,ReadJson(Option(args,"--input")),null,source,ParseTitleGrade(args));
-    }
-    static async Task InventoryServer(string[] args)
-    {
-        Root=Path.GetFullPath(Option(args,"--root",Directory.GetCurrentDirectory()));Db=Path.GetFullPath(Option(args,"--database",Path.Combine(Root,"adapter_data","game.db")));CatalogRoot=Path.GetFullPath(Option(args,"--catalog-root",Root));var pipe=Option(args,"--pipe");Require(pipe.Length is >=1 and <=180,"Invalid inventory server pipe name");LoadCatalogs();
-        using var stop=new CancellationTokenSource();Console.CancelKeyPress+=(s,e)=>{e.Cancel=true;stop.Cancel();};
-        while(!stop.IsCancellationRequested)
-        {
-            using var server=new System.IO.Pipes.NamedPipeServerStream(pipe,System.IO.Pipes.PipeDirection.InOut,1,System.IO.Pipes.PipeTransmissionMode.Byte,System.IO.Pipes.PipeOptions.Asynchronous);
-            try{await server.WaitForConnectionAsync(stop.Token);}catch(OperationCanceledException){break;}
-            using var reader=new StreamReader(server,Encoding.UTF8,false,4096,true);using var writer=new StreamWriter(server,new UTF8Encoding(false),4096,true){AutoFlush=true};
-            var line=await reader.ReadLineAsync(stop.Token);if(string.IsNullOrWhiteSpace(line))continue;
-            try{var request=JsonNode.Parse(line)!.AsObject();var requestArgs=request["args"]!.AsArray().Select(x=>x!.GetValue<string>()).ToArray();var result=InventoryOperation(requestArgs,true);await writer.WriteLineAsync(Obj(new{ok=true,result}).ToJsonString());}
-            catch(Exception ex){await writer.WriteLineAsync(Obj(new{ok=false,error=ex.Message}).ToJsonString());}
-        }
+        return Apply(hex,ReadJson(Option(args,"--input")),null,source,ParseTitleGrade(args),Option(args,"--title-root",Root));
     }
     static JsonObject ReadJson(string path)=>(JsonObject)(JsonNode.Parse(File.ReadAllBytes(path))??throw new InvalidDataException("Empty JSON"));
     static string ValidateHex(string hex)
@@ -81,12 +67,28 @@ internal static partial class LauncherTools
     }
     static string Hex(string name){try{return Convert.ToHexString(Gbk.GetBytes(name));}catch(EncoderFallbackException){return "";}}
     static string DraftPath(string hex){ValidateHex(hex);return Path.Combine(Root,"inventory_admin_profiles",hex.ToUpperInvariant()+".json");}
-    static void LoadCatalogs(){Catalog.Clear();foreach(var pair in new[]{("clothing","inventory_clothing"),("pets","inventory_pets"),("gems","inventory_pet_gems"),("game","inventory_game_items"),("furniture","inventory_furniture"),("cards","inventory_cards")})Catalog[pair.Item1]=JsonNode.Parse(File.ReadAllBytes(Path.Combine(CatalogRoot,"gui_launcher","data",pair.Item2+".json")))!.AsArray().Select(x=>x!.AsObject()).ToDictionary(x=>N(x,"id"));}
+    static int CatalogLoads;
+    static string CatalogStamp="";
+    static readonly (string Kind,string File)[] CatalogFiles=[("clothing","inventory_clothing"),("pets","inventory_pets"),("gems","inventory_pet_gems"),("game","inventory_game_items"),("furniture","inventory_furniture"),("cards","inventory_cards")];
+    static string CatalogIdentity()=>string.Join("|",CatalogFiles.Select(pair=>{
+        var path=Path.GetFullPath(Path.Combine(CatalogRoot,"gui_launcher","data",pair.File+".json"));
+        var f=new FileInfo(path);Require(f.Exists,"Inventory catalog missing: "+path);
+        Require((f.Attributes&FileAttributes.ReparsePoint)==0,"Inventory catalog link refused: "+path);
+        return path+":"+f.Length+":"+f.LastWriteTimeUtc.Ticks+":"+f.CreationTimeUtc.Ticks;
+    }));
+    static void LoadCatalogs()
+    {
+        var stamp=CatalogIdentity();if(Catalog.Count==6&&CatalogStamp==stamp)return;
+        var next=new Dictionary<string,Dictionary<long,JsonObject>>();
+        foreach(var pair in CatalogFiles)next[pair.Kind]=JsonNode.Parse(File.ReadAllBytes(Path.Combine(CatalogRoot,"gui_launcher","data",pair.File+".json")))!.AsArray().Select(x=>x!.AsObject()).ToDictionary(x=>N(x,"id"));
+        Require(stamp==CatalogIdentity(),"Inventory catalogs changed during loading; retry explicitly.");
+        Catalog.Clear();foreach(var pair in next)Catalog[pair.Key]=pair.Value;CatalogStamp=stamp;CatalogLoads++;
+    }
     static SqliteConnection OpenDb(){var c=new SqliteConnection(new SqliteConnectionStringBuilder{DataSource=Db,Pooling=false,DefaultTimeout=10}.ToString());c.Open();return c;}
     static SqliteCommand Command(SqliteConnection c,SqliteTransaction? t,string sql,params (string,object?)[] args){var cmd=c.CreateCommand();cmd.Transaction=t;cmd.CommandText=sql;foreach(var(k,v) in args)cmd.Parameters.AddWithValue(k,v??DBNull.Value);return cmd;}
     static List<Dictionary<string,object>> Rows(SqliteConnection c,SqliteTransaction? t,string sql,params (string,object?)[] args){using var cmd=Command(c,t,sql,args);using var r=cmd.ExecuteReader();var rows=new List<Dictionary<string,object>>();while(r.Read()){var row=new Dictionary<string,object>();for(int i=0;i<r.FieldCount;i++)row[r.GetName(i)]=r.GetValue(i);rows.Add(row);}return rows;}
     static int Exec(SqliteConnection c,SqliteTransaction? t,string sql,params (string,object?)[] args){using var cmd=Command(c,t,sql,args);return cmd.ExecuteNonQuery();}
-    static bool Table(SqliteConnection c,string table)=>Rows(c,null,"SELECT 1 FROM sqlite_master WHERE type='table' AND name=$name",("$name",table)).Count>0;
+    static bool Table(SqliteConnection c,string table,SqliteTransaction? t=null)=>Rows(c,t,"SELECT 1 FROM sqlite_master WHERE type='table' AND name=$name",("$name",table)).Count>0;
     static HashSet<string> Columns(SqliteConnection c,string table)=>Rows(c,null,"PRAGMA table_info("+table+")").Select(x=>(string)x["name"]).ToHashSet();
     static long V(Dictionary<string,object> row,string key,long fallback=0)=>row.TryGetValue(key,out var v)&&v!=DBNull.Value?Convert.ToInt64(v):fallback;
     static JsonObject ToJson(Dictionary<string,object> row){var o=new JsonObject();foreach(var(k,v) in row)o[k]=v==DBNull.Value?null:JsonSerializer.SerializeToNode(v);return o;}
@@ -104,15 +106,19 @@ internal static partial class LauncherTools
     static readonly (string Key,string Column)[] ProfileFields=[("hp_max","MaxHp"),("mp_max","MaxMp"),("attack","AttackModifier"),("defense","DefenseFlat"),("apartment_recommendation_points","ApartmentRecommendationPoints")];
     static JsonObject DbSnapshot(long id)
     {
-        using var c=OpenDb();var chars=Rows(c,null,"SELECT * FROM Characters WHERE Id=$id",("$id",id));Require(chars.Count==1,"selected character profile no longer exists");var ch=chars[0];var name=(string)ch["Name"];var appearance=ch["Appearance"] as byte[]??[];long Code(int offset)=>appearance.Length>=offset+4?BinaryPrimitives.ReadUInt32LittleEndian(appearance.AsSpan(offset)):0;
+        using var c=OpenDb();return DbSnapshot(c,null,id);
+    }
+    static JsonObject DbSnapshot(SqliteConnection c,SqliteTransaction? t,long id)
+    {
+        var chars=Rows(c,t,"SELECT * FROM Characters WHERE Id=$id",("$id",id));Require(chars.Count==1,"selected character profile no longer exists");var ch=chars[0];var name=(string)ch["Name"];var appearance=ch["Appearance"] as byte[]??[];long Code(int offset)=>appearance.Length>=offset+4?BinaryPrimitives.ReadUInt32LittleEndian(appearance.AsSpan(offset)):0;
         var shop=Obj(new{coin=V(ch,"Hans"),nana=V(ch,"Cash"),equipped=new[]{0,4,8,12,20}.Select(Code).ToArray(),effect=Code(24),selected_pet=V(ch,"EquippedPetItemCode"),clothing=Array.Empty<long>(),pets=Array.Empty<long>(),gift_pets=Array.Empty<long>(),cash_items=Array.Empty<long>()});
         var clothes=new JsonArray();var pets=new JsonArray();var games=new JsonArray();var furniture=new JsonArray();var cards=new JsonArray();
-        foreach(var row in Rows(c,null,"SELECT * FROM CharacterItems WHERE CharacterId=$id ORDER BY ItemCode",("$id",id))){long code=V(row,"ItemCode"),qty=V(row,"Quantity");Require(qty>=0&&qty<=65535,"invalid inventory quantity");if(Catalog["clothing"].ContainsKey(code)){for(int i=0;i<qty;i++)clothes.Add(code);}else if(Catalog["pets"].TryGetValue(code,out var meta))pets.Add(Obj(new{code,upgrade_material=V(row,"PetCurrentStage")>0?N(meta,"upgrade_material"):0,gems=new[]{V(row,"PetAccessory0"),V(row,"PetAccessory1"),V(row,"PetAccessory2")}}));else if(Catalog["game"].TryGetValue(code,out meta))games.Add(Obj(new{code,count=qty,carrier=S(meta,"carrier","stackable")}));else if(Catalog["furniture"].TryGetValue(code,out meta))for(int i=0;i<qty;i++)furniture.Add(Obj(new{code,index=0,placed=false,type=N(meta,"type"),x=400,y=300,z=0,mirror=0}));}
-        if(Table(c,"CharacterApartmentItems"))foreach(var row in Rows(c,null,"SELECT * FROM CharacterApartmentItems WHERE CharacterId=$id ORDER BY SlotIndex",("$id",id))){var code=V(row,"ItemCode");var r=furniture.FirstOrDefault(x=>N(x,"code")==code&&!B(x,"placed"))?.AsObject();if(r is null){r=Obj(new{code});furniture.Add(r);}r["index"]=V(row,"SlotIndex")+1;r["placed"]=true;r["type"]=V(row,"InteriorType");r["x"]=V(row,"PositionX");r["y"]=V(row,"PositionY");r["z"]=V(row,"Layer");r["mirror"]=V(row,"Mirror");}
+        foreach(var row in Rows(c,t,"SELECT * FROM CharacterItems WHERE CharacterId=$id ORDER BY ItemCode",("$id",id))){long code=V(row,"ItemCode"),qty=V(row,"Quantity");Require(qty>=0&&qty<=65535,"invalid inventory quantity");if(Catalog["clothing"].ContainsKey(code)){for(int i=0;i<qty;i++)clothes.Add(code);}else if(Catalog["pets"].TryGetValue(code,out var meta))pets.Add(Obj(new{code,upgrade_material=V(row,"PetCurrentStage")>0?N(meta,"upgrade_material"):0,gems=new[]{V(row,"PetAccessory0"),V(row,"PetAccessory1"),V(row,"PetAccessory2")}}));else if(Catalog["game"].TryGetValue(code,out meta))games.Add(Obj(new{code,count=qty,carrier=S(meta,"carrier","stackable")}));else if(Catalog["furniture"].TryGetValue(code,out meta))for(int i=0;i<qty;i++)furniture.Add(Obj(new{code,index=0,placed=false,type=N(meta,"type"),x=400,y=300,z=0,mirror=0}));}
+        if(Table(c,"CharacterApartmentItems",t))foreach(var row in Rows(c,t,"SELECT * FROM CharacterApartmentItems WHERE CharacterId=$id ORDER BY SlotIndex",("$id",id))){var code=V(row,"ItemCode");var r=furniture.FirstOrDefault(x=>N(x,"code")==code&&!B(x,"placed"))?.AsObject();if(r is null){r=Obj(new{code});furniture.Add(r);}r["index"]=V(row,"SlotIndex")+1;r["placed"]=true;r["type"]=V(row,"InteriorType");r["x"]=V(row,"PositionX");r["y"]=V(row,"PositionY");r["z"]=V(row,"Layer");r["mirror"]=V(row,"Mirror");}
         var used=furniture.Select(x=>N(x,"index")).ToHashSet();int next=1;foreach(var r in furniture)if(N(r,"index")==0){while(used.Contains(next))next++;r!["index"]=next;used.Add(next++);}
-        if(Table(c,"CharacterCards"))foreach(var row in Rows(c,null,"SELECT CardCode,Quantity FROM CharacterCards WHERE CharacterId=$id ORDER BY CardCode",("$id",id)))cards.Add(Obj(new{code=V(row,"CardCode"),count=V(row,"Quantity")}));
-        var profile=Obj(new{character_name=name,gender=V(ch,"Gender"),level=V(ch,"Level"),is_online=V(ch,"IsOnline")!=0,coin=V(ch,"Hans"),nana_point=V(ch,"Cash")});foreach(var(key,col) in ProfileFields)if(col!="ApartmentRecommendationPoints"||ch.ContainsKey(col))profile[key]=V(ch,col);if(Table(c,"NativeDungeonProfiles")){var native=Rows(c,null,"SELECT State FROM NativeDungeonProfiles WHERE CharacterId=$id",("$id",id));if(native.Count>0&&native[0]["State"] is byte[] data&&NativeDungeonState.IsSupportedSize(data.Length))profile["dungeon_grade"]=(long)BinaryPrimitives.ReadUInt32LittleEndian(data.AsSpan(NativeDungeonState.DungeonGradeOffset));}
-        if(ch.ContainsKey("SelectedSkill0")){profile["skill_slot_z"]=V(ch,"SelectedSkill0");profile["skill_slot_x"]=V(ch,"SelectedSkill1");profile["skill_slot_expiry"]=V(ch,"SkillSlotExpansionExpires");profile["skill_slot_expiry_apply"]=false;var grades=new long[16];foreach(var row in Rows(c,null,"SELECT SkillCode,Grade FROM CharacterSkills WHERE CharacterId=$id",("$id",id))){var index=V(row,"SkillCode")-52000000;if(index is >=0 and <16)grades[index]=V(row,"Grade");}for(int i=0;i<16;i++)profile["skill_grade"+i]=grades[i];profile["skill_projectile_route"]=Route(grades,0);profile["skill_meat_route"]=Route(grades,8);}
+        if(Table(c,"CharacterCards",t))foreach(var row in Rows(c,t,"SELECT CardCode,Quantity FROM CharacterCards WHERE CharacterId=$id ORDER BY CardCode",("$id",id)))cards.Add(Obj(new{code=V(row,"CardCode"),count=V(row,"Quantity")}));
+        var profile=Obj(new{character_name=name,gender=V(ch,"Gender"),level=V(ch,"Level"),is_online=V(ch,"IsOnline")!=0,coin=V(ch,"Hans"),nana_point=V(ch,"Cash")});foreach(var(key,col) in ProfileFields)if(col!="ApartmentRecommendationPoints"||ch.ContainsKey(col))profile[key]=V(ch,col);if(Table(c,"NativeDungeonProfiles",t)){var native=Rows(c,t,"SELECT State FROM NativeDungeonProfiles WHERE CharacterId=$id",("$id",id));if(native.Count>0&&native[0]["State"] is byte[] data&&NativeDungeonState.IsSupportedSize(data.Length))profile["dungeon_grade"]=(long)BinaryPrimitives.ReadUInt32LittleEndian(data.AsSpan(NativeDungeonState.DungeonGradeOffset));}
+        if(ch.ContainsKey("SelectedSkill0")){profile["skill_slot_z"]=V(ch,"SelectedSkill0");profile["skill_slot_x"]=V(ch,"SelectedSkill1");profile["skill_slot_expiry"]=V(ch,"SkillSlotExpansionExpires");profile["skill_slot_expiry_apply"]=false;var grades=new long[16];foreach(var row in Rows(c,t,"SELECT SkillCode,Grade FROM CharacterSkills WHERE CharacterId=$id",("$id",id))){var index=V(row,"SkillCode")-52000000;if(index is >=0 and <16)grades[index]=V(row,"Grade");}for(int i=0;i<16;i++)profile["skill_grade"+i]=grades[i];profile["skill_projectile_route"]=Route(grades,0);profile["skill_meat_route"]=Route(grades,8);}
         return new JsonObject{{"version",2},{"source","database"},{"character_id",id},{"name_hex",Hex(name)},{"account_suffix","p_"+Hex(name)},{"profile",profile},{"shop",shop},{"clothing",clothes},{"pets",pets},{"game_items",games},{"furniture",furniture},{"cards",cards}};
     }
     static int Route(long[] grades,int offset)=>new[]{2,4,6}.Any(i=>grades[offset+i]>0)?1:new[]{3,5,7}.Any(i=>grades[offset+i]>0)?2:0;

@@ -18,6 +18,10 @@ internal static partial class Program
         var ownerUid = WireIdentityAllocator.GetSceneEntityId(Character(fixture.First).Id);
         BinaryPrimitives.WriteUInt16LittleEndian(invitation.AsSpan(16), ownerUid);
         BinaryPrimitives.WriteUInt16LittleEndian(invitation.AsSpan(22), WireIdentityAllocator.GetSceneEntityId(Character(fixture.Second).Id));
+        await fixture.Database.SetFriendBlockedAsync(Character(fixture.Second).Id, Character(fixture.First).Id, true);
+        Check(await Dispatch(fixture, fixture.First, 0xC4E0, invitation) is null && Broadcasts(fixture.First).Count == 0,
+            "nickname block rejects party invitation delivery");
+        await fixture.Database.SetFriendBlockedAsync(Character(fixture.Second).Id, Character(fixture.First).Id, false);
         Check(await Dispatch(fixture, fixture.First, 0xC4E0, invitation) is null && Broadcasts(fixture.First).Count == 1,
             "party invitation reaches the visible target");
         var projected = (byte[])Get(Broadcasts(fixture.First)[0]!, "Payload")!;
@@ -25,6 +29,13 @@ internal static partial class Program
         var answer = new byte[4]; answer[0] = 1;
         BinaryPrimitives.WriteUInt16LittleEndian(answer.AsSpan(2), ownerUid);
         Check(await Dispatch(fixture, fixture.Third, 0xC4E1, answer) is null, "party acceptance belongs to the invitee");
+        await fixture.Database.SetFriendBlockedAsync(Character(fixture.Second).Id, Character(fixture.First).Id, true);
+        var blockedAnswer = await Dispatch(fixture, fixture.Second, 0xC4E1, answer);
+        Check(blockedAnswer is not null && (int)Get(fixture.First, "PartyId")! == 0
+            && (int)Get(fixture.Second, "PartyId")! == 0, "block after invitation prevents party acceptance");
+        await fixture.Database.SetFriendBlockedAsync(Character(fixture.Second).Id, Character(fixture.First).Id, false);
+        Broadcasts(fixture.First).Clear();
+        await Dispatch(fixture, fixture.First, 0xC4E0, invitation);
         var accepted = await Dispatch(fixture, fixture.Second, 0xC4E1, answer);
         Check(accepted is not null && (int)Get(fixture.First, "PartyId")! > 0
             && Equals(Get(fixture.First, "PartyId"), Get(fixture.Second, "PartyId")), "party acceptance binds both members");

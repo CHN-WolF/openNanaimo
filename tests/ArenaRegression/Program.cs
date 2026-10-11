@@ -1,10 +1,11 @@
 using System.Buffers.Binary;
 using OpenNanaimo.Adapter.Services;
 
-internal static class Program
+internal static partial class Program
 {
-    public static void Main()
+    public static async Task Main()
     {
+        await CheckRoomListsAsync();
         var payload = new byte[20];
         BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(0, 2), 50);
         BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(2, 2), 1950);
@@ -44,7 +45,7 @@ internal static class Program
                 && hit[10] == (hp == 0 ? 200 : 100)
                 && BinaryPrimitives.ReadUInt16LittleEndian(hit.AsSpan(12)) == 100
                 && BinaryPrimitives.ReadUInt16LittleEndian(hit.AsSpan(14)) == 100,
-                "player hit publishes the same applied damage in both native display branches");
+                "explicit score transfer is independent from remaining HP in both native branches");
         }
         var scoreData = ArenaProtocol.BuildGameData(0, 0);
         Check(scoreData.AsSpan(0x26E, 50).ToArray().All(value =>
@@ -55,6 +56,15 @@ internal static class Program
             "sky arena score table contains only active positive score classes");
         Check(ArenaProtocol.ResolveScoreDelta(scoreData, 0) is >= -500 and <= 500,
             "arena game data exposes a bounded score delta");
+        for (ushort show = 1; show <= 6; show++)
+        {
+            var selected = ArenaProtocol.ResolveGameSelectors(0, show);
+            var data = ArenaProtocol.BuildGameData(selected.Stage, selected.Map);
+            Check(selected.Stage == show - 1 && selected.Map == show && data[0x2D2] == show - 1
+                && BinaryPrimitives.ReadUInt16LittleEndian(data.AsSpan(0x2D4)) == 0,
+                "explicit arena map keeps real stage, displayed map and SMMO selector distinct");
+        }
+        await CheckLifecycleAsync();
         Console.WriteLine("ARENA_REGRESSION_PASS room-protocol damage-score-settlement-carriers");
     }
 

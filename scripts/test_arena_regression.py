@@ -10,10 +10,10 @@ checks=[
  ('initialized D010 tail', 'payload.AsSpan(28).Clear();' in protocol),
  ('target HP ledger', 'room.CurrentHpBySession[victim.SessionId] = hp;' in combat),
  ('elimination winner ledger', 'room.EliminationWinnerSessionId = attacker.SessionId;' in combat),
- ('score fallback', 'if (scoreDelta == 0)\n                    scoreDelta = 10;' in service),
+ ('scene contact does not invent score', 'Scene contacts do not award stars' in service),
  ('attacker identity fallback', 'ResolveArenaPvpAttackerLocked' in combat),
  ('timed-round respawn', 'IsTimedScoreArena(room)' in combat and 'GetArenaMaximumHp(victim)' in combat),
- ('terminal notification one-shot', 'if (room.PvpResultPayload.Length != 0)' in service and 'return room.EndingSessionIds.Add(requester.SessionId);' in service),
+ ('terminal notification one-shot', 'if (room.PvpResultPayload.Length != 0)' in service and 'if (!room.EndingSessionIds.Add(requester.SessionId)) return false;' in service),
  ('obstacle terminal damage suppressed', '20 or 30 => 0' in protocol),
  ('round reset clears winner', 'room.EliminationWinnerSessionId = null;' in service),
 ]

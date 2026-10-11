@@ -11,5 +11,6 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.16" />
     <Content Include="../adapter_runtime/资源/数据/**/*" Link="资源/数据/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <EmbeddedResource Include="..\release\components\cards\synthesis_recipe_data.inc" LogicalName="OpenNanaimo.Adapter.CardSynthesisRecipes.inc" />
+    <EmbeddedResource Include="..\release\components\target_resources\arena_target_catalog.json" LogicalName="OpenNanaimo.Adapter.ArenaTargets.json" />
   </ItemGroup>
 </Project>

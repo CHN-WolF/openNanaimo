@@ -1,4 +1,5 @@
-"""Resource-kit packaging tests; no gameplay or live-client writes."""
+"""Resource-kit packaging and tool dependency checks."""
+import ast
 import json
 from pathlib import Path
 import tempfile
@@ -9,6 +10,21 @@ import package_korean_resource_kit as kit
 
 
 class KitTests(unittest.TestCase):
+    def test_compatibility_tool_has_all_local_imports(self):
+        tree = ast.parse((kit.ROOT / 'scripts/prepare_client_compatibility.py').read_text('utf-8'))
+        modules = set()
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                modules.update(alias.name for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                if node.module:
+                    modules.add(node.module)
+                else:
+                    modules.update(alias.name for alias in node.names)
+        local = {name + '.py' for name in modules
+                 if (kit.ROOT / 'scripts' / (name + '.py')).is_file()}
+        self.assertTrue(local.issubset(kit.TOOLS), sorted(local.difference(kit.TOOLS)))
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix='nanaimo-resource-kit-test-')
         self.addCleanup(self.tmp.cleanup)

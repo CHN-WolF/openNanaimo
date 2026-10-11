@@ -43,6 +43,22 @@ internal static partial class Program
         Check((await fixture.Database.GrantInventoryItemToAccountAsync(first.AccountId, 43000002, 3)).Success, "owned proposal rings");
         var request = CoupleRequest(fixture, fixture.First, fixture.Second, 43000002);
         Broadcasts(fixture.First).Clear();
+        await fixture.Database.SetFriendBlockedAsync(second.Id, first.Id, true);
+        var blockedProposal = await DispatchCouple(fixture, fixture.First, 0xC583, request);
+        Check(blockedProposal is { Length: 36 } && Broadcasts(fixture.First).Count == 0,
+            "nickname block rejects proposal delivery");
+        Check(!(await fixture.Database.CreateCoupleRelationAsync(first.AccountId, first.Id, SessionId(fixture.First),
+            second.Id, 43000002, Token, SessionId(fixture.Second))).Success,
+            "alternate couple transaction also honors nickname block");
+        await fixture.Database.SetFriendBlockedAsync(second.Id, first.Id, false);
+        await DispatchCouple(fixture, fixture.First, 0xC583, request);
+        await fixture.Database.SetFriendBlockedAsync(second.Id, first.Id, true);
+        var blockedAcceptance = await DispatchCouple(fixture, fixture.Second, 0xC584, CoupleAnswer(fixture.First, request, 10));
+        Check(blockedAcceptance is { Length: 36 } && await fixture.Database.GetActiveCoupleRelationAsync(first.Id) is null
+            && (await fixture.Database.GetCharacterByIdAsync(first.Id))!.Items.Single(item => item.ItemCode == 43000002).Quantity == 3,
+            "block after proposal rejects acceptance without consuming the ring");
+        await fixture.Database.SetFriendBlockedAsync(second.Id, first.Id, false);
+        Broadcasts(fixture.First).Clear();
         Check(await DispatchCouple(fixture, fixture.First, 0xC583, request) is null && Broadcasts(fixture.First).Count == 1,
             "proposal delivered to one active partner");
         Check(await DispatchCouple(fixture, fixture.Third, 0xC584, CoupleAnswer(fixture.First, request, 10)) is null

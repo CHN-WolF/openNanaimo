@@ -28,7 +28,6 @@ internal readonly record struct ArenaRoomListEntry(
     ushort RoomId,
     string Title,
     string Password,
-    ushort Metadata,
     byte MemberCount,
     bool Started);
 
@@ -38,14 +37,15 @@ internal readonly record struct ArenaPvpResultRecord(
     byte LevelUp,
     byte Grade, // persisted character dungeon-title grade
     byte PlayerLevel,
-    byte ArenaRank,
+    byte PetCurrentStage,
+    byte PetMaximumStage,
     uint Star,
     uint AddedExperience,
     uint Hans,
     uint CurrentExperience,
     uint LevelStartExperience,
     uint NextLevelExperience,
-    uint ArenaRankMaximum,
+    uint PetExperience,
     IReadOnlyList<uint> Rewards);
 
 internal readonly record struct ArenaGameEventRequest(
@@ -94,7 +94,7 @@ internal static class ArenaProtocol
     public const byte SkyArenaItemTypeMaximum = 17;
 
     internal static byte[] BuildPlayerHitResult(ushort kind, ushort objectId, ushort collisionIndex,
-        byte attackerSlot, byte victimSlot, ushort remainingHp, ushort appliedDamage)
+        byte attackerSlot, byte victimSlot, ushort remainingHp, ushort scoreTransfer = 0)
     {
         var payload = new byte[16];
         BinaryPrimitives.WriteUInt16LittleEndian(payload, kind);
@@ -103,8 +103,10 @@ internal static class ArenaProtocol
         payload[6] = attackerSlot; payload[7] = victimSlot;
         BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(8), remainingHp);
         payload[10] = remainingHp == 0 ? (byte)200 : (byte)100;
-        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(12), appliedDamage);
-        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(14), appliedDamage);
+        // The client adds/subtracts these WORDs through 751F10. Damage digits
+        // instead use the old/new absolute HP difference at 6EFB6D..6EFB80.
+        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(12), scoreTransfer);
+        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(14), scoreTransfer);
         return payload;
     }
 
@@ -196,7 +198,8 @@ internal static class ArenaProtocol
             EncodeFixed(room.Password, record.Slice(24, 8));
             record[32] = room.Started ? (byte)20 : (byte)10;
             record[33] = 100;
-            BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(34, 2), room.Metadata);
+            // CF12 -> 726960 -> 726AE0 renders this WORD as the "%d/4" numerator.
+            BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(34, 2), room.MemberCount);
             record[37] = room.MemberCount;
             BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(38, 2), room.RoomId);
         }
@@ -269,7 +272,8 @@ internal static class ArenaProtocol
 
         payload[0x2D2] = checked((byte)Math.Min(stage, byte.MaxValue));
         payload[0x2D3] = checked((byte)Math.Min(map, byte.MaxValue));
-        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(0x2D4, 2), map);
+        // This WORD selects the SMMO alternative, not the displayed arena map.
+        BinaryPrimitives.WriteUInt16LittleEndian(payload.AsSpan(0x2D4, 2), 0);
         return payload;
     }
 
@@ -300,10 +304,11 @@ internal static class ArenaProtocol
     {
         _ = requestedStage;
 
-        // The retail D036 constructor always writes stage 0. Map 6 is the
-        // random-entry sentinel. Pin it to packaged stage 0 so every member
-        // receives the same in-range selector; explicit maps 0..5 are kept.
-        return (0, requestedMap < ArenaMapCount ? requestedMap : DefaultArenaMap);
+        // Original CFEC uses (real,show) pairs 4/5, 2/3 and 1/2.
+        // Show zero retains the random selector while real chooses one map.
+        var show = requestedMap <= ArenaMapCount ? requestedMap : DefaultArenaMap;
+        return (show == 0 ? checked((ushort)RandomNumberGenerator.GetInt32(0, ArenaMapCount))
+            : (ushort)(show - 1), show);
     }
 
     public static byte[] BuildPvpResults(IReadOnlyList<ArenaPvpResultRecord> records)
@@ -319,7 +324,8 @@ internal static class ArenaProtocol
             record[4] = value.LevelUp;
             record[6] = value.Grade;
             record[7] = value.PlayerLevel;
-            record[9] = value.ArenaRank;
+            record[8] = value.PetCurrentStage;
+            record[9] = value.PetMaximumStage;
             var rewardCount = Math.Min(value.Rewards.Count, 4);
             record[10] = checked((byte)rewardCount);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(12, 4), value.Star);
@@ -328,7 +334,7 @@ internal static class ArenaProtocol
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(24, 4), value.CurrentExperience);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(28, 4), value.LevelStartExperience);
             BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(32, 4), value.NextLevelExperience);
-            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(36, 4), value.ArenaRankMaximum);
+            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(36, 4), value.PetExperience);
             for (var rewardIndex = 0; rewardIndex < rewardCount; rewardIndex++)
                 BinaryPrimitives.WriteUInt32LittleEndian(
                     record.Slice(40 + rewardIndex * 4, 4),

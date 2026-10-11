@@ -13,7 +13,14 @@ public sealed partial class DatabaseService
         long senderCharacterId, long recipientCharacterId, CancellationToken token)
     {
         await using var connection = await OpenConnectionAsync(token);
+        return await IsSocialInteractionBlockedAsync(connection, null, senderCharacterId, recipientCharacterId, token);
+    }
+
+    private static async Task<bool> IsSocialInteractionBlockedAsync(SqliteConnection connection,
+        SqliteTransaction? transaction, long senderCharacterId, long recipientCharacterId, CancellationToken token)
+    {
         await using var command = connection.CreateCommand();
+        command.Transaction = transaction;
         command.CommandText = """
             SELECT EXISTS(SELECT 1 FROM FriendBlocks
                 WHERE (OwnerCharacterId = $sender AND FriendCharacterId = $recipient)
@@ -329,6 +336,8 @@ public sealed partial class DatabaseService
         var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
         if (confirmCode == FriendProtocol.ConfirmOk)
         {
+            if (await IsSocialInteractionBlockedAsync(connection, transaction,
+                    requesterCharacterId, requesteeCharacterId, cancellationToken)) return false;
             var first = Math.Min(requesterCharacterId, requesteeCharacterId);
             var second = Math.Max(requesterCharacterId, requesteeCharacterId);
             await using (var relation = connection.CreateCommand())
@@ -382,10 +391,25 @@ public sealed partial class DatabaseService
         bool blocked,
         CancellationToken cancellationToken = default)
     {
-        if (!await HasFriendRelationAsync(ownerCharacterId, friendCharacterId, cancellationToken))
-            return false;
         await using var connection = await OpenConnectionAsync(cancellationToken);
+        await using var transaction = connection.BeginTransaction(deferred: false);
+        await using (var validate = connection.CreateCommand())
+        {
+            validate.Transaction = transaction;
+            validate.CommandText = """
+                SELECT EXISTS(SELECT 1 FROM Characters owner, Characters peer
+                  WHERE owner.Id=$owner AND peer.Id=$friend AND owner.Id<>peer.Id)
+                  AND ($blocked=0 OR EXISTS(SELECT 1 FROM FriendBlocks
+                    WHERE OwnerCharacterId=$owner AND FriendCharacterId=$friend)
+                    OR (SELECT COUNT(*) FROM FriendBlocks WHERE OwnerCharacterId=$owner)<10)
+                """;
+            validate.Parameters.AddWithValue("$owner", ownerCharacterId);
+            validate.Parameters.AddWithValue("$friend", friendCharacterId);
+            validate.Parameters.AddWithValue("$blocked", blocked ? 1 : 0);
+            if (Convert.ToInt32(await validate.ExecuteScalarAsync(cancellationToken)) == 0) return false;
+        }
         await using var command = connection.CreateCommand();
+        command.Transaction = transaction;
         command.CommandText = blocked
             ? """
               INSERT INTO FriendBlocks(OwnerCharacterId, FriendCharacterId, CreatedAt)
@@ -397,6 +421,7 @@ public sealed partial class DatabaseService
         command.Parameters.AddWithValue("$friend", friendCharacterId);
         command.Parameters.AddWithValue("$now", DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture));
         await command.ExecuteNonQueryAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
         return true;
     }
 
@@ -662,7 +687,7 @@ public sealed partial class DatabaseService
             first = reader.GetInt64(0);
             second = reader.GetInt64(1);
         }
-        foreach (var table in new[] { "FriendCategoryMembers", "FriendBlocks", "FriendMemos" })
+        foreach (var table in new[] { "FriendCategoryMembers", "FriendMemos" })
         {
             await using var cleanup = connection.CreateCommand();
             cleanup.Transaction = transaction;
@@ -670,6 +695,18 @@ public sealed partial class DatabaseService
             cleanup.Parameters.AddWithValue("$first", first);
             cleanup.Parameters.AddWithValue("$second", second);
             await cleanup.ExecuteNonQueryAsync(cancellationToken);
+        }
+        await using (var requests = connection.CreateCommand())
+        {
+            requests.Transaction = transaction;
+            requests.CommandText = """
+                DELETE FROM FriendRequests
+                WHERE (RequesterCharacterId=$first AND RequesteeCharacterId=$second)
+                   OR (RequesterCharacterId=$second AND RequesteeCharacterId=$first)
+                """;
+            requests.Parameters.AddWithValue("$first", first);
+            requests.Parameters.AddWithValue("$second", second);
+            await requests.ExecuteNonQueryAsync(cancellationToken);
         }
         await using (var delete = connection.CreateCommand())
         {

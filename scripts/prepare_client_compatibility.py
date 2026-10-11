@@ -19,7 +19,9 @@ try:
     from . import dungeon7_visuals
     from . import lumineos_scenes
     from . import entertainment_mode_compat
+    from . import entertainment_result_compat
     from . import dungeon_result_compat
+    from . import arena_result_compat
     from . import dungeon_experience_compat
     from . import level200_compat
     from . import player_trade_compat
@@ -28,7 +30,9 @@ except ImportError:
     import dungeon7_visuals
     import lumineos_scenes
     import entertainment_mode_compat
+    import entertainment_result_compat
     import dungeon_result_compat
+    import arena_result_compat
     import dungeon_experience_compat
     import level200_compat
     import player_trade_compat
@@ -623,7 +627,7 @@ def social_gameplay_patch_sites():
          b'\xE9' + struct.pack('<i', base - 0x0040B37A - 5)),
         ('dungeon_result_data_gate', 0x0066CD71, bytes.fromhex('741a'), bytes.fromhex('eb1a')),
         ('dungeon_party_result_data_gate', 0x0066CD45, bytes.fromhex('741a'), bytes.fromhex('eb1a')),
-    ] + entertainment_mode_compat.patch_sites()
+    ] + entertainment_mode_compat.patch_sites() + entertainment_result_compat.patch_sites() + arena_result_compat.patch_sites()
 
 
 def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:
@@ -643,7 +647,8 @@ def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:
             'the settlement member town control differs')
     gameplay = {}
     for name, va, old, new in social_gameplay_patch_sites():
-        data, gameplay[name] = _patch_site(data, va, old, new, 'patch_' + name,
+        data, gameplay[name] = _migrate_site(data, va, new,
+            (old,) + entertainment_result_compat.legacy_encodings(va), 'patch_' + name,
             'the social gameplay compatibility site differs')
     data, result_entry = dungeon_result_compat.patch(data, _patch_site, _migrate_site)
     data, power = restore_native_power(data)

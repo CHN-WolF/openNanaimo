@@ -45,6 +45,12 @@ def collect(root=ROOT):
                 raise ValueError('missing or unsafe embedded source resource: ' + rel)
             seen.add(resource)
     # Authoritative card distribution inputs must travel with the compiled table.
+    if (root / 'release/components/target_resources/arena_target_catalog.json').resolve() in seen:
+        for rel in ('scripts/generate_arena_targets.py', 'scripts/generate_lumineos_combat.py',
+                    'scripts/lumineos_codec.py'):
+            path = root / rel
+            if not path.is_file(): raise ValueError('missing arena target derivation input: ' + rel)
+            seen.add(path.resolve())
     if (root / "release/components/cards/card_drop_cn_data.inc").resolve() in seen:
         for rel in ('release/components/cards/card_drop_cn.csv',
                     'release/components/cards/card_drop_cn_boss_bindings.json',

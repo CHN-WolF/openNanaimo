@@ -4,6 +4,26 @@ namespace OpenNanaimo.Adapter.Services;
 
 public sealed partial class DatabaseService
 {
+    internal async Task<IReadOnlyList<CharacterRecord>> GetNativeBlockedContactsAsync(long characterId, CancellationToken token)
+    {
+        await using var connection = await OpenConnectionAsync(token);
+        var ids = new List<long>();
+        await using (var command = connection.CreateCommand())
+        {
+            command.CommandText = """
+                SELECT C.Id FROM FriendBlocks B JOIN Characters C ON C.Id=B.FriendCharacterId
+                WHERE B.OwnerCharacterId=$owner ORDER BY C.Name COLLATE NOCASE, C.Id LIMIT 10
+                """;
+            command.Parameters.AddWithValue("$owner", characterId);
+            await using var reader = await command.ExecuteReaderAsync(token);
+            while (await reader.ReadAsync(token)) ids.Add(reader.GetInt64(0));
+        }
+        var records = new List<CharacterRecord>();
+        foreach (var id in ids)
+            if (await GetCharacterByIdAsync(id, token) is { } character) records.Add(character);
+        return records;
+    }
+
     internal async Task<IReadOnlyList<CharacterRecord>> GetNativeFriendContactsAsync(long characterId, CancellationToken token)
     {
         await using var connection = await OpenConnectionAsync(token);
@@ -19,7 +39,7 @@ public sealed partial class DatabaseService
                     ELSE R.FirstCharacterId END
                 WHERE R.FirstCharacterId = $owner OR R.SecondCharacterId = $owner
                 ORDER BY C.Name COLLATE NOCASE, C.Id
-                LIMIT 2048
+                LIMIT 20
                 """;
             command.Parameters.AddWithValue("$owner", characterId);
             await using var reader = await command.ExecuteReaderAsync(token);
@@ -34,7 +54,7 @@ public sealed partial class DatabaseService
     internal async Task<(bool Success, long PeerId, bool Added)> ApplyNativeFriendCommandAsync(
         long accountId, long characterId, string sessionId, ushort operation, string peerName, CancellationToken token)
     {
-        if (operation is not (1 or 2) || string.IsNullOrWhiteSpace(peerName)) return (false, 0, false);
+        if (operation is not (1 or 2 or 3 or 4) || string.IsNullOrWhiteSpace(peerName)) return (false, 0, false);
         await using var connection = await OpenConnectionAsync(token);
         await using var transaction = connection.BeginTransaction(deferred: false);
         long peerId;
@@ -49,10 +69,10 @@ public sealed partial class DatabaseService
                     WHERE owner.Id = $owner AND owner.AccountId = $account
                       AND owner.IsOnline = 1 AND account.IsOnline = 1
                       AND owner.ActiveSessionId = $session AND account.ActiveSessionId = $session)
-                  AND ($operation = 2 OR NOT EXISTS (SELECT 1 FROM FriendBlocks
+                  AND ($operation <> 1 OR NOT EXISTS (SELECT 1 FROM FriendBlocks
                     WHERE (OwnerCharacterId = $owner AND FriendCharacterId = peer.Id)
                        OR (OwnerCharacterId = peer.Id AND FriendCharacterId = $owner)))
-                  AND ($operation = 1 OR EXISTS (SELECT 1 FROM FriendRelations
+                  AND ($operation <> 2 OR EXISTS (SELECT 1 FROM FriendRelations
                     WHERE (FirstCharacterId = $owner AND SecondCharacterId = peer.Id)
                        OR (FirstCharacterId = peer.Id AND SecondCharacterId = $owner)))
                 ORDER BY peer.Id
@@ -66,13 +86,29 @@ public sealed partial class DatabaseService
             peerId = Convert.ToInt64(await target.ExecuteScalarAsync(token) ?? 0L);
         }
         if (peerId == 0) return (false, 0, false);
+        if (operation is 3 or 4)
+        {
+            await using var block = connection.CreateCommand();
+            block.Transaction = transaction;
+            block.CommandText = operation == 3 ? """
+                INSERT OR IGNORE INTO FriendBlocks(OwnerCharacterId, FriendCharacterId, CreatedAt)
+                SELECT $owner, $peer, $now
+                WHERE (SELECT COUNT(*) FROM FriendBlocks WHERE OwnerCharacterId=$owner)<10
+                """ : "DELETE FROM FriendBlocks WHERE OwnerCharacterId=$owner AND FriendCharacterId=$peer";
+            block.Parameters.AddWithValue("$owner", characterId);
+            block.Parameters.AddWithValue("$peer", peerId);
+            block.Parameters.AddWithValue("$now", DateTime.UtcNow.ToString("O"));
+            var blockChanged = await block.ExecuteNonQueryAsync(token);
+            await transaction.CommitAsync(token);
+            return (blockChanged > 0, peerId, blockChanged > 0);
+        }
         if (operation == 2)
         {
             // Clear both projections and old accepted/pending requests in the same
             // transaction: list reads materialize accepted requests into relations.
             // A repeated deletion is rejected after the relation has been removed.
             var removed = 0;
-            foreach (var table in new[] { "FriendCategoryMembers", "FriendBlocks", "FriendMemos" })
+            foreach (var table in new[] { "FriendCategoryMembers", "FriendMemos" })
             {
                 await using var cleanup = connection.CreateCommand();
                 cleanup.Transaction = transaction;

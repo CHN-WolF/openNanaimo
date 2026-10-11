@@ -35,6 +35,7 @@ class LumineosPickupTests(unittest.TestCase):
                 self.assertTrue(any(struct.unpack_from('<H',f,6)[0]==0xD00E for f in replies))
                 self.assertEqual(pickups(replies),[])
                 request=struct.pack('<HHI',40,scene,kind)
+                c.sendall(wire.frame(0xF101));before=wire.receive(c,0xF102)[8:]
                 replies=transact(0xD034,request);got=pickups(replies)
                 self.assertEqual(len(got),1)
                 self.assertEqual(len(got[0]),24)
@@ -42,10 +43,13 @@ class LumineosPickupTests(unittest.TestCase):
                 self.assertEqual(got[0][12:20],request)
                 self.assertEqual(got[0][20:],bytes(4))
                 c.sendall(wire.frame(0xF101));snapshot=wire.receive(c,0xF102)[8:]
+                # L8 uses resource episode 23, not the wire selector ep100.
                 if kind==2:
-                    self.assertEqual(struct.unpack_from('<I',snapshot,20),struct.unpack_from('<I',snapshot,16))
+                    maximum,current=struct.unpack_from('<II',before,16)
+                    self.assertEqual(struct.unpack_from('<I',snapshot,20)[0],min(maximum,current+304+80*23))
                 if kind==3:
-                    self.assertEqual(struct.unpack_from('<I',snapshot,28),struct.unpack_from('<I',snapshot,24))
+                    maximum,current=struct.unpack_from('<II',before,24)
+                    self.assertEqual(struct.unpack_from('<I',snapshot,28)[0],min(maximum,current+26+10*23))
                 self.assertEqual(pickups(transact(0xD034,request)),[])
                 transact(0xD00D,hit)
                 self.assertEqual(pickups(transact(0xD034,struct.pack('<HHI',40,scene+100,kind))),[])

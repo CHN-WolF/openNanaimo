@@ -895,6 +895,7 @@ public sealed partial class DatabaseService
         await MigrateSkillPointCardsAsync(connection, cancellationToken);
         await InitializeLuckyCardUsesAsync(connection, cancellationToken);
         await InitializeEntertainmentLuckyCardsAsync(connection, cancellationToken);
+        await InitializeEntertainmentScoresAsync(connection, cancellationToken);
         await InitializeEventCardUsesAsync(connection, cancellationToken);
         await InitializeCardPageUnionsAsync(connection, cancellationToken);
         await InitializeCardExchangeAsync(cancellationToken);
@@ -9527,7 +9528,9 @@ public sealed partial class DatabaseService
         byte clearRating = 0,
         int? stageRecordScore = null,
         string? activitySettlementKey = null,
-        IReadOnlyList<uint>? entertainmentLuckyCards = null)
+        IReadOnlyList<uint>? entertainmentCards = null,
+        byte? entertainmentGameType = null,
+        int entertainmentPlace = 0)
     {
         if (accountId <= 0 || characterId <= 0 || string.IsNullOrWhiteSpace(sessionId)
             || hdIndex > 1
@@ -9538,6 +9541,11 @@ public sealed partial class DatabaseService
             || clearRating > 5
             || score < 0 || stageRecordScore < 0 || elapsedMinutes < 0 || experienceReward < 0
             || petExperienceReward < 0 || hansReward < 0)
+            return null;
+        if (entertainmentGameType is not null && (entertainmentGameType is < 1 or > 3
+            || entertainmentPlace is < 0 or >= EntertainmentProtocol.MaximumMembers
+            || score > ushort.MaxValue || completed || activitySettlementKey is null
+            || !activitySettlementKey.StartsWith("entertainment:", StringComparison.Ordinal)))
             return null;
 
         await using var connection = await OpenConnectionAsync(cancellationToken);
@@ -9579,6 +9587,10 @@ public sealed partial class DatabaseService
             petVariant = reader.GetInt32(7);
             equippedPetItemCode = checked((uint)reader.GetInt64(8));
         }
+
+        if (entertainmentGameType is not null)
+            petExperienceReward = await GetEntertainmentPetExperienceAsync(
+                connection, transaction, characterId, equippedPetItemCode, entertainmentPlace, cancellationToken);
 
         if (activitySettlementKey is not null)
         {
@@ -9843,20 +9855,24 @@ public sealed partial class DatabaseService
             await performance.ExecuteNonQueryAsync(cancellationToken);
         }
 
-        if (entertainmentLuckyCards is { Count: > 0 })
+        if (entertainmentGameType is byte gameType)
+            await SaveEntertainmentBestScoreAsync(connection, transaction, characterId, gameType, score, now, cancellationToken);
+
+        if (entertainmentCards is { Count: > 0 })
         {
-            if (activitySettlementKey is null || entertainmentLuckyCards.Any(card => !LuckyCardPolicy.TryGet(card, out _)))
+            if (activitySettlementKey is null || !activitySettlementKey.StartsWith("entertainment:", StringComparison.Ordinal)
+                || entertainmentCards.Any(card => !EntertainmentRewardPolicy.IsBasicCard(card) || !CardCatalog.TryGet(card, out _)))
             {
                 await transaction.RollbackAsync(cancellationToken);
                 return null;
             }
-            for (var sequence = 0; sequence < entertainmentLuckyCards.Count; sequence++)
+            for (var sequence = 0; sequence < entertainmentCards.Count; sequence++)
             {
-                var card = entertainmentLuckyCards[sequence];
+                var card = entertainmentCards[sequence];
                 await using var receipt = connection.CreateCommand();
                 receipt.Transaction = transaction;
                 receipt.CommandText = """
-                    INSERT OR IGNORE INTO EntertainmentLuckyCardReceipts
+                    INSERT OR IGNORE INTO EntertainmentCardReceipts
                         (CharacterId, SettlementKey, Sequence, CardCode, CreatedAt)
                     VALUES($characterId, $settlementKey, $sequence, $cardCode, $now)
                     """;
@@ -10667,6 +10683,9 @@ public sealed partial class DatabaseService
 
         await using var connection = await OpenConnectionAsync(cancellationToken);
         await using var transaction = connection.BeginTransaction(deferred: false);
+        if (await IsSocialInteractionBlockedAsync(connection, transaction,
+                requesterCharacterId, targetCharacterId, cancellationToken))
+            return (false, "A participant blocked this interaction.", 0, null);
         long quantity;
         await using (var current = connection.CreateCommand())
         {

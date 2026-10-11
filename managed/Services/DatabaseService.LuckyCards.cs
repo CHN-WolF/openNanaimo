@@ -42,6 +42,12 @@ public sealed partial class DatabaseService
                 CardCode INTEGER NOT NULL CHECK(CardCode BETWEEN 22000011 AND 22000018),
                 CreatedAt TEXT NOT NULL,
                 PRIMARY KEY(CharacterId, SettlementKey, Sequence));
+            CREATE TABLE IF NOT EXISTS EntertainmentCardReceipts (
+                CharacterId INTEGER NOT NULL REFERENCES Characters(Id) ON DELETE CASCADE,
+                SettlementKey TEXT NOT NULL, Sequence INTEGER NOT NULL,
+                CardCode INTEGER NOT NULL CHECK(CardCode BETWEEN 13000001 AND 13000420),
+                CreatedAt TEXT NOT NULL,
+                PRIMARY KEY(CharacterId, SettlementKey, Sequence));
             """;
         await command.ExecuteNonQueryAsync(token);
     }

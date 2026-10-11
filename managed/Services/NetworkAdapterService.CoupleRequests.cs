@@ -162,6 +162,8 @@ public sealed partial class NetworkAdapterService
             return Failure(CoupleProtocol.Unavailable);
         if (separation && ownRelation!.GetPartnerId(requester.CharacterId) != responder.CharacterId)
             return Failure(CoupleProtocol.InvalidPartner, responder.Session.Character);
+        if (!separation && await _database.IsPrivateChatBlockedAsync(requester.CharacterId, responder.CharacterId, token))
+            return Failure(CoupleProtocol.Unavailable, responder.Session.Character);
         if (!separation && await _database.GetActiveCoupleRelationAsync(responder.CharacterId, token) is not null)
             return Failure(CoupleProtocol.AlreadyRelated, responder.Session.Character);
         var pending = new BoundCoupleSelection(requester, responder, selection, request.InventorySlot, ownRelation?.Id ?? 0);

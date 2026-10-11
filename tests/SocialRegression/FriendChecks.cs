@@ -36,6 +36,10 @@ internal static partial class Program
             && (await db.GetNativeFriendContactsAsync(first.Id, Token)).Select(item => item.Name).SequenceEqual([second.Name]),
             "unsupported contact operation preserves the existing contact");
         var presence = await Dispatch(fixture, fixture.First, 0xC5AC, []);
+        // The fixture skipped C354: reconcile the newly accepted relation on
+        // its first query before testing the positional refresh separately.
+        Check(presence is { Length: 44 }, "first query reconciles a missing client-side nickname");
+        presence = await Dispatch(fixture, fixture.First, 0xC5AC, []);
         Check(presence is { Length: 16 } && presence.AsSpan(12, 4).SequenceEqual(new byte[] { 1, 0, 0, 1 }), "native contact current presence");
         Set(fixture.Second, "OnlineTracked", false);
         Check(!Invoke<bool>(fixture.Service, "IsCharacterOnline", second.Id), "offline presence is not projected as online");
@@ -48,12 +52,12 @@ internal static partial class Program
             "native contact addition persists the canonical relation");
         var events = Broadcasts(fixture.First).Count;
         var repeated = await Dispatch(fixture, fixture.First, 0xC5AE, add);
-        Check(IsNativeFriendAdditionResult(repeated, third.Name)
+        Check(IsNativeFriendDuplicateResult(repeated)
             && (await db.GetNativeFriendContactsAsync(first.Id, Token)).Select(item => item.Name)
                 .SequenceEqual([second.Name, third.Name])
             && Broadcasts(fixture.First).Count == events
             && (await db.GetFriendRelationsForAdminAsync()).Count == 2,
-            "repeated native addition acknowledges only its target and preserves existing relations");
+            "repeated native addition does not append a UI row and preserves existing relations");
         var reciprocalAdd = new byte[20]; reciprocalAdd[0] = 1;
         PrivateChatProtocol.WriteText(reciprocalAdd.AsSpan(4), first.Name);
         var reverseEvents = Broadcasts(fixture.Second).Count;
@@ -61,7 +65,7 @@ internal static partial class Program
         PrivateChatProtocol.WriteText(reciprocalAdd.AsSpan(4), second.Name);
         var reciprocalAgain = await Dispatch(fixture, fixture.First, 0xC5AE, reciprocalAdd);
         Check(IsNativeFriendAdditionResult(reciprocal, first.Name)
-            && IsNativeFriendAdditionResult(reciprocalAgain, second.Name)
+            && IsNativeFriendDuplicateResult(reciprocalAgain)
             && Broadcasts(fixture.First).Count == events
             && Broadcasts(fixture.Second).Count == reverseEvents
             && (await db.GetFriendRelationsForAdminAsync()).Count == 2,
@@ -99,6 +103,10 @@ internal static partial class Program
             && BinaryPrimitives.ReadUInt16LittleEndian(frame.AsSpan(10)) == 1
             && PrivateChatProtocol.TryReadText(frame.AsSpan(12, 16), out var name)
             && name == expectedName;
+
+    private static bool IsNativeFriendDuplicateResult(byte[]? frame)
+        => frame is { Length: 32 } && frame[8] == 10 && frame[10] == 1
+            && frame.AsSpan(12, 20).IndexOfAnyExcept((byte)0) < 0;
 
     private static async Task CheckPrivateChatAsync(Fixture fixture)
     {
