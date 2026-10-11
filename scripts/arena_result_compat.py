@@ -45,7 +45,7 @@ def cleanup_encoding():
     if len(code) > CLEANUP_CAVE_SPAN:
         raise ValueError('Arena terminal cleanup exceeds reserved region')
     return bytes(code).ljust(CLEANUP_CAVE_SPAN, b'\xCC')
-def reset_encodings(legacy=False):
+def reset_encodings(legacy=False, previous=False):
     code = bytearray(b'\xE8' + struct.pack('<i', 0x00419BBE - RESET_CAVE_VA - 5))
     def call(target):
         code.extend(b'\xE8' + struct.pack('<i', target - RESET_CAVE_VA - len(code) - 5))
@@ -64,9 +64,11 @@ def reset_encodings(legacy=False):
     if legacy:
         code.extend(bytes.fromhex('83b8f010000006'))
         jumps.append(len(code)); code.extend(b'\x75\0')
-    # An authorized shared rematch establishes a fresh activity boundary.
-    # Explicit CF73 actions retain their native room-leave behavior.
-    code.extend(bytes.fromhex('c64007008b4834894840'))
+    # The manager owns the leave latch. Activity counters belong to the
+    # separate main-loop object and are initialized by native ready-page entry.
+    code.extend(bytes.fromhex('c6400700'))
+    if legacy or previous:
+        code.extend(bytes.fromhex('8b4834894840'))
     if not legacy:
         # Reset only an existing arena instance, preserving the manager return.
         code.extend(bytes.fromhex('8b0dc02fd70085c9'))
@@ -124,5 +126,6 @@ def legacy_encodings(va):
     if va == CAVE_VA:
         return (encodings(legacy=True)[1],)
     if va == RESET_CAVE_VA:
-        return (reset_encodings(legacy=True)[1], RESET_MIXED_LEGACY)
+        return (reset_encodings(legacy=True)[1], RESET_MIXED_LEGACY,
+                reset_encodings(previous=True)[1])
     return ()

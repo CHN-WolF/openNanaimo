@@ -361,6 +361,10 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         public int ChannelId { get; set; }
         public int ListenerPort { get; set; }
         public string SessionId { get; } = Guid.NewGuid().ToString("N");
+        public string AuxiliaryWorldSessionId { get; set; } = string.Empty;
+        public string InventorySessionId => AuxiliaryGameSession ? AuxiliaryWorldSessionId : SessionId;
+        public SemaphoreSlim InventoryGate { get; } = new(1, 1);
+        public bool ArenaInventoryBusy { get; set; }
         public string? RemoteIp { get; set; }
         public DateTime LastActivityUtc { get; set; } = DateTime.UtcNow;
         public CancellationTokenSource? ConnectionCancellation { get; set; }
@@ -383,11 +387,11 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         public byte ResponseTransportSequence { get; set; }
         public byte ResponseTransportTagIndex { get; set; }
         public bool ResponseTransportTagInitialized { get; set; }
-        public InventoryIdentityMap GameInventoryIdentities { get; } = new();
-        public InventoryAcquisitionTracker InventoryAcquisitions { get; } = new();
+        public InventoryIdentityMap GameInventoryIdentities { get; set; } = new();
+        public InventoryAcquisitionTracker InventoryAcquisitions { get; set; } = new();
         public long CardNoticeCharacterId { get; set; }
-        public InventoryIdentityMap PetMaterialIdentities { get; } = new();
-        public ShoppingCouponIdentityMap ShoppingCouponIdentities { get; } = new();
+        public InventoryIdentityMap PetMaterialIdentities { get; set; } = new();
+        public ShoppingCouponIdentityMap ShoppingCouponIdentities { get; set; } = new();
         public ushort? LastSkillSlotExpansionRequestControl { get; set; }
         public byte[]? LastSkillSlotExpansionRequestPayload { get; set; }
         public DateTime LastSkillSlotExpansionRequestUtc { get; set; }
@@ -506,7 +510,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         bool UseTransportSequence,
         bool IsBroadcast,
         string? Reason,
-        Guid? ArenaDeliveryEpoch = null);
+        Guid? ArenaDeliveryEpoch = null,
+        Guid? ArenaRoundId = null,
+        Guid? EntertainmentRoundId = null);
 
     private readonly record struct TownInstanceKey(int ChannelId, byte TownId, byte TownPage);
 
@@ -1971,7 +1977,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         if (requiredChannel is not null
             && !string.Equals(channel, requiredChannel, StringComparison.Ordinal)
             && !(string.Equals(channel, "ArenaAdapter", StringComparison.Ordinal)
-                 && IsArenaAdapterOpcode(opcode)))
+                 && (IsArenaAdapterOpcode(opcode) || IsAuxiliaryInventoryOpcode(opcode))))
         {
             _log($"{channel}:{remote} 协议端口异常：opcode=0x{opcode:X4} 只能由 {requiredChannel} 接收；未响应且未修改存档");
             return null;
@@ -2475,7 +2481,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var use = await _database.UseFaceCouponAsync(
                     session.AccountId,
                     session.Character!.Id,
-                    session.SessionId,
+                    session.InventorySessionId,
                     faceCoupon.ItemCode,
                     requestedAppearance,
                     faceCouponOrdinal,
@@ -2523,7 +2529,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var deleteResult = await _database.DeleteInventoryItemAsync(
                     session.AccountId,
                     session.Character.Id,
-                    session.SessionId,
+                    session.InventorySessionId,
                     itemCode,
                     InventorySection.Clothing,
                     token);
@@ -2545,6 +2551,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     BuildSlottedInventoryDeleteResultPayload(true, itemCode, slot, AvatarDeleteResponsePayloadLength, 10),
                     session);
                 var changedUserDataPayload = BuildUserDataChangePayload(session.Character);
+                if (SuppressInventoryActorRebuild(session)) return deleteFrame;
                 QueueSceneBroadcast(session, 0xC47F, changedUserDataPayload, "scene appearance after clothing discard");
                 return CombineNativeFrames(
                     deleteFrame,
@@ -2587,7 +2594,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var deleted = await _database.DeletePetItemAsync(
                     session.AccountId,
                     session.Character.Id,
-                    session.SessionId,
+                    session.InventorySessionId,
                     itemCode,
                     token);
                 await RefreshInventoryCharacterAsync(session, token);
@@ -2638,7 +2645,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     ? await _database.ApplyPetSpecialGemAsync(
                         session.AccountId,
                         session.Character.Id,
-                        session.SessionId,
+                        session.InventorySessionId,
                         responseOperation,
                         petItemCode,
                         payload[3],
@@ -2647,7 +2654,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     : await _database.ChangePetItemAsync(
                         session.AccountId,
                         session.Character.Id,
-                        session.SessionId,
+                        session.InventorySessionId,
                         responseOperation,
                         petItemCode,
                         payload[3],
@@ -2723,7 +2730,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var changed = await _database.SaveInventoryEquipmentAsync(
                     session.AccountId,
                     session.Character.Id,
-                    session.SessionId,
+                    session.InventorySessionId,
                     quickSlots,
                     equippedPetItemCode,
                     unequippedPetItemCode,
@@ -3022,7 +3029,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     var starterResult = await _database.EnsureApartmentStarterInventoryAsync(
                         session.AccountId,
                         session.Character.Id,
-                        session.SessionId,
+                        session.InventorySessionId,
                         token);
                     if (!starterResult.Authorized)
                         return null;
@@ -3121,7 +3128,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 // The full-health original captures legitimately contain two zero deltas.
                 var recovered = result.Targets.Single(target => target.CharacterId == session.Character!.Id);
                 var recoveryPayload = new byte[4];
-                if (session.DungeonRoomId == 0 && session.NativeDungeon is null)
+                if (session.DungeonRoomId == 0 && session.NativeDungeon is null && !HasAuxiliaryInventoryContext(session))
                 {
                     BinaryPrimitives.WriteUInt16LittleEndian(recoveryPayload, recovered.HpRestored);
                     BinaryPrimitives.WriteUInt16LittleEndian(recoveryPayload.AsSpan(2), recovered.MpRestored);
@@ -3152,7 +3159,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     && ownedCode == itemCode;
                 var deleteResult = validIdentity
                     ? await _database.DeleteGameInventoryItemAsync(session.AccountId, session.Character.Id,
-                        session.SessionId, itemCode, storageIndex, token)
+                        session.InventorySessionId, itemCode, storageIndex, token)
                     : (Success: false, Quantity: (ushort)0);
                 if (deleteResult.Success)
                 {
@@ -3217,7 +3224,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var claim = await _database.ClaimCashInboxItemAsync(
                     session.AccountId,
                     session.Character.Id,
-                    session.SessionId,
+                    session.InventorySessionId,
                     itemCode,
                     token);
                 await RefreshInventoryCharacterAsync(session, token);
@@ -3274,7 +3281,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     var used = await _database.UseSkillPointCardAsync(
                         session.AccountId,
                         session.Character.Id,
-                        session.SessionId,
+                        session.InventorySessionId,
                         tokenItemCode,
                         token);
                     if (used.Success)
@@ -3356,7 +3363,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     }
 
                     var giftResult = await _database.RedeemHansGiftCertificateAsync(
-                        session.AccountId, session.Character!.Id, session.SessionId,
+                        session.AccountId, session.Character!.Id, session.InventorySessionId,
                         tokenItemCode, giftStorageIndex, token);
                     if (!giftResult.Success)
                     {
@@ -3396,7 +3403,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     var revivalResult = await _database.ActivateRevivalItemAsync(
                         session.AccountId,
                         session.Character!.Id,
-                        session.SessionId,
+                        session.InventorySessionId,
                         tokenItemCode,
                         token);
                     if (!revivalResult.Success)
@@ -3431,7 +3438,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     var mikeResult = await _database.ActivateMikeItemAsync(
                         session.AccountId,
                         session.Character.Id,
-                        session.SessionId,
+                        session.InventorySessionId,
                         tokenItemCode,
                         token);
                     if (!mikeResult.Success)
@@ -3467,7 +3474,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var useResult = await _database.ActivateTokenItemAsync(
                     session.AccountId,
                     session.Character.Id,
-                    session.SessionId,
+                    session.InventorySessionId,
                     tokenItemCode,
                     token);
                 if (!useResult.Success)
@@ -3519,7 +3526,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var deleted = catalogItem is not null && catalogItem.Category is >= 41 and <= 48
                     && ordinal >= 0 && selectedCode == itemCode
                     ? await _database.DeleteSpecialInventoryItemAsync(session.AccountId, session.Character.Id,
-                        session.SessionId, itemCode, ordinal, token)
+                        session.InventorySessionId, itemCode, ordinal, token)
                     : (Success: false, Quantity: (ushort)0);
                 if (deleted.Success)
                 {
@@ -4525,7 +4532,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var result = await _database.ChargePetItemAsync(
                     session.AccountId,
                     session.Character.Id,
-                    session.SessionId,
+                    session.InventorySessionId,
                     itemCode,
                     durability,
                     chargePet.PetMaxDurability,
@@ -6357,7 +6364,12 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     }
                     else
                     {
-                        session.ArenaP2PProtocolConfirmed = true;
+                        lock (_arenaRoomGate)
+                        {
+                            if (!_arenaRooms.TryGetValue(session.ArenaRoomId, out var loadingRoom)
+                                || !ArenaMemberIsLoading(loadingRoom, session)) return null;
+                            session.ArenaP2PProtocolConfirmed = true;
+                        }
                     }
                 }
                 _log($"{channel}:{remote} P2P 协议已确认：scene={(string.Equals(channel, "ArenaAdapter", StringComparison.Ordinal) ? "arena" : "dungeon")} room={(string.Equals(channel, "ArenaAdapter", StringComparison.Ordinal) ? session.ArenaRoomId : session.DungeonRoomId)} character={session.Character.Id} slot={(string.Equals(channel, "ArenaAdapter", StringComparison.Ordinal) ? session.ArenaSlotIndex : session.DungeonSlotIndex)} requested={requestedP2PProtocol} protocol=20");
@@ -6459,6 +6471,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     ushort resolvedMapIndex;
                     lock (_arenaRoomGate)
                     {
+                        if (!_arenaRooms.TryGetValue(session.ArenaRoomId, out var currentLoadingRoom)
+                            || !ReferenceEquals(currentLoadingRoom, arenaGameDataRoom)
+                            || !ArenaMemberIsLoading(arenaGameDataRoom, session)) return null;
                         if (arenaGameDataRoom.GameDataPayload.Length == ArenaProtocol.GameDataResponseLength)
                         {
                             arenaGameData = arenaGameDataRoom.GameDataPayload.ToArray();
@@ -6477,13 +6492,13 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                             arenaGameDataRoom.LoadingRequestTags.Clear();
                             arenaGameDataRoom.GameDataPayload = arenaGameData.ToArray();
                         }
-                    }
-                    QueueArenaBroadcast(
+                        QueueArenaBroadcast(
                         session,
                         0xCFEC,
                         arenaGameData,
                         false,
                         "arena game data before start");
+                    }
                     _log($"{channel}:{remote} Arena game data synchronized before start: room={arenaGameDataRoom.Id} started={arenaGameDataRoom.Started} requested={requestedStage}/{requestedMapIndex} resolved={resolvedStage}/{resolvedMapIndex} character={session.Character.Name}");
                     return BuildNativeFrame(frame, 0xCFEC, arenaGameData, session);
                 }
@@ -13783,7 +13798,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     true,
                     true,
                     notification.Reason,
-                    notification.ArenaDeliveryEpoch),
+                    notification.ArenaDeliveryEpoch,
+                    notification.ArenaRoundId,
+                    notification.EntertainmentRoundId),
                 token);
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
@@ -13825,7 +13842,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         {
             await foreach (var write in session.OutboundWrites.Reader.ReadAllAsync(token))
             {
-                if (!IsCurrentArenaDelivery(session, write.ArenaDeliveryEpoch)
+                if (!IsCurrentArenaWrite(session, write)
+                    || !IsCurrentEntertainmentDelivery(session, write.EntertainmentRoundId)
+                    || !IsCurrentInventoryDelivery(session, write)
                     || !IsCurrentArenaResponse(session, write.Frames))
                     continue;
                 if (write.UseTransportSequence)
@@ -15035,6 +15054,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             await ReconcileLevelMentorshipsAsync(session, token);
             if (session.NativeDungeon is null)
                 await _database.ReconcileRelationshipRewardsAsync(refreshed.Id, DateTime.UtcNow, token);
+            PublishInventoryCharacter(session);
         }
     }
 
@@ -15063,12 +15083,14 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
 
         var source = matches[0];
         session.AccountId = source.AccountId;
+        session.AuxiliaryWorldSessionId = source.SessionId;
         session.Username = source.Username;
         session.Character = source.Session.Character;
         session.ChannelId = source.ChannelId;
         session.RemoteIp = remoteIp;
         session.OnlineTracked = true;
         session.AuxiliaryGameSession = true;
+        ShareInventoryIdentity(source.Session, session);
         return true;
     }
 
@@ -15815,6 +15837,11 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             if (room.OwnerSessionId != requester.SessionId)
             {
                 reason = "requester-is-not-owner";
+                return false;
+            }
+            if (room.Members.Values.Any(member => member.ArenaInventoryBusy))
+            {
+                reason = "inventory-update-in-progress";
                 return false;
             }
             if (room.Started)

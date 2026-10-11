@@ -20,6 +20,7 @@ try:
     from . import lumineos_scenes
     from . import entertainment_mode_compat
     from . import entertainment_result_compat
+    from . import entertainment_room_compat
     from . import dungeon_result_compat
     from . import arena_result_compat
     from . import dungeon_experience_compat
@@ -31,6 +32,7 @@ except ImportError:
     import lumineos_scenes
     import entertainment_mode_compat
     import entertainment_result_compat
+    import entertainment_room_compat
     import dungeon_result_compat
     import arena_result_compat
     import dungeon_experience_compat
@@ -627,7 +629,7 @@ def social_gameplay_patch_sites():
          b'\xE9' + struct.pack('<i', base - 0x0040B37A - 5)),
         ('dungeon_result_data_gate', 0x0066CD71, bytes.fromhex('741a'), bytes.fromhex('eb1a')),
         ('dungeon_party_result_data_gate', 0x0066CD45, bytes.fromhex('741a'), bytes.fromhex('eb1a')),
-    ] + entertainment_mode_compat.patch_sites() + entertainment_result_compat.patch_sites() + arena_result_compat.patch_sites()
+    ] + entertainment_mode_compat.patch_sites() + entertainment_result_compat.patch_sites() + entertainment_room_compat.patch_sites() + arena_result_compat.patch_sites()
 
 
 def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:

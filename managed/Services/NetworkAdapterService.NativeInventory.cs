@@ -4,9 +4,9 @@ namespace OpenNanaimo.Adapter.Services;
 
 public sealed partial class NetworkAdapterService
 {
-    private static bool SuppressInventoryActorRebuild(ConnectionSession session)
+    private bool SuppressInventoryActorRebuild(ConnectionSession session)
         => session.DungeonRoomId != 0 || session.NativeDungeon is not null
-            || session.ApartmentOwnerCharacterId > 0;
+            || session.ApartmentOwnerCharacterId > 0 || HasAuxiliaryInventoryContext(session);
 
     private static bool IsNativeReadyRoomInventory(ConnectionSession session)
         // A joined member can request/receive its ready roster before the owner
@@ -21,7 +21,7 @@ public sealed partial class NetworkAdapterService
         => opcode is 0xC47D or 0xC44D or 0xC44F or 0xC433 or 0xC43D or 0xC46D
             or 0xC3CF or 0xC475 or 0xC453;
 
-    private async Task<byte[]?> HandleNativeFrameAsync(
+    private async Task<byte[]?> HandleNativeInventoryCoreAsync(
         byte[] frame, ushort opcode, string channel, string remote, string? remoteIp,
         ConnectionSession session, CancellationToken token)
     {

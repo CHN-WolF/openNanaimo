@@ -42,7 +42,8 @@ public sealed partial class NetworkAdapterService
         public bool EndNotificationSent { get; set; }
         public Dictionary<string, byte> CompletedCells { get; } = new(StringComparer.Ordinal);
         public Dictionary<string, int> SuccessfulBoardsBySession { get; } = new(StringComparer.Ordinal);
-        public Guid RoundId { get; set; }
+        public Guid RoundId { get; set; } = Guid.NewGuid();
+        public EntertainmentRankingEntry PublishedRecord { get; set; } = new(string.Empty, 0);
         public DateTime StartedUtc { get; set; }
         public bool CountdownStarted { get; set; }
         public HashSet<string> LoadedSessions { get; } = new(StringComparer.Ordinal);
@@ -343,6 +344,7 @@ public sealed partial class NetworkAdapterService
         EntertainmentRoom room, CancellationToken token)
     {
         var record = await GetEntertainmentRoomRecordAsync(room.GameType, token);
+        lock (_entertainmentRoomGate) room.PublishedRecord = record;
         return EntertainmentProtocol.BuildCreateResponse(
             10,
             true,
@@ -802,9 +804,19 @@ public sealed partial class NetworkAdapterService
                 owner.Session.Character = saved;
                 room.SettledCharacters[member.SessionId] = saved;
             }
+            var currentRecord = await GetEntertainmentRoomRecordAsync(room.GameType, token);
             lock (_entertainmentRoomGate)
             {
-                if (room.RoundId != round) return null;
+                if (room.RoundId != round || !_entertainmentRooms.TryGetValue(room.Id, out var activeRoom)
+                    || !ReferenceEquals(activeRoom, room)) return null;
+                if (room.PublishedRecord != currentRecord)
+                {
+                    room.PublishedRecord = currentRecord;
+                    var update = BuildEntertainmentRoomSettings(room, currentRecord);
+                    foreach (var member in room.Members.Values)
+                        requester.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(member, 0xCF7A,
+                            update.ToArray(), "entertainment room record", room.RoundId));
+                }
                 var records = members.Select(member =>
                 {
                     var character = room.SettledCharacters.GetValueOrDefault(member.SessionId) ?? member.Character!;
@@ -1134,24 +1146,50 @@ public sealed partial class NetworkAdapterService
         return notifications;
     }
 
+    private bool IsCurrentEntertainmentDelivery(ConnectionSession target, Guid? round)
+    {
+        if (round is null) return true;
+        lock (_entertainmentRoomGate)
+            return _entertainmentRooms.TryGetValue(target.EntertainmentRoomId, out var room)
+                && room.RoundId == round && room.Members.ContainsKey(target.SessionId);
+    }
+
+    private static byte[] BuildEntertainmentRoomSettings(EntertainmentRoom room, EntertainmentRankingEntry? record = null)
+    {
+        var payload = new byte[record is null ? 36 : 72];
+        var encoding = System.Text.Encoding.GetEncoding(936);
+        encoding.GetBytes(room.Title).CopyTo(payload, 0);
+        encoding.GetBytes(room.Password).CopyTo(payload, 24);
+        BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(32), room.CreateRequest.Level);
+        if (record is { } current)
+        {
+            BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(36), 0x31305245);
+            BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(40), checked((uint)room.Id));
+            BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(44), current.Score);
+            encoding.GetBytes(current.Name).AsSpan().CopyTo(payload.AsSpan(48, 24));
+        }
+        return payload;
+    }
+
     private byte[]? UpdateEntertainmentRoomSettings(byte[] frame, byte[] payload, ConnectionSession requester)
     {
         if (payload.Length != 36 || !requester.OnlineTracked || !requester.AuxiliaryGameSession
             || !TryDecodeFixedGbkString(payload.AsSpan(0, 24), false, out var title)) return null;
         var password = string.Empty;
         if (payload[24] > 1 && !TryDecodeFixedGbkString(payload.AsSpan(24, 8), false, out password)) return null;
+        var level = BinaryPrimitives.ReadUInt32LittleEndian(payload.AsSpan(32, 4));
+        if (level > 4) return null;
         var response = new byte[36];
         lock (_entertainmentRoomGate)
         {
             if (!_entertainmentRooms.TryGetValue(requester.EntertainmentRoomId, out var room)
-                || room.OwnerSessionId != requester.SessionId || room.Started) return null;
-            room.CreateRequest = room.CreateRequest with { Title = title, Password = password };
-            var encoding = System.Text.Encoding.GetEncoding(936);
-            encoding.GetBytes(title).AsSpan().CopyTo(response);
-            encoding.GetBytes(password).AsSpan().CopyTo(response.AsSpan(24));
-            // CF7A/full+40 uses the same A750A0 difficulty setter as entry.
-            BinaryPrimitives.WriteUInt32LittleEndian(response.AsSpan(32, 4), room.CreateRequest.Level);
-            QueueEntertainmentBroadcast(requester, 0xCF7A, response, false, "entertainment room settings");
+                || room.OwnerSessionId != requester.SessionId || !room.Members.ContainsKey(requester.SessionId)
+                || room.Started) return null;
+            room.CreateRequest = room.CreateRequest with { Title = title, Password = password, Level = (ushort)level };
+            response = BuildEntertainmentRoomSettings(room);
+            foreach (var member in room.Members.Values.Where(member => member != requester))
+                requester.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(member, 0xCF7A,
+                    response.ToArray(), "entertainment room settings", room.RoundId));
         }
         QueueEntertainmentLobbyRoomListRefresh(requester, "entertainment room settings");
         return BuildNativeFrame(frame, 0xCF7A, response, requester);

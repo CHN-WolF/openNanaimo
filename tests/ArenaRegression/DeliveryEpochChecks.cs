@@ -58,7 +58,7 @@ internal static partial class Program
             var writeType = typeof(NetworkAdapterService).GetNestedType("OutboundNativeWrite", BindingFlags.NonPublic)!;
             var staleWrite = Activator.CreateInstance(writeType,
                 [NativeDungeonClient.Frame(0xD015, new byte[16]), "ArenaAdapter", 22054, "127.0.0.1",
-                    true, true, "old already-queued hit", oldEpoch])!;
+                    true, true, "old already-queued hit", oldEpoch, null, null])!;
             await (ValueTask)Invoke(service, "QueueOutboundWriteAsync", guest, staleWrite, timeout.Token)!;
             // Use the same direct-response queue path as the real connection loop.
             // A peer can reset while this recipient's writer still holds CF98.

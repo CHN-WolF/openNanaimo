@@ -38,6 +38,13 @@ internal static partial class Program
     private static async Task Main(string[] args)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        if (args.Contains("--ready-room-only"))
+        {
+            await CheckReadyRoomInventoryAsync();
+            await CheckEntertainmentRoomUpdatesAsync();
+            Console.WriteLine($"READY_ROOM_REGRESSION_PASS checks={_checks}");
+            return;
+        }
         if (args.Contains("--gameplay-review-only"))
         {
             await CheckGameplayReviewAsync();

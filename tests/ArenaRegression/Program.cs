@@ -8,6 +8,7 @@ internal static partial class Program
         await CheckRoomListsAsync();
         await CheckRoundBoundariesAsync();
         await CheckDeliveryEpochsAsync();
+        await CheckLoadingPhasesAsync();
         await CheckReentryAsync();
         await CheckRankingAsync();
         var payload = new byte[20];

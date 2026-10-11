@@ -28,6 +28,7 @@ public sealed partial class NetworkAdapterService
     private bool IsCoupleFoodContext(ConnectionSession source, ConnectionSession partner)
     {
         if (!IsTrackedWorldSession(source) || !IsTrackedWorldSession(partner)
+            || HasAuxiliaryInventoryContext(source) || HasAuxiliaryInventoryContext(partner)
             || source.ChannelId != partner.ChannelId || !CanUseInventoryFood(partner)
             || (partner.NativeBattleResources ?? partner.NonCombatResourceSnapshot)?.CurrentHp == 0
             || partner.Character is not { CurrentHp: > 0 })
@@ -86,7 +87,7 @@ public sealed partial class NetworkAdapterService
             var partnerResources = partner is null ? null : ResolveInventoryVitals(partner.Character!,
                 partner.NativeBattleResources ?? (partner.DungeonRoomId == 0 ? partner.NonCombatResourceSnapshot : null));
             result = await _database.ConsumeInventoryFoodAsync(source.AccountId, source.Character.Id,
-                source.SessionId, itemCode, ordinal, token, sourceResources.CurrentHp, sourceResources.CurrentMp,
+                source.InventorySessionId, itemCode, ordinal, token, sourceResources.CurrentHp, sourceResources.CurrentMp,
                 partner is null ? null : new DungeonQuickItemTarget(partner.AccountId, partner.Character!.Id, partner.SessionId)
                 {
                     AuthoritativeCurrentHp = partnerResources!.CurrentHp,
@@ -134,6 +135,7 @@ public sealed partial class NetworkAdapterService
     private byte[] BuildInventoryFoodRecoveryFrames(byte[] request, ConnectionSession source,
         ConnectionSession[] members, DungeonQuickItemConsumeResult result, uint itemCode)
     {
+        if (HasAuxiliaryInventoryContext(source)) return [];
         if (source.NativeDungeon is null && source.DungeonRoomId == 0)
             return BinaryPrimitives.ReadUInt16LittleEndian(request.AsSpan(6)) == 0xC43D ? []
                 : BuildNativeFrame(request, 0xD8FF, BuildSceneAutoHealingPayload(source, source.Character!,

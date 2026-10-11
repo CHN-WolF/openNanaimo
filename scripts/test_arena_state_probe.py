@@ -27,6 +27,8 @@ class ArenaStateProbeTests(unittest.TestCase):
         result = probe.decode_snapshot(lambda a,n: bytes(memory[a:a+n]))
         self.assertEqual(result['manager']['mode'], 1)
         self.assertEqual(result['manager']['page'], 4)
+        self.assertNotIn('activity_frame', result['manager'])
+        self.assertNotIn('last_activity_frame', result['manager'])
         self.assertEqual(result['world']['running'], 0)
         self.assertEqual(result['arena']['state'], 7)
         self.assertEqual(result['arena']['update_counter'], 99)

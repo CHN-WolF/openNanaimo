@@ -151,6 +151,7 @@ internal static partial class Program
             "room list publishes its selected mode and exact room identifier");
         var settings = new byte[36]; Encoding.ASCII.GetBytes("Password room").CopyTo(settings, 0);
         Encoding.ASCII.GetBytes("123").CopyTo(settings, 24);
+        BinaryPrimitives.WriteUInt32LittleEndian(settings.AsSpan(32), 4);
         Check(await Send(host, 0xCF79, settings) is not null, "room owner updates title and password");
         Check(await Send(guest, 0xCF79, settings) is null, "room settings reject non-members");
         var enter = new byte[12]; BinaryPrimitives.WriteUInt16LittleEndian(enter, 20);
@@ -159,7 +160,7 @@ internal static partial class Program
         Encoding.ASCII.GetBytes("123").CopyTo(enter, 4);
         var enteredRoom = (await Send(guest, 0xCF75, enter))!;
         Check(enteredRoom[8] == 10, "password room accepts the matching password");
-        Check(enteredRoom.Length == 72 && enteredRoom[9] == 11,
+        Check(enteredRoom.Length == 72 && enteredRoom[9] == 4,
             "CF76/full+9 carries the owner's room difficulty, not the entertainment game type");
         Check(((IList)Get(guest, "PendingSessionBroadcasts")!).Cast<object>()
             .All(item => (ushort)Get(item, "Opcode")! != 0xCF6C),
@@ -170,9 +171,9 @@ internal static partial class Program
             .Single(item => (ushort)Get(item, "Opcode")! == 0xCF7A
                 && ReferenceEquals(Get(item, "Target"), guest));
         Check(settingsResponse.Length == 44
-            && BinaryPrimitives.ReadUInt32LittleEndian(settingsResponse.AsSpan(40)) == 11
+            && BinaryPrimitives.ReadUInt32LittleEndian(settingsResponse.AsSpan(40)) == 4
             && ((byte[])Get(settingsBroadcast, "Payload")!).AsSpan().SequenceEqual(settingsResponse.AsSpan(8)),
-            "title/password updates preserve the same CF7A difficulty for host and guest");
+            "room settings update the same difficulty for host and guest");
         Set(guest, "EntertainmentReady", true);
         ((IList)Get(host, "PendingSessionBroadcasts")!).Clear();
         var initialBoard = await Send(host, 0xCFE5, []);
@@ -184,7 +185,7 @@ internal static partial class Program
             "room owner supplies the same initial board to the joining member");
         var ownerLayout = initialBoard![8 + 4 + 83];
         var memberLayout = ((byte[])Get(sharedBoards[0], "Payload")!)[4 + 83];
-        Check(ownerLayout == 16 && memberLayout == ownerLayout,
+        Check(ownerLayout == EntertainmentProtocol.BuildGameData(4)[87] && memberLayout == ownerLayout,
             $"the shared first board uses the owner's selected board curve for every member (owner={ownerLayout}, member={memberLayout})");
         Check(await Send(host, 0xCF85, []) is null, "instant settlement requests cannot farm rewards");
         Check(await Send(host, 0xD007, [1, 2, 2, 10]) is null, "preload cannot accrue game scores");

@@ -13,7 +13,7 @@ except ImportError:
 
 class ArenaResultTests(unittest.TestCase):
     @unittest.skipUnless(uc, 'x86 execution engine required')
-    def test_shared_rematch_retires_only_the_arena_result_inactivity_latch(self):
+    def test_shared_rematch_preserves_manager_flags_and_main_loop_counters(self):
         for mode in (0, 1, 2):
             for game_type in (0, 1, 4, 5):
                 for page in (4, 6, 7):
@@ -26,7 +26,10 @@ class ArenaResultTests(unittest.TestCase):
                         def get(a): return struct.unpack('<I', m.mem_read(a, 4))[0]
                         m.mem_write(manager + 3, bytes([mode])); m.mem_write(manager + 7, b'\x01')
                         put(manager + 8, game_type); put(manager + 0x10F0, page)
-                        put(manager + 0x34, 10000); put(manager + 0x40, 100)
+                        flags = bytes((i * 17 + 3) % 256 for i in range(2000))
+                        m.mem_write(manager + 0x12, flags)
+                        main_loop = 0x2020000
+                        put(main_loop + 0x34, 10000); put(main_loop + 0x40, 100)
                         put(0xD72FC0, arena); put(arena + 0x1C, 7)
                         m.reg_write(x86.UC_X86_REG_ESP, stack); put(stack, end)
                         m.reg_write(x86.UC_X86_REG_EFLAGS, 0x202)
@@ -50,7 +53,9 @@ class ArenaResultTests(unittest.TestCase):
                         m.emu_start(recipe.RESET_CAVE_VA, end + 1, count=80)
                         eligible = mode == 1 and 1 <= game_type <= 4
                         self.assertEqual(bytes(m.mem_read(manager + 7, 1)), b'\0' if eligible else b'\1')
-                        self.assertEqual(get(manager + 0x40), 10000 if eligible else 100)
+                        self.assertEqual(bytes(m.mem_read(manager + 0x12, 2000)), flags)
+                        self.assertEqual(get(main_loop + 0x34), 10000)
+                        self.assertEqual(get(main_loop + 0x40), 100)
                         self.assertEqual(get(manager + 0x10F0), page)
                         self.assertEqual(calls, [0x419BBE, 0x74FFE0] if eligible else [0x419BBE])
                         self.assertEqual(get(arena + 0x1C), 0 if eligible else 7)
@@ -77,6 +82,9 @@ class ArenaResultTests(unittest.TestCase):
         off = compat._va_offset(target, recipe.RESET_CAVE_VA, len(old))
         previous[off:off + len(old)] = old
         self.assertEqual(compat.patch_dungeon_state_controls(bytes(previous))[0], target)
+        for old in recipe.legacy_encodings(recipe.RESET_CAVE_VA):
+            previous[off:off + len(old)] = old
+            self.assertEqual(compat.patch_dungeon_state_controls(bytes(previous))[0], target)
         previous[off + 8] ^= 1
         with self.assertRaises(compat.CompatibilityError):
             compat.patch_dungeon_state_controls(bytes(previous))

@@ -6,7 +6,8 @@ public sealed partial class NetworkAdapterService
 {
     // Byte-array identity keeps the scope captured before an async request
     // attached to its exact response, rather than re-stamping it at enqueue time.
-    private sealed record ArenaResponseScope(Guid Epoch, Guid? RoundId);
+    private sealed record ArenaResponseScope(Guid Epoch, Guid? RoundId, bool LoadingOnly = false,
+        bool StartedOnly = false);
     private readonly System.Runtime.CompilerServices.ConditionalWeakTable<byte[], ArenaResponseScope>
         _arenaResponseScopes = new();
 
@@ -20,6 +21,8 @@ public sealed partial class NetworkAdapterService
             epoch = session.ArenaDeliveryEpoch;
             round = _arenaRooms.TryGetValue(session.ArenaRoomId, out var room)
                 && room.Members.ContainsKey(session.SessionId) ? room.RoundId : null;
+            if ((opcode is 0xCFD3 or 0xCFD5 or 0xCFEB)
+                && (room is null || !ArenaMemberIsLoading(room, session))) return null;
         }
         var response = await HandleNativeFrameCoreAsync(frame, opcode, channel, remote, remoteIp, session, token);
         if (response is not null && round is not null)
@@ -29,10 +32,23 @@ public sealed partial class NetworkAdapterService
             // concurrent peer reset or rejoin may have established during await.
             // Join/leave/reset acknowledgements authorize their own boundaries.
             if (responseOpcode is 0xCF71 or 0xCF72 or 0xCF7E or 0xCFEC or 0xCF80
-                or 0xCF98 or 0xCF8A or 0xCFD2 or 0xCFD6 or 0xCFDA
+                or 0xCF98 or 0xCF8A or 0xCFD2 or 0xCFD4 or 0xCFD6 or 0xCFDA
                 or 0xD00E or 0xD010 or 0xD015 or 0xD035 or 0xD037)
-                _arenaResponseScopes.Add(response, new ArenaResponseScope(epoch,
-                    responseOpcode is 0xCF98 or 0xCF8A ? round : null));
+            {
+                lock (_arenaRoomGate)
+                {
+                    if (responseOpcode == 0xCF80)
+                    {
+                        if (!_arenaRooms.TryGetValue(session.ArenaRoomId, out var current)
+                            || session.ArenaDeliveryEpoch != epoch || !current.Started
+                            || !current.Members.ContainsKey(session.SessionId)) return null;
+                        round = current.RoundId;
+                    }
+                    _arenaResponseScopes.Add(response, new ArenaResponseScope(epoch,
+                        responseOpcode is 0xCF98 or 0xCF8A or 0xCF80 ? round : null,
+                        ArenaResponseRequiresLoading(responseOpcode), responseOpcode == 0xCF80));
+                }
+            }
         }
         return response;
     }
@@ -43,7 +59,27 @@ public sealed partial class NetworkAdapterService
         lock (_arenaRoomGate)
             return _arenaRooms.TryGetValue(target.ArenaRoomId, out var room)
                 && room.Members.ContainsKey(target.SessionId) && target.ArenaDeliveryEpoch == scope.Epoch
-                && (scope.RoundId is null || room.RoundId == scope.RoundId);
+                && (scope.RoundId is null || room.RoundId == scope.RoundId)
+                && (!scope.LoadingOnly || ArenaMemberIsLoading(room, target))
+                && (!scope.StartedOnly || room.Started);
+    }
+
+    private static bool ArenaResponseRequiresLoading(ushort opcode) => opcode is 0xCFD4 or 0xCFD6 or 0xCFEC;
+
+    private static bool ArenaMemberIsLoading(ArenaRoom room, ConnectionSession member) =>
+        !room.Started && room.Members.ContainsKey(member.SessionId)
+        && !room.LoadingRequestTags.ContainsKey(member.SessionId);
+
+    private bool IsCurrentArenaWrite(ConnectionSession target, OutboundNativeWrite write)
+    {
+        if (write.ArenaDeliveryEpoch is null && write.ArenaRoundId is null) return true;
+        lock (_arenaRoomGate)
+            return _arenaRooms.TryGetValue(target.ArenaRoomId, out var room)
+                && room.Members.ContainsKey(target.SessionId)
+                && (write.ArenaDeliveryEpoch is null || target.ArenaDeliveryEpoch == write.ArenaDeliveryEpoch)
+                && (write.ArenaRoundId is null || room.Started && room.RoundId == write.ArenaRoundId)
+                && (!ArenaResponseRequiresLoading(ReadFirstNativeOpcode(write.Frames))
+                    || ArenaMemberIsLoading(room, target));
     }
 
     private bool IsCurrentArenaDelivery(ConnectionSession target, Guid? epoch)

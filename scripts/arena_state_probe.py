@@ -27,12 +27,12 @@ def decode_snapshot(read):
     result = {}
     definitions = {
         'manager': (0xD72CE4, 0xD72CE8, {'mode': (3, 1), 'game_type': (8, 4), 'page': (0x10F0, 4),
-                              'activity_frame': (0x34, 4), 'last_activity_frame': (0x40, 4),
                               'leave_latch': (7, 1), 'world_enabled': (1, 1)}),
         'world': (0xD72D1E, 0xD72D20, {'running': (0, 4), 'local_actor': (0x14, 4), 'stage': (0x24, 4)}),
         'arena': (0xD72FBE, 0xD72FC0, {'state': (0x1C, 4), 'previous_state': (0x18, 4),
                            'update_counter': (0xC, 4), 'end_latch': (0x124, 4), 'animation': (0x20, 4)}),
-        'ready': (0xD72EB6, 0xD72EB8, {'state': (0x24, 4), 'previous_state': (0x20, 4)}),
+        'ready': (0xD72EB6, 0xD72EB8, {'state': (0x24, 4), 'previous_state': (0x20, 4),
+                                     'start_requested': (0x10, 4), 'map_loaded': (0x14, 4)}),
         'countdown': (0xD72E8C, 0xD72E90, {'started': (0, 4), 'go_played': (4, 4),
                                'tick': (8, 4), 'start_tick': (12, 4), 'animation': (16, 4)}),
     }

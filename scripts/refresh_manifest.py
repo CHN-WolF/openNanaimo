@@ -14,6 +14,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    "scripts/entertainment_room_compat.py",
+    "tests/MentorshipRegression/MentorshipRegression.csproj",
+    "scripts/test_entertainment_room_client.py",
+    "tests/MentorshipRegression/ReadyRoomChecks.cs",
+    "tests/ArenaRegression/LoadingPhaseChecks.cs",
     "scripts/generate_boss_contact_resources.py",
     "scripts/test_boss_contact_resources.py",
     "release/components/stage_damage/boss_contact_registry.json",

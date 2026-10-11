@@ -277,6 +277,26 @@
     },
     {
       "group": "dungeon-state",
+      "va": 7222784,
+      "target": "558bec83ec089c608b4508668378042c0f847200000066837804500f856e00000081782c455230310f856100000080784f000f85570000008b0dd469d80085c90f84490000000fb691d005000083fa010f823900000083fa030f87300000008b50303b915c0d00000f8521000000ff7034e86a1a39008b450883c038508b0dd469d800e8981a3900619de977fef5ff619de9affef5ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "known": [
+        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      ],
+      "operation": "patch_entertainment_room_record_body",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
+      "va": 6567168,
+      "target": "e9fb000a0090",
+      "known": [
+        "558bec83ec08"
+      ],
+      "operation": "patch_entertainment_room_record_entry",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
       "va": 7222528,
       "target": "e89b0000009c60e8d423f8ff80780301754683b8f010000004740b83b8f0100000067534eb096a068bc8e8b15df8ffe843b8d2ff8d700c8db80c010000b940000000fcf3a58db0100200008db820020000b904000000f3a5619dc3cccccccccc",
       "known": [
@@ -299,11 +319,12 @@
     {
       "group": "dungeon-state",
       "va": 7222624,
-      "target": "e85966d3ff9c6080780301752583780801721f837808047719c64007008b48348948408b0dc02fd70085c97405e84eca0600619dc3cccccccccccccccccccccc",
+      "target": "e85966d3ff9c6080780301751f837808017219837808047713c64007008b0dc02fd70085c97405e854ca0600619dc3cccccccccccccccccccccccccccccccccc",
       "known": [
         "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
         "e85966d3ff9c6080780301751f83780801721983780804771383b8f010000006750ac64007008b4834894840619dc3cccccccccccccccccccccccccccccccccc",
-        "e85966d3ff9c6080780301752e83780801722883780804772283b8f0100000067519c64007008b48348948408b0dc02fd70085c97405e845ca0600619dc3cccc"
+        "e85966d3ff9c6080780301752e83780801722883780804772283b8f0100000067519c64007008b48348948408b0dc02fd70085c97405e845ca0600619dc3cccc",
+        "e85966d3ff9c6080780301752583780801721f837808047719c64007008b48348948408b0dc02fd70085c97405e84eca0600619dc3cccccccccccccccccccccc"
       ],
       "operation": "patch_arena_rematch_activity_code",
       "known_hashes": []
