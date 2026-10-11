@@ -8116,7 +8116,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var collisionActorUid = BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(6, 2));
                 var collisionDescriptor = BinaryPrimitives.ReadUInt32LittleEndian(payload.AsSpan(8, 4));
                 ushort damage = 0;
-                if (eventCode is 10 or 40)
+                uint contactScore = 0;
+                if (eventCode is 10 or 40 or 70)
                 {
                     var damageRoom = GetDungeonRoom(session);
                     var damageBattle = damageRoom?.Battle;
@@ -8144,7 +8145,10 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                             return null;
                         }
 
-                        var effectiveReportedDamage = eventCode == 40
+                        contactScore = checked((uint)Math.Max(0, damageBattle.HitScores.GetValueOrDefault(session.Character.Id)));
+                        var effectiveReportedDamage = eventCode == 70
+                            ? ResolveDungeonBossPartCollisionDamage(damageRoom, collisionDescriptor, session.Character)
+                            : eventCode == 40
                             ? ResolveDungeonBossCollisionDamage(damageRoom, collisionDescriptor)
                             : reportedDamage;
                         damage = (ushort)Math.Min(
@@ -8177,15 +8181,22 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                                     token);
                     _log($"{channel}:{remote} Dungeon player damage applied: room={session.DungeonRoomId} map={GetDungeonRoom(session)?.SelectedMapIndex?.ToString() ?? "none"} characterId={session.Character.Id} reportedDamage={reportedDamage} targetIndex={targetVectorIndex} actor={collisionActorUid} damage={damage} hp={session.Character.CurrentHp}/{session.Character.MaxHp} persisted={saved}");
                 }
-                var objectEventPayload = eventCode is 10 or 40
+                var objectEventPayload = eventCode is 10 or 40 or 70
                     ? BuildDungeonGameEventPayload(
                         session.Character,
                         eventCode,
                         reportedDamage,
                         damage)
                     : DungeonProtocol.BuildObjectEvent(payload);
+                if (eventCode == 70)
+                {
+                    BinaryPrimitives.WriteUInt32LittleEndian(objectEventPayload.AsSpan(22, 4), collisionDescriptor);
+                    BinaryPrimitives.WriteUInt16LittleEndian(objectEventPayload.AsSpan(18, 2), (ushort)(collisionDescriptor >> 16));
+                    BinaryPrimitives.WriteUInt32LittleEndian(objectEventPayload.AsSpan(4, 4),
+                        contactScore);
+                }
                 QueueDungeonBroadcast(session, 0xD010, objectEventPayload, false, "dungeon object event");
-                _log($"{channel}:{remote} Dungeon object event synchronized: characterId={session.Character.Id} event={eventCode} reportedDamage={reportedDamage} targetIndex={targetVectorIndex} actor={collisionActorUid} damage={damage} hp={session.Character.CurrentHp}/{session.Character.MaxHp} mode={(eventCode is 10 or 40 ? "authoritative-hp-result" : "retail-echo")}");
+                _log($"{channel}:{remote} Dungeon object event synchronized: characterId={session.Character.Id} event={eventCode} reportedDamage={reportedDamage} targetIndex={targetVectorIndex} actor={collisionActorUid} damage={damage} hp={session.Character.CurrentHp}/{session.Character.MaxHp} mode={(eventCode is 10 or 40 or 70 ? "authoritative-hp-result" : "retail-echo")}");
                 return BuildNativeFrame(frame, 0xD010, objectEventPayload, session);
             }
 
@@ -17140,6 +17151,23 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         payload[0x72 - 8] = 1;
         payload[0x73 - 8] = character.RevivalUseCount;
         return payload;
+    }
+
+    private static ushort ResolveDungeonBossPartCollisionDamage(DungeonRoom room, uint descriptor, CharacterRecord character)
+    {
+        if (room.SelectedMapIndex is not { } slot) return 0;
+        var battle = room.Battle;
+        if (battle.ActiveSkills.TryGetValue(character.Id, out var active)
+            && active.ActiveUntilTick > Environment.TickCount64
+            && SkillCatalog.TryGet(active.SkillCode, out var skill)
+            && skill.SkillFamily == SkillCatalog.MeatSkillFamily) return 0;
+        if (!BossContactCatalog.TryResolve(battle.HdIndex, battle.Episode, battle.Dungeon,
+            battle.Stage, slot, descriptor, out var bossUid, out var raw)
+            || !battle.Bosses.TryGetValue(bossUid, out var boss) || boss.Defeated) return 0;
+        var activeMode = boss.Components.Where(c => !c.Value.Defeated)
+            .Select(c => (int)c.Key.ParentIndex).DefaultIfEmpty(-1).Min();
+        if (activeMode != (byte)descriptor) return 0;
+        return raw == 0 ? (ushort)0 : (ushort)Math.Max(1, raw - CharacterCombatProfile.EffectiveDefense(character));
     }
 
     private static ushort ResolveDungeonBossCollisionDamage(DungeonRoom room, uint collisionDescriptor)
