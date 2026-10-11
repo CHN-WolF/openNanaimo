@@ -96,6 +96,7 @@ def payload_policy(value: str, layer: str) -> None:
         good = value == "adapter/nanaimo_adapter_testports.exe"
     elif layer == "source":
         card_generation_sources = {
+            "release/components/stage_damage/boss_contact_registry.json",
             "release/components/cards/card_drop_manual_sources.json",
             "release/components/stage_damage/scene_hazard_registry.json",
             "release/components/target_resources/preloaded_target_catalog.json",
@@ -329,6 +330,8 @@ def validated_closure(closure: dict) -> list[dict]:
             "scripts/generate_arena_targets.py",
             "scripts/audit_l7_combat_resources.py",
             "scripts/generate_boss_contact_catalog.py",
+            "scripts/generate_boss_contact_resources.py",
+            "release/components/stage_damage/boss_contact_registry.json",
             "scripts/generate_l7_combat.py",
             "scripts/test_l7_combat_resources.py",
         }

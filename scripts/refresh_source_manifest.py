@@ -59,6 +59,13 @@ def collect(root=ROOT):
             if not path.is_file():
                 raise ValueError('missing card distribution input: ' + rel)
             seen.add(path.resolve())
+    if (root / "release/components/stage_damage/boss_contact_catalog.inc").resolve() in seen:
+        for rel in ("release/components/stage_damage/boss_contact_registry.json",
+                    "scripts/generate_boss_contact_resources.py", "scripts/generate_boss_contact_catalog.py",
+                    "scripts/normalize_combat_score_resources.py"):
+            path = root / rel
+            if not path.is_file(): raise ValueError("missing Boss contact input: " + rel)
+            seen.add(path.resolve())
     if (root / "release/components/stage_damage/scene_hazard_catalog.inc").resolve() in seen:
         for rel in ("release/components/stage_damage/scene_hazard_registry.json",
                     "scripts/generate_scene_hazard_catalog.py", "scripts/generate_scene_hazard_resources.py"):

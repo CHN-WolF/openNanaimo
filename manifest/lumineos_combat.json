@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "resource_overlay": {
-    "id": "f521d83657889da7545c3e1967ee59fea2588aaa9bea5553d7f65cfd58020a19",
-    "verified": 878,
-    "preserved_l7_combat": 477,
+    "id": "972fb15e9ae2ccbbbc2e23b84e4066356748d8e27426a1f9a8c083416a7668e1",
+    "verified": 1328,
+    "preserved_l7_combat": 99,
     "runtime_accepted": false
   },
   "runtime_accepted": false,
@@ -1505,24 +1505,36 @@
   },
   "outputs": {
     "release/components/targets/hp_resource_global_data.inc": {
-      "size": 25772872,
-      "sha256": "B87A4CAA9E4DE3CC423E76D74EDFA13D55C69ABCFF288EE4AFB98CE872FE6733"
+      "size": 25823548,
+      "sha256": "77C2590F5A7DBDE547715F1BE70A9739012379FFB65CD5D3125FA83118D2CDC2"
     },
     "release/components/boss/component_data.inc": {
-      "size": 588029,
-      "sha256": "65A2BC3F157AC477A846DA19B280FE4EF33313B517A4A7F8499FDE28CFBDA08A"
+      "size": 745550,
+      "sha256": "B1EFFD88F750D6B004DB8E10A3D59AF5BAA9B6A4AC1F51A4F5A47CB12C18CADB"
     },
     "release/components/stage_damage/stage_damage_catalog.inc": {
-      "size": 976312,
-      "sha256": "081E094BBE20FE20167D4A31758F3AF30260EE56EFD48C19306F5613C6307EB0"
+      "size": 979960,
+      "sha256": "87193E2841517C757273926DE4D34D84F00628F00592BCD58719DE2D61913298"
     },
-    "adapter_runtime/资源/数据/dungeon_combat_catalog.bin": {
-      "size": 11805956,
-      "sha256": "F3D8A7ED6069EDF4BD2D9721AD9F7E2A3D412790BE6142C94D7793053AAA0E7A"
+    "adapter_runtime/\u8d44\u6e90/\u6570\u636e/dungeon_combat_catalog.bin": {
+      "size": 11810960,
+      "sha256": "2E12C1219AC611596E3530F0B6FA5AC9BA7A7BCBE49A8B87743A7553D752497A"
     },
     "release/components/targets/terminal_item_drop_data.inc": {
       "size": 2391,
-      "sha256": "897510E329BCF545BED2A631A0B049773E06DC82F45D3A502EDE89F9527088FA"
+      "sha256": "FAE566C8F17DB13B62ED72F6FAC36ADCA54D9FF897FB8B070410EE80042FD27C"
+    },
+    "release/components/stage_damage/boss_contact_registry.json": {
+      "size": 191198,
+      "sha256": "00EF34EE97748E42B72A002825C9A603725CA0FC8042505C7BA93D2C995771C7"
+    },
+    "release/components/stage_damage/boss_contact_catalog.inc": {
+      "size": 951215,
+      "sha256": "79E42871964BD9545C5AF93B1E2AEB15940E590441DD843BEC53DFB15F8BF37E"
+    },
+    "release/components/stage_damage/monster_contact_catalog.inc": {
+      "size": 1322553,
+      "sha256": "29B8EBFBBD125BAA4F6CEEDD1402174ABB229CD3AEDB8DEB96DD730428CC4701"
     }
   }
 }

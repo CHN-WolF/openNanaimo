@@ -38,6 +38,7 @@ int main(void){
  struct stable_monster_hp_attack atk;struct stable_monster_hp_decision d;
  struct crate_drop_policy_context crate;struct boss_hp_sync_result bh;
  unsigned char req[32];
+ struct stage_damage_damage_context dc;struct stage_damage_damage_lookup dl;unsigned hazards=0;
  memset(&in,0,sizeof(in));in.have_attack=1;in.attack=4000;
  memset(&atk,0,sizeof(atk));atk.have_value=1;atk.value=100000000;
  for(st=0;st<2;st++)for(slot=0;slot<9;slot++){
@@ -80,7 +81,15 @@ int main(void){
    const struct boss_component_boss_mode*m=boss_component_boss_mode_def(boss.profile,mode);
    for(i=0;i<m->component_count;i++){
     const struct boss_component_boss_component*c=&boss_component_boss_components[m->first_component+i];
-    if(!c->scaled_hp)continue;
+    stage_damage_damage_begin(&dc,0,100,6,st,slot/3,1,1);
+    memset(req,0,sizeof(req));req[0x10]=mode;req[0x11]=c->child;req[0x12]=c->ordinal;
+    if(!c->scaled_hp){
+     const struct boss_contact_row*contact=stage_damage_boss_contact_find(&dc,req);
+     assert(contact);
+     assert(stage_damage_player_d00f_damage(&dc,req,70u,&dl)==contact->attack);
+     if(contact->attack){assert(st==1&&mode==0&&contact->attack==2003);hazards++;}
+     continue;
+    }
     memset(req,0,sizeof(req));req[0x12]=mode;req[0x13]=c->child;boss_hp_sync_put32(req,0x14,c->ordinal);
     assert(boss_hp_sync_apply_d011_attack(&boss,req,32,c->scaled_hp+c->basis+1u,1,&bh)==BOSS_HP_SYNC_OK);
     assert(bh.component_first_terminal&&bh.applied_damage==c->scaled_hp);
@@ -88,6 +97,7 @@ int main(void){
   }
   assert(boss_hp_sync_final_terminal_seen(&boss));
  }
+ assert(hazards==639);
  assert(barrels==18&&conveyors==36&&ordinary>5000&&preloads>0);
  printf("L7_NATIVE_PASS slots=18 ordinary=%u barrels=%u conveyors=%u preloads=%u\n",ordinary,barrels,conveyors,preloads);return 0;
 }

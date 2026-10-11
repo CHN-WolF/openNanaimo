@@ -243,6 +243,11 @@ def generate(client, output, root=g.ROOT):
     outputs={g.DATA:hp.encode(),g.BOSS:boss.encode(),g.CATALOG:catalog,g.DAMAGE:damage.encode(),g.TERMINAL_ITEMS:terminal.encode(),SCORE:score_data(hp,catalog).encode(),PRELOAD:(json.dumps(pre,indent=2)+'\n').encode(),PRELOAD.with_suffix('.inc'):preload.render(pre).encode()}
     for path,raw in outputs.items():
         dest=output/path;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(raw)
+    import generate_boss_contact_resources as contact_resources
+    contact_registry = contact_resources.derive(client, output)
+    contact_data = contact_resources.render(contact_registry).encode()
+    (output/contact_resources.REGISTRY).write_bytes(contact_data)
+    outputs[contact_resources.REGISTRY] = contact_data
     import generate_boss_contact_catalog as contact
     import generate_scene_hazard_catalog as hazard
     import generate_scene_hazard_resources as hazard_resources

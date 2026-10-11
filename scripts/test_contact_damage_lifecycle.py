@@ -24,9 +24,11 @@ int main(int argc,char**argv){
     g_multi_conn[0].active=1;g_multi_conn[0].uid=21;g_multi_conn[0].socket=100;
     g_multi_transport_alive[0]=1;g_multi_conn[0].room_active=1;
     teamplay_score_begin(1u);g_teamplay_authority.score_by_player[0]=789u;
-    mode=(unsigned)atoi(argv[1]);kind=mode==0u?20u:mode==1u?40u:60u;req[8]=kind;
+    mode=(unsigned)atoi(argv[1]);kind=mode==0u?20u:mode==1u?40u:mode==8u?70u:60u;req[8]=kind;
     tgt=kind==20u?321u:0u;
-    if(mode==7u){
+    if(mode==8u){
+        stage_damage_damage_begin(&ctx,0,100,6,1,0,1,1);req[0x12]=2u;
+    }else if(mode==7u){
         stage_damage_damage_begin(&ctx,0,2,1,0,0,1,1);req[10]=85;req[11]=1;
     }else if(mode==6u){
         stage_damage_damage_begin(&ctx,0,4,2,0,2,1,1);req[10]=0xB6;req[11]=1;req[12]=2;
@@ -40,7 +42,8 @@ int main(int argc,char**argv){
         stage_damage_damage_begin(&ctx,0,3,2,1,1,1,1);
         if(kind==20u){req[10]=9;req[11]=1;}else{req[0x12]=9;}
     }
-    expected=mode==0u?188u:mode==1u?369u:mode==2u?1146u:mode==7u?300u:mode==6u?510u:mode>=4u?180u:90u;
+    if(mode==8u)boss_hp_sync_begin_game_domain(multiplayer_shared_boss_context(),100,0,6,1,0,1);
+    expected=mode==8u?2003u:mode==0u?188u:mode==1u?369u:mode==2u?1146u:mode==7u?300u:mode==6u?510u:mode>=4u?180u:90u;
     CHECK(stage_damage_player_d00f_damage(&ctx,req,kind,&lookup)==expected);
     if(mode==2u){CHECK(lookup.status==STAGE_DAMAGE_DAMAGE_SCENE_ASSOCIATED_RESOURCE);CHECK(lookup.owner==17u&&lookup.source==2u&&lookup.associated_selector==16u);CHECK(!strcmp(lookup.resource,"ep15_dg02_m_154_00.mmo"));}
     if(mode==3u){CHECK(lookup.status==STAGE_DAMAGE_DAMAGE_SCENE_HAZARD_RESOURCE);CHECK(lookup.owner==263u&&lookup.source==0u);CHECK(!strcmp(lookup.resource,"ep01_dg02_new_obj_meteor.mmo"));}
@@ -57,6 +60,7 @@ int main(int argc,char**argv){
        frame has it zero.  It must hold the damage applied to the target. */
     CHECK(word(34)==tgt);
     if(kind==40u){CHECK(word(26)==9&&frame[30]==0&&frame[31]==0&&word(32)==9);}
+    if(mode==8u){CHECK(word(26)==2u&&frame[30]==0u&&frame[31]==0u&&word(32)==2u&&word(34)==0u);}
     if(mode==2u){CHECK(word(26)==17u&&frame[29]==60u&&word(30)==0u);}if(mode==3u){CHECK(word(26)==263u&&frame[29]==60u&&word(30)==0u);}
     /* Authored accessory +3 must affect the actual D010 absolute HP, not just C377. */
     g_stable_equip[4]=10150103u;hp=5000;
@@ -77,6 +81,9 @@ int main(int argc,char**argv){
     CHECK(hp==(5000u-expected));i=sends;
     hp=5000;dead=0;
     CHECK(!player_collision_apply_player_d00f_injury(100,62050,req,kind,123400,1,2,1,1,1,&hp,&dead,5000,789,&ctx,&skill,tgt)&&sends==i);
+    item_effects_flight_activate(ITEM_EFFECTS_FLIGHT_SHIELD_CODE,1,1,123000);
+    CHECK(!player_collision_apply_player_d00f_injury(100,62050,req,kind,123400,1,1,1,1,1,&hp,&dead,5000,789,&ctx,&skill,tgt)&&sends==i);
+    item_effects_flight_reset_current(1,1,"test");
     skill_effect_cleanup_arm(&skill,52000015,5,1,1,123000);
     CHECK(!player_collision_apply_player_d00f_injury(100,62050,req,kind,123400,1,1,1,1,1,&hp,&dead,5000,789,&ctx,&skill,tgt)&&sends==i);
     CHECK(player_collision_apply_player_d00f_injury(100,62050,req,kind,135001,1,1,1,1,1,&hp,&dead,5000,789,&ctx,&skill,tgt)&&sends==i+1);
@@ -154,7 +161,7 @@ class ContactDamageLifecycleTests(unittest.TestCase):
         if result.returncode: raise AssertionError(result.stdout + result.stderr)
 
     def test_production_damage_matrix(self):
-        for kind in range(8):
+        for kind in range(9):
             with self.subTest(kind=kind):
                 result = subprocess.run([str(self.exe), str(kind)], cwd=self.work, capture_output=True, text=True, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

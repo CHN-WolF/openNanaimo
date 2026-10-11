@@ -108,6 +108,7 @@ static unsigned native_actor_revival_count(unsigned actor_uid){
  * Kind10 uses the projectile route. Kind60 applies damage for an exact
  * same-resource positive-HP association or an explicitly classified terrain
  * hazard; unmatched kind60 and every kind80 remain compatibility echoes.
+ * Kind70 settles the exact Boss part through the shared player-injury gates.
  * Kind20 and kind40 retain their separate contact policies below. */
 static int scene_injury_direct_projectile_d00f_kind(unsigned kind){return kind==10u;}
 static int scene_injury_fixed_scene_echo_kind(unsigned kind){return kind==60u||kind==80u;}
@@ -235,7 +236,7 @@ static void send_d010_injury_injury_resource(SOCKET c,const unsigned char*req,un
     stable_resource_put16(p,0x08,local_uid);stable_resource_put16(p,0x0A,terminal?200u:100u);
     stable_put32(p,0x0C,battle_score);stable_resource_put16(p,0x10,hp);stable_resource_put16(p,0x12,damage);
     p[0x1A]=req[0x0A];p[0x1B]=req[0x0B];p[0x1D]=req[0x08];
-    if(req[0x08]==40u){
+    if(req[0x08]==40u||req[0x08]==70u){
         p[0x1A]=req[0x12];p[0x1B]=req[0x13];
         p[0x1E]=req[0x10];p[0x1F]=req[0x11];p[0x20]=req[0x12];p[0x21]=req[0x13];
     }
@@ -269,7 +270,7 @@ static int player_collision_apply_player_d00f_injury(SOCKET c,int port,const uns
     unsigned source_field_140=(unsigned char)req[0x0A]|((unsigned char)req[0x0B]<<8);
     unsigned collision_index=(unsigned char)req[0x0C]|((unsigned char)req[0x0D]<<8);
     unsigned source_field_14=(unsigned char)req[0x0E]|((unsigned char)req[0x0F]<<8);
-    unsigned raw_damage,damage,applied,wire_damage;struct stage_damage_damage_lookup resolved;struct stage_damage_damage_application damage_app;const char *route=request_kind==10u?"kind10":request_kind==20u?"ordinary-kind20":request_kind==40u?"boss-kind40":request_kind==60u?"scene-kind60":"unsupported";
+    unsigned raw_damage,damage,applied,wire_damage;struct stage_damage_damage_lookup resolved;struct stage_damage_damage_application damage_app;const char *route=request_kind==10u?"kind10":request_kind==20u?"ordinary-kind20":request_kind==40u?"boss-kind40":request_kind==60u?"scene-kind60":request_kind==70u?"boss-part-kind70":"unsupported";
 #if TEAMPLAY_FEATURE_MEAT_LIFECYCLE_COMPLETION
     if(skill_effect_cleanup_meat_invulnerable(skill_cleanup_ctx,dungeon_room_epoch,battle_epoch,injury_now)){
         printf("  [INJURY_SCENE] suppress route=%s kind=%u reason=meat-invulnerability actor=%u hp=%u meat_code=%u generation=%u elapsed_ms=%u no-D010 t=%lds\n",route,request_kind,multiplayer_current_uid(),*combat_hp,skill_cleanup_ctx->code,skill_cleanup_ctx->generation,(unsigned)(injury_now-skill_cleanup_ctx->armed_tick),sec());
@@ -291,6 +292,14 @@ static int player_collision_apply_player_d00f_injury(SOCKET c,int port,const uns
         *injury_dead=1;
         printf("  [INJURY_SCENE] suppress route=%s kind=%u reason=already-dead actor=%u room=%u battle=%u source_field=%u collision_index=%u source_aux=%u no-D010 t=%lds\n",route,request_kind,multiplayer_current_uid(),injury_room_epoch,injury_battle_epoch,source_field_140,collision_index,source_field_14,sec());
         fflush(0);return 0;
+    }
+    if(request_kind==70u){
+        unsigned mode=(unsigned)req[0x10],slot=0u;const struct boss_component_boss_component *part=0;
+        if(!damage_ctx||!damage_ctx->active||damage_ctx->room_epoch!=dungeon_room_epoch||damage_ctx->battle_epoch!=battle_epoch||
+           boss_ctx.battle_epoch!=battle_epoch||boss_ctx.phase!=BOSS_HP_SYNC_PHASE_RUNNING||boss_ctx.final_terminal_seen||
+           mode!=boss_ctx.mode_index+(boss_ctx.awaiting_next_mode?1u:0u)||mode>=boss_ctx.mode_count)return 0;
+        if(mode==boss_ctx.mode_index&&boss_component_boss_find_loaded_component(&boss_ctx,req[0x11],stage_damage_boss_collision_component_index(req),&part,&slot)&&
+           (boss_ctx.component_terminal_sent[slot]||boss_ctx.child_terminal_sent[part->child]))return 0;
     }
     raw_damage=stage_damage_player_d00f_damage(damage_ctx,req,request_kind,&resolved);damage=multiplayer_combat_profile_reduce_damage(raw_damage);printf("  [INCOMING_COMBAT] wire=%u/%u/%u/st%u/d%u resource_tuple=%u/%u/%u/st%u kind=%u owner=%u source=%u resource=%s selected_smmo=%s rows=%u base=%u lookup_status=%u scope_incomplete=%u translated=%u raw_policy_damage=%u defense=%u final_policy_damage=%u provenance=%s defense_formula=private-flat-floor1\n",resolved.wire_hd,resolved.wire_episode,resolved.wire_dungeon,resolved.wire_stage,resolved.difficulty,resolved.resource_hd,resolved.resource_episode,resolved.resource_dungeon,resolved.resource_stage,request_kind,resolved.owner,resolved.source,resolved.resource?resolved.resource:"<none>",resolved.selected_smmo?resolved.selected_smmo:"<none>",resolved.row_count,resolved.base,resolved.status,resolved.scope_incomplete,resolved.identity_translated,raw_damage,g_profile_defense_flat,damage,(resolved.status==STAGE_DAMAGE_DAMAGE_RESOURCE_EXACT||resolved.status==STAGE_DAMAGE_DAMAGE_COLLISION_RESOURCE||resolved.status==STAGE_DAMAGE_DAMAGE_BOSS_COLLISION_RESOURCE||resolved.status==STAGE_DAMAGE_DAMAGE_SCENE_ASSOCIATED_RESOURCE||resolved.status==STAGE_DAMAGE_DAMAGE_SCENE_HAZARD_RESOURCE)?"stage-resource-exact":"bounded-fallback");fflush(0);damage_app=stage_damage_apply_actor_damage(*combat_hp,damage);applied=damage_app.actual_damage;*combat_hp=damage_app.hp_after;wire_damage=damage_app.wire_damage;*injury_dead=damage_app.terminal?1:0;
 #ifdef MEAT_D010_DAMAGE_ZERO_PROBE
@@ -986,7 +995,7 @@ meat_collision_activate(skill_code,grade,dungeon_room_epoch,boss_ctx.battle_epoc
                     } else if(type==0xD00F && len==0x1C){if(retry_acknowledged&&death_latched){death_latched=0;retry_acknowledged=0;printf("  [DEATH_INVENTORY] retry resumed combat -> clear death latch battle=%u\n",boss_ctx.battle_epoch);fflush(0);}
                         unsigned request_kind=(unsigned char)buf[off+8] | ((unsigned char)buf[off+9]<<8);
                         d00f_total++;
-                        if(scene_injury_direct_projectile_d00f_kind(request_kind)){
+                        if(scene_injury_direct_projectile_d00f_kind(request_kind)||request_kind==70u){
                             unsigned injury_now=tickms();
                             player_collision_apply_player_d00f_injury(c,port,(const unsigned char*)&buf[off],request_kind,injury_now,dungeon_room_epoch,boss_ctx.battle_epoch,injury_armed,injury_room_epoch,injury_battle_epoch,&combat_hp,&injury_dead,pet_crafting_pet_effective_hp_max(),score_ctx.total,&incoming_damage_ctx,&skill_cleanup_ctx,0u);
                         } else {

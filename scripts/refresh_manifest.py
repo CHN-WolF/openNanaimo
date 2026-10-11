@@ -14,6 +14,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    "scripts/generate_boss_contact_resources.py",
+    "scripts/test_boss_contact_resources.py",
+    "release/components/stage_damage/boss_contact_registry.json",
     'scripts/test_dungeon_selftest_isolation.py',
     'tests/NativeDungeonPoolRegression/Program.cs',
     'scripts/arena_result_compat.py',

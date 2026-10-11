@@ -1573,6 +1573,10 @@
       "size": 982913,
       "sha256": "7B9DD9FD8C5A4DCEFA1F9611DF87D7D0E83975E1E19A0748DFA0440ADCD6D932"
     },
+    "release/components/stage_damage/boss_contact_registry.json": {
+      "size": 191198,
+      "sha256": "00EF34EE97748E42B72A002825C9A603725CA0FC8042505C7BA93D2C995771C7"
+    },
     "release/components/stage_damage/scene_hazard_registry.json": {
       "size": 80061,
       "sha256": "27D3DAA533FA521025C9CC7BF090E1B8DE767C312C8B4A7BF7FDA33871885BCE"
@@ -1586,8 +1590,8 @@
       "sha256": "29B8EBFBBD125BAA4F6CEEDD1402174ABB229CD3AEDB8DEB96DD730428CC4701"
     },
     "release/components/stage_damage/boss_contact_catalog.inc": {
-      "size": 100060,
-      "sha256": "2022152C9227DED65365C39D231457B692B19EC105CA9B510602656EDBE87D9F"
+      "size": 951215,
+      "sha256": "79E42871964BD9545C5AF93B1E2AEB15940E590441DD843BEC53DFB15F8BF37E"
     }
   }
 }

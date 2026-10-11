@@ -30,7 +30,7 @@ static void begin(struct boss_hp_sync_context*c,const struct boss_component_boss
     boss_hp_sync_init(c);boss_hp_sync_begin_game_domain(c,p->episode,p->hd,p->dungeon,p->stage_index,p->slot/3u,p->slot);
     assert(c->profile==p);assert(boss_component_boss_load_mode(c,mode));
 }
-static unsigned positives(const struct boss_hp_sync_context*c,unsigned slots[80]){
+static unsigned positives(const struct boss_hp_sync_context*c,unsigned slots[BOSS_COMPONENT_BOSS_MAX_MODE_COMPONENTS]){
     unsigned i,n=0;for(i=0;i<c->component_count;i++)if(c->component_max_hp[i])slots[n++]=i;return n;
 }
 static unsigned external_hits;
@@ -45,7 +45,7 @@ static void kill_order(const struct boss_component_boss_profile*p,unsigned mode,
     unsigned char req[32],frame[60];unsigned i,j,k;
     begin(&c,p,mode);
     for(i=0;i<n;i++){
-        unsigned slot=slots[i],before[80],hp=c.hp,damage=c.component_hp[slot];
+        unsigned slot=slots[i],before[BOSS_COMPONENT_BOSS_MAX_MODE_COMPONENTS],hp=c.hp,damage=c.component_hp[slot];
         const struct boss_component_boss_component*x=&boss_component_boss_components[c.component_def_index[slot]];
         memcpy(before,c.component_hp,sizeof(before));request(req,mode,x->child,x->ordinal);
         assert(hit_component(&c,mode,x->child,x->ordinal,100000000u,&hit)==BOSS_HP_SYNC_OK);
@@ -79,7 +79,7 @@ static void kill_order(const struct boss_component_boss_profile*p,unsigned mode,
     }
 }
 static void audit_modes(void){
-    unsigned pi,mode,shift,n,slots[80],order[80],i,runs=0,modes=0,split=0;
+    unsigned pi,mode,shift,n,slots[BOSS_COMPONENT_BOSS_MAX_MODE_COMPONENTS],order[BOSS_COMPONENT_BOSS_MAX_MODE_COMPONENTS],i,runs=0,modes=0,split=0;
     struct boss_hp_sync_context c;
     for(pi=0;pi<BOSS_COMPONENT_BOSS_PROFILE_COUNT;pi++){
         const struct boss_component_boss_profile*p=&boss_component_boss_profiles[pi];
@@ -99,7 +99,7 @@ static unsigned permutations(const struct boss_component_boss_profile*p,unsigned
     return runs;
 }
 static void stage4_orders(void){
-    unsigned slot,n,slots[80],runs=0;struct boss_hp_sync_context c;
+    unsigned slot,n,slots[BOSS_COMPONENT_BOSS_MAX_MODE_COMPONENTS],runs=0;struct boss_hp_sync_context c;
     for(slot=0;slot<9;slot++){
         const struct boss_component_boss_profile*p=boss_component_boss_find_profile(0,3,0,0,slot);
         begin(&c,p,0);n=positives(&c,slots);assert(n==3);runs+=permutations(p,slots,n,0);
@@ -137,7 +137,7 @@ static void runtime_ledger(void){
     assert(repeat.component_repeated_terminal && !repeat.applied_damage && c.hp==7920u);
     boss_hp_sync_select_stage(&c,0);boss_hp_sync_begin_game_domain(&c,0,0,2,0,2,6);
     assert(c.battle_epoch==epoch+1u);
-    for(i=0;i<80;i++)assert(!c.runtime_selector_bound[i] && !c.runtime_selector[i]);
+    for(i=0;i<BOSS_COMPONENT_BOSS_MAX_MODE_COMPONENTS;i++)assert(!c.runtime_selector_bound[i] && !c.runtime_selector[i]);
     for(i=0;i<n;i++){
         assert(boss_hp_sync_apply_runtime_component(&c,200+i,100,1000000,&hit)==BOSS_HP_SYNC_OK);
         assert(hit.component_slot==i && hit.component_first_terminal);

@@ -20,11 +20,11 @@ int main(void){
         stage_damage_damage_begin(&ctx,0,100,dg,stage,diff,1,1);
         memset(req,0,sizeof(req));req[8]=kinds[k];req[10]=1889u&255;req[11]=1889u>>8;req[12]=48;
         raw=stage_damage_player_d00f_damage(&ctx,req,kinds[k],&lookup);
-        CHECK(raw>0);
+        CHECK(raw>0||lookup.status==STAGE_DAMAGE_DAMAGE_EXACT_ZERO);
         if(dg==7&&stage==1&&k==0){CHECK(raw==20000u);CHECK(lookup.status==STAGE_DAMAGE_DAMAGE_RESOURCE_EXACT);}
         for(d=0;d<5;d++){
             g_profile_defense_flat=defenses[d];hp=65535;dead=0;before=sends;
-            expected=raw>defenses[d]?raw-defenses[d]:1u;if(expected>hp)expected=hp;
+            expected=raw?(raw>defenses[d]?raw-defenses[d]:1u):0u;if(expected>hp)expected=hp;
             CHECK(player_collision_apply_player_d00f_injury(100,62050,req,kinds[k],123400,1,1,1,1,1,&hp,&dead,65535,789,&ctx,&skill,0u));
             CHECK(sends==before+1&&size==36&&word(6)==0xD010);
             CHECK(hp==65535-expected&&word(16)==hp&&word(18)==expected);

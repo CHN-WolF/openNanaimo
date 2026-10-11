@@ -105,7 +105,7 @@ int main(void){
         self.assertTrue("if(request_kind==40u){" in source, "release kind40 dispatch missing")
         self.assertTrue("classified=boss-player-contact -> player-injury/no-echo" in source, "kind40 injury route missing")
         self.assertTrue("player_collision_apply_player_d00f_injury" in source, "kind40 player injury call missing")
-        self.assertTrue("if(kind==40u)" in STAGE_DAMAGE.read_text(encoding="utf-8"), "kind40 stage policy missing")
+        self.assertTrue("if(kind==40u||kind==70u)" in STAGE_DAMAGE.read_text(encoding="utf-8"), "kind40 stage policy missing")
 
     def test_multicomponent_catalog_keeps_parts_independent_and_damaging(self):
         source = MANAGED.read_bytes().decode("latin1")

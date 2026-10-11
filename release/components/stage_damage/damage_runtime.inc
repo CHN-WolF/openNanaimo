@@ -105,15 +105,18 @@ static unsigned stage_damage_damage_projectile_lookup(const struct stage_damage_
 static unsigned stage_damage_boss_collision_component_index(const unsigned char *req){
     return (unsigned)req[0x12]|((unsigned)req[0x13]<<8);
 }
-static unsigned stage_damage_boss_contact_lookup(const struct stage_damage_damage_context *ctx,const unsigned char *req){
+static const struct boss_contact_row *stage_damage_boss_contact_find(const struct stage_damage_damage_context *ctx,const unsigned char *req){
     unsigned key[8],lo=0u,hi=BOSS_CONTACT_ROW_COUNT,i;if(!ctx||!ctx->active)return 0u;
     key[0]=ctx->resource_hd;key[1]=ctx->resource_episode;key[2]=ctx->resource_dungeon;
     key[3]=ctx->resource_stage;key[4]=ctx->difficulty*3u+ctx->resource_stage;
     key[5]=(unsigned)req[0x10];key[6]=(unsigned)req[0x11];key[7]=stage_damage_boss_collision_component_index(req);
     while(lo<hi){unsigned mid=lo+(hi-lo)/2u;const unsigned *row=&boss_contact_rows[mid].hd;int cmp=0;
         for(i=0;i<8u;i++){if(row[i]<key[i]){cmp=-1;break;}if(row[i]>key[i]){cmp=1;break;}}
-        if(cmp<0)lo=mid+1u;else if(cmp>0)hi=mid;else return boss_contact_rows[mid].attack;
+        if(cmp<0)lo=mid+1u;else if(cmp>0)hi=mid;else return &boss_contact_rows[mid];
     }return 0u;
+}
+static unsigned stage_damage_boss_contact_lookup(const struct stage_damage_damage_context *ctx,const unsigned char *req){
+    const struct boss_contact_row *row=stage_damage_boss_contact_find(ctx,req);return row?row->attack:0u;
 }
 static const struct monster_contact_row *stage_damage_monster_contact_find(const struct stage_damage_damage_context *ctx,unsigned selector){
     unsigned key[5],lo=0u,hi=MONSTER_CONTACT_ROW_COUNT,i;if(!ctx||!ctx->active)return 0u;
@@ -222,8 +225,8 @@ static unsigned stage_damage_player_d00f_damage(const struct stage_damage_damage
     unsigned owner=(unsigned)req[0x0A]|((unsigned)req[0x0B]<<8),source=(unsigned)req[0x0C]|((unsigned)req[0x0D]<<8);
     if(kind==10u)return stage_damage_damage_projectile_lookup(ctx,owner,source,out);
     stage_damage_damage_lookup_clear(out);stage_damage_damage_lookup_context(ctx,out);
-    if(kind==40u)source=stage_damage_boss_collision_component_index(req);
-    if(out){out->kind=kind;out->owner=owner;out->source=source;out->resource=kind==20u?"<ordinary-collision-policy>":kind==40u?"<boss-collision-component>":"<non-damaging-scene-event>";}
+    if(kind==40u||kind==70u)source=stage_damage_boss_collision_component_index(req);
+    if(out){out->kind=kind;out->owner=owner;out->source=source;out->resource=kind==20u?"<ordinary-collision-policy>":(kind==40u||kind==70u)?"<boss-collision-component>":"<non-damaging-scene-event>";}
     if(kind==60u){unsigned damage=stage_damage_scene_associated_lookup(ctx,owner,out);
         if(!damage)damage=stage_damage_scene_hazard_lookup(ctx,owner,out);
         if(!damage)damage=stage_damage_preloaded_scene_lookup(ctx,owner,out);
@@ -237,10 +240,12 @@ static unsigned stage_damage_player_d00f_damage(const struct stage_damage_damage
             out->base=(contact||preloaded)?damage:0u;out->policy_damage=damage;out->resource=preloaded?preloaded_target_names[preloaded->resource]:contact?"<ordinary-collision-resource>":"<ordinary-collision-policy>";}
         return damage;
     }
-    if(kind==40u){unsigned damage=stage_damage_boss_contact_lookup(ctx,req);
-        if(out){out->status=damage?STAGE_DAMAGE_DAMAGE_BOSS_COLLISION_RESOURCE:STAGE_DAMAGE_DAMAGE_BOSS_COLLISION_FIXED;
-            out->base=damage;out->policy_damage=damage?damage:STAGE_DAMAGE_BOSS_COLLISION_PLAYER_DAMAGE;}
-        return damage?damage:STAGE_DAMAGE_BOSS_COLLISION_PLAYER_DAMAGE;
+    if(kind==40u||kind==70u){const struct boss_contact_row *contact=stage_damage_boss_contact_find(ctx,req);
+        unsigned damage=contact?contact->attack:kind==40u?STAGE_DAMAGE_BOSS_COLLISION_PLAYER_DAMAGE:0u;
+        if(out){out->status=contact?(damage?STAGE_DAMAGE_DAMAGE_BOSS_COLLISION_RESOURCE:STAGE_DAMAGE_DAMAGE_EXACT_ZERO):
+                kind==40u?STAGE_DAMAGE_DAMAGE_BOSS_COLLISION_FIXED:STAGE_DAMAGE_DAMAGE_OWNER_MISSING;
+            out->base=contact?contact->attack:0u;out->policy_damage=damage;}
+        return damage;
     }
     /* Unmapped kind60 and every kind80 remain metadata-only compatibility events. */
     if(out)out->status=STAGE_DAMAGE_DAMAGE_UNSUPPORTED_KIND;return 0u;

@@ -23,7 +23,7 @@ class FixedSceneInjuryPolicyTests(unittest.TestCase):
             source,
         )
         self.assertIn(
-            "if(scene_injury_direct_projectile_d00f_kind(request_kind))",
+            "if(scene_injury_direct_projectile_d00f_kind(request_kind)||request_kind==70u)",
             source,
         )
         self.assertIn(

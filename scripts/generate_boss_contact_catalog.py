@@ -1,7 +1,8 @@
-"""Build the native Boss-contact lookup from the shared combat catalog."""
+"""Build complete Boss and ordinary contact lookups from resource catalogs."""
 from pathlib import Path
 import struct
-import collections
+import json
+import generate_boss_contact_resources as complete
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -17,15 +18,9 @@ def generate():
     def key():return read("<5BH")
     def template():return read("<iB4i")
     for _ in range(count()):key();template()
-    bosses={}
-    for _ in range(count()):
-        k=key();bosses[k]=read("<iiB")
-    values=collections.defaultdict(set)
-    for _ in range(count()):
-        k=key();component=read("<BBi");row=template()
-        if 0 < row[3] <= 65535:
-            values[k[:5]+component].add(row[3])
-    rows=[(*k,next(iter(v))) for k,v in sorted(values.items()) if len(v)==1]
+    for _ in range(count()):key();read("<iiB")
+    for _ in range(count()):key();read("<BBi");template()
+    rows=complete.rows(json.loads((ROOT/complete.REGISTRY).read_text("utf8")))
     # Collision selectors address the selected SMMO runtime vector.
     # Resource UIDs belong to a different namespace.
     contacts = []

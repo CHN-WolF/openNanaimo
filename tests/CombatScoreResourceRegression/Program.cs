@@ -93,3 +93,71 @@ CheckRating(5_000, 10_000, 2, false, true, 5);
 CheckRating(4_999, 10_000, 2, false, true, 4);
 CheckRating(10_000, 10_000, 3, true, true, 4);
 Console.WriteLine($"DUNGEON_RATING_MANAGED_PASS checks={ratingChecks} party=1/2/3 S=95%-or-50%+no-actual-HP-loss failed=F");
+
+using (var contacts = System.Text.Json.JsonDocument.Parse(typeof(BossContactCatalog).Assembly
+    .GetManifestResourceStream("OpenNanaimo.Adapter.BossContacts.json")!))
+{
+    var root = contacts.RootElement;
+    var resources = root.GetProperty("resources").EnumerateArray().ToDictionary(
+        r => r.GetProperty("resource").GetString()!, r => r.GetProperty("rows"));
+    var checkedContacts = 0;
+    foreach (var scope in root.GetProperty("scopes").EnumerateArray())
+    {
+        var key = scope.GetProperty("key").EnumerateArray().Select(v => v.GetByte()).ToArray();
+        foreach (var part in scope.GetProperty("parts").EnumerateArray())
+        {
+            var rows = resources[part[2].GetString()!];
+            for (var ordinal = 0; ordinal < rows.GetArrayLength(); ordinal++)
+            {
+                var descriptor = (uint)(part[0].GetByte() | part[1].GetByte() << 8 | ordinal << 16);
+                if (BossContactCatalog.Resolve(key[0], key[1], key[2], key[3], key[4], descriptor) != rows[ordinal][2].GetUInt16())
+                    throw new Exception("Managed Boss contact identity differs.");
+                checkedContacts++;
+            }
+        }
+    }
+    if (checkedContacts != 28209 || BossContactCatalog.Count != checkedContacts
+        || BossContactCatalog.Resolve(0,100,6,1,1,2u<<16) != 2003
+        || BossContactCatalog.Resolve(0,100,6,1,1,1u<<16) != 0
+        || BossContactCatalog.Resolve(0,100,6,1,1,0xFFFF0000) != 0)
+        throw new Exception("Managed Boss contact coverage differs.");
+    Console.WriteLine($"BOSS_CONTACT_MANAGED_PASS rows={checkedContacts}");
+}
+
+{
+    const System.Reflection.BindingFlags privateStatic = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static;
+    var service = typeof(NetworkAdapterService);
+    object Create(string name, params object?[] args) => Activator.CreateInstance(
+        service.GetNestedType(name, System.Reflection.BindingFlags.NonPublic)!, args)!;
+    void Set(object value, string name, object? member) => value.GetType().GetProperty(name)!.SetValue(value, member);
+    object Get(object value, string name) => value.GetType().GetProperty(name)!.GetValue(value)!;
+    var room = Create("DungeonRoom");
+    var battle = Create("DungeonBattleInstance", (byte)0, (byte)100, (byte)6, (byte)1, (byte)0);
+    Set(room, "Battle", battle); Set(room, "SelectedMapIndex", (ushort)1);
+    if (!BossContactCatalog.TryResolve(0,100,6,1,1,2u<<16, out var uid, out var attack) || attack != 2003
+        || !DungeonCombatCatalog.TryGetBoss(0,100,6,1,1,uid, out var template))
+        throw new Exception("Boss contact owner identity differs.");
+    var boss = Create("DungeonBossState", template);
+    var bosses = (System.Collections.IDictionary)Get(battle, "Bosses"); bosses.Add(uid,boss);
+    var character = new OpenNanaimo.Adapter.Models.CharacterRecord { Id = 11, Level = 1 };
+    var resolver = service.GetMethod("ResolveDungeonBossPartCollisionDamage",privateStatic)!;
+    ushort Resolve(uint descriptor) => (ushort)resolver.Invoke(null,[room,descriptor,character])!;
+    var energy = (int)Get(boss,"CurrentEnergy");
+    if (Resolve(2u<<16)!=2003 || Resolve(1u<<16)!=0 || Resolve(0xFFFF0000)!=0
+        || Resolve((2u<<16)|1)!=0 || (int)Get(boss,"CurrentEnergy")!=energy)
+        throw new Exception("Boss contact must preserve component life and exact active mode.");
+    character.DefenseFlat=2000;if(Resolve(2u<<16)!=3)throw new Exception("Boss contact defense differs.");
+    character.DefenseFlat=3000;if(Resolve(2u<<16)!=1)throw new Exception("Boss contact positive floor differs.");
+    var skills=(System.Collections.IDictionary)Get(battle,"ActiveSkills");
+    var active=Create("DungeonActiveSkillState");
+    Set(active,"SkillCode",52000008u);Set(active,"ActiveUntilTick",Environment.TickCount64+100000);
+    skills.Add(character.Id,active);if(Resolve(2u<<16)!=0)throw new Exception("Meat protection differs.");
+    skills.Clear();character.DefenseFlat=0;
+    var components=(System.Collections.IDictionary)Get(boss,"Components");
+    foreach(System.Collections.DictionaryEntry entry in components)
+        if(((DungeonBossComponentKey)entry.Key).ParentIndex==0)Set(entry.Value!,"CurrentHp",0);
+    if(Resolve(2u<<16)!=0)throw new Exception("Retired mode must retain zero damage.");
+    foreach(System.Collections.DictionaryEntry entry in components)Set(entry.Value!,"CurrentHp",0);
+    if(Resolve(2u<<16)!=0)throw new Exception("Terminal Boss must retain zero damage.");
+    Console.WriteLine("BOSS_CONTACT_MANAGED_LIFECYCLE_PASS identity defense protection mode terminal attachment");
+}

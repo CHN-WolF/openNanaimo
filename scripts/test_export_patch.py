@@ -21,6 +21,8 @@ class ExportPatchTests(unittest.TestCase):
     def test_l7_source_closure_inputs_are_exactly_scoped(self):
         names = ['scripts/audit_l7_combat_resources.py',
                  'scripts/generate_boss_contact_catalog.py',
+                 'scripts/generate_boss_contact_resources.py',
+                 'release/components/stage_damage/boss_contact_registry.json',
                  'scripts/generate_l7_combat.py',
                  'scripts/test_l7_combat_resources.py']
         rows = [dict(path=name, size=0, sha256='0' * 64) for name in names]

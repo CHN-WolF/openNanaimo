@@ -84,6 +84,42 @@ class BossContactInstructionTests(unittest.TestCase):
                     with self.subTest(child=child, ordinal=ordinal, damage=damage):
                         self.assertEqual(self.route(40, child, ordinal, damage), ([(717, -damage)], True))
 
+    def test_kind70_absolute_player_hp_setter(self):
+        raw = CLIENT.read_bytes()
+        start, end = 0x6EEA17, 0x6EEA2D
+        machine = uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_32)
+        machine.mem_map(0x400000, 0x700000)
+        machine.mem_write(start, raw[_va_offset(raw,start,end-start):_va_offset(raw,start,end-start)+end-start])
+        machine.mem_map(0x2000000, 0x200000)
+        frame, actor, ebp, stack = 0x2000000, 0x2100000, 0x2018000, 0x2010000
+        setter = 0x6E3000
+        machine.mem_write(setter,raw[_va_offset(raw,setter,80):_va_offset(raw,setter,80)+80])
+        machine.mem_write(ebp-0x120,struct.pack('<I',frame))
+        machine.mem_write(ebp-0x11C,struct.pack('<I',actor))
+        machine.mem_write(actor+0x7BB8,struct.pack('<I',65535*2))
+        calls=[]
+        def step(m,address,size,ctx):
+            if address==0x6EEA28:
+                esp=m.reg_read(UC_X86_REG_ESP)
+                value=struct.unpack('<I',m.mem_read(esp,4))[0]
+                calls.append(value)
+                m.mem_write(esp-4,struct.pack('<I',end))
+                m.reg_write(UC_X86_REG_ESP,esp-4)
+                m.reg_write(UC_X86_REG_EIP,setter)
+        machine.hook_add(uc.UC_HOOK_CODE,step)
+        for hp in (0,1,2997,65535):
+            value=bytearray(36);value[29]=70
+            struct.pack_into('<H',value,16,hp)
+            machine.mem_write(frame,bytes(value))
+            machine.reg_write(UC_X86_REG_EBP,ebp)
+            machine.reg_write(UC_X86_REG_ESP,stack)
+            machine.emu_start(start,end,count=500)
+            self.assertEqual(calls[-1],hp)
+            self.assertEqual(struct.unpack('<I',machine.mem_read(actor+0x7BC0,4))[0]>>1,hp)
+
+    def test_kind70_uses_player_injury_without_target_damage_numbers(self):
+        self.assertEqual(self.route(70, 0, 2, 0), ([], False))
+
     def test_old_ordinary_branch_and_invalid_boss_address_do_not_draw(self):
         self.assertEqual(self.route(20), ([], False))
         self.assertEqual(self.route(40, 4, 0), ([], False))
