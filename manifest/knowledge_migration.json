@@ -328,7 +328,7 @@
       "target": "knowledge/业务/住宅/访问恢复.md",
       "title": "返回城镇、死亡返城与非战斗恢复",
       "original_sha256": "1ad647017b20c4724a43abd10e06889f955d8760e9a4adebea6db0e87ab3d596",
-      "migrated_sha256": "63d7b1a4271f8e87a59965ac9d59294fcd42cebaf9b5c8e484c779cdad2213ab"
+      "migrated_sha256": "dbe1fc6670aa137e9bae6f58f1d7c041977db8357e2d30a1397b1424b3bf994a"
     },
     {
       "id": "03-039-2",
@@ -350,7 +350,7 @@
       "target": "knowledge/业务/住宅/访问恢复.md",
       "title": "准备房库存与房屋恢复同步",
       "original_sha256": "2528553b1f067d2228884cb94a8d44dff4b542b13c6cb58d5f648a9eab81f19a",
-      "migrated_sha256": "5355f6e51c5d7755e4a86b97c1ec17fc880592499ab0c795a2ee775cd21ab981"
+      "migrated_sha256": "542254b2146e23147bd0cbda1e6df82195a89b718df59373552b79269800e47d"
     },
     {
       "id": "08-052-2",
@@ -361,7 +361,7 @@
       "target": "knowledge/业务/住宅/访问恢复.md",
       "title": "公寓和室内布局",
       "original_sha256": "8b87229b9a488e4f3fe184618434b10d41ffe92696e4a4859024a297174c7dc6",
-      "migrated_sha256": "5370047d74fbac53dac934b0c0cadd878ef55c01ef4f0c24a034b48cde412f7c"
+      "migrated_sha256": "a7b9bfba81c55919f412ea99d331b5e566dd4a573e4cff80f3f1889a22edd5a3"
     },
     {
       "id": "08-052-4",
@@ -438,7 +438,7 @@
       "target": "knowledge/业务/卡片/兑换.md",
       "title": "活动卡独立兑换与显式配置",
       "original_sha256": "7e6c2f691c9ebc8a8976bafbd06dc1560bce2f076fde79a2c89ada4b6e8e542d",
-      "migrated_sha256": "bb8b82555a401264c389a22b2ff930fea84c4996e5fb1845ce5d845e442481c1"
+      "migrated_sha256": "517ac2c314cde833d4e917e1b213ef63592297d758de327445fceb0910ffa56e"
     },
     {
       "id": "08-003",
@@ -515,7 +515,7 @@
       "target": "knowledge/业务/卡片/卡册.md",
       "title": "卡片合成与钥匙 / 战斗卡片入库与独立扩展区",
       "original_sha256": "410a3047cba27a9290a90df337fa1d2347adbb748226e4e8fe7e2871d3b0964b",
-      "migrated_sha256": "ef954c98435800ebf1e097b76368e163d6d051fb54cd8d6b0c2fc7ac390233e4"
+      "migrated_sha256": "e3fc3a24697225eeea7cec941d0918c2917d89be7e1d89843241d1c23c21fc3f"
     },
     {
       "id": "03-040-3",
@@ -2506,7 +2506,7 @@
       "target": "knowledge/业务/地宫/计分与结算.md",
       "title": "结果/排名向量",
       "original_sha256": "2ef8194da313e0fa8cea709731bc6e2841d66145a5133ae07796dfad4e0d2520",
-      "migrated_sha256": "c0860b5170ca27fe1aba01e06a7f9b903620818fa095651f2eaf046b73998a27"
+      "migrated_sha256": "56339a362397f2e20415fa191842cb03ee281d12c59d673f8e76481e29d37d6d"
     },
     {
       "id": "07-009",
@@ -2605,7 +2605,7 @@
       "target": "knowledge/业务/地宫/计分与结算.md",
       "title": "房间角色、加载、地图和继续条件门控 / 续关旧战斗控制器清理泄漏",
       "original_sha256": "0876ce1033ae0c360e1d3a998bf7300f047ac301ed4d5dddbe198495a7abc744",
-      "migrated_sha256": "3ca1f6171737a099a2e4d5a188ebd3297ecff1e0a7e736dc027ddd6d949c52ef"
+      "migrated_sha256": "b741fd931555d5a245b4d340199f5f75e09c568a0a75ca3668e8272596eb2a8d"
     },
     {
       "id": "08-026-21",
@@ -2737,7 +2737,7 @@
       "target": "knowledge/业务/地宫/计分与结算.md",
       "title": "对人伤害显示与结算附加分",
       "original_sha256": "c4df98b7d965d47166d1cd7a11f2d63bd116ec2b1b993041287d2aba0d13261c",
-      "migrated_sha256": "0f0d8df6574f4e49cd4663555fe36efa540c2be1f4f796c984db68435248c0d8"
+      "migrated_sha256": "67960216b919f7ff20fd70bcd7fb8365a102f5ae3eea575328409f264e0fc5a4"
     },
     {
       "id": "09-020-8",
@@ -3463,7 +3463,7 @@
       "target": "knowledge/业务/宠物/发射器.md",
       "title": "可选子弹 DIY 与独立篮球",
       "original_sha256": "dbff962fa8ba9d34edb78907267a193bb2d17d4b7b627d7c23ff068364562561",
-      "migrated_sha256": "dbff962fa8ba9d34edb78907267a193bb2d17d4b7b627d7c23ff068364562561"
+      "migrated_sha256": "c3c35c87f2deb0e5373603bf0f212014d1c8602412ab0c757268f097ef48ca3c"
     },
     {
       "id": "08-023-8",
@@ -3485,7 +3485,7 @@
       "target": "knowledge/业务/宠物/发射器.md",
       "title": "可选 DIY 发射与隔离反向补丁",
       "original_sha256": "3b1d1f207f6bd2540cc7c8124c4aa22078b81686271f6756a6e7dbd358b09472",
-      "migrated_sha256": "2fa7d8f7b40326730237bc9f187173041e715996f497b3546d189511ad1f195b"
+      "migrated_sha256": "ba1b6bdc8920b5527a9a2076b41e2244a368488fda1009fb09aa2885f67bf978"
     },
     {
       "id": "09-026-6",
@@ -3628,7 +3628,7 @@
       "target": "knowledge/业务/宠物/成长.md",
       "title": "宠物成长与地宫结算",
       "original_sha256": "c665b6f0ace2cff2eddd6767ec043ce6ec867eb43219b4de1b24e72ec6b5ec6a",
-      "migrated_sha256": "f971c350fe40e0b593fb5725c7122f9439ff25c79514bf17c3a2ef6a060c5171"
+      "migrated_sha256": "a079d5834aa2ab653348751b69dc19f9b09920a3f5b342c1e4b526e403074c21"
     },
     {
       "id": "04-019",
@@ -3892,7 +3892,7 @@
       "target": "knowledge/业务/宠物/所有权.md",
       "title": "追加宠物资源合同",
       "original_sha256": "bf028527d9d992d6259c564502e8961af75996689933a18968bdff67cb30e090",
-      "migrated_sha256": "a68db6a4b5f09d2e5017df58022026908a1ce3f2809ec307f0c826881f96410d"
+      "migrated_sha256": "d78f9ad266e6d3fcd44ac007936096b6e42a1961d032e77a2ccb54270f2aed8d"
     },
     {
       "id": "03-036",
@@ -4772,7 +4772,7 @@
       "target": "knowledge/业务/社交/情侣.md",
       "title": "登录、村庄和教程 / 情侣地宫身份及特殊遭遇状态",
       "original_sha256": "c682ebcad903ed1caffab7e22d799f9792945108515800208b826ecb75214fb5",
-      "migrated_sha256": "222b82773ab08a9a9f3d1d6a37e7e97447304709ff0973781dc2ff2800c02296"
+      "migrated_sha256": "033a11ff52dd3dc5cae8bedb78d95eca891893b08924b80ed74664864982b5be"
     },
     {
       "id": "08-014",
@@ -5102,7 +5102,7 @@
       "target": "knowledge/业务/竞技/结算.md",
       "title": "天空竞技场协议合同",
       "original_sha256": "a8822a7edecaeb3ee3e86a3f8e78de6f1e36435f7a7190bd36f708fb6f1a7d5a",
-      "migrated_sha256": "6215f45208dc7d75c307ab60c2532b2e5666e193c4795b21b314d40cba001a13"
+      "migrated_sha256": "f6e687e3c78a71cf3acdbc7dfb5b3be54251bdedb80c82e51e9f0cee231b3368"
     },
     {
       "id": "08-084-6",
@@ -5344,7 +5344,7 @@
       "target": "knowledge/业务/经济/玩家交易.md",
       "title": "玩家直接交易：C4AF..C4C1",
       "original_sha256": "dcdad8a522dc8f8c7a4a91aa479445d8ce961d3d753057dfc6248156ca50b50c",
-      "migrated_sha256": "22d7092ec4b4cd36645fcb222677b1120609a1d513e27f8332b1cbca830894b0"
+      "migrated_sha256": "131a49114833778d9f60b2d8dd15940d766ffc50c13ca1617cd3a0e51de3a2e5"
     },
     {
       "id": "05-025",
@@ -5872,7 +5872,7 @@
       "target": "knowledge/业务/角色/称号.md",
       "title": "登录、村庄和教程 / 城镇称号与角色等级",
       "original_sha256": "ddbbe795331cf45f866774e0077e8cc25352754cf90aa64d77ec4b80f9be4bdd",
-      "migrated_sha256": "aa2d58d433791d44ac6ccc05963da736e612099531b0b69c730f3e02d2f75342"
+      "migrated_sha256": "6e18d4b2421ebb7ebf632e4f7a5e24d4a97b624d8f8def8fe6d6643b0cc5a7dc"
     },
     {
       "id": "08-049-7",
@@ -5894,7 +5894,7 @@
       "target": "knowledge/业务/角色/等级经验.md",
       "title": "200级经验状态与内部版本边界",
       "original_sha256": "f41a1927d860a46c5d06f90576b84b1b8439c1795ea2c401e44ef00359c40f94",
-      "migrated_sha256": "2e348edc7652b3b669659f9bdc195ae97553596eb0c97fd5e2569773962ac0f7"
+      "migrated_sha256": "9d4a3b93f93829236d1d0699046df7bcc02fecbd4ed279ba6cba7f03a909bc51"
     },
     {
       "id": "03-002-2",
@@ -5960,7 +5960,7 @@
       "target": "knowledge/业务/角色/等级经验.md",
       "title": "EXP 累计与升级",
       "original_sha256": "23b477da86648898253c992474b5fab51592eb9777395aacb9d959577ba3fe51",
-      "migrated_sha256": "4d6d8721f3105788afdb6d44b2108706c13c6020c4fa46614373560015169fa4"
+      "migrated_sha256": "0bc9622a5eec43559c38f3bba75103dfdf60c8a22739748a7836fcb86e1fa232"
     },
     {
       "id": "07-012",
@@ -5982,7 +5982,7 @@
       "target": "knowledge/业务/角色/等级经验.md",
       "title": "玩家经验载体和HUD静态调用链闭合",
       "original_sha256": "93ef67187f55229c6b6d6360bd44c5a700fbb120cf3d8af0e2918a83a5710476",
-      "migrated_sha256": "312e0c5211ee3f529ef5dbba61fbe75f967c10e20d498b9f3cca75da344f2240"
+      "migrated_sha256": "d634d12297fe8e87e4a844c3f848da7d25f3fa2614b22fd2a6523c3664a5d79e"
     },
     {
       "id": "08-017-1",
@@ -6037,7 +6037,7 @@
       "target": "knowledge/业务/角色/等级经验.md",
       "title": "玩家经验载体和HUD静态调用链闭合 / 玩家等级上限、三位显示与入口资格",
       "original_sha256": "70b586e1aeef8e8f681c30cbe68541425382e02ba49c915b8d908a18498829a4",
-      "migrated_sha256": "d77be1a2deee01829163f60da7d6bcbcd059670f9be59b625f2645a8df0c09c9"
+      "migrated_sha256": "da4707b69120fd83dd44a28a11d4b684775851d848277e530e31fbd8cb043a8b"
     },
     {
       "id": "08-079-1",
@@ -6092,7 +6092,7 @@
       "target": "knowledge/业务/角色/等级经验.md",
       "title": "200级成套发布与数据版本",
       "original_sha256": "4a7bcc091d15f89f14f90d62b6942d46eae1d19288be8c2f31add5e846de1be6",
-      "migrated_sha256": "4a7bcc091d15f89f14f90d62b6942d46eae1d19288be8c2f31add5e846de1be6"
+      "migrated_sha256": "b469447069336c8d47c82421651daf7fe2750e30d0a558bc9b527ce3062cb6a5"
     },
     {
       "id": "09-010-3",
@@ -6653,7 +6653,7 @@
       "target": "knowledge/工程/历史验证/既有记录.md",
       "title": "验证摘要与历史覆盖 / 历史未归属记录：构造验证覆盖",
       "original_sha256": "d41df0c9c8edf6ccc9790fb151a09145f2cc1d08613bf62e2d57fb1ae34b5f77",
-      "migrated_sha256": "8393e16fefb7c6d844ed0ba1f26016bd52e605afeb6a3bffb3706154b5bfd30e"
+      "migrated_sha256": "e142306a9d072c8024adb09a5dc896903f56d83c96374658726d585a43db6472"
     },
     {
       "id": "09-012-3",
@@ -7357,7 +7357,7 @@
       "target": "knowledge/工程/客户端兼容.md",
       "title": "连续挑战客户端兼容与安装",
       "original_sha256": "e285480022c8e6a06f314fc1d569b7295d3d5ef159dbc193fbf316c40fe9208a",
-      "migrated_sha256": "df02dc0ddaa29805f3f67fe0f253d37d46fa5292cc81913a4347028ef99d9431"
+      "migrated_sha256": "b5218c9f6ad7a89572b4b77a028e8c231b602113ac9a53ac883701528a4513d7"
     },
     {
       "id": "09-020-14",
@@ -7632,7 +7632,7 @@
       "target": "knowledge/工程/资源安装.md",
       "title": "身份和资源边界",
       "original_sha256": "49f0231e4f71a7841640ebb458966b1105b97a9a61bebb0e988bc1b41eae9036",
-      "migrated_sha256": "8dfc9bb80d65f4c10796aa3550b3edac8c0a3205427b454633d506d68915803c"
+      "migrated_sha256": "137061881e74237127f6143caacf0db139febddd934347e5ba44b5292f289646"
     },
     {
       "id": "06-009",
@@ -7698,7 +7698,7 @@
       "target": "knowledge/工程/资源安装.md",
       "title": "L7/L8资源与代码合同",
       "original_sha256": "d0ba414f2dbfa82d6bc1154c7c394a2fb3ccf96c39e0e5e5a3bdd85dbbc49d13",
-      "migrated_sha256": "ad4ad76baca09f292abdc0e6f5fb896235a06a73ae185d7de1a4834b0a1ae3c5"
+      "migrated_sha256": "471710430f2336b8c31bd79285a28e338ac19edcc2d0b9ae76b0404f66e5bdbd"
     },
     {
       "id": "09-015-1",
@@ -7753,7 +7753,7 @@
       "target": "knowledge/工程/资源安装.md",
       "title": "发布产物身份 / 安装与恢复合同",
       "original_sha256": "385c972cede55d2ee991ccc27f4a9c646471fa79c2e587506abb5eefc69521d3",
-      "migrated_sha256": "385c972cede55d2ee991ccc27f4a9c646471fa79c2e587506abb5eefc69521d3"
+      "migrated_sha256": "d23cdcdd1166102babbcb38e9ec92ca804c967151c51243d733e5aeb496921f0"
     },
     {
       "id": "09-026-14",
@@ -9159,6 +9159,13 @@
       "preserved_blocks": 317,
       "preserved_fragments": 733,
       "preserved_queries": 51
+    },
+    {
+      "date": "2026-10-12",
+      "kind": "docs-to-knowledge-fusion",
+      "scope": "Relocate active documentation references; original knowledge baseline and source intervals remain immutable.",
+      "fusion_manifest": "manifest/document_fusion.json",
+      "runtime_acceptance": false
     }
   ]
 }

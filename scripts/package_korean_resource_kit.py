@@ -7,23 +7,82 @@ import json
 import os
 from pathlib import Path
 import tempfile
+from urllib.parse import unquote, urlsplit
 import zipfile
 import port_lumineos_resources as port
+import verify_knowledge as markdown
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ('package_korean_resource_kit.py', 'port_lumineos_resources.py',
          'lumineos_codec.py', 'lumineos_scenes.py', 'dungeon7_visuals.py',
          'prepare_client_compatibility.py', 'apartment_exterior_panel.py',
          'dungeon_experience_compat.py', 'dungeon_result_compat.py', 'entertainment_mode_compat.py',
+         'entertainment_room_compat.py',
          'entertainment_result_compat.py', 'arena_result_compat.py',
          'player_trade_compat.py', 'level200_compat.py',
-         'prepare_hero_dragon.py', 'prepare_korean_pets.py')
+         'prepare_hero_dragon.py', 'prepare_korean_pets.py', 'verify_knowledge.py')
 RECIPES = ('hero_dragon_resources.json', 'korean_pet_resources.json', 'lumineos_resource_port.json')
-GUIDE = 'docs/韩服L7-L8与宠物资源说明.md'
-EXTRA_DOCS = (GUIDE, 'docs/韩服宠物佩戴等级下放方案.md',
-              'docs/完整适配器与客户端兼容说明.md', 'docs/客户端二进制补丁.md',
-              'docs/level200/README.md', 'docs/level200/internal-layout.md')
+GUIDE = 'knowledge/指南/韩服L7-L8与宠物资源说明.md'
+EXTRA_DOCS = (GUIDE, 'knowledge/指南/韩服宠物佩戴等级下放方案.md',
+              'knowledge/指南/完整适配器与客户端兼容说明.md', 'knowledge/指南/客户端二进制补丁.md',
+              'knowledge/指南/level200/README.md', 'knowledge/基础/桥接布局.md',
+              'knowledge/指南/L7-L8资源移植.md')
 SCHEMA = 'openNanaimo.korean-resource-kit.v1'
+DOCUMENT_ASSETS = frozenset({'LICENSE'})
+
+
+def archive_readme(root=None):
+    root = ROOT if root is None else root
+    original = port.safe(root, 'README.md').read_text('utf-8')
+    marker = '## 使用边界\n'
+    if marker not in original:
+        raise ValueError('repository README has no usage-boundary section')
+    scope = original.split(marker, 1)[1].split('\n## ', 1)[0]
+    return ('# 韩服移植资源包\n\n安装步骤见[资源安装指南](' + GUIDE + ')。\n\n' + marker + scope).encode('utf-8')
+
+
+def documentation_plan(root=None, seeds=EXTRA_DOCS):
+    """Collect linked public Markdown only; never traverse arbitrary directories."""
+    root = port.clean_root(ROOT if root is None else root)
+    pending, found = list(seeds), set()
+    while pending:
+        name = pending.pop()
+        if name in found:
+            continue
+        if name in DOCUMENT_ASSETS:
+            port.safe(root, name).read_bytes()
+            found.add(name)
+            continue
+        if name != 'README.md' and (not name.startswith('knowledge/') or name.startswith('knowledge/evidence/') or not name.endswith('.md')):
+            raise ValueError('not a public knowledge document: ' + name)
+        path = port.safe(root, name)
+        content = archive_readme(root).decode('utf-8') if name == 'README.md' else path.read_text('utf-8')
+        text = markdown.without_fences(content)
+        found.add(name)
+        for pattern in (markdown.LINK, markdown.REFERENCE):
+            for match in pattern.finditer(text):
+                url = urlsplit(match[1].strip('<>'))
+                if url.scheme or url.netloc:
+                    continue
+                if not url.path:
+                    if url.fragment and unquote(url.fragment) not in markdown.anchors(text):
+                        raise ValueError('missing documentation anchor: ' + name + '#' + url.fragment)
+                    continue
+                target = unquote(url.path)
+                if '\\' in target or ':' in target or target.startswith('/'):
+                    raise ValueError('unsafe documentation link: ' + target)
+                resolved = Path(os.path.abspath(path.parent / target))
+                if not resolved.is_relative_to(root):
+                    raise ValueError('documentation link escapes root: ' + target)
+                relative = resolved.relative_to(root).as_posix()
+                dependency = port.safe(root, relative)
+                if relative not in DOCUMENT_ASSETS and dependency.suffix.lower() != '.md':
+                    raise ValueError('unsupported local documentation dependency: ' + target)
+                dependency_text = archive_readme(root).decode('utf-8') if relative == 'README.md' else dependency.read_text('utf-8')
+                if url.fragment and unquote(url.fragment) not in markdown.anchors(dependency_text):
+                    raise ValueError('missing documentation anchor: ' + relative + '#' + url.fragment)
+                pending.append(relative)
+    return tuple(sorted(found))
 
 
 def source_plan(root=ROOT):
@@ -129,11 +188,13 @@ def build(source, bundle, output):
         add('scripts/' + name, port.safe(ROOT / 'scripts', name))
     for name in (*RECIPES, 'korean_resource_kit.json'):
         add('manifest/' + name, port.safe(ROOT / 'manifest', name))
-    add('README.md', port.safe(ROOT, GUIDE))
-    add('docs/L7-L8资源移植.md', port.safe(ROOT, 'docs/L7-L8资源移植.md'))
-    for name in EXTRA_DOCS:
+    # Keep the guide at its original depth so its relative links remain valid.
+    for name in documentation_plan():
+        if name == 'README.md':
+            continue
         add(name, port.safe(ROOT, name))
     generated = {'resource-inventory.tsv': inventory(),
+                 'README.md': archive_readme(),
                  'requirements.txt': b'pycryptodome\n'}
     rows = [dict(path=n, **v[1]) for n, v in sorted(entries.items())]
     rows += [dict(path=n, size=len(b), sha256=port.digest(b)) for n, b in sorted(generated.items())]

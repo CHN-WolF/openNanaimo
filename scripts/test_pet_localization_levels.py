@@ -1,6 +1,8 @@
 ﻿"""Published PET policy coherence; no client launch or network acceptance claim."""
 from pathlib import Path
+import gzip
 import json
+import re
 import unittest
 import zipfile
 import prepare_hero_dragon as h
@@ -10,6 +12,16 @@ ROOT=Path(__file__).resolve().parents[1]
 load=lambda name:json.loads((ROOT/name).read_text('utf-8-sig'))
 
 class PetLocalizationPolicyTests(unittest.TestCase):
+    def test_current_guides_point_to_complete_localized_pet_policy(self):
+        guide='knowledge/指南/韩服宠物佩戴等级下放方案.md'
+        owner='knowledge/业务/宠物/所有权.md'
+        self.assertIn('../业务/宠物/所有权.md#df-18-006', (ROOT/guide).read_text('utf-8'))
+        rows=re.findall(r'^\|(\d+)\|([^|]+)\|([^|]+)\|(\d+)\|$', (ROOT/owner).read_text('utf-8'), re.M)
+        published={int(code):(name,int(level)) for code,_,name,level in rows}
+        expected={p['id']:(p['name'],p['level_requirement']) for p in load('gui_launcher/data/pets.json')[868:]}
+        self.assertEqual(len(rows),122)
+        self.assertEqual(published,expected)
+
     def test_all_122_names_and_levels_match_manifests(self):
         pets=load('gui_launcher/data/pets.json'); inventory=load('gui_launcher/data/inventory_pets.json')
         attacks=load('gui_launcher/data/pet_attack_modes.json')
@@ -67,11 +79,29 @@ class PetLocalizationPolicyTests(unittest.TestCase):
                 self.assertTrue(pet['source_name']);self.assertTrue(pet['localization_basis'])
         self.assertEqual(count,15)
 
-    def test_resource_kit_recipes_and_guides_match_checkout(self):
-        with zipfile.ZipFile(ROOT/'resource-packs/nanaimo-korean-resource-kit.zip') as z:
-            for name in ['manifest/korean_pet_resources.json','manifest/hero_dragon_resources.json',
-                         'docs/韩服宠物佩戴等级下放方案.md','docs/韩服L7-L8与宠物资源说明.md']:
+    def test_resource_kit_recipes_and_original_guides_remain_release_baseline(self):
+        archive=ROOT/'resource-packs/nanaimo-korean-resource-kit.zip'
+        expected='794a7ce9a3b4270aee4fbf50210f7bf9f93c385bf73c23ba16d4063dcf8146a8'
+        self.assertEqual(archive.with_suffix('.zip.sha256').read_text('ascii').split()[0],expected)
+        self.assertEqual(h.digest(archive.read_bytes()),expected)
+        with zipfile.ZipFile(archive) as z:
+            for name in ['manifest/korean_pet_resources.json','manifest/hero_dragon_resources.json']:
                 self.assertEqual(z.read(name),(ROOT/name).read_bytes(),name)
+            baseline=json.loads(gzip.decompress((ROOT/'manifest/document_fusion_baseline.json.gz').read_bytes()))
+            mapping=load('manifest/document_fusion.json')['path_mapping']
+            records={row['path']:row for row in json.loads(z.read('kit-manifest.json'))['files']}
+            for guide in ['knowledge/指南/韩服宠物佩戴等级下放方案.md',
+                          'knowledge/指南/韩服L7-L8与宠物资源说明.md']:
+                source=next(name for name,target in mapping.items() if target==guide)
+                historical=z.read(source)
+                self.assertEqual(h.digest(historical),records[source]['sha256'],source)
+                self.assertEqual(len(historical),records[source]['size'],source)
+                # Release docs contain earlier prose/link revisions, but the
+                # complete localized pet mapping must still match our baseline.
+                if 'df-18-006' in (ROOT/guide).read_text('utf-8'):
+                    row_pattern=r'^\|(\d+)\|([^|]+)\|([^|]+)\|(\d+)\|$'
+                    self.assertEqual(re.findall(row_pattern,historical.decode('utf-8-sig'),re.M),
+                                     re.findall(row_pattern,baseline[source],re.M))
 
     def test_original_cn_rows_and_growth_are_preserved(self):
         _,rows,tail=h.read_pet((ROOT/'adapter_runtime/资源/数据/pi._D7').read_bytes(),h.CN_KEY,'gbk')

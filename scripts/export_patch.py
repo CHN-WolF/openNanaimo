@@ -2,7 +2,7 @@
 """Read-only inventory by default; export only exact, hash-reviewed allowlist files.
 
 No game/installer execution, directory discovery, automatic approvals or cleanup.
-See docs/文件清单与导出工具.md for review schema and the unverified game baseline.
+See knowledge/指南/文件清单与导出工具.md for the review schema and game baseline.
 """
 from __future__ import annotations
 
@@ -25,6 +25,7 @@ DEPENDENCIES = {
     "runtime": {"docs"},
     "source": {"docs"},
     "knowledge": {"docs"},
+    "docs": {"knowledge"},  # Compatibility selection includes the unified documentation.
     "testports": {"docs"},
 }
 FORBIDDEN_PARTS = {
@@ -118,14 +119,16 @@ def payload_policy(value: str, layer: str) -> None:
                 or value in DUNGEON7_ARTWORK
                 or value in card_generation_sources
                 or value in {"manifest/source_closure.json", "manifest/lumineos_combat.json", "manifest/l7_combat.json", "manifest/lumineos_resource_port.json", "manifest/korean_pet_resources.json",
-                             "manifest/knowledge_migration.json", "manifest/knowledge_baseline.json.gz"})
+                             "manifest/knowledge_migration.json", "manifest/knowledge_baseline.json.gz",
+                             "manifest/document_fusion.json", "manifest/document_fusion_baseline.json.gz"})
     elif layer == "docs":
-        good = value == "README.md" or (parts[0] == "docs" and p.suffix == ".md")
+        good = value == "README.md"
     elif layer == "knowledge":
         modules = {"角色", "城镇", "库存", "卡片", "宠物", "经济", "社交", "住宅", "地宫", "竞技", "娱乐"}
         good = p.suffix == ".md" and (
             value in {"knowledge/索引.md", "knowledge/业务/索引.md"}
-            or (len(parts) == 3 and parts[:2] in (["knowledge", "基础"], ["knowledge", "工程"]))
+            or (len(parts) == 3 and parts[:2] in (["knowledge", "基础"], ["knowledge", "工程"], ["knowledge", "指南"]))
+            or (len(parts) == 4 and parts[:3] == ["knowledge", "指南", "level200"])
             or (len(parts) == 4 and parts[:2] == ["knowledge", "业务"] and parts[2] in modules)
             or (len(parts) == 4 and parts[:3] == ["knowledge", "工程", "历史验证"]))
     elif layer in {"python", "tcc"}:
@@ -236,8 +239,11 @@ def expanded_layers(requested: set[str]) -> set[str]:
     if not requested or requested - LAYERS:
         raise ExportError("unknown/empty layer selection")
     result = set(requested)
-    for layer in requested:
-        result.update(DEPENDENCIES.get(layer, set()))
+    pending = list(requested)
+    while pending:
+        for dependency in DEPENDENCIES.get(pending.pop(), set()) - result:
+            result.add(dependency)
+            pending.append(dependency)
     return result
 
 
