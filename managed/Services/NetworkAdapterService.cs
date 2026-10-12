@@ -3133,6 +3133,10 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     BinaryPrimitives.WriteUInt16LittleEndian(recoveryPayload, recovered.HpRestored);
                     BinaryPrimitives.WriteUInt16LittleEndian(recoveryPayload.AsSpan(2), recovered.MpRestored);
                 }
+                // Arena inventory completes through C43E; resource changes use
+                // the current ready-room profile consumer.
+                if (HasAuxiliaryInventoryContext(session))
+                    return acknowledgement;
                 var foodCompletion = CombineNativeFrames(acknowledgement, BuildNativeFrame(frame, 0xC43F, recoveryPayload, session));
                 return session.DungeonRoomId != 0 || session.NativeDungeon is not null
                     ? CombineNativeFrames(foodCompletion, foodResourceFrames) : foodCompletion;

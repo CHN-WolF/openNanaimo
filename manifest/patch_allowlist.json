@@ -155,8 +155,8 @@
     {
       "path": "docs/\u6784\u5efa\u4e0e\u9a8c\u8bc1.md",
       "layer": "docs",
-      "size": 31590,
-      "sha256": "4c38a23286ec859908d01bf31439e307928b2cd03dcad6bb8f1502f028307497",
+      "size": 31615,
+      "sha256": "12dd078e0e80506bc4aec72685ae309aebc0f7c3d0cde1144b90113327351771",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -299,8 +299,8 @@
     {
       "path": "knowledge/authority/03-\u89d2\u8272\u8d44\u6599\u4e0e\u80cc\u5305.md",
       "layer": "knowledge",
-      "size": 117571,
-      "sha256": "ae74612974e0bd5c06074eac9fb601a429a978e813f313e82cc094000c8fa4be",
+      "size": 117767,
+      "sha256": "019834ed19328828e6f14af7d84997ac0e047bf324172760971d2d890f10a1ed",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -339,16 +339,16 @@
     {
       "path": "knowledge/authority/08-\u9759\u6001\u5730\u5740\u4e0e\u8c03\u7528\u94fe.md",
       "layer": "knowledge",
-      "size": 265073,
-      "sha256": "b983cf1400b217703748a7017981a7bf15a21b118a5335a1d47426e4b7f5dd6c",
+      "size": 265442,
+      "sha256": "6ec50230350fb63a11a2ef9cf04ef5ee1da4ba92c5ec9e0a7671c01c0b5f74e1",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/authority/09-\u8fd0\u884c\u914d\u7f6e\u4e0e\u9a8c\u8bc1.md",
       "layer": "knowledge",
-      "size": 71967,
-      "sha256": "66dd1e1582d057e327f28726bd3fbf76e78b41847b05514f498a31f6b5249570",
+      "size": 72271,
+      "sha256": "39f7c7947bdcd76491a19b58c8633606542a15a4d421a367bd11ebd58e1a2d1b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2067,8 +2067,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.cs",
       "layer": "source",
-      "size": 1007093,
-      "sha256": "5c4a4b6e9811c1425d82d4269aa37328acda7ad29163556dd2eb4184139ff52b",
+      "size": 1007340,
+      "sha256": "af974a06b4e32eadf863ce982f6605326794d6c6711882da52cbf0b5cab779d2",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2252,7 +2252,7 @@
       "path": "manifest/source_closure.json",
       "layer": "source",
       "size": 68172,
-      "sha256": "17d3957c434ec97fccc681ff9a1c78835b99b7fb1821190f095b5b8b891a1808",
+      "sha256": "855e7df2d84dcc2b2f0c33352f74ba01e93982a950e02d968cc812980067074c",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },

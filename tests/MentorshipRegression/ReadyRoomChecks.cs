@@ -47,8 +47,14 @@ internal static partial class Program
         ReadyPending(host).Clear();
         var used=(await Send(host,0xC46D,use))!;
         Check(BinaryPrimitives.ReadUInt32LittleEndian(used.AsSpan(8))==1,"auxiliary food commits with world transaction ownership");
+        list=(await Send(host,0xC42F,[]))!;
+        handle=BinaryPrimitives.ReadUInt16LittleEndian(list.AsSpan(16));
+        BinaryPrimitives.WriteUInt32LittleEndian(use.AsSpan(4),handle);
+        var eaten=(await Dispatch(f,world,0xC43D,use))!;
+        Check(eaten.Length==20 && BinaryPrimitives.ReadUInt16LittleEndian(eaten.AsSpan(6))==0xC43E,
+            "ready-room food completes through the inventory consumer");
         var saved=(await f.Database.GetCharacterByIdAsync(Character(host).Id))!;
-        Check(saved.Items.Single(item=>item.ItemCode==14000001).Quantity==4 && saved.CurrentHp>100,"food quantity and health commit together");
+        Check(saved.Items.Single(item=>item.ItemCode==14000001).Quantity==3 && saved.CurrentHp>100,"food quantity and health commit together");
         Check(ReferenceEquals(Character(host),Character(world)),"world and auxiliary share the committed character snapshot");
         Check(ReadyMessages(host,0xCF72).Length==2,"food refresh reaches both initialized room viewers");
         Check(ReadyMessages(host,0xCF72).All(row=>BinaryPrimitives.ReadUInt16LittleEndian(((byte[])Get(row,"Payload")!).AsSpan(92))==0),"resource-only refresh preserves pet construction");

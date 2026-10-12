@@ -8,16 +8,16 @@
   ],
   "build_outputs": {
     "adapter/nanaimo_adapter.exe": {
-      "size": 24420352,
-      "sha256": "C264A29B7D300140E52E4EC30363B5956A15279035856BAE1AFA09FD7518E9E7"
+      "size": 23542784,
+      "sha256": "2A174FB24DCD14CDCC710ECDA6DB3DE41DAB384D4115DEED84C29DDD6DFEDA47"
     },
     "adapter/nanaimo_adapter_testports.exe": {
-      "size": 24420352,
-      "sha256": "98B9FFA2C00FDA9DC6A11E48D9CE99C3F06662B687DF98A317208FF4B51231A1"
+      "size": 23542784,
+      "sha256": "9BD2876A50B9EC331AEEAEE3B67653A3383CC22CCD9A08B6D0DD3C0ADDA78838"
     },
     "adapter/nanaimo_gameplay_bridge.exe": {
-      "size": 24501760,
-      "sha256": "78FC75FDDA41E90D4913C8490FEB9EC740B150FB9B6739E93DA8D6BF34508BF7"
+      "size": 23624192,
+      "sha256": "4183E47858FD9D6744D065AE4071F230ADC0A7E2713D4FC886A74FA5FF525EAE"
     }
   },
   "files": [
@@ -1103,8 +1103,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.cs",
-      "size": 1007093,
-      "sha256": "5C4A4B6E9811C1425D82D4269AA37328ACDA7AD29163556DD2EB4184139FF52B"
+      "size": 1007340,
+      "sha256": "AF974A06B4E32EADF863CE982F6605326794D6C6711882DA52CBF0B5CAB779D2"
     },
     {
       "path": "managed/Services/PasswordHasher.cs",
