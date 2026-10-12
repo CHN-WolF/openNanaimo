@@ -1,6 +1,6 @@
 # 工程／子弹DIY兼容
 
-本页维护可选子弹DIY的配置生命周期、篮球资源身份、反向范围、PE位点及其完整应用和回退合同。操作入口见[子弹DIY与篮球试玩](../指南/子弹DIY与篮球试玩.md)。伤害归属与其他玩法规则从[业务索引](../业务/索引.md)进入，隔离验证与客户端实机验收仍按原文分别登记。
+本页维护可选子弹DIY的配置生命周期、篮球资源身份、反向范围、PE位点及其完整应用和回退约定。操作入口见[子弹DIY与篮球试玩](../指南/子弹DIY与篮球试玩.md)。伤害归属与其他玩法规则从[业务索引](../业务/索引.md)进入，隔离验证与客户端实机验收仍按原文分别登记。
 
 ## 参考章节
 
@@ -40,7 +40,7 @@
 
 该功能以独立配置、五个入口和一个代码／数据区实现V键发射及限定名称的反向处理，默认关闭。配方由`manifest/projectile_diy_patch.json`登记完整字节、原始输入与资源身份；安装器为`scripts/prepare_projectile_diy.ps1`。
 
-### 二进制合同与完整修改集合
+### 二进制约定与完整修改集合
 
 输入为x86 PE32，ImageBase为`0x00400000`，采用固定地址装载。代码／数据区`0x00B98000..0x00B99FFF`共8192字节，所在节具备读、写、执行权限。五个WinAPI导入槽为`0x00D921E8/0x00D91FAC/0x00D91EA8/0x00D91F50/0x00D91ED0`，安装器校验其导入身份。各站点接受精确原始字节或当前目标字节，采用PE节映射定位。
 
@@ -100,3 +100,6 @@ python -B scripts/test_projectile_diy.py -v
 powershell -NoProfile -STA -ExecutionPolicy Bypass -File gui_launcher/nanaimo_launcher.ps1 -SelfTestProjectile
 ```
 <!-- FUSION END df-11-010 -->
+
+<!-- 兼容既有章节链接 -->
+<a id="二进制合同与完整修改集合"></a>

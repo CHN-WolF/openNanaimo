@@ -8,10 +8,10 @@
 两种卡片使用流程的已审核默认奖池位于`release/components/cards/event-card-rewards.json`。页1～4包括按期限区分的Boss宠物、整套战士衣物、三颗战士宝石、整套战士装饰、面包加饮料，以及直接200 Hans奖励。文件登记在`manifest/open_release_manifest.json`及导出候选清单中，但**不自动安装**；启动适配器前须复制到活动数据库旁。
 
 ```powershell
-Copy-Item release/components/cards/event-card-rewards.json <install-root>/adapter_data/event-card-rewards.json
+Copy-Item -LiteralPath 'release/components/cards/event-card-rewards.json' -Destination '<install-root>/adapter_data/event-card-rewards.json'
 ```
 
-该文件使用上述三种形式。安装已审核奖池与构建适配器、开放卡片掉落是独立管理操作。
+该文件使用[配置约定](../业务/卡片/兑换.md#df-02-002)定义的三种奖励形式。安装已审核奖池与构建适配器、开放卡片掉落是独立管理操作。
 
 <!-- FUSION END df-02-005 -->
 
@@ -19,7 +19,7 @@ Copy-Item release/components/cards/event-card-rewards.json <install-root>/adapte
 
 业务规则、协议、生命周期与验证事实已归入下列知识主入口。指南保留操作章节和导航，完整事实只在对应主入口维护。
 
-先阅读[配置合同](../业务/卡片/兑换.md#df-02-002)及[默认权重](../业务/卡片/兑换.md#df-02-006)，再执行本页的安装命令；配置与安装须遵守原文管理审核条件。
+先阅读[配置约定](../业务/卡片/兑换.md#df-02-002)及[默认权重](../业务/卡片/兑换.md#df-02-006)，再执行本页的安装命令；配置与安装须遵守原文管理审核条件。
 
 | 完整章节 | 维护主题 |
 |---|---|
