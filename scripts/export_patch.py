@@ -124,8 +124,7 @@ def payload_policy(value: str, layer: str) -> None:
     elif layer == "knowledge":
         modules = {"角色", "城镇", "库存", "卡片", "宠物", "经济", "社交", "住宅", "地宫", "竞技", "娱乐"}
         good = p.suffix == ".md" and (
-            value in {"knowledge/知识库索引.md", "knowledge/索引.md", "knowledge/业务/索引.md"}
-            or (len(parts) == 3 and parts[:2] == ["knowledge", "authority"])
+            value in {"knowledge/索引.md", "knowledge/业务/索引.md"}
             or (len(parts) == 3 and parts[:2] in (["knowledge", "基础"], ["knowledge", "工程"]))
             or (len(parts) == 4 and parts[:2] == ["knowledge", "业务"] and parts[2] in modules)
             or (len(parts) == 4 and parts[:3] == ["knowledge", "工程", "历史验证"]))

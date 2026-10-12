@@ -142,8 +142,6 @@ class ExportPatchTests(unittest.TestCase):
 
     def test_chinese_knowledge_filenames_export_round_trip(self):
         expected = {
-            "knowledge/知识库索引.md": "# 工程知识库\n",
-            "knowledge/authority/01-协议分帧与连接.md": "# 协议分帧\n",
             "knowledge/索引.md": "# 知识库索引\n",
             "knowledge/业务/索引.md": "# 业务索引\n",
             "knowledge/基础/内部桥接.md": "# 内部桥接\n",
@@ -166,6 +164,8 @@ class ExportPatchTests(unittest.TestCase):
 
     def test_knowledge_layers_reject_unscoped_directories_and_assets(self):
         for name in ("knowledge/业务/未知模块/规则.md",
+                     "knowledge/authority/01-协议分帧与连接.md",
+                     "knowledge/知识库索引.md",
                      "knowledge/业务/宠物/private/记录.md",
                      "knowledge/工程/历史验证/private/记录.md",
                      "knowledge/基础/规则.json",
@@ -271,7 +271,7 @@ class ExportPatchTests(unittest.TestCase):
 
     def test_privacy_markers_cannot_be_overridden_by_review(self):
         # Split literals so public-text review of this test does not contain a real host path.
-        self.add("knowledge/知识库索引.md", "knowledge", ("X:" + "/Use" + "rs/" + "person/secret\n").encode())
+        self.add("knowledge/索引.md", "knowledge", ("X:" + "/Use" + "rs/" + "person/secret\n").encode())
         self.assertEqual(self.plan({"knowledge"})["files"][0]["status"], "privacy_marker_blocked")
 
     def test_public_download_urls_are_not_drive_paths(self):
@@ -281,7 +281,7 @@ class ExportPatchTests(unittest.TestCase):
     def test_any_drive_absolute_path_is_private(self):
         for index, (drive, separator) in enumerate((('X', '/'), ('c', chr(92)), ('D', '/'))):
             value = drive + ':' + separator + 'arbitrary' + separator + 'material.txt'
-            name = 'knowledge/authority/path-' + str(index) + '.md'
+            name = 'knowledge/基础/path-' + str(index) + '.md'
             self.add(name, 'knowledge', value.encode('utf-8'))
         entries = self.plan({'knowledge'})['files']
         records = [entry for entry in entries if entry['path'].startswith('knowledge/')]
@@ -289,7 +289,7 @@ class ExportPatchTests(unittest.TestCase):
         self.assertTrue(all(entry['status'] == 'privacy_marker_blocked' for entry in records))
 
     def test_knowledge_approval_expires_when_bytes_change(self):
-        p = self.add("knowledge/知识库索引.md", "knowledge", b"Reviewed authority router.\n")
+        p = self.add("knowledge/索引.md", "knowledge", b"Reviewed knowledge index.\n")
         self.assertTrue(self.plan({"knowledge"})["export_ready"])
         p.write_bytes(b"New knowledge snapshot NOT reviewed.\n")
         self.assertFalse(self.plan({"knowledge"})["export_ready"])

@@ -8651,8 +8651,8 @@
         "sha256": "aa8ee6ac7357a9ed1c6c62e91ce07559c8b9085a7d978bd2e7a077d61637f7fd"
       },
       "docs/文件清单与导出工具.md": {
-        "size": 6312,
-        "sha256": "e701b0a67ded264b290dea8d651fb6a9341a21d29a4d929f3b9c48d4ac287936"
+        "size": 6324,
+        "sha256": "cf2e367b46aebd0df102e5ff0a3419d17b8726de2534a667b6ff666cbfc9e42a"
       },
       "docs/构建与验证.md": {
         "size": 33323,
@@ -8673,42 +8673,6 @@
       "docs/韩服宠物佩戴等级下放方案.md": {
         "size": 9833,
         "sha256": "28cc388471e8f4d1234aa13e5564d30afd1b4c1e6a0a9852e354ab6e6ede2b6a"
-      },
-      "knowledge/authority/01-协议分帧与连接.md": {
-        "size": 1206,
-        "sha256": "31fdd4c8c46b1c330e6ed25e876bdcff22348bc9edb4bd4a5b526f7a372aea96"
-      },
-      "knowledge/authority/02-登录村庄与角色.md": {
-        "size": 2873,
-        "sha256": "de17e2e10a0a059c173dc97c7b1dce5d3eab83eedc55a9b25d2ccc486b7f7249"
-      },
-      "knowledge/authority/03-角色资料与背包.md": {
-        "size": 9460,
-        "sha256": "f155d955d67db704b77afc5c2d36c8bb22a7ee8beb06abf082a2ade20a1225f0"
-      },
-      "knowledge/authority/04-宠物与战斗.md": {
-        "size": 3152,
-        "sha256": "78b3ad28608ad9bc2827fc4e56484fc9fcd2c75009f8715b021855b61587f0b4"
-      },
-      "knowledge/authority/05-房间与多人同步.md": {
-        "size": 4058,
-        "sha256": "b46f55280d400d561721991456d2cce825914e4cea96c3dfec6af084dd181057"
-      },
-      "knowledge/authority/06-目标掉落与首领.md": {
-        "size": 3053,
-        "sha256": "9398d9257c6a47c59aec8a9ff00f0e6327328d2627a9589e7186d68237340872"
-      },
-      "knowledge/authority/07-拾取结算与奖励.md": {
-        "size": 4363,
-        "sha256": "32d2d90169d965482835b541636699cee51910fb7b89d7bdb5aa3aa939d19848"
-      },
-      "knowledge/authority/08-静态地址与调用链.md": {
-        "size": 18570,
-        "sha256": "a39768ddb3fbac919dc9f986257ca559bd3a5546cdba58835b2405dea1988df8"
-      },
-      "knowledge/authority/09-运行配置与验证.md": {
-        "size": 15041,
-        "sha256": "497af5c404268a582b5a3c99934c243a7605cb528ab6185d5896df253e9f5606"
       },
       "knowledge/业务/住宅/家具.md": {
         "size": 10116,
@@ -8975,8 +8939,8 @@
         "sha256": "fd43bb535024c98bcc3ed133b0e07eb9d663e8b2e643191822b5ddfb98cc09c9"
       },
       "knowledge/工程/知识维护.md": {
-        "size": 4616,
-        "sha256": "88027dc7f021890154ec04418b1f0e30454fbe21ef79ff9c505a332dc287646c"
+        "size": 4878,
+        "sha256": "e89935d75799352b0fa427657e2a199aeb634a303d1234f8759ea241eec4cf48"
       },
       "knowledge/工程/索引.md": {
         "size": 971,
@@ -8987,12 +8951,8 @@
         "sha256": "49b562daa1f6c37d4a35c884fbaf6dd2f0e2de84ce1cf0e5034dc7c7a595cce2"
       },
       "knowledge/工程/验证状态.md": {
-        "size": 14948,
-        "sha256": "f9a12fe70a7204a0d2b189170cc9504db404c57f60f443b28f8aeeac15ffdc21"
-      },
-      "knowledge/知识库索引.md": {
-        "size": 147,
-        "sha256": "765aa9772c84aa4297e70d497d934ff7975318564c4dcb5ab5a491d44f678125"
+        "size": 15074,
+        "sha256": "7f035a80aba60d14f07ba730a3fd1cbf3a862d3705e1ccf827e3ef84badbb837"
       },
       "knowledge/索引.md": {
         "size": 21815,
@@ -9003,12 +8963,12 @@
         "sha256": "6b46dccec60017804f68a28f44c81d77837c841ebe571cd6bc1bba60c0b1a38b"
       },
       "scripts/export_patch.py": {
-        "size": 27820,
-        "sha256": "af7debe049efbec5b7b5903c21e36c1bedf89e4b2a7039f7e61d59a51368fe46"
+        "size": 27711,
+        "sha256": "7106505b1fdae1ceb59203101e8af0edd4191332d377a8e9f13011e509fb8965"
       },
       "scripts/test_export_patch.py": {
-        "size": 39305,
-        "sha256": "6a3579ef19f9bda7da36332ec2e5d82d2b1b4864b3e30b6793c5ad380728d01e"
+        "size": 39258,
+        "sha256": "ddb3f127120c97d452a6341933411494adac0d6ca9637e895839087c3acc78d4"
       },
       "scripts/test_verify_knowledge.py": {
         "size": 9758,
@@ -9179,5 +9139,26 @@
         "reason": "等级200发布身份及联合验收层级归工程验证状态。"
       }
     ]
-  }
+  },
+  "maintenance_changes": [
+    {
+      "base_commit": "8e541e002711a24be3c08c8c06e5c67111e253c8",
+      "action": "remove_legacy_navigation",
+      "removed_files": [
+        "knowledge/authority/01-协议分帧与连接.md",
+        "knowledge/authority/02-登录村庄与角色.md",
+        "knowledge/authority/03-角色资料与背包.md",
+        "knowledge/authority/04-宠物与战斗.md",
+        "knowledge/authority/05-房间与多人同步.md",
+        "knowledge/authority/06-目标掉落与首领.md",
+        "knowledge/authority/07-拾取结算与奖励.md",
+        "knowledge/authority/08-静态地址与调用链.md",
+        "knowledge/authority/09-运行配置与验证.md",
+        "knowledge/知识库索引.md"
+      ],
+      "preserved_blocks": 317,
+      "preserved_fragments": 733,
+      "preserved_queries": 51
+    }
+  ]
 }
