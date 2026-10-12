@@ -71,7 +71,6 @@ REPOSITORY_FILES = [
     'manifest/knowledge_baseline.json.gz',
     'manifest/document_fusion.json',
     'manifest/document_fusion_baseline.json.gz',
-    'manifest/document_audit.json',
     'knowledge/索引.md',
     'knowledge/指南/索引.md',
     'knowledge/工程/适配器架构.md',

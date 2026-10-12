@@ -120,8 +120,7 @@ def payload_policy(value: str, layer: str) -> None:
                 or value in card_generation_sources
                 or value in {"manifest/source_closure.json", "manifest/lumineos_combat.json", "manifest/l7_combat.json", "manifest/lumineos_resource_port.json", "manifest/korean_pet_resources.json",
                              "manifest/knowledge_migration.json", "manifest/knowledge_baseline.json.gz",
-                             "manifest/document_fusion.json", "manifest/document_fusion_baseline.json.gz",
-                             "manifest/document_audit.json"})
+                             "manifest/document_fusion.json", "manifest/document_fusion_baseline.json.gz"})
     elif layer == "docs":
         good = value == "README.md"
     elif layer == "knowledge":

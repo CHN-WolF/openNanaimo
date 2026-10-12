@@ -191,11 +191,9 @@ class ExportPatchTests(unittest.TestCase):
 
     def test_document_fusion_evidence_is_exactly_scoped_source(self):
         for name in ("manifest/document_fusion.json", "manifest/document_fusion_baseline.json.gz",
-                     "manifest/document_audit.json",
                      "scripts/verify_document_fusion.py", "scripts/test_verify_document_fusion.py"):
             patch.payload_policy(name, "source")
         for name in ("manifest/document_fusion_private.json", "manifest/document_fusion_other.json.gz",
-                     "manifest/document_audit_private.json", "manifest/document_audit_baseline.zip",
                      "knowledge/指南/document_fusion.json.gz", "manifest/document_fusion_baseline.zip"):
             with self.subTest(path=name), self.assertRaises(patch.ExportError):
                 patch.payload_policy(name, "source")

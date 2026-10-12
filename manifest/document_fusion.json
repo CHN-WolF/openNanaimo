@@ -2901,15 +2901,5 @@
         "sha256": "5F821DEDEB1E15EB40579F1AAE4BC289AD9503A5140E19D432ABDA04A0E1B576"
       }
     }
-  },
-  "maintenance_changes": [
-    {
-      "date": "2026-10-12",
-      "kind": "source-backed-document-audit",
-      "base_commit": "5f7684f8f1ad62995b168d42705d08b548b3e327",
-      "report": "manifest/document_audit.json",
-      "finding_count": 188,
-      "runtime_acceptance": false
-    }
-  ]
+  }
 }
