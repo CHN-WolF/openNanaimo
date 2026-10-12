@@ -110,6 +110,45 @@ def content_identity(text: str, mapping: dict[str, str], document_path: str | No
     return digest(text)
 
 
+def verify_fragment_splits(data: dict, baseline: dict) -> None:
+    """Check subdivision provenance without replacing historical parent hashes."""
+    splits = data.get('fragment_splits', [])
+    if not isinstance(splits, list):
+        raise ValueError('fragment_splits must be a list')
+    live = {item['id']: item for item in data['fragments']}
+    parents, claimed = set(), set()
+    for record in splits:
+        parent, children = record['parent'], record['children']
+        identity = parent['id']
+        if identity in parents or identity in live:
+            raise ValueError('split parent must be unique and retired: ' + identity)
+        parents.add(identity)
+        original = baseline[parent['source']]
+        start, end = parent['start'], parent['end']
+        if (type(start) is not int or type(end) is not int
+                or not 0 <= start < end <= len(original)
+                or digest(original[start:end]) != parent['source_sha256']):
+            raise ValueError('split parent source identity mismatch: ' + identity)
+        if not re.fullmatch(r'[0-9a-f]{64}', parent['content_sha256']):
+            raise ValueError('invalid historical parent content SHA-256')
+        if not isinstance(children, list) or len(children) < 2:
+            raise ValueError('a split requires at least two children')
+        position = start
+        for child_id in children:
+            if child_id in claimed:
+                raise ValueError('split child is claimed more than once: ' + child_id)
+            claimed.add(child_id)
+            child = live[child_id]
+            if (child.get('parent_id') != identity or child['source'] != parent['source']
+                    or child['start'] != position or not position < child['end'] <= end):
+                raise ValueError('split child has a gap, overlap or wrong parent: ' + child_id)
+            position = child['end']
+        if position != end:
+            raise ValueError('split children do not cover parent: ' + identity)
+    if {item['id'] for item in data['fragments'] if 'parent_id' in item} != claimed:
+        raise ValueError('unregistered split child')
+
+
 def verify(root: Path, *, strict: bool = False) -> FusionReport:
     root = root.resolve()
     report = FusionReport()
@@ -128,6 +167,7 @@ def verify(root: Path, *, strict: bool = False) -> FusionReport:
             raise ValueError('invalid source_files, path_mapping or fragments types')
         if not isinstance(baseline, dict) or set(baseline) != set(sources) or set(mapping) != set(sources):
             raise ValueError('fusion sources, baseline and path mapping differ')
+        verify_fragment_splits(data, baseline)
         routes = data.get('heading_routes', [])
         if not isinstance(routes, list):
             raise ValueError('heading_routes must be a list')

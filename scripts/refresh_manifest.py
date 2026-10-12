@@ -244,6 +244,12 @@ def runtime_records() -> dict[str, dict]:
 
 def main() -> None:
     critical = {rel: record(safe_file(rel)) for rel in sorted(set(REPOSITORY_FILES))}
+    # All current topic pages have a release identity, including nested leaves.
+    # This records local hashes only; export candidacy and approval stay separate.
+    for path in sorted((ROOT / 'knowledge').rglob('*.md')):
+        rel = path.relative_to(ROOT).as_posix()
+        critical[rel] = record(safe_file(rel))
+    critical['manifest/knowledge_review.json'] = record(safe_file('manifest/knowledge_review.json'))
 
     runtime = runtime_records()
     critical.update(runtime)

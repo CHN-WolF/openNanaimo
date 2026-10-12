@@ -189,6 +189,30 @@ class ExportPatchTests(unittest.TestCase):
             with self.subTest(path=name), self.assertRaises(patch.ExportError):
                 patch.payload_policy(name, "source")
 
+    def test_topic_document_export_keeps_review_and_directory_boundaries(self):
+        index = 'knowledge/业务/地宫/关卡与房间/索引.md'
+        leaf = 'knowledge/业务/地宫/关卡与房间/房间身份.md'
+        self.add(index, 'knowledge', '[房间身份](房间身份.md)\n'.encode('utf-8'))
+        self.add(leaf, 'knowledge', '# 房间身份\n'.encode('utf-8'))
+        plan = self.plan(patch.expanded_layers({'docs'}))
+        self.assertTrue(plan['export_ready'])
+        patch.export_tree(self.root, self.destination, plan, self.reviews)
+        self.assertEqual((self.destination / leaf).read_bytes(), (self.root / leaf).read_bytes())
+        (self.root / leaf).write_text('# 已修改的房间规则\n', 'utf-8')
+        self.assertFalse(self.plan(patch.expanded_layers({'docs'}))['export_ready'])
+        for name in ('knowledge/业务/地宫/未登记主题/规则.md',
+                     'knowledge/业务/地宫/关卡与房间/额外目录/规则.md',
+                     'knowledge/业务/地宫/关卡与房间/backups/规则.md',
+                     'knowledge/业务/地宫/关卡与房间/资源.png'):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name, 'knowledge')
+
+    def test_review_registry_does_not_authorize_other_manifest_payloads(self):
+        patch.payload_policy('manifest/knowledge_review.json', 'source')
+        for name in ('manifest/knowledge_review_private.json', 'manifest/knowledge_review.json.gz'):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name, 'source')
+
     def test_document_fusion_evidence_is_exactly_scoped_source(self):
         for name in ("manifest/document_fusion.json", "manifest/document_fusion_baseline.json.gz",
                      "scripts/verify_document_fusion.py", "scripts/test_verify_document_fusion.py"):

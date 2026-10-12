@@ -63,6 +63,51 @@ class DocumentFusionTests(unittest.TestCase):
         self.assertTrue(report.ok, report.errors)
         self.assertEqual(report.chars, len(self.original))
 
+    def split_fixture(self):
+        parent = dict(self.fragment)
+        boundary = self.original.index('## 当前规则')
+        children = []
+        body = ''
+        for suffix, start, end in (('intro', 0, boundary), ('rules', boundary, len(self.original))):
+            child = {**parent, 'id': parent['id'] + '-' + suffix, 'start': start, 'end': end,
+                     'parent_id': parent['id'], 'source_sha256': digest(self.original[start:end]),
+                     'content_sha256': digest(self.original[start:end])}
+            children.append(child)
+            body += ('<!-- FUSION BEGIN ' + child['id'] + ' -->\n'
+                     + self.original[start:end] + '<!-- FUSION END ' + child['id'] + ' -->\n')
+        self.data['fragments'] = children
+        self.data['fragment_count'] = 2
+        self.data['fragment_splits'] = [{'parent': parent, 'children': [c['id'] for c in children]}]
+        (self.root / self.target).write_text(body, 'utf-8')
+        self.write_manifest()
+        return children
+
+    def test_split_preserves_archive_coverage_and_parent_history(self):
+        archive = (self.root / self.data['baseline_archive']).read_bytes()
+        self.split_fixture()
+        report = verify(self.root, strict=True)
+        self.assertTrue(report.ok, report.errors)
+        self.assertEqual(report.chars, len(self.original))
+        self.assertEqual((self.root / self.data['baseline_archive']).read_bytes(), archive)
+
+    def test_split_cannot_hide_a_gap_by_changing_parent_extent(self):
+        self.split_fixture()
+        self.data['fragment_splits'][0]['parent']['end'] -= 1
+        self.write_manifest()
+        self.assertFalse(verify(self.root).ok)
+
+    def test_split_cannot_claim_a_child_twice(self):
+        self.split_fixture()
+        self.data['fragment_splits'][0]['children'].append(self.data['fragments'][0]['id'])
+        self.write_manifest()
+        self.assertFalse(verify(self.root).ok)
+
+    def test_split_child_requires_declared_parent(self):
+        children = self.split_fixture()
+        children[1]['parent_id'] = 'df-99-999'
+        self.write_manifest()
+        self.assertFalse(verify(self.root).ok)
+
     def test_local_link_relocation_is_allowed_and_checked(self):
         self.original += '\n[操作步骤](../knowledge/指南/安装.md#安装)\n'
         self.body = self.original.replace('(../knowledge/指南/安装.md#安装)', '(../../指南/安装.md#安装)')
