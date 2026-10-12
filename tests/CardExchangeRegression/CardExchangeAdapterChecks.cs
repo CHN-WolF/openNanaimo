@@ -44,6 +44,12 @@ internal static partial class Program
         Check(list is not null && list.Length == 336 && Opcode(list) == 0xC5B1
             && BinaryPrimitives.ReadUInt16LittleEndian(list.AsSpan(34)) == 1,
             "adapter browse includes owned listing marker");
+        var finalPage = await DispatchAsync(service, buyer, 0xC5B0,
+            Search(3, 0, 0, 2, 12, 0), 13);
+        Check(finalPage is not null && Code(finalPage) == 1
+            && BinaryPrimitives.ReadUInt32LittleEndian(finalPage.AsSpan(12)) == 1
+            && BinaryPrimitives.ReadUInt64LittleEndian(finalPage.AsSpan(16)) != 0,
+            "adapter browse keeps a stale next-page click on the final result");
         var search = Search(4, 13, 0, 1, 12, 0, "Alice");
         Check(Code((await DispatchAsync(service, buyer, 0xC5B0, search, 14))!) == 1,
             "adapter seller browse decodes strict identity");

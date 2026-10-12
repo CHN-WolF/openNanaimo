@@ -68,12 +68,16 @@ public sealed partial class DatabaseService
             ("$characterId", characterId), ("$accountId", accountId),
             ("$cardType", query.CardType), ("$cardNumber", query.CardNumber),
             ("$sellerName", (object?)query.SellerName ?? DBNull.Value),
-            ("$limit", pageSize), ("$offset", (long)(query.Page - 1) * pageSize)
+            // A client can still emit one stale "next" click after the last
+            // successful response. Treat that as a stable end-of-list read;
+            // malformed page values were rejected above and remain errors.
+            ("$limit", pageSize), ("$offset", 0L)
         ];
         var count = await CardExchangeScalarAsync(connection, transaction, "SELECT COUNT(*) " + source,
             cancellationToken, parameters);
         var pages = count == 0 ? 0u : checked((uint)((count + pageSize - 1) / pageSize));
-        if (query.Page > Math.Max(1u, pages)) return new(11, pages, []);
+        var effectivePage = pages == 0 ? 1u : Math.Min(query.Page, pages);
+        parameters[^1] = ("$offset", (long)(effectivePage - 1) * pageSize);
         var order = query.SortType switch
         {
             10 => "listing.HansPerItem DESC, listing.UniqueNumber ASC",

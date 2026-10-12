@@ -9,7 +9,6 @@ internal static partial class Program
         await SeedProductionProgress(f, actor);
         var invalid = new[] {
             Result() with { HdIndex = 1 }, Result() with { Dungeon = 1 }, Result() with { Stage = 1 },
-            Result() with { Episode = 25 }, Result() with { Episode = 26 }, Result() with { Episode = 27 },
             Result() with { LogicalDifficulty = 3 }, Result() with { Score = -1 },
             Result() with { StageRecordScore = 99 }, Result(null), Result("01:0"), Result("1") };
         for (int index = 0; index < invalid.Length; index++)

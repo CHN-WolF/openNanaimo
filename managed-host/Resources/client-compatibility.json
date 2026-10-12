@@ -277,6 +277,53 @@
     },
     {
       "group": "dungeon-state",
+      "va": 7223040,
+      "target": "8b45c88b401031d2b90a000000f7f131d2f7f1528b55c88b4a2ce851f0d1ffe9cf40f5ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccc9c608bd98b431031d2b964000000f7f185c074468b732c81ec6c0100008bfc8beeb95b000000fcf3a58bf58946446800409b438bcee8f85bd2ff8bce8b01ff50108bce8b01ff50148bfe8bf4b95b000000fcf3a581c46c010000619de9fe5fd3ff9c608bd98b431083f864721f8b4b28680040a443e8b85bd2ff8b4b2c6800c09f43e8ab5bd2ffe91a0000008b4b28680000a243e8995bd2ff8b4b2c6800809d43e88c5bd2ff8bcbe8d09cd2ff619de95640f5ffcccccccccccccccccccccccc",
+      "known": [
+        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "8b45c88b401031d2b90a000000f7f131d2f7f1528b55c88b4a2ce851f0d1ffe9cf40f5ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccc9c608bd98b431031d2b964000000f7f185c074468b732c81ec6c0100008bfc8beeb95b000000fcf3a58bf589464468000099438bcee8f85bd2ff8bce8b01ff50108bce8b01ff50148bfe8bf4b95b000000fcf3a581c46c010000619de9fe5fd3ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "8b45c88b401031d2b90a000000f7f131d2f7f1528b55c88b4a2ce851f0d1ffe9cf40f5ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccc9c608b55c88b421031d2b964000000f7f185c074438b55c88b4a2c8b4144508b4104508b55c88b421031d2b964000000f7f18b55c88b4a2c89414468000099438b55c88b4a2ce8e75bd2ff8b01ff50105889410458894144619de9ab40f5ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "8b45c88b401083f80a7f0d8b55c88b4a0483f90a7e0289c831d2b90a000000f7f131d2f7f1528b55c88b4a2ce83ff0d1ffe9bd40f5ffcccccccccccccccccccc9c608b55c88b421083f80a7f0d8b55c88b4a0483f90a7e0289c831d2b964000000f7f185c074438b55c88b4a2c8b4144508b4104508b55c88b421031d2b964000000f7f18b55c88b4a2c89414468000099438b55c88b4a2ce8d55bd2ff8b01ff50105889410458894144619de99940f5ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      ],
+      "operation": "patch_entertainment_result_level_code",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
+      "va": 6518745,
+      "target": "e922bf0a00909090909090909090909090909090909090909090",
+      "known": [
+        "8b45c88b401099b90a000000f7f9508b55c88b4a2ce87dafdcff",
+        "e922bf0a00909090909090909090909090909090909090909090"
+      ],
+      "operation": "patch_entertainment_result_level_tens",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
+      "va": 6518853,
+      "target": "e957bf0a00",
+      "known": [
+        "e8735cddff",
+        "e8735cddff",
+        "e9f6be0a00"
+      ],
+      "operation": "patch_entertainment_result_level_restore_update",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
+      "va": 6517946,
+      "target": "e881c20a00",
+      "known": [
+        "e8e022deff",
+        "e881c20a00"
+      ],
+      "operation": "patch_entertainment_result_level_hundreds",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
       "va": 7222784,
       "target": "558bec83ec089c608b4508668378042c0f847200000066837804500f856e00000081782c455230310f856100000080784f000f85570000008b0dd469d80085c90f84490000000fb691d005000083fa010f823900000083fa030f87300000008b50303b915c0d00000f8521000000ff7034e86a1a39008b450883c038508b0dd469d800e8981a3900619de977fef5ff619de9affef5ffcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
       "known": [

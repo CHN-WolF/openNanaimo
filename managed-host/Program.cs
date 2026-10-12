@@ -179,6 +179,11 @@ static async Task RunAsync(string[] args)
         await VillagePositionChecks.RunAsync();
         return;
     }
+    if (args.Contains("--village-shop-pet-self-test"))
+    {
+        await VillageShopPetSceneChecks.RunAsync();
+        return;
+    }
     if (args.Contains("--pet-revival-village-self-test"))
 {
     await PetRevivalVillageChecks.RunAsync();

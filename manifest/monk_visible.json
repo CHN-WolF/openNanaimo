@@ -1,0 +1,58 @@
+{
+  "files": [
+    {
+      "before_sha256": "d63a090f4d7e24df037783c8a67b33733ed17a63ec9b00f1befc008e01ba95fa",
+      "path": "Village_map_image/Village_map_image.pack",
+      "sha256": "7dc3ace5d8837ddccdc47073cba8c174bcf1a5866f1a983fb38b1e1eb5d1ee42",
+      "size": 17028565
+    },
+    {
+      "before_sha256": "557b9c7290e730cf06c93edbec0b743a19574afd85650ba8deb9ba320cfd9b1f",
+      "path": "QS._D31",
+      "sha256": "557b9c7290e730cf06c93edbec0b743a19574afd85650ba8deb9ba320cfd9b1f",
+      "size": 31136
+    },
+    {
+      "before_sha256": "5c5d84f4d1075f208acd221ce0f4724170182d747c38204d3369b7a12d31af2d",
+      "path": "GS._D20",
+      "sha256": "5c5d84f4d1075f208acd221ce0f4724170182d747c38204d3369b7a12d31af2d",
+      "size": 40624
+    },
+    {
+      "before_sha256": "8e7f2b47a677866db3792d5a406b5cdaec805e7189d1fcf73da41c9b42449719",
+      "path": "effs/village/openNanaimo_monk01.eff",
+      "sha256": "8e7f2b47a677866db3792d5a406b5cdaec805e7189d1fcf73da41c9b42449719",
+      "size": 1688
+    },
+    {
+      "before_sha256": "ada8693fa911bf02f437f6a1285d23b26471bd516460e2758f2d87dbc1de5825",
+      "path": "effs/village/openNanaimo_monk01.im3",
+      "sha256": "ada8693fa911bf02f437f6a1285d23b26471bd516460e2758f2d87dbc1de5825",
+      "size": 71672
+    },
+    {
+      "before_sha256": "4d01cbcfde625af5a6498e102d818b3bc2eef988254a08e012de149d3d7bcd1a",
+      "path": "effs/village/openNanaimo_monk_shadow.im3",
+      "sha256": "4d01cbcfde625af5a6498e102d818b3bc2eef988254a08e012de149d3d7bcd1a",
+      "size": 1342
+    },
+    {
+      "before_sha256": "98532efd73a9d27bf01fa2eb7ba125e367c03abe1d72fa645910d829398f735a",
+      "path": "effs/village/openNanaimo_monk_name.im3",
+      "sha256": "8a478138a363aad08142c71563cd15d8dc78f3cd451cee4bbc131dce5ede6074",
+      "size": 1418
+    }
+  ],
+  "interactive": false,
+  "layer": 2,
+  "parent_manifest_id": "2d9b46ad7e3bc6a490dae9de2492a583c5695067fbd93d5fe2f29da507dc93d2",
+  "position": [
+    293,
+    157
+  ],
+  "preview_manifest_id": "d4c129862400453ed9ef8142c7c8eed35025fac91f480aad7f7598fc173f032a",
+  "runtime_accepted": false,
+  "scene_key": 10027,
+  "schema": "openNanaimo.monk-visible-recipe.v1",
+  "scope": "Verified L7/L8 ownership extension for first-village visual monk only; no executable or gameplay changes."
+}

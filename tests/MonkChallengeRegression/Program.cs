@@ -33,12 +33,12 @@ internal static partial class Program
         {
             var reserved = episode is >= 24 and <= 27;
             if (MonkChallengePolicy.IsReservedEpisode((byte)episode) != reserved
-                || MonkChallengePolicy.IsPlayableTuple(0, (byte)episode, 0, 0) != (episode == 24)
+                || MonkChallengePolicy.IsPlayableTuple(0, (byte)episode, 0, 0) != reserved
                 || MonkChallengePolicy.TryGetChallengeIndex(0, (byte)episode, 0, 0, out var index) != reserved
                 || index != (reserved ? episode - 24 : -1))
                 throw new InvalidOperationException($"Incorrect challenge policy for episode {episode}.");
         }
-        Check(true, "all 256 episodes distinguish open24, reserved25..27 and unrelated selections");
+        Check(true, "all 256 episodes distinguish four playable challenges and unrelated selections");
         for (var field = 1; field <= byte.MaxValue; field++)
         {
             foreach (var tuple in new[] { ((byte)field, (byte)24, (byte)0, (byte)0),
@@ -84,15 +84,15 @@ internal static partial class Program
             Check((await f.Commit(owner, result)).Status == MonkChallengeCommitStatus.InvalidSettlement,
                 "a nonchallenge selection is rejected without progress");
         for (byte episode = 25; episode <= 27; episode++)
-            Check((await f.Commit(owner, Result() with { Episode = episode })).Status
-                == MonkChallengeCommitStatus.ChallengeClosed, $"episode{episode} is an unopened placeholder");
+            Check(MonkChallengePolicy.IsPlayableTuple(0, episode, 0, 0),
+                $"episode{episode} is an independent playable challenge");
         Check((await f.Commit(owner with { CharacterId = peer.CharacterId }, Result())).Status
             == MonkChallengeCommitStatus.Unauthorized, "another room owner's member identity is rejected");
         Check((await f.Commit(owner with { SessionId = "obsolete" }, Result())).Status
             == MonkChallengeCommitStatus.Unauthorized, "unowned session identity is rejected");
         Check((await f.Commit(owner with { CharacterId = long.MaxValue }, Result())).Status
             == MonkChallengeCommitStatus.Unauthorized, "nonexistent character identity is rejected");
-        Check(await f.CountTables() == 0, "failures, placeholders and unauthorized requests create no ledger tables");
+        Check(await f.CountTables() == 0, "invalid and unauthorized requests create no ledger tables");
 
         await using (var connection = await f.Open())
         await using (var tx = connection.BeginTransaction())

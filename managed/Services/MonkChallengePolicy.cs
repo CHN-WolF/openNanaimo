@@ -6,7 +6,7 @@ public static class MonkChallengePolicy
     public const int ChallengeCount = 4;
     public const byte FullClearMask = 0x0F;
 
-    // Episodes 25..27 reserve ledger positions only; they are not accepted challenges.
+    // Episodes 24..27 map to the four village-exit challenges.
     public static bool IsReservedEpisode(byte episode)
         => episode >= FirstEpisode && episode < FirstEpisode + ChallengeCount;
 
@@ -20,7 +20,7 @@ public static class MonkChallengePolicy
     }
 
     public static bool IsPlayableTuple(byte hd, byte ep, byte dg, byte st)
-        => ep == FirstEpisode && TryGetChallengeIndex(hd, ep, dg, st, out _);
+        => TryGetChallengeIndex(hd, ep, dg, st, out _);
 }
 
 public enum MonkChallengeCommitStatus

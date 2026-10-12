@@ -15,11 +15,16 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
     'scripts/prepare_monk_resources.py',
+    'scripts/prepare_monk_entry.py',
+    'scripts/prepare_monk_visible_resources.py',
+    'scripts/test_monk_entry.py',
+    'scripts/test_monk_launcher_resources.py',
     'scripts/test_monk_resources.py',
     'scripts/generate_monk_combat.py',
     'scripts/test_monk_combat.py',
     'manifest/monk_resource_port.json',
     'manifest/monk_localization.json',
+    'manifest/monk_visible.json',
     'manifest/monk_combat.json',
     'tests/MonkChallengeRegression/MonkChallengeRegression.csproj',
     'tests/MonkChallengeRegression/Program.cs',
@@ -114,6 +119,7 @@ REPOSITORY_FILES = [
     'scripts/entertainment_mode_compat.py',
     'scripts/entertainment_result_compat.py',
     'scripts/test_entertainment_result_client.py',
+    'scripts/test_entertainment_result_level.py',
     'scripts/test_entertainment_difficulty_client.py',
     'tests/MentorshipRegression/EntertainmentRewardChecks.cs',
     'tests/MentorshipRegression/EntertainmentLobbyChecks.cs',
@@ -261,6 +267,8 @@ def main() -> None:
     # This records local hashes only; export candidacy and approval stay separate.
     for path in sorted((ROOT / 'knowledge').rglob('*.md')):
         rel = path.relative_to(ROOT).as_posix()
+        if rel.startswith('knowledge/evidence/'):
+            continue
         critical[rel] = record(safe_file(rel))
     critical['manifest/knowledge_review.json'] = record(safe_file('manifest/knowledge_review.json'))
 
@@ -276,6 +284,8 @@ def main() -> None:
             'runtime_acceptance': False,
             'playable_selection': [0, 24, 0, 0],
             'entry_binding': 'placeholder-unbound',
+            'scene_preview_tool': 'scripts/prepare_monk_entry.py',
+            'scene_preview_status': 'scene-preview-unbound',
             'party_policy': 'solo',
             'progress_policy': 'independent-four-bit-ledger',
             'localization_manifest': 'manifest/monk_localization.json',

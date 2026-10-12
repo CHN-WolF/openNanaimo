@@ -179,7 +179,8 @@ public sealed partial class NetworkAdapterService
                         && DungeonNavigationPolicy.TryParseQuickEntry(frame.AsSpan(8), out var selected)
                         && IsMonkPrototypeSelectionAllowed(selected.HdIndex, selected.Episode,
                             selected.Dungeon, 0, selected.WireDifficulty, session.PartyId);
-                if (!valid || !DungeonCombatCatalog.HasStage(0, MonkChallengePolicy.FirstEpisode, 0, 0))
+                if (!valid || !TryParseNativeDungeonSelectionFrame(frame, out var selectedHd, out var selectedEp, out var selectedDg, out var selectedSt, out _)
+                    || !DungeonCombatCatalog.HasStage(selectedHd, selectedEp, selectedDg, selectedSt))
                     return true;
             }
         }

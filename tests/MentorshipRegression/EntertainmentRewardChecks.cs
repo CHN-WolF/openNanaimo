@@ -365,12 +365,13 @@ internal static partial class Program
     private static async Task CheckEntertainmentRoomRewardsAsync(int memberCount)
     {
         await using var f = await Fixture.CreateAsync();
+        var levels = new[] { 120, 200, 100, 99, 90, 1 };
         var members = new List<object>();
         var expectedPetRewards = new List<uint>();
         var expectedPetStates = new List<PetState>();
         for (var place = 0; place < memberCount; place++)
         {
-            var world = await f.CreateSessionAsync("entertainment-six-" + place, "Enter" + place, 25, 1);
+            var world = await f.CreateSessionAsync("entertainment-six-" + place, "Enter" + place, levels[place], 1);
             var petCode = 15000001u;
             ShopCatalog.TryGet(15, petCode, out var pet);
             byte stage = place % 2 == 0 ? (byte)1 : (byte)2;
@@ -443,6 +444,8 @@ internal static partial class Program
         for (var place = 0; place < memberCount; place++)
         {
             var saved = (await f.Database.GetCharacterByIdAsync(Character(members[place]).Id))!;
+            Check(saved.Level == levels[place] && result![16 + 64 * place + 5] == levels[place],
+                "CF86 record+5 preserves authoritative character level " + levels[place]);
             var expected = expectedPetStates[place];
             var pet = PetProgression.GetState(saved, saved.EquippedPetItemCode);
             Check(pet == expected && BinaryPrimitives.ReadUInt32LittleEndian(result!.AsSpan(16 + 64 * place + 28)) == expected.Experience,

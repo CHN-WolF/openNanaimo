@@ -11348,6 +11348,17 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             || !_activeWorldSessions.TryGetValue(source.SessionId, out var sourcePresence))
             return;
 
+        // C3AE creates the shop actor from its name/appearance block, but does
+        // not carry the PET current/max stage pair. Match the town path by
+        // attaching the source actor with C47F after the direct C3AE response.
+        // The same attachment must follow each C3AE fan-out in both directions
+        // so an entrant and an existing shop occupant see the earned stage.
+        source.PendingBroadcasts.Add(new PendingNativeBroadcast(
+            sourcePresence,
+            0xC47F,
+            BuildUserDataChangePayload(source.Character),
+            "shop local actor appearance and pet"));
+
         foreach (var peer in _activeWorldSessions.Values
                      .Where(item => IsSameVillageShop(source, item.Session)))
         {
@@ -11361,10 +11372,20 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 sourcePayload.ToArray(),
                 "shop entity entered"));
             source.PendingBroadcasts.Add(new PendingNativeBroadcast(
+                peer,
+                0xC47F,
+                BuildUserDataChangePayload(source.Character),
+                "shop entity appearance and pet"));
+            source.PendingBroadcasts.Add(new PendingNativeBroadcast(
                 sourcePresence,
                 0xC3AE,
                 BuildShopUserInfoPayload(peerCharacter),
                 "existing shop entity snapshot"));
+            source.PendingBroadcasts.Add(new PendingNativeBroadcast(
+                sourcePresence,
+                0xC47F,
+                BuildUserDataChangePayload(peerCharacter),
+                "existing shop entity appearance and pet"));
         }
     }
 

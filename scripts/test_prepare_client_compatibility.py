@@ -87,8 +87,9 @@ def synthetic_pe(furniture=compat.FURNITURE_OLD,
         (0x390000, 0x10000, 0x1B9400), # direct-trade C4BE controller
         (0x240000, 0x10000, 0x1C9400), # entertainment CF86 ranking renderer
         (0x2C0000, 0x10000, 0x1D9400), # terminal MMO effect state guard
+        (0x230000, 0x10000, 0x1E9400), # entertainment result level controller
     ]
-    data = bytearray(0x1E9400)
+    data = bytearray(0x1F9400)
     data[:2] = b'MZ'
     struct.pack_into('<I', data, 0x3C, 0x80)
     data[0x80:0x84] = b'PE\0\0'

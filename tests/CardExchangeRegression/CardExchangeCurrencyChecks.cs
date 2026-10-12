@@ -159,7 +159,9 @@ internal static partial class Program
             "multibyte seller identity combines with card and sorting filters");
         Check((await f.QueryAsync(f.Buyer, new(4, SellerName: "' OR 1=1 --"))).Listings.Count == 0,
             "seller search text cannot alter query predicates");
-        Check((await f.QueryAsync(f.Buyer, new(3, Page: ushort.MaxValue, PageSize: 12))).ResultCode == 11,
-            "maximum requested page safely rejects out-of-range results");
+        var maximumPage = await f.QueryAsync(f.Buyer, new(3, Page: ushort.MaxValue, PageSize: 12));
+        Check(maximumPage.ResultCode == 1 && maximumPage.TotalPages == 1
+            && maximumPage.Listings.Count == 3,
+            "maximum requested page safely stays on the final result");
     }
 }

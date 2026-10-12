@@ -124,6 +124,34 @@ def validate_manifest(manifest):
     if digest(encoded(identity)) != identifier:
         raise ValueError('resource manifest identity mismatch')
     recipe = load(RECIPE)
+    visible = manifest.get('monk_visible')
+    if visible is not None:
+        if not isinstance(visible, dict) or visible.get('schema') != 'openNanaimo.monk-visible-upgrade.v1':
+            raise ValueError('invalid monk visible upgrade metadata')
+        expected = {r['path']: r for r in recipe['files']}
+        rows = {r['path']: r for r in manifest.get('files', [])}
+        parent_files = visible.get('parent_files')
+        additional = set(visible.get('additional_paths', []))
+        if not isinstance(parent_files, dict) or not isinstance(visible.get('additional_paths'), list):
+            raise ValueError('incomplete monk visible upgrade metadata')
+        if manifest['preserve_l7_combat'] != recipe['preserve_l7_combat']:
+            raise ValueError('monk visible preserve coverage mismatch')
+        if set(expected) - set(rows) or set(rows) - (set(expected) | additional):
+            raise ValueError('monk visible file coverage mismatch')
+        for path, pin in expected.items():
+            row = rows[path]
+            if row.get('before_sha256') != parent_files.get(path):
+                raise ValueError('monk visible parent baseline mismatch: ' + path)
+            if path == 'Village_map_image/Village_map_image.pack':
+                if row.get('sha256') != visible.get('village_sha256'):
+                    raise ValueError('monk visible village output mismatch')
+            elif (row.get('sha256'), row.get('size'), row.get('transform')) != (pin['output_sha256'], pin['output_size'], pin['transform']):
+                raise ValueError('monk visible retained resource differs: ' + path)
+        for path in additional:
+            row = rows.get(path)
+            if row is None or row.get('before_sha256') != visible.get('additional_before', {}).get(path):
+                raise ValueError('monk visible additional baseline mismatch: ' + path)
+        return
     # Exact old marker identities remain valid for verification and rollback.
     # They are not arbitrary old recipe revisions or mutable coverage exemptions.
     if identifier in recipe.get('upgrade_from_manifest_ids', []):
@@ -304,7 +332,8 @@ def apply(bundle, client):
             validate_manifest(installed)
             if installed == manifest:
                 return dict(status='already-installed', **verify(client, manifest))
-            if installed['id'] not in load(RECIPE).get('upgrade_from_manifest_ids', []):
+            visible_parent = manifest.get('monk_visible', {}).get('parent_manifest_id')
+            if installed['id'] not in load(RECIPE).get('upgrade_from_manifest_ids', []) and installed['id'] != visible_parent:
                 raise ValueError('different overlay already installed; rollback first')
             verify(client, installed)  # Check every old resource before upgrading.
             installed_hashes = {r['path']: r['sha256'] for r in

@@ -31,8 +31,11 @@ internal static class IntegrationChecks
         for (byte episode = 25; episode <= 27; episode++)
         {
             selection[35] = episode;
-            Require(!NetworkAdapterService.TryParseNativeDungeonSelectionFrame(selection,
-                out _, out _, out _, out _, out _), "reserved challenge selection");
+            Require(NetworkAdapterService.TryParseNativeDungeonSelectionFrame(selection,
+                out var hd25, out var ep25, out var dg25, out var st25, out var logical25), "four-challenge selection parse");
+            Require(MonkChallengePolicy.IsReservedEpisode(ep25) && MonkChallengePolicy.TryGetChallengeIndex(hd25, ep25, dg25, st25, out var index25) && index25 == episode - 24,
+                "four-challenge index");
+            Require(NetworkAdapterService.IsMonkPrototypeSelectionAllowed(hd25, ep25, dg25, st25, logical25, 0), "four-challenge solo selection");
         }
         var request = new byte[12];
         BinaryPrimitives.WriteUInt16LittleEndian(request.AsSpan(4), 12);

@@ -50,8 +50,12 @@ internal static partial class Program
         var view = await f.QueryAsync(f.Buyer, new(3, PageSize: 2));
         Check(view.ResultCode == 1 && view.TotalPages == 2 && view.Listings.Count == 2,
             "public browse computes fixed-capacity pages");
-        Check((await f.QueryAsync(f.Buyer, new(3, Page: 3, PageSize: 2))).ResultCode == 11,
-            "browse beyond final page rejected");
+        var secondPage = await f.QueryAsync(f.Buyer, new(3, Page: 2, PageSize: 2));
+        var finalRepeat = await f.QueryAsync(f.Buyer, new(3, Page: 3, PageSize: 2));
+        Check(finalRepeat.ResultCode == 1 && finalRepeat.TotalPages == 2
+            && finalRepeat.Listings.Select(row => row.UniqueNumber)
+                .SequenceEqual(secondPage.Listings.Select(row => row.UniqueNumber)),
+            "browse beyond final page stays on a successful list response");
         var personal = await f.QueryAsync(f.Seller, new(1, PageSize: 12));
         Check(personal.Listings.Count == 3 && personal.Listings.All(row => row.SellerCharacterId == f.Seller.Character),
             "personal browse limited to owned listings");
@@ -85,9 +89,11 @@ internal static partial class Program
         Check((await f.QueryAsync(f.Buyer, new(0))).Listings.All(row => row.UniqueNumber != a.UniqueNumber),
             "inconsistent listing owner is not published");
         await f.ExecuteAsync("DELETE FROM AuctionListings");
+        var emptyFinalRepeat = await f.QueryAsync(f.Buyer, new(3, Page: 2));
         Check((await f.QueryAsync(f.Buyer, new(3))).ResultCode == 1
-            && (await f.QueryAsync(f.Buyer, new(3, Page: 2))).ResultCode == 11,
-            "empty first page is valid and later empty pages rejected");
+            && emptyFinalRepeat.ResultCode == 1 && emptyFinalRepeat.TotalPages == 0
+            && emptyFinalRepeat.Listings.Count == 0,
+            "empty first page and later empty pages remain successful");
     }
 
     private static async Task CheckOwnershipAsync()

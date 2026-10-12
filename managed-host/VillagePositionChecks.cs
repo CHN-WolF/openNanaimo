@@ -403,6 +403,7 @@ internal static class VillagePositionChecks
                 "CB21 legal movement still updates the persistent carrier");
 
             await TownPetSceneLifecycleChecks.RunAsync();
+            await VillageShopPetSceneChecks.RunAsync();
             Console.WriteLine("VILLAGE_POSITION_CHECKS_PASS c355-bootstrap c365-c366-transition-matrix travel-fare atomic-debit insufficient-balance stale-session c367 map-boundary-9999 c368-offsets cb21 sentinel persistence startup-self-heal");
         }
         finally
