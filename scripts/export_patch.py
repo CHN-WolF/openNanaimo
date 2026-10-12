@@ -2,7 +2,7 @@
 """Read-only inventory by default; export only exact, hash-reviewed allowlist files.
 
 No game/installer execution, directory discovery, automatic approvals or cleanup.
-See docs/文件清单与导出工具.md for review schema and the unverified game baseline.
+See knowledge/指南/文件清单与导出工具.md for the review schema and game baseline.
 """
 from __future__ import annotations
 
@@ -25,8 +25,48 @@ DEPENDENCIES = {
     "runtime": {"docs"},
     "source": {"docs"},
     "knowledge": {"docs"},
+    "docs": {"knowledge"},  # Compatibility selection includes the unified documentation.
     "testports": {"docs"},
 }
+# One additional topic level is allowed only for these reviewed directories.
+# Exact path/hash review and the existing private/asset rejection still apply.
+KNOWLEDGE_TOPIC_DIRECTORIES = {
+    'knowledge/业务/住宅/家具',
+    'knowledge/业务/住宅/房屋归属',
+    'knowledge/业务/卡片/兑换',
+    'knowledge/业务/卡片/合成',
+    'knowledge/业务/地宫/伤害与目标',
+    'knowledge/业务/地宫/关卡与房间',
+    'knowledge/业务/地宫/战斗资源',
+    'knowledge/业务/地宫/掉落',
+    'knowledge/业务/地宫/计分与结算',
+    'knowledge/业务/地宫/首领',
+    'knowledge/业务/城镇/场景切换',
+    'knowledge/业务/娱乐/奖励',
+    'knowledge/业务/娱乐/房间',
+    'knowledge/业务/宠物/宝石',
+    'knowledge/业务/宠物/成长',
+    'knowledge/业务/宠物/所有权',
+    'knowledge/业务/库存/快捷栏',
+    'knowledge/业务/库存/消耗品',
+    'knowledge/业务/库存/物品实例',
+    'knowledge/业务/社交/情侣',
+    'knowledge/业务/竞技/战斗',
+    'knowledge/业务/竞技/房间',
+    'knowledge/业务/经济/商城',
+    'knowledge/业务/角色/技能',
+    'knowledge/业务/角色/新手引导',
+    'knowledge/业务/角色/等级经验',
+    'knowledge/业务/角色/角色资料',
+    'knowledge/工程/住宅与家具客户端兼容',
+    'knowledge/工程/历史验证/既有记录',
+    'knowledge/工程/启动运行',
+    'knowledge/工程/地宫资源兼容',
+    'knowledge/工程/客户端兼容',
+    'knowledge/工程/资源安装',
+    'knowledge/指南/构建与验证',
+}
+
 FORBIDDEN_PARTS = {
     "private", "logs", "log", "state", "build", "dist", "installer", "installers",
     "bundled_installer", "evidence", "snapshots", "snapshot", "backups", "backup",
@@ -118,16 +158,20 @@ def payload_policy(value: str, layer: str) -> None:
                 or value in DUNGEON7_ARTWORK
                 or value in card_generation_sources
                 or value in {"manifest/source_closure.json", "manifest/lumineos_combat.json", "manifest/l7_combat.json", "manifest/lumineos_resource_port.json", "manifest/korean_pet_resources.json",
-                             "manifest/knowledge_migration.json", "manifest/knowledge_baseline.json.gz"})
+                             "manifest/knowledge_migration.json", "manifest/knowledge_baseline.json.gz",
+                             "manifest/document_fusion.json", "manifest/document_fusion_baseline.json.gz",
+                             "manifest/knowledge_review.json"})
     elif layer == "docs":
-        good = value == "README.md" or (parts[0] == "docs" and p.suffix == ".md")
+        good = value == "README.md"
     elif layer == "knowledge":
         modules = {"角色", "城镇", "库存", "卡片", "宠物", "经济", "社交", "住宅", "地宫", "竞技", "娱乐"}
         good = p.suffix == ".md" and (
             value in {"knowledge/索引.md", "knowledge/业务/索引.md"}
-            or (len(parts) == 3 and parts[:2] in (["knowledge", "基础"], ["knowledge", "工程"]))
+            or (len(parts) == 3 and parts[:2] in (["knowledge", "基础"], ["knowledge", "工程"], ["knowledge", "指南"]))
+            or (len(parts) == 4 and parts[:3] == ["knowledge", "指南", "level200"])
             or (len(parts) == 4 and parts[:2] == ["knowledge", "业务"] and parts[2] in modules)
-            or (len(parts) == 4 and parts[:3] == ["knowledge", "工程", "历史验证"]))
+            or (len(parts) == 4 and parts[:3] == ["knowledge", "工程", "历史验证"])
+            or p.parent.as_posix() in KNOWLEDGE_TOPIC_DIRECTORIES)
     elif layer in {"python", "tcc"}:
         good = (len(parts) >= 3 and parts[:2] == ["tools", layer]
                 and (p.suffix.lower() in {".py", ".pyd", ".dll", ".exe", ".h", ".a", ".def",
@@ -236,8 +280,11 @@ def expanded_layers(requested: set[str]) -> set[str]:
     if not requested or requested - LAYERS:
         raise ExportError("unknown/empty layer selection")
     result = set(requested)
-    for layer in requested:
-        result.update(DEPENDENCIES.get(layer, set()))
+    pending = list(requested)
+    while pending:
+        for dependency in DEPENDENCIES.get(pending.pop(), set()) - result:
+            result.add(dependency)
+            pending.append(dependency)
     return result
 
 

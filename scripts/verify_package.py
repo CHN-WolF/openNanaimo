@@ -3,6 +3,7 @@
 The complete mode validates the exact project/runtime files, the full
 self-contained adapter_runtime tree, and only the presence of the user-supplied
 client. Locally derived client compatibility outputs are verified structurally without a fixed hash gate.
+Public documentation is maintained under knowledge, including its guides.
 
 This is not a license audit and does not claim original-client gameplay
 acceptance. Use export_patch.py for a deny-by-default source distribution.
@@ -17,6 +18,7 @@ import re
 from pathlib import Path
 
 TEXT_EXT = {'.ps1', '.py', '.md', '.json', '.ini', '.yaml', '.yml', '.bat', '.c', '.h', '.inc', '.txt', '.csv', '.tsv', '.cs', '.csproj'}
+# Scan a retired docs tree if present as well; the exporter rejects its payloads.
 PUBLIC_DIRS = ('release', 'adapter', 'gui_launcher', 'knowledge', 'docs', 'scripts', 'manifest', 'managed', 'managed-host')
 PRIVATE_TEXT_PREFIXES = ('knowledge/' + 'evidence/',)
 ABSOLUTE_HOST_PATH = re.compile(r'(?i)(?<![a-z0-9])[a-z]:[\\/]')

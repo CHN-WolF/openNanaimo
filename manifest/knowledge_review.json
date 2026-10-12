@@ -1,0 +1,4118 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-12",
+  "baseline_commit": "b61b15fa876c50b8a7bcdc9096205acb33995b7f",
+  "scope": "knowledge 全部主题、指南及根导航；源码核验、语义与结构审查",
+  "evidence_policy": "实现事实据本仓库源码；历史观察保留其版本与未确认边界；文档检查不等于客户端验收",
+  "summary": {
+    "issue_count": 282,
+    "categories": {
+      "表述": 218,
+      "信息": 28,
+      "结构": 36
+    },
+    "statuses": {
+      "resolved": 281,
+      "needs_owner_decision": 1
+    }
+  },
+  "issues": [
+    {
+      "id": "BAS-01",
+      "category": "表述",
+      "source": "knowledge/基础/连接会话.md",
+      "problem": "项目策略使用“私有 adapter”且登录种子章节误称频道切换调用链；帧长度没有单位与基准。",
+      "evidence": "kb-01-004、kb-02-001-3、kb-08-015-2；NetworkAdapterService.cs 与 gs_runtime.inc。",
+      "resolution": "统一适配器术语，明确项目策略与原始行为的证据边界，校准标题并注明完整帧字节。",
+      "targets": [
+        "knowledge/基础/连接会话.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/基础/连接会话.md"
+    },
+    {
+      "id": "BAS-02",
+      "category": "信息",
+      "source": "knowledge/基础/协议分帧.md",
+      "problem": "CF99 被翻译成“长时间运行的投降滥用报告”，额外暗示时长与处罚；封包家族文本块重复列 CFEC。",
+      "evidence": "kb-01-008；protocol.inc 的原始操作码名称及 gs_runtime.inc CF99/CF8B 分支。",
+      "resolution": "保留原名、8字节与请求／确认关系，限定可证实作用；以表格组织并合并重复项。",
+      "targets": [
+        "knowledge/基础/协议分帧.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/基础/协议分帧.md"
+    },
+    {
+      "id": "BAS-03",
+      "category": "表述",
+      "source": "knowledge/基础/内部桥接.md",
+      "problem": "四种消息的目的和校验混为单段，schema未释义。",
+      "evidence": "公共桥接边界与 NativeDungeonClient.cs／managed_bridge.inc。",
+      "resolution": "消息作用与校验改为表格，明确不共享战斗周期字段并解释版本术语。",
+      "targets": [
+        "knowledge/基础/内部桥接.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/基础/内部桥接.md"
+    },
+    {
+      "id": "BAS-04",
+      "category": "表述",
+      "source": "knowledge/基础/桥接布局.md",
+      "problem": "布局正文混用payload/schema/index且“低DWORD兼容”没有解释；容易误解旧程序可截断64位经验。",
+      "evidence": "df-04-002/003；NativeDungeonState.cs 与 managed_bridge.inc。",
+      "resolution": "中文说明统一载荷／状态布局版本，保留原字段标识并解释低32位及拒绝行为。",
+      "targets": [
+        "knowledge/基础/桥接布局.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/基础/桥接布局.md"
+    },
+    {
+      "id": "LAUNCH-01",
+      "category": "信息",
+      "source": "knowledge/指南/运行依赖.md",
+      "problem": "“启动器只检查文件存在”没有限定阶段，易理解成整个启动链不校验客户端布局和补丁字节。",
+      "evidence": "df-16-001；nanaimo_launcher.ps1 的 Test-ClientBinary 与 Ensure-ClientCompatibility。",
+      "resolution": "限定为文件存在性预检，同时说明后续PE／位点校验与整文件哈希门禁的区别。",
+      "targets": [
+        "knowledge/指南/运行依赖.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/运行依赖.md"
+    },
+    {
+      "id": "LAUNCH-02",
+      "category": "表述",
+      "source": "knowledge/指南/启动流程与源码索引.md",
+      "problem": "源码阅读序列只是文本路径，未说明各文件作用；“managed玩法”等语言混用。",
+      "evidence": "df-08-001/002/013及各文件入口。",
+      "resolution": "阅读顺序改为顺序／路径／目的表，首次解释GUI与Network，说明性中文统一。",
+      "targets": [
+        "knowledge/指南/启动流程与源码索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/启动流程与源码索引.md"
+    },
+    {
+      "id": "GUIDE-01",
+      "category": "表述",
+      "source": "knowledge/指南/构建与验证.md",
+      "problem": "开头把全部开发依赖与外部客户端概括成所有命令前提；虚构占位开关可能被直接执行。",
+      "evidence": "df-14-001、df-14-010；各自检程序与运行依赖。",
+      "resolution": "按具体专项区分条件，明确占位开关非命令，并限制独立专项不得连接活动进程。",
+      "targets": [
+        "knowledge/指南/构建与验证/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/构建与验证/索引.md"
+    },
+    {
+      "id": "GUIDE-02",
+      "category": "信息",
+      "source": "knowledge/指南/构建与验证.md",
+      "problem": "历史通过数量与当前专项并排，缺少统计单位、去重与受测身份。",
+      "evidence": "df-14-017：327+149+457+86+66+325=1410。",
+      "resolution": "保留原计数与合计，明确仅属历史、统计边界未登记。",
+      "targets": [
+        "knowledge/指南/构建与验证/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/构建与验证/索引.md"
+    },
+    {
+      "id": "GUIDE-03",
+      "category": "结构",
+      "source": "knowledge/指南/构建与验证.md",
+      "problem": "一份约36KB指南同时聚集文档、发布、多个业务专项、托管／原生构建、GUI及派生流程。",
+      "evidence": "df-14-001..021 的独立执行目的与输入条件。",
+      "resolution": "按11类任务拆分同目录子页，保留全部命令、验证数量与FUSION片段；入口改为作用／页面表。",
+      "targets": [
+        "knowledge/指南/构建与验证/文档与发布检查.md",
+        "knowledge/指南/构建与验证/竞技与娱乐专项.md",
+        "knowledge/指南/构建与验证/全量回归.md",
+        "knowledge/指南/构建与验证/地宫专项.md",
+        "knowledge/指南/构建与验证/托管与完整构建.md",
+        "knowledge/指南/构建与验证/原生构建.md",
+        "knowledge/指南/构建与验证/客户端派生.md",
+        "knowledge/指南/构建与验证/GUI与离线工具.md",
+        "knowledge/指南/构建与验证/库存与首领专项.md",
+        "knowledge/指南/构建与验证/恢复与宠物专项.md",
+        "knowledge/指南/构建与验证/人物成长与计分.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/构建与验证/索引.md"
+    },
+    {
+      "id": "GUIDE-04",
+      "category": "信息",
+      "source": "knowledge/指南/L7-L8资源移植.md",
+      "problem": "“使用者自备韩服资源”与仓库已提供资源包的说明相矛盾；“两个真实资源检查”没有标明历史版本。",
+      "evidence": "df-03-001/005；resource-packs/README.md、manifest/korean_resource_kit.json。",
+      "resolution": "明确登记输入随包提供与基础客户端仍自备，历史计数不作为当前数量。",
+      "targets": [
+        "knowledge/指南/L7-L8资源移植.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/L7-L8资源移植.md"
+    },
+    {
+      "id": "GUIDE-05",
+      "category": "表述",
+      "source": "knowledge/指南/单身公寓.md",
+      "problem": "名为操作指南但只有跨页引用表，未说明开通／购买／保存的顺序与作用。",
+      "evidence": "df-07-001及住宅业务、启动流程。",
+      "resolution": "补充操作顺序和离线编辑保存边界，具体业务条件仍链接唯一主入口。",
+      "targets": [
+        "knowledge/指南/单身公寓.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/单身公寓.md"
+    },
+    {
+      "id": "GUIDE-06",
+      "category": "表述",
+      "source": "knowledge/指南/韩服宠物佩戴等级下放方案.md",
+      "problem": "“122条追加宠物”与其他页“121条追加”未在导航解释统计范围；旧“下放”文件名可能被当现行规则。",
+      "evidence": "manifest/hero_dragon_resources.json、korean_pet_resources.json；868→869→990。",
+      "resolution": "明确1+121=122与990目录的统计关系，旧下放词只作历史策略入口；专题更新标题改稳定阅读导航。",
+      "targets": [
+        "knowledge/指南/地宫与背包更新说明.md",
+        "knowledge/指南/韩服宠物佩戴等级下放方案.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/韩服宠物佩戴等级下放方案.md"
+    },
+    {
+      "id": "GUIDE-07",
+      "category": "表述",
+      "source": "knowledge/指南/韩服L7-L8与宠物资源说明.md",
+      "problem": "融合后只保留“第5节”却没有1至4节；前提、长命令、独立事务与回滚边界未分组。",
+      "evidence": "df-17-006；三个安装器独立调用。",
+      "resolution": "标题去悬空编号并保留原锚点，将前提／安装核验／恢复边界分组，全部命令和事务限制保留。",
+      "targets": [
+        "knowledge/指南/韩服L7-L8与宠物资源说明.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/韩服L7-L8与宠物资源说明.md"
+    },
+    {
+      "id": "LEGAL-01",
+      "category": "信息",
+      "source": "README.md#使用边界",
+      "problem": "README的全面非商业用途限制与标准AGPL-3.0代码许可的适用对象仍未明确。",
+      "evidence": "LICENSE第4/5节允许副本收费与受许可修改作品；README及第三方与许可说明原已记录冲突。",
+      "resolution": "保留原许可与用途声明，明确标为维护者待确认；文档审核不代替权利人决定代码／素材／运营的许可范围。",
+      "targets": [
+        "README.md",
+        "knowledge/指南/第三方与许可说明.md"
+      ],
+      "status": "needs_owner_decision",
+      "current_source": "README.md#使用边界"
+    },
+    {
+      "id": "STRUCT-01",
+      "category": "结构",
+      "source": "knowledge/工程/知识维护.md",
+      "problem": "硬编码地宫“六个文件”及仅要求长页章节导航，与独立职责可拆分原则冲突。",
+      "evidence": "六大聚合页的维护职责及约75KB最大正文。",
+      "resolution": "将六主题改为主题目录／子页，规定轻量入口与唯一事实维护位置，并登记审查问题与结果。",
+      "targets": [
+        "knowledge/工程/知识维护.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/知识维护.md"
+    },
+    {
+      "id": "BAS-05",
+      "category": "表述",
+      "source": "knowledge/基础/持久化.md",
+      "problem": "角色表、原生记录、命名空间、旧档导入、删除标记和失败拒绝策略以多事务长段堆叠。",
+      "evidence": "kb-03-002-1；sqlite_state.inc、PersistentStateStore。",
+      "resolution": "逐条列出存储对象、命名空间、迁移、删除、失败及各入口，保留字段名、事务和不回退条件。",
+      "targets": [
+        "knowledge/基础/持久化.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/基础/持久化.md"
+    },
+    {
+      "id": "EXPORT-01",
+      "category": "结构",
+      "source": "scripts/export_patch.py",
+      "problem": "既有导出器仅允许平铺叶子，职责拆分的新子目录会被拒绝导出，产生导航可读但分发不完整。",
+      "evidence": "payload_policy 的原路径深度限制与 patch_allowlist 文档候选。",
+      "resolution": "只增加精确列出的主题目录及审查登记，保留素材／私有路径拒绝、逐文件哈希与人工审核契约；候选与发布清单同步更新。",
+      "targets": [
+        "scripts/export_patch.py",
+        "knowledge/指南/文件清单与导出工具.md"
+      ],
+      "status": "resolved",
+      "current_source": "scripts/export_patch.py"
+    },
+    {
+      "id": "GUIDE-08",
+      "category": "表述",
+      "source": "knowledge/指南/索引.md",
+      "problem": "多份指南仍有20段超过250字的多规则长段，构建检查把覆盖、边界与历史结果连续堆叠。",
+      "evidence": "构建与验证、运行依赖、资源安装等原长段；命令围栏和字段表另行保留。",
+      "resolution": "按完整规则句分点，保留因果条件、数值、引用与全部命令代码；构建入口清理移出片段留下的机械空行。",
+      "targets": [
+        "knowledge/指南/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/指南/索引.md"
+    },
+    {
+      "id": "LANG-01",
+      "category": "表述",
+      "source": "knowledge/工程/知识维护.md",
+      "problem": "仍有说明性adapter/worker/patch/Boss英文混用及跨职责长段，术语与结构规则未覆盖全部叶子。",
+      "evidence": "全知识库最终通读与结构扫描：另整理24段、413处说明性术语；代码、字段和历史检索词单独保护。",
+      "resolution": "统一适配器／工作进程／补丁／首领；不改代码与原始资源标识；旧标题锚点保留，完整规则句分点并修复繁简字及未定义旧译词。",
+      "targets": [
+        "knowledge/工程/知识维护.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/知识维护.md"
+    },
+    {
+      "id": "ENG-001",
+      "category": "结构",
+      "source": "knowledge/工程/客户端兼容.md#df-11-002",
+      "problem": "完整适配器结构块混合自动清单、建角、教程、多开、经验、结算、娱乐、P状态与礼物预览，原单页约68KB。",
+      "evidence": "原 FUSION 父块在127..19042包含13个三级职责节，正文另有12个独立补丁块。",
+      "resolution": "按原始标题字符区间拆分父块，建立客户端兼容目录和主题入口；字节表、命令与历史编码全部保留。",
+      "targets": [
+        "knowledge/工程/客户端兼容/自动兼容清单.md",
+        "knowledge/工程/客户端兼容/建角与新手引导.md",
+        "knowledge/工程/客户端兼容/社交多开二进制.md",
+        "knowledge/工程/客户端兼容/手动结算与队员回城.md",
+        "knowledge/工程/客户端兼容/经验与本地等级.md",
+        "knowledge/工程/客户端兼容/组队结果入口与排序.md",
+        "knowledge/工程/客户端兼容/娱乐室进度与结果.md",
+        "knowledge/工程/客户端兼容/原生状态与旧版迁移.md",
+        "knowledge/工程/客户端兼容/礼物刷新预览.md",
+        "knowledge/工程/客户端兼容/首领血条.md",
+        "knowledge/工程/客户端兼容/复活快捷栏布局.md",
+        "knowledge/工程/客户端兼容/玩家交易取消.md",
+        "knowledge/工程/客户端兼容/等级200字段与显示.md",
+        "knowledge/工程/客户端兼容/连续挑战状态清理.md",
+        "knowledge/工程/客户端兼容/竞技结果与复赛.md",
+        "knowledge/工程/住宅与家具客户端兼容/家具快照与点击.md",
+        "knowledge/工程/住宅与家具客户端兼容/购房与房屋推荐.md",
+        "knowledge/工程/住宅与家具客户端兼容/屋外装修.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/客户端兼容/自动兼容清单.md#df-11-002-overview"
+    },
+    {
+      "id": "ENG-002",
+      "category": "结构",
+      "source": "knowledge/工程/启动运行.md",
+      "problem": "启动模式、账号库存编辑、多开历史、诊断目录、位置恢复堆在同页。",
+      "evidence": "原导航含14个不同主题，账号离线保存与槽位生命周期互相穿插。",
+      "resolution": "拆为5个职责页，原页提供范围表。",
+      "targets": [
+        "knowledge/工程/启动运行/启动模式与服务.md",
+        "knowledge/工程/启动运行/账号与离线编辑.md",
+        "knowledge/工程/启动运行/社交槽位与多开.md",
+        "knowledge/工程/启动运行/运行目录与隔离诊断.md",
+        "knowledge/工程/启动运行/出生点与位置恢复.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/启动运行.md"
+    },
+    {
+      "id": "ENG-003",
+      "category": "结构",
+      "source": "knowledge/工程/资源安装.md",
+      "problem": "宠物目录、L7/L8资源、历史闭包、装扮家具、部署事务、子弹、娱乐状态和资源包组成混杂。",
+      "evidence": "08-059、06-009、09-024、df-17系列分别维护不同对象与验证口径。",
+      "resolution": "建立9个职责页，保留各片段身份及历史限定。",
+      "targets": [
+        "knowledge/工程/资源安装/追加宠物安装.md",
+        "knowledge/工程/资源安装/韩服资源集成范围.md",
+        "knowledge/工程/资源安装/历史地宫依赖检查.md",
+        "knowledge/工程/资源安装/追加装扮与家具.md",
+        "knowledge/工程/资源安装/事务与恢复.md",
+        "knowledge/工程/资源安装/子弹资源事务.md",
+        "knowledge/工程/资源安装/娱乐室状态资源.md",
+        "knowledge/工程/资源安装/资源清单与包组成.md",
+        "knowledge/工程/资源安装/验证与未确认依赖.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/资源安装.md"
+    },
+    {
+      "id": "ENG-004",
+      "category": "结构",
+      "source": "knowledge/工程/历史验证/既有记录.md",
+      "problem": "历史结果按来源编号连续堆叠，综合矩阵与不同模块专项无法按任务检索。",
+      "evidence": "原文件约33KB，含50余个专项片段。",
+      "resolution": "按综合矩阵、资源、启动器、社交竞技、角色库存地宫拆为5页。",
+      "targets": [
+        "knowledge/工程/历史验证/既有记录/角色库存与地宫.md",
+        "knowledge/工程/历史验证/既有记录/综合矩阵与发布.md",
+        "knowledge/工程/历史验证/既有记录/启动器与客户端.md",
+        "knowledge/工程/历史验证/既有记录/资源与可选子弹.md",
+        "knowledge/工程/历史验证/既有记录/社交娱乐与竞技.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/历史验证/既有记录.md"
+    },
+    {
+      "id": "ENG-005",
+      "category": "结构",
+      "source": "knowledge/工程/住宅与家具客户端兼容.md#df-11-003；knowledge/工程/地宫资源兼容.md#df-11-004",
+      "problem": "住宅块混合家具/表情、购房/推荐、装修；地宫块混合前置、道路/别名、小地图、场景/旧美术。",
+      "evidence": "同父块包含多个独立三级职责，无法局部维护。",
+      "resolution": "按原文字符区间拆为住宅3页、地宫5页并登记父片段审计元数据。",
+      "targets": [
+        "knowledge/工程/住宅与家具客户端兼容/家具快照与点击.md",
+        "knowledge/工程/住宅与家具客户端兼容/购房与房屋推荐.md",
+        "knowledge/工程/住宅与家具客户端兼容/屋外装修.md",
+        "knowledge/工程/地宫资源兼容/范围与前置进度.md",
+        "knowledge/工程/地宫资源兼容/道路与资源别名.md",
+        "knowledge/工程/地宫资源兼容/小地图补丁.md",
+        "knowledge/工程/地宫资源兼容/场景衔接与旧美术迁移.md",
+        "knowledge/工程/地宫资源兼容/资源与程序配套部署.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/住宅与家具客户端兼容.md#df-11-003；knowledge/工程/地宫资源兼容.md#df-11-004"
+    },
+    {
+      "id": "ENG-006",
+      "category": "表述",
+      "source": "工程各正文的长段，尤其03-040-5、04-004-2、09-017-6、df-11-002、09-012-1",
+      "problem": "单段堆叠多条保存边界、协议职责、验证条件，机器和读者难以识别规则单位。",
+      "evidence": "多段超过260字且包含2条以上完整句；并列约束没有独立列表项。",
+      "resolution": "按完整句形成规则列表，保留所有事实、命令和数值；新页显式说明用途及范围。",
+      "targets": [
+        "knowledge/工程/客户端兼容/自动兼容清单.md",
+        "knowledge/工程/客户端兼容/建角与新手引导.md",
+        "knowledge/工程/客户端兼容/社交多开二进制.md",
+        "knowledge/工程/客户端兼容/手动结算与队员回城.md",
+        "knowledge/工程/客户端兼容/经验与本地等级.md",
+        "knowledge/工程/客户端兼容/组队结果入口与排序.md",
+        "knowledge/工程/客户端兼容/娱乐室进度与结果.md",
+        "knowledge/工程/客户端兼容/原生状态与旧版迁移.md",
+        "knowledge/工程/客户端兼容/礼物刷新预览.md",
+        "knowledge/工程/客户端兼容/首领血条.md",
+        "knowledge/工程/客户端兼容/复活快捷栏布局.md",
+        "knowledge/工程/客户端兼容/玩家交易取消.md",
+        "knowledge/工程/客户端兼容/等级200字段与显示.md",
+        "knowledge/工程/客户端兼容/连续挑战状态清理.md",
+        "knowledge/工程/客户端兼容/竞技结果与复赛.md",
+        "knowledge/工程/住宅与家具客户端兼容/家具快照与点击.md",
+        "knowledge/工程/住宅与家具客户端兼容/购房与房屋推荐.md",
+        "knowledge/工程/住宅与家具客户端兼容/屋外装修.md",
+        "knowledge/工程/地宫资源兼容/范围与前置进度.md",
+        "knowledge/工程/地宫资源兼容/道路与资源别名.md",
+        "knowledge/工程/地宫资源兼容/小地图补丁.md",
+        "knowledge/工程/地宫资源兼容/场景衔接与旧美术迁移.md",
+        "knowledge/工程/地宫资源兼容/资源与程序配套部署.md",
+        "knowledge/工程/启动运行/启动模式与服务.md",
+        "knowledge/工程/启动运行/账号与离线编辑.md",
+        "knowledge/工程/启动运行/社交槽位与多开.md",
+        "knowledge/工程/启动运行/运行目录与隔离诊断.md",
+        "knowledge/工程/启动运行/出生点与位置恢复.md",
+        "knowledge/工程/资源安装/追加宠物安装.md",
+        "knowledge/工程/资源安装/韩服资源集成范围.md",
+        "knowledge/工程/资源安装/历史地宫依赖检查.md",
+        "knowledge/工程/资源安装/追加装扮与家具.md",
+        "knowledge/工程/资源安装/事务与恢复.md",
+        "knowledge/工程/资源安装/子弹资源事务.md",
+        "knowledge/工程/资源安装/娱乐室状态资源.md",
+        "knowledge/工程/资源安装/资源清单与包组成.md",
+        "knowledge/工程/资源安装/验证与未确认依赖.md",
+        "knowledge/工程/历史验证/既有记录/角色库存与地宫.md",
+        "knowledge/工程/历史验证/既有记录/综合矩阵与发布.md",
+        "knowledge/工程/历史验证/既有记录/启动器与客户端.md",
+        "knowledge/工程/历史验证/既有记录/资源与可选子弹.md",
+        "knowledge/工程/历史验证/既有记录/社交娱乐与竞技.md"
+      ],
+      "status": "resolved",
+      "current_source": "工程各正文的长段，尤其03-040-5、04-004-2、09-017-6、df-11-002、09-012-1"
+    },
+    {
+      "id": "ENG-007",
+      "category": "表述",
+      "source": "工程 FUSION 各标题与历史导航",
+      "problem": "沿用原文1/2/3编号及“完整 adapter”“一图看懂”“二进制 patch”等标题，脱离原文后编号和语体不一致。",
+      "evidence": "原主题页内多次出现## 1、## 2、## 3与含混“当前功能”“验证范围”。",
+      "resolution": "去掉迁移来源章节编号，标题使用中文专业术语，代码符号与客户端字面文本原样保留。",
+      "targets": [
+        "knowledge/工程/客户端兼容/自动兼容清单.md",
+        "knowledge/工程/客户端兼容/建角与新手引导.md",
+        "knowledge/工程/客户端兼容/社交多开二进制.md",
+        "knowledge/工程/客户端兼容/手动结算与队员回城.md",
+        "knowledge/工程/客户端兼容/经验与本地等级.md",
+        "knowledge/工程/客户端兼容/组队结果入口与排序.md",
+        "knowledge/工程/客户端兼容/娱乐室进度与结果.md",
+        "knowledge/工程/客户端兼容/原生状态与旧版迁移.md",
+        "knowledge/工程/客户端兼容/礼物刷新预览.md",
+        "knowledge/工程/客户端兼容/首领血条.md",
+        "knowledge/工程/客户端兼容/复活快捷栏布局.md",
+        "knowledge/工程/客户端兼容/玩家交易取消.md",
+        "knowledge/工程/客户端兼容/等级200字段与显示.md",
+        "knowledge/工程/客户端兼容/连续挑战状态清理.md",
+        "knowledge/工程/客户端兼容/竞技结果与复赛.md",
+        "knowledge/工程/住宅与家具客户端兼容/家具快照与点击.md",
+        "knowledge/工程/住宅与家具客户端兼容/购房与房屋推荐.md",
+        "knowledge/工程/住宅与家具客户端兼容/屋外装修.md",
+        "knowledge/工程/地宫资源兼容/范围与前置进度.md",
+        "knowledge/工程/地宫资源兼容/道路与资源别名.md",
+        "knowledge/工程/地宫资源兼容/小地图补丁.md",
+        "knowledge/工程/地宫资源兼容/场景衔接与旧美术迁移.md",
+        "knowledge/工程/地宫资源兼容/资源与程序配套部署.md",
+        "knowledge/工程/启动运行/启动模式与服务.md",
+        "knowledge/工程/启动运行/账号与离线编辑.md",
+        "knowledge/工程/启动运行/社交槽位与多开.md",
+        "knowledge/工程/启动运行/运行目录与隔离诊断.md",
+        "knowledge/工程/启动运行/出生点与位置恢复.md",
+        "knowledge/工程/资源安装/追加宠物安装.md",
+        "knowledge/工程/资源安装/韩服资源集成范围.md",
+        "knowledge/工程/资源安装/历史地宫依赖检查.md",
+        "knowledge/工程/资源安装/追加装扮与家具.md",
+        "knowledge/工程/资源安装/事务与恢复.md",
+        "knowledge/工程/资源安装/子弹资源事务.md",
+        "knowledge/工程/资源安装/娱乐室状态资源.md",
+        "knowledge/工程/资源安装/资源清单与包组成.md",
+        "knowledge/工程/资源安装/验证与未确认依赖.md",
+        "knowledge/工程/历史验证/既有记录/角色库存与地宫.md",
+        "knowledge/工程/历史验证/既有记录/综合矩阵与发布.md",
+        "knowledge/工程/历史验证/既有记录/启动器与客户端.md",
+        "knowledge/工程/历史验证/既有记录/资源与可选子弹.md",
+        "knowledge/工程/历史验证/既有记录/社交娱乐与竞技.md"
+      ],
+      "status": "resolved",
+      "current_source": "工程 FUSION 各标题与历史导航"
+    },
+    {
+      "id": "ENG-008",
+      "category": "信息",
+      "source": "knowledge/工程/历史验证/既有记录.md#kb-09-002",
+      "problem": "历史页称“登记为当前发布的定向结果”“当前定向检查”，与该页“缺少完整受测身份、不构成当前验收”矛盾。",
+      "evidence": "原记录未登记测试日期、产物身份与日志；现行活动清单不能补齐。",
+      "resolution": "改为“原文曾登记”的历史状态，保留全部计数及边界。",
+      "targets": [
+        "knowledge/工程/历史验证/既有记录/综合矩阵与发布.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/历史验证/既有记录/综合矩阵与发布.md#kb-09-002"
+    },
+    {
+      "id": "ENG-009",
+      "category": "表述",
+      "source": "knowledge/工程/资源安装.md#kb-08-059-1",
+      "problem": "装扮家具表只有表头和分隔线，无记录；读者无法判断缺数据或跨页引用。",
+      "evidence": "AVATA行保存在业务库存装备的08-059-2，工程08-059-3只包含INTERIOR行。",
+      "resolution": "移除空表头，明确装扮数量的维护页与家具表位置。",
+      "targets": [
+        "knowledge/工程/资源安装/追加装扮与家具.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/资源安装/追加装扮与家具.md#kb-08-059-1"
+    },
+    {
+      "id": "ENG-010",
+      "category": "表述",
+      "source": "knowledge/工程/资源安装.md#kb-09-015-1",
+      "problem": "“追加宠物资源约定”是空标题，作用未说明。",
+      "evidence": "BEGIN块内无任何正文。",
+      "resolution": "加入本页范围和安装指南职责说明，保留标记。",
+      "targets": [
+        "knowledge/工程/资源安装/追加宠物安装.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/资源安装/追加宠物安装.md#kb-09-015-1"
+    },
+    {
+      "id": "ENG-011",
+      "category": "信息",
+      "source": "knowledge/工程/客户端兼容.md#df-11-002；#df-12-012；knowledge/工程/地宫资源兼容.md#df-11-004",
+      "problem": "原描述把逐文件原子替换与整组事务混用，未区分普通异常回滚与中断恢复。",
+      "evidence": "LauncherTools.Compatibility.cs逐文件AtomicWrite，catch逆序恢复并拒绝并发修改；未持久化applying收据。",
+      "resolution": "明确预检、逐文件提交、异常恢复与无持久中断收据的边界。",
+      "targets": [
+        "knowledge/工程/客户端兼容/自动兼容清单.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/客户端兼容.md#df-11-002；#df-12-012；knowledge/工程/地宫资源兼容.md#df-11-004"
+    },
+    {
+      "id": "ENG-012",
+      "category": "信息",
+      "source": "knowledge/工程/客户端兼容.md#df-11-002；#df-12-012",
+      "problem": "兼容报告的应用前摘要/备份字段及all_pass含义未区分Python和C#工具，可能把dry-run输出当安装通过。",
+      "evidence": "Python _apply_outputs返回before_sha256/after_sha256/backup；C#只返回path/status/sha256，dry-run也输出verification.all_pass=true。",
+      "resolution": "加入报告对照表；C#路径必须自行保存基线并确认apply_requested、dry_run、应用条目和磁盘身份。",
+      "targets": [
+        "knowledge/工程/客户端兼容/自动兼容清单.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/客户端兼容.md#df-11-002；#df-12-012"
+    },
+    {
+      "id": "ENG-013",
+      "category": "信息",
+      "source": "knowledge/工程/住宅与家具客户端兼容.md#df-11-003",
+      "problem": "称作启动器选择的兼容项清单漏写建角和房屋推荐，与完整自动应用清单不一致。",
+      "evidence": "GUI自动命令包含--character-creation和--apartment-recommendation；住宅原列仅7项。",
+      "resolution": "按现行自动命令补齐两项，保留各独立参数职责。",
+      "targets": [
+        "knowledge/工程/住宅与家具客户端兼容/家具快照与点击.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/住宅与家具客户端兼容/家具快照与点击.md#df-11-003-furniture"
+    },
+    {
+      "id": "ENG-014",
+      "category": "表述",
+      "source": "knowledge/工程/客户端兼容.md各补丁位点；knowledge/工程/住宅与家具客户端兼容.md#df-11-003；knowledge/工程/地宫资源兼容.md#df-11-004",
+      "problem": "frame/payload/对象/记录偏移混写，裸+偏移容易被误当载荷或文件偏移。",
+      "evidence": "C393同时用payload+0和frame+8；C355字段以完整帧计；特殊卡+245为记录偏移；VA须PE映射。",
+      "resolution": "各兼容页增加读数约定，关键字段明确完整帧或对象基址。",
+      "targets": [
+        "knowledge/工程/住宅与家具客户端兼容/家具快照与点击.md",
+        "knowledge/工程/住宅与家具客户端兼容/屋外装修.md",
+        "knowledge/工程/住宅与家具客户端兼容/购房与房屋推荐.md",
+        "knowledge/工程/地宫资源兼容/场景衔接与旧美术迁移.md",
+        "knowledge/工程/地宫资源兼容/小地图补丁.md",
+        "knowledge/工程/地宫资源兼容/范围与前置进度.md",
+        "knowledge/工程/地宫资源兼容/资源与程序配套部署.md",
+        "knowledge/工程/地宫资源兼容/道路与资源别名.md",
+        "knowledge/工程/客户端兼容/原生状态与旧版迁移.md",
+        "knowledge/工程/客户端兼容/复活快捷栏布局.md",
+        "knowledge/工程/客户端兼容/娱乐室进度与结果.md",
+        "knowledge/工程/客户端兼容/建角与新手引导.md",
+        "knowledge/工程/客户端兼容/手动结算与队员回城.md",
+        "knowledge/工程/客户端兼容/玩家交易取消.md",
+        "knowledge/工程/客户端兼容/礼物刷新预览.md",
+        "knowledge/工程/客户端兼容/社交多开二进制.md",
+        "knowledge/工程/客户端兼容/竞技结果与复赛.md",
+        "knowledge/工程/客户端兼容/等级200字段与显示.md",
+        "knowledge/工程/客户端兼容/组队结果入口与排序.md",
+        "knowledge/工程/客户端兼容/经验与本地等级.md",
+        "knowledge/工程/客户端兼容/自动兼容清单.md",
+        "knowledge/工程/客户端兼容/连续挑战状态清理.md",
+        "knowledge/工程/客户端兼容/首领血条.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/客户端兼容.md各补丁位点；knowledge/工程/住宅与家具客户端兼容.md#df-11-003；knowledge/工程/地宫资源兼容.md#df-11-004"
+    },
+    {
+      "id": "ENG-015",
+      "category": "信息",
+      "source": "knowledge/工程/启动运行.md#kb-09-031-1",
+      "problem": "schema值省略openNanaimo前缀，读者可能复制简称作为元数据判别值。",
+      "evidence": "start_social_client.ps1验证完整openNanaimo.social-client.v5与openNanaimo.social-worktree.v2。",
+      "resolution": "明确完整字符串并保留旧简称用于识别历史语义。",
+      "targets": [
+        "knowledge/工程/启动运行/社交槽位与多开.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/启动运行/社交槽位与多开.md#kb-09-031-1"
+    },
+    {
+      "id": "ENG-016",
+      "category": "表述",
+      "source": "knowledge/工程/构建发布.md#kb-09-022、#kb-09-029-1；knowledge/工程/验证状态.md#kb-09-000、#kb-09-035-1、#kb-09-043-2",
+      "problem": "导入块仅空标题或写“三条链路”但当前页未列出指代，不能独立理解。",
+      "evidence": "空BEGIN块没有规则；09-043-2先前上下文位于其他主题。",
+      "resolution": "补上维护职责、清单入口和三条链路名称，保留片段审计身份。",
+      "targets": [
+        "knowledge/工程/构建发布.md",
+        "knowledge/工程/验证状态.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/构建发布.md#kb-09-022、#kb-09-029-1；knowledge/工程/验证状态.md#kb-09-000、#kb-09-035-1、#kb-09-043-2"
+    },
+    {
+      "id": "ENG-017",
+      "category": "信息",
+      "source": "knowledge/工程/构建发布.md#kb-09-020-1",
+      "problem": "功能摘要仅说移动第7关关闭边界，未说明完整L8资源下关闭第9关，容易误解为始终采用B80。",
+      "evidence": "小地图配方legacy=B80、lumineos=B84，VerifyLumineos资源身份后选择后者。",
+      "resolution": "发布摘要对齐完整资源验证与L7/L8关闭边界。",
+      "targets": [
+        "knowledge/工程/构建发布.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/构建发布.md#kb-09-020-1"
+    },
+    {
+      "id": "ENG-018",
+      "category": "表述",
+      "source": "knowledge/工程/历史验证/既有记录.md#kb-09-015-4、#kb-09-035-2、#kb-09-035-7、#kb-09-043-1、#kb-09-043-3",
+      "problem": "历史结果以逗号/分号断尾，且局部继续称“当前”，易造成记录缺句和现行验收误解。",
+      "evidence": "END前出现“通过，”或“验证层级...；”，片段没有后续句；全页缺少受测身份。",
+      "resolution": "断尾仅规范为句号，不补造结果；受测对象按原记录表达。",
+      "targets": [
+        "knowledge/工程/历史验证/既有记录/资源与可选子弹.md",
+        "knowledge/工程/历史验证/既有记录/角色库存与地宫.md",
+        "knowledge/工程/历史验证/既有记录/社交娱乐与竞技.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/历史验证/既有记录.md#kb-09-015-4、#kb-09-035-2、#kb-09-035-7、#kb-09-043-1、#kb-09-043-3"
+    },
+    {
+      "id": "ENG-019",
+      "category": "表述",
+      "source": "knowledge/工程/客户端兼容.md#df-11-002/#df-11-007；knowledge/工程/地宫资源兼容.md#df-11-004",
+      "problem": "迁移来源数字章节引用在主题拆分后没有可操作目标，如1.1.1–1.1.2、1.2、1.3、1.4、3.6.1、3.1–3.8。",
+      "evidence": "这些节已分属独立职责页，继续显示原编号会误导检索。",
+      "resolution": "替换为维护页链接或本页自然标题；历史原文编号仍由基线保存。",
+      "targets": [
+        "knowledge/工程/客户端兼容/自动兼容清单.md",
+        "knowledge/工程/客户端兼容/首领血条.md",
+        "knowledge/工程/地宫资源兼容/小地图补丁.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/客户端兼容.md#df-11-002/#df-11-007；knowledge/工程/地宫资源兼容.md#df-11-004"
+    },
+    {
+      "id": "ENG-020",
+      "category": "表述",
+      "source": "knowledge/工程/客户端兼容.md#df-12-002",
+      "problem": "44/80字节房内纪录设置及+44/+48/+52/+56/+79没有显式写出完整帧偏移基准。",
+      "evidence": "entertainment_room_compat.py以消息指针+4读取帧长度，以+44校验magic，以+48检查房间身份，以+52/+56更新记录。",
+      "resolution": "明确完整设置帧及frame偏移，区分全局资料对象+0xD5C。",
+      "targets": [
+        "knowledge/工程/客户端兼容/娱乐室进度与结果.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/工程/客户端兼容/娱乐室进度与结果.md#df-12-002"
+    },
+    {
+      "id": "BUS-001",
+      "category": "信息",
+      "source": "knowledge/业务/住宅/家具.md",
+      "problem": "家具补充无条件宣称丢弃一致，与同页删除未筛期限的已知缺口矛盾。",
+      "evidence": "managed/Services/DatabaseService.ApartmentInventory.cs DeleteInteriorInventoryItemAsync查询ItemCode/Quantity，GetInteriorInventoryItemCodesAsync另查ItemExpiration。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/住宅/家具/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/家具/索引.md"
+    },
+    {
+      "id": "BUS-002",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/家具.md",
+      "problem": "5段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/住宅/家具/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/家具/索引.md"
+    },
+    {
+      "id": "BUS-003",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/家具.md",
+      "problem": "5个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/住宅/家具/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/家具/索引.md"
+    },
+    {
+      "id": "BUS-004",
+      "category": "结构",
+      "source": "knowledge/业务/住宅/家具.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 12984 字节，7 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/住宅/家具/客户端实例与快照.md",
+        "knowledge/业务/住宅/家具/库存布局与期限.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/家具/索引.md"
+    },
+    {
+      "id": "BUS-005",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/屋外装修.md",
+      "problem": "4段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/住宅/屋外装修.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/屋外装修.md"
+    },
+    {
+      "id": "BUS-006",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/屋外装修.md",
+      "problem": "2个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/住宅/屋外装修.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/屋外装修.md"
+    },
+    {
+      "id": "BUS-007",
+      "category": "信息",
+      "source": "knowledge/业务/住宅/房屋归属.md",
+      "problem": "“实例移出”容易理解为物理删除，且未披露丢弃索引例外。",
+      "evidence": "家具 03-039-1；DatabaseService.ApartmentInventory.cs有效投影与删除查询。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/住宅/房屋归属/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/房屋归属/索引.md"
+    },
+    {
+      "id": "BUS-008",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/房屋归属.md",
+      "problem": "8段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/住宅/房屋归属/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/房屋归属/索引.md"
+    },
+    {
+      "id": "BUS-009",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/房屋归属.md",
+      "problem": "8个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/住宅/房屋归属/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/房屋归属/索引.md"
+    },
+    {
+      "id": "BUS-010",
+      "category": "结构",
+      "source": "knowledge/业务/住宅/房屋归属.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 15806 字节，13 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的3个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/住宅/房屋归属/公寓进入与归属.md",
+        "knowledge/业务/住宅/房屋归属/土地卡与地址释放.md",
+        "knowledge/业务/住宅/房屋归属/推荐购房与租期.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/房屋归属/索引.md"
+    },
+    {
+      "id": "BUS-011",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/访问恢复.md",
+      "problem": "2段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/住宅/访问恢复.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/访问恢复.md"
+    },
+    {
+      "id": "BUS-012",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/访问恢复.md",
+      "problem": "6个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/住宅/访问恢复.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/访问恢复.md"
+    },
+    {
+      "id": "BUS-013",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/访问恢复.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/住宅/访问恢复.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/访问恢复.md"
+    },
+    {
+      "id": "BUS-014",
+      "category": "表述",
+      "source": "knowledge/业务/卡片/兑换.md",
+      "problem": "10段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/卡片/兑换/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/兑换/索引.md"
+    },
+    {
+      "id": "BUS-015",
+      "category": "表述",
+      "source": "knowledge/业务/卡片/兑换.md",
+      "problem": "1个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/卡片/兑换/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/兑换/索引.md"
+    },
+    {
+      "id": "BUS-016",
+      "category": "结构",
+      "source": "knowledge/业务/卡片/兑换.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 18059 字节，15 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的5个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/卡片/兑换/VIP经验权益.md",
+        "knowledge/业务/卡片/兑换/发布与验证.md",
+        "knowledge/业务/卡片/兑换/幸运卡开奖.md",
+        "knowledge/业务/卡片/兑换/活动卡事务.md",
+        "knowledge/业务/卡片/兑换/活动卡配置.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/兑换/索引.md"
+    },
+    {
+      "id": "BUS-017",
+      "category": "表述",
+      "source": "knowledge/业务/卡片/卡册.md",
+      "problem": "5段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/卡片/卡册.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/卡册.md"
+    },
+    {
+      "id": "BUS-018",
+      "category": "表述",
+      "source": "knowledge/业务/卡片/卡册.md",
+      "problem": "2个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/卡片/卡册.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/卡册.md"
+    },
+    {
+      "id": "BUS-019",
+      "category": "表述",
+      "source": "knowledge/业务/卡片/卡册.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/卡片/卡册.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/卡册.md"
+    },
+    {
+      "id": "BUS-020",
+      "category": "信息",
+      "source": "knowledge/业务/卡片/合成.md",
+      "problem": "历史拾取样本容易被当作当前主卡册尚未集成。",
+      "evidence": "卡册 03-028；DatabaseService.NativeDungeon.cs卡片差量提交。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/卡片/合成/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/合成/索引.md"
+    },
+    {
+      "id": "BUS-021",
+      "category": "表述",
+      "source": "knowledge/业务/卡片/合成.md",
+      "problem": "6段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/卡片/合成/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/合成/索引.md"
+    },
+    {
+      "id": "BUS-022",
+      "category": "表述",
+      "source": "knowledge/业务/卡片/合成.md",
+      "problem": "8个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/卡片/合成/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/合成/索引.md"
+    },
+    {
+      "id": "BUS-023",
+      "category": "结构",
+      "source": "knowledge/业务/卡片/合成.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 17933 字节，17 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的3个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/卡片/合成/SP与引导控制器.md",
+        "knowledge/业务/卡片/合成/整页黄金粉兑换.md",
+        "knowledge/业务/卡片/合成/普通配方与钥匙.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/卡片/合成/索引.md"
+    },
+    {
+      "id": "BUS-024",
+      "category": "信息",
+      "source": "knowledge/业务/城镇/场景切换.md",
+      "problem": "发布摘要固定称关闭第8关，与当前L8组合关闭第9关冲突。",
+      "evidence": "同页 08-022 的B7C/B80/B84三种完整函数签名；客户端兼容配方。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/城镇/场景切换/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/场景切换/索引.md"
+    },
+    {
+      "id": "BUS-025",
+      "category": "表述",
+      "source": "knowledge/业务/城镇/场景切换.md",
+      "problem": "“20x0071B7A0”把状态数字和函数地址黏连。",
+      "evidence": "08-053场景销毁链上下文。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/城镇/场景切换/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/场景切换/索引.md"
+    },
+    {
+      "id": "BUS-026",
+      "category": "表述",
+      "source": "knowledge/业务/城镇/场景切换.md",
+      "problem": "11段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/城镇/场景切换/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/场景切换/索引.md"
+    },
+    {
+      "id": "BUS-027",
+      "category": "表述",
+      "source": "knowledge/业务/城镇/场景切换.md",
+      "problem": "3个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/城镇/场景切换/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/场景切换/索引.md"
+    },
+    {
+      "id": "BUS-028",
+      "category": "表述",
+      "source": "knowledge/业务/城镇/场景切换.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/城镇/场景切换/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/场景切换/索引.md"
+    },
+    {
+      "id": "BUS-029",
+      "category": "结构",
+      "source": "knowledge/业务/城镇/场景切换.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 23352 字节，17 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的3个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/城镇/场景切换/村庄拓扑与兼容资源.md",
+        "knowledge/业务/城镇/场景切换/页面返回与生命周期.md",
+        "knowledge/业务/城镇/场景切换/频道重连.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/场景切换/索引.md"
+    },
+    {
+      "id": "BUS-030",
+      "category": "表述",
+      "source": "knowledge/业务/城镇/角色实体.md",
+      "problem": "3段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/城镇/角色实体.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/角色实体.md"
+    },
+    {
+      "id": "BUS-031",
+      "category": "表述",
+      "source": "knowledge/业务/城镇/角色实体.md",
+      "problem": "1个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/城镇/角色实体.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/角色实体.md"
+    },
+    {
+      "id": "BUS-032",
+      "category": "表述",
+      "source": "knowledge/业务/城镇/角色实体.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/城镇/角色实体.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/城镇/角色实体.md"
+    },
+    {
+      "id": "BUS-033",
+      "category": "表述",
+      "source": "knowledge/业务/娱乐/奖励.md",
+      "problem": "10段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/娱乐/奖励/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/奖励/索引.md"
+    },
+    {
+      "id": "BUS-034",
+      "category": "表述",
+      "source": "knowledge/业务/娱乐/奖励.md",
+      "problem": "8个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/娱乐/奖励/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/奖励/索引.md"
+    },
+    {
+      "id": "BUS-035",
+      "category": "表述",
+      "source": "knowledge/业务/娱乐/奖励.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/娱乐/奖励/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/奖励/索引.md"
+    },
+    {
+      "id": "BUS-036",
+      "category": "结构",
+      "source": "knowledge/业务/娱乐/奖励.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 12118 字节，8 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/娱乐/奖励/卡片宠物与纪录策略.md",
+        "knowledge/业务/娱乐/奖励/结果排名与版本字段.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/奖励/索引.md"
+    },
+    {
+      "id": "BUS-037",
+      "category": "表述",
+      "source": "knowledge/业务/娱乐/对局.md",
+      "problem": "4段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/娱乐/对局.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/对局.md"
+    },
+    {
+      "id": "BUS-038",
+      "category": "表述",
+      "source": "knowledge/业务/娱乐/房间.md",
+      "problem": "10段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/娱乐/房间/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/房间/索引.md"
+    },
+    {
+      "id": "BUS-039",
+      "category": "表述",
+      "source": "knowledge/业务/娱乐/房间.md",
+      "problem": "4个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/娱乐/房间/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/房间/索引.md"
+    },
+    {
+      "id": "BUS-040",
+      "category": "表述",
+      "source": "knowledge/业务/娱乐/房间.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/娱乐/房间/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/房间/索引.md"
+    },
+    {
+      "id": "BUS-041",
+      "category": "结构",
+      "source": "knowledge/业务/娱乐/房间.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 13302 字节，7 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/娱乐/房间/大厅列表与邀请载体.md",
+        "knowledge/业务/娱乐/房间/成员准备与房间状态.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/房间/索引.md"
+    },
+    {
+      "id": "BUS-042",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/发射器.md",
+      "problem": "6段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/宠物/发射器.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/发射器.md"
+    },
+    {
+      "id": "BUS-043",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/发射器.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/宠物/发射器.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/发射器.md"
+    },
+    {
+      "id": "BUS-044",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/宝石.md",
+      "problem": "“宠物珠攻击”“战斗权限”误指宝石增量与攻击修正。",
+      "evidence": "08-038-2 +0xD8 PET增量、CFEC人物修正消费。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/宠物/宝石/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/宝石/索引.md"
+    },
+    {
+      "id": "BUS-045",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/宝石.md",
+      "problem": "10段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/宠物/宝石/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/宝石/索引.md"
+    },
+    {
+      "id": "BUS-046",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/宝石.md",
+      "problem": "6个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/宠物/宝石/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/宝石/索引.md"
+    },
+    {
+      "id": "BUS-047",
+      "category": "结构",
+      "source": "knowledge/业务/宠物/宝石.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 19813 字节，11 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/宠物/宝石/吸收速度与攻击.md",
+        "knowledge/业务/宠物/宝石/镶嵌移除与资源.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/宝石/索引.md"
+    },
+    {
+      "id": "BUS-048",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/成长.md",
+      "problem": "11段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/宠物/成长/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/成长/索引.md"
+    },
+    {
+      "id": "BUS-049",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/成长.md",
+      "problem": "6个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/宠物/成长/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/成长/索引.md"
+    },
+    {
+      "id": "BUS-050",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/成长.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/宠物/成长/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/成长/索引.md"
+    },
+    {
+      "id": "BUS-051",
+      "category": "结构",
+      "source": "knowledge/业务/宠物/成长.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 17911 字节，10 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/宠物/成长/客户端成长消费链.md",
+        "knowledge/业务/宠物/成长/阶段与奖励策略.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/成长/索引.md"
+    },
+    {
+      "id": "BUS-052",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/所有权.md",
+      "problem": "“归族”“永久重复”没有明确业务动作。",
+      "evidence": "范围文本与 03-004-2 授予事务。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/宠物/所有权/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "id": "BUS-053",
+      "category": "信息",
+      "source": "knowledge/业务/宠物/所有权.md",
+      "problem": "永久变体的后续降级被笼统标为未确认，源码实际已能判断状态写入路径。",
+      "evidence": "managed/Services/DatabaseService.LuckyCards.cs FindPetFamilyRowAsync/MergedPetTerm/TryMergePetFamilyGrantAsync。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/宠物/所有权/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "id": "BUS-054",
+      "category": "信息",
+      "source": "knowledge/业务/宠物/所有权.md",
+      "problem": "“未确认”混淆源码可证明的后续写入与未执行的运行验收。",
+      "evidence": "FindPetFamilyRowAsync以owned.DurationDays==0返回Permanent；更新语句不写ItemCode。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/宠物/所有权/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "id": "BUS-055",
+      "category": "信息",
+      "source": "knowledge/业务/宠物/所有权.md",
+      "problem": "期限摘要继续将明确的源码路径称为未确认。",
+      "evidence": "DatabaseService.LuckyCards.cs永久判定与到期更新。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/宠物/所有权/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "id": "BUS-056",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/所有权.md",
+      "problem": "12段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/宠物/所有权/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "id": "BUS-057",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/所有权.md",
+      "problem": "13个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/宠物/所有权/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "id": "BUS-058",
+      "category": "表述",
+      "source": "knowledge/业务/宠物/所有权.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/宠物/所有权/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "id": "BUS-059",
+      "category": "结构",
+      "source": "knowledge/业务/宠物/所有权.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 28897 字节，21 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的5个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/宠物/所有权/佩戴等级与中文命名.md",
+        "knowledge/业务/宠物/所有权/家族授予与期限.md",
+        "knowledge/业务/宠物/所有权/库存选择与状态.md",
+        "knowledge/业务/宠物/所有权/资源身份与移植.md",
+        "knowledge/业务/宠物/所有权/追加宠物对照表.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "id": "BUS-060",
+      "category": "表述",
+      "source": "knowledge/业务/库存/快捷栏.md",
+      "problem": "10段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/库存/快捷栏/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/快捷栏/索引.md"
+    },
+    {
+      "id": "BUS-061",
+      "category": "表述",
+      "source": "knowledge/业务/库存/快捷栏.md",
+      "problem": "5个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/库存/快捷栏/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/快捷栏/索引.md"
+    },
+    {
+      "id": "BUS-062",
+      "category": "表述",
+      "source": "knowledge/业务/库存/快捷栏.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/库存/快捷栏/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/快捷栏/索引.md"
+    },
+    {
+      "id": "BUS-063",
+      "category": "结构",
+      "source": "knowledge/业务/库存/快捷栏.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 14164 字节，9 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/库存/快捷栏/布局刷新与保护.md",
+        "knowledge/业务/库存/快捷栏/绑定消费与权限.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/快捷栏/索引.md"
+    },
+    {
+      "id": "BUS-064",
+      "category": "表述",
+      "source": "knowledge/业务/库存/消耗品.md",
+      "problem": "7段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/库存/消耗品/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/消耗品/索引.md"
+    },
+    {
+      "id": "BUS-065",
+      "category": "表述",
+      "source": "knowledge/业务/库存/消耗品.md",
+      "problem": "11个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/库存/消耗品/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/消耗品/索引.md"
+    },
+    {
+      "id": "BUS-066",
+      "category": "表述",
+      "source": "knowledge/业务/库存/消耗品.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/库存/消耗品/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/消耗品/索引.md"
+    },
+    {
+      "id": "BUS-067",
+      "category": "结构",
+      "source": "knowledge/业务/库存/消耗品.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 20557 字节，20 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的4个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/库存/消耗品/复活礼包.md",
+        "knowledge/业务/库存/消耗品/扩充券与期限.md",
+        "knowledge/业务/库存/消耗品/飞行道具.md",
+        "knowledge/业务/库存/消耗品/食物与通用使用.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/消耗品/索引.md"
+    },
+    {
+      "id": "BUS-068",
+      "category": "表述",
+      "source": "knowledge/业务/库存/物品实例.md#kb-08-026-1",
+      "problem": "证据入口只剩空表头，没有证据行或导航作用。",
+      "evidence": "08-026-1原块仅包含三列表头。",
+      "resolution": "保留原标记，改为指向确切库存和搬运字段的导航。",
+      "targets": [
+        "knowledge/业务/库存/物品实例/搬运丢弃与刷新.md#kb-08-026-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/物品实例/搬运丢弃与刷新.md#kb-08-026-1"
+    },
+    {
+      "id": "BUS-069",
+      "category": "表述",
+      "source": "knowledge/业务/库存/物品实例.md",
+      "problem": "5段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/库存/物品实例/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/物品实例/索引.md"
+    },
+    {
+      "id": "BUS-070",
+      "category": "表述",
+      "source": "knowledge/业务/库存/物品实例.md",
+      "problem": "14个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/库存/物品实例/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/物品实例/索引.md"
+    },
+    {
+      "id": "BUS-071",
+      "category": "表述",
+      "source": "knowledge/业务/库存/物品实例.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/库存/物品实例/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/物品实例/索引.md"
+    },
+    {
+      "id": "BUS-072",
+      "category": "结构",
+      "source": "knowledge/业务/库存/物品实例.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 27303 字节，26 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的4个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/库存/物品实例/实例身份与持久化.md",
+        "knowledge/业务/库存/物品实例/搬运丢弃与刷新.md",
+        "knowledge/业务/库存/物品实例/编号分类与目录.md",
+        "knowledge/业务/库存/物品实例/跨模块一致性.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/物品实例/索引.md"
+    },
+    {
+      "id": "BUS-073",
+      "category": "表述",
+      "source": "knowledge/业务/库存/装备.md",
+      "problem": "3段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/库存/装备.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/装备.md"
+    },
+    {
+      "id": "BUS-074",
+      "category": "表述",
+      "source": "knowledge/业务/库存/装备.md",
+      "problem": "1个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/库存/装备.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/装备.md"
+    },
+    {
+      "id": "BUS-075",
+      "category": "表述",
+      "source": "knowledge/业务/库存/装备.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/库存/装备.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/库存/装备.md"
+    },
+    {
+      "id": "BUS-076",
+      "category": "表述",
+      "source": "knowledge/业务/社交/好友.md",
+      "problem": "3段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/社交/好友.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/社交/好友.md"
+    },
+    {
+      "id": "BUS-077",
+      "category": "信息",
+      "source": "knowledge/业务/社交/师徒.md",
+      "problem": "师徒验证摘要把计分基数倍率概括为150%人物经验，忽略倍率顺序与向下取整。",
+      "evidence": "师徒 07-022-5；managed/Services/DungeonRewardPolicy.cs 与关系奖励结算入口。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/社交/师徒.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/社交/师徒.md"
+    },
+    {
+      "id": "BUS-078",
+      "category": "表述",
+      "source": "knowledge/业务/社交/师徒.md",
+      "problem": "5段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/社交/师徒.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/社交/师徒.md"
+    },
+    {
+      "id": "BUS-079",
+      "category": "表述",
+      "source": "knowledge/业务/社交/师徒.md",
+      "problem": "4个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/社交/师徒.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/社交/师徒.md"
+    },
+    {
+      "id": "BUS-080",
+      "category": "表述",
+      "source": "knowledge/业务/社交/情侣.md",
+      "problem": "6段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/社交/情侣/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/社交/情侣/索引.md"
+    },
+    {
+      "id": "BUS-081",
+      "category": "表述",
+      "source": "knowledge/业务/社交/情侣.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/社交/情侣/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/社交/情侣/索引.md"
+    },
+    {
+      "id": "BUS-082",
+      "category": "结构",
+      "source": "knowledge/业务/社交/情侣.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 15954 字节，9 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的3个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/社交/情侣/关系权益与共享恢复.md",
+        "knowledge/业务/社交/情侣/资料场景与客户端字段.md",
+        "knowledge/业务/社交/情侣/跨模块场景一致性.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/社交/情侣/索引.md"
+    },
+    {
+      "id": "BUS-083",
+      "category": "表述",
+      "source": "knowledge/业务/社交/组队.md",
+      "problem": "2个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/社交/组队.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/社交/组队.md"
+    },
+    {
+      "id": "BUS-084",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/战斗.md",
+      "problem": "13段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/竞技/战斗/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/战斗/索引.md"
+    },
+    {
+      "id": "BUS-085",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/战斗.md",
+      "problem": "2个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/竞技/战斗/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/战斗/索引.md"
+    },
+    {
+      "id": "BUS-086",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/战斗.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/竞技/战斗/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/战斗/索引.md"
+    },
+    {
+      "id": "BUS-087",
+      "category": "结构",
+      "source": "knowledge/业务/竞技/战斗.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 16399 字节，11 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/竞技/战斗/星星计分与死亡爆分.md",
+        "knowledge/业务/竞技/战斗/资源伤害与碰撞.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/战斗/索引.md"
+    },
+    {
+      "id": "BUS-088",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/房间.md",
+      "problem": "14段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/竞技/房间/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/房间/索引.md"
+    },
+    {
+      "id": "BUS-089",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/房间.md",
+      "problem": "8个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/竞技/房间/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/房间/索引.md"
+    },
+    {
+      "id": "BUS-090",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/房间.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/竞技/房间/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/房间/索引.md"
+    },
+    {
+      "id": "BUS-091",
+      "category": "结构",
+      "source": "knowledge/业务/竞技/房间.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 13495 字节，10 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的3个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/竞技/房间/发布与验证.md",
+        "knowledge/业务/竞技/房间/大厅与客户端运行字段.md",
+        "knowledge/业务/竞技/房间/成员轮次与加载资格.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/房间/索引.md"
+    },
+    {
+      "id": "BUS-092",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/结算.md",
+      "problem": "9段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/竞技/结算.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/结算.md"
+    },
+    {
+      "id": "BUS-093",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/结算.md",
+      "problem": "4个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/竞技/结算.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/结算.md"
+    },
+    {
+      "id": "BUS-094",
+      "category": "表述",
+      "source": "knowledge/业务/竞技/结算.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/竞技/结算.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/竞技/结算.md"
+    },
+    {
+      "id": "BUS-095",
+      "category": "表述",
+      "source": "knowledge/业务/经济/卡片交易所.md",
+      "problem": "2个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/经济/卡片交易所.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/卡片交易所.md"
+    },
+    {
+      "id": "BUS-096",
+      "category": "表述",
+      "source": "knowledge/业务/经济/商城.md",
+      "problem": "9段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/经济/商城/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/商城/索引.md"
+    },
+    {
+      "id": "BUS-097",
+      "category": "表述",
+      "source": "knowledge/业务/经济/商城.md",
+      "problem": "6个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/经济/商城/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/商城/索引.md"
+    },
+    {
+      "id": "BUS-098",
+      "category": "表述",
+      "source": "knowledge/业务/经济/商城.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/经济/商城/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/商城/索引.md"
+    },
+    {
+      "id": "BUS-099",
+      "category": "结构",
+      "source": "knowledge/业务/经济/商城.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 13072 字节，14 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的3个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/经济/商城/客户端详情与预览.md",
+        "knowledge/业务/经济/商城/待领取分页与纪念礼物.md",
+        "knowledge/业务/经济/商城/目录币种与购买.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/商城/索引.md"
+    },
+    {
+      "id": "BUS-100",
+      "category": "表述",
+      "source": "knowledge/业务/经济/玩家交易.md",
+      "problem": "4段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/经济/玩家交易.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/玩家交易.md"
+    },
+    {
+      "id": "BUS-101",
+      "category": "信息",
+      "source": "knowledge/业务/经济/货币.md",
+      "problem": "金币公式将来源泛称选中装备，无法区分服装与宠物宝石。",
+      "evidence": "managed/Services/PetProgression.cs HansBonusEffectType=6/GetHansBonusPercent；NetworkAdapterService.cs调用该函数。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/经济/货币.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/货币.md"
+    },
+    {
+      "id": "BUS-102",
+      "category": "信息",
+      "source": "knowledge/业务/经济/货币.md",
+      "problem": "金币摘要再次使用含混的“选中装备”。",
+      "evidence": "PetProgression.GetAccessoryPercent 对PetState槽位求和。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/经济/货币.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/货币.md"
+    },
+    {
+      "id": "BUS-103",
+      "category": "表述",
+      "source": "knowledge/业务/经济/货币.md",
+      "problem": "5段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/经济/货币.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/货币.md"
+    },
+    {
+      "id": "BUS-104",
+      "category": "表述",
+      "source": "knowledge/业务/经济/货币.md",
+      "problem": "5个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/经济/货币.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/经济/货币.md"
+    },
+    {
+      "id": "BUS-105",
+      "category": "信息",
+      "source": "knowledge/业务/角色/任务.md",
+      "problem": "任务交付称“应用属性变化”，与已撤回五属性成长的当前规则不一致。",
+      "evidence": "managed/Services/CharacterCombatProgression.cs；角色等级经验 04-005-1/07-006-2。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/角色/任务.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/任务.md"
+    },
+    {
+      "id": "BUS-106",
+      "category": "表述",
+      "source": "knowledge/业务/角色/任务.md",
+      "problem": "5段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/角色/任务.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/任务.md"
+    },
+    {
+      "id": "BUS-107",
+      "category": "表述",
+      "source": "knowledge/业务/角色/任务.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/角色/任务.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/任务.md"
+    },
+    {
+      "id": "BUS-108",
+      "category": "表述",
+      "source": "knowledge/业务/角色/技能.md",
+      "problem": "3段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/角色/技能/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/技能/索引.md"
+    },
+    {
+      "id": "BUS-109",
+      "category": "表述",
+      "source": "knowledge/业务/角色/技能.md",
+      "problem": "7个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/角色/技能/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/技能/索引.md"
+    },
+    {
+      "id": "BUS-110",
+      "category": "表述",
+      "source": "knowledge/业务/角色/技能.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/角色/技能/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/技能/索引.md"
+    },
+    {
+      "id": "BUS-111",
+      "category": "结构",
+      "source": "knowledge/业务/角色/技能.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 13446 字节，9 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/角色/技能/学习装备与权限.md",
+        "knowledge/业务/角色/技能/激活清理与碰撞.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/技能/索引.md"
+    },
+    {
+      "id": "BUS-112",
+      "category": "信息",
+      "source": "knowledge/业务/角色/新手引导.md",
+      "problem": "C599前八字节未注明载荷，会误解为帧头字段。",
+      "evidence": "managed/Services/NetworkAdapterService.cs case0xC599 读取payload+0/+2/+4。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/角色/新手引导/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/新手引导/索引.md"
+    },
+    {
+      "id": "BUS-113",
+      "category": "表述",
+      "source": "knowledge/业务/角色/新手引导.md",
+      "problem": "“含义已关闭”是直译，不说明研究结论。",
+      "evidence": "08-021随后列出slot6构造、绘制和标志字段。",
+      "resolution": "按已核验源码和适用范围替换歧义或矛盾表述。",
+      "targets": [
+        "knowledge/业务/角色/新手引导/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/新手引导/索引.md"
+    },
+    {
+      "id": "BUS-114",
+      "category": "表述",
+      "source": "knowledge/业务/角色/新手引导.md",
+      "problem": "16段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/角色/新手引导/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/新手引导/索引.md"
+    },
+    {
+      "id": "BUS-115",
+      "category": "表述",
+      "source": "knowledge/业务/角色/新手引导.md",
+      "problem": "6个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/角色/新手引导/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/新手引导/索引.md"
+    },
+    {
+      "id": "BUS-116",
+      "category": "表述",
+      "source": "knowledge/业务/角色/新手引导.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/角色/新手引导/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/新手引导/索引.md"
+    },
+    {
+      "id": "BUS-117",
+      "category": "结构",
+      "source": "knowledge/业务/角色/新手引导.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 23466 字节，18 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的4个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/角色/新手引导/故事引导与推荐人.md",
+        "knowledge/业务/角色/新手引导/教程与外观.md",
+        "knowledge/业务/角色/新手引导/跨村前置.md",
+        "knowledge/业务/角色/新手引导/验证范围.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/新手引导/索引.md"
+    },
+    {
+      "id": "BUS-118",
+      "category": "表述",
+      "source": "knowledge/业务/角色/称号.md",
+      "problem": "11段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/角色/称号.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/称号.md"
+    },
+    {
+      "id": "BUS-119",
+      "category": "表述",
+      "source": "knowledge/业务/角色/称号.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/角色/称号.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/称号.md"
+    },
+    {
+      "id": "BUS-120",
+      "category": "表述",
+      "source": "knowledge/业务/角色/等级经验.md",
+      "problem": "38段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/角色/等级经验/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/等级经验/索引.md"
+    },
+    {
+      "id": "BUS-121",
+      "category": "表述",
+      "source": "knowledge/业务/角色/等级经验.md",
+      "problem": "17个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/角色/等级经验/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/等级经验/索引.md"
+    },
+    {
+      "id": "BUS-122",
+      "category": "表述",
+      "source": "knowledge/业务/角色/等级经验.md",
+      "problem": "正文混用adapter/managed/native/domain等英文普通词及“试玩”口语，代码标识与解释语言混杂。",
+      "evidence": "正文普通词及原生端、托管端、物品类别等中文已有同义写法。",
+      "resolution": "统一中文说明术语，保留反引号中的源码标识、字面值、链接和代码块。",
+      "targets": [
+        "knowledge/业务/角色/等级经验/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/等级经验/索引.md"
+    },
+    {
+      "id": "BUS-123",
+      "category": "结构",
+      "source": "knowledge/业务/角色/等级经验.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 51973 字节，29 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的6个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/角色/等级经验/人物成长与同步.md",
+        "knowledge/业务/角色/等级经验/协议载体.md",
+        "knowledge/业务/角色/等级经验/发布与验证.md",
+        "knowledge/业务/角色/等级经验/客户端版本与显示.md",
+        "knowledge/业务/角色/等级经验/持久化与离线迁移.md",
+        "knowledge/业务/角色/等级经验/曲线与经验奖励.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/等级经验/索引.md"
+    },
+    {
+      "id": "BUS-124",
+      "category": "表述",
+      "source": "knowledge/业务/角色/角色创建.md",
+      "problem": "3段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/角色/角色创建.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/角色创建.md"
+    },
+    {
+      "id": "BUS-125",
+      "category": "表述",
+      "source": "knowledge/业务/角色/角色创建.md",
+      "problem": "2个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/角色/角色创建.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/角色创建.md"
+    },
+    {
+      "id": "BUS-126",
+      "category": "表述",
+      "source": "knowledge/业务/角色/角色资料.md",
+      "problem": "12段将规则、字段、历史和验证连续堆成无分点长段。",
+      "evidence": "各原段超过220字且含多个完整规则句；技术代码样例和表格另行保留。",
+      "resolution": "完整保留各句、条件、数字和引用，按规则句分点，清理代码样例的机械空行。",
+      "targets": [
+        "knowledge/业务/角色/角色资料/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/角色资料/索引.md"
+    },
+    {
+      "id": "BUS-127",
+      "category": "表述",
+      "source": "knowledge/业务/角色/角色资料.md",
+      "problem": "5个小节沿用融合前跨主题标题或缺少本块目的，导航难以识别具体字段或事务。",
+      "evidence": "原泛标题包括“当前功能”“背包、宠物、商店和快捷栏”“集成发布验证”等。",
+      "resolution": "每个稳定块使用与实际规则、载体、版本或验证范围对应的小节标题。",
+      "targets": [
+        "knowledge/业务/角色/角色资料/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/角色资料/索引.md"
+    },
+    {
+      "id": "BUS-128",
+      "category": "结构",
+      "source": "knowledge/业务/角色/角色资料.md",
+      "problem": "同一文档聚合多个独立业务职责、协议证据、历史与验证，单页检索与维护边界不清。",
+      "evidence": "原文件 14233 字节，13 个稳定标记块。",
+      "resolution": "按业务职责拆为同名目录的2个子页，旧文件保留主题导航和所有稳定入口；整块迁移，不删除信息。",
+      "targets": [
+        "knowledge/业务/角色/角色资料/查看与关系日期.md",
+        "knowledge/业务/角色/角色资料/资料与资源载体.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/角色/角色资料/索引.md"
+    },
+    {
+      "id": "BUS-129",
+      "category": "信息",
+      "source": "knowledge/业务/宠物/成长.md#kb-04-011",
+      "problem": "CF88当前生产构造与客户端静态读取的阶段语义差异只在后部说明，前部“一致载体”易被误读为显示已闭合。",
+      "evidence": "NetworkAdapterService.NativeDungeon.cs PatchNativePetSettlementFrame写PetLevel/PetCurrentStageMaximumLevel；08-018-1静态链按阶段选行。",
+      "resolution": "在当前成长规则开头增字段对照表，明确生产值、静态解释及未闭合运行边界。",
+      "targets": [
+        "knowledge/业务/宠物/成长/阶段与奖励策略.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/宠物/成长/阶段与奖励策略.md#kb-04-011"
+    },
+    {
+      "id": "BUS-130",
+      "category": "表述",
+      "source": "knowledge/业务/娱乐/房间.md#kb-08-082-1",
+      "problem": "“原生邀请”链接落到大厅列表块08-082-3，实际邀请链在08-082-5。",
+      "evidence": "08-082-3是CF0F/CF10；08-082-5包含CF8F/CF90/CF75。",
+      "resolution": "改到真实邀请证据块。",
+      "targets": [
+        "knowledge/业务/娱乐/房间/大厅列表与邀请载体.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/娱乐/房间/大厅列表与邀请载体.md#kb-08-082-1"
+    },
+    {
+      "id": "BUS-131",
+      "category": "表述",
+      "source": "knowledge/业务/住宅/公寓引导.md#df-01-001",
+      "problem": "融合标题块没有正文用途，且整页缺少统一主题导航。",
+      "evidence": "df-01-001原块只含H1标题。",
+      "resolution": "补本页职责说明和稳定章节表，保留原FUSION块。",
+      "targets": [
+        "knowledge/业务/住宅/公寓引导.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/住宅/公寓引导.md#df-01-001"
+    },
+    {
+      "id": "DG-05-020-1",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-05-020",
+      "problem": "裸代码块只列字段，没有说明按角色隔离的作用及载体关系",
+      "evidence": "```text\n名称、等级、宠物、装备／效果\n技能／卡片状态\n拾取者 UID\nCF71/CF7E 房间槽位\nCF88 记录\nD012 结果／排名槽位\nC47F 目标角色\nCF9C 目标角色\n```",
+      "resolution": "以下状态按源角色独立维护；房间槽位用于投影，不能替代角色身份或会话代次：\n\n| 状态 | 角色归属／投影载体 |\n|---|---|\n| 名称、等级、宠物、装备／效果 | 源角色资料 |\n| 技能／卡片状态 | 源角色状态 |\n| 拾取结果 | 拾取者 UID |\n| 房间列表／准备快照 | CF71／CF7E 房间槽位 |\n| 结算结果 | CF88 角色记录 |\n| 首领结果／排名 | D012 对应成员槽位 |\n| 外观更新 | C47F 目标角色 |\n| 技能效果 | CF9C 目标角色 |",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/成员资料与库存同步.md#kb-05-020"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/成员资料与库存同步.md#kb-05-020"
+    },
+    {
+      "id": "DG-05-018-2",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-05-018",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "普通终端",
+      "resolution": "普通终结",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/加载与开战.md#kb-05-018"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/加载与开战.md#kb-05-018"
+    },
+    {
+      "id": "DG-08-023-1-3",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-023-1",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "CF72 案例",
+      "resolution": "CF72 分派分支",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/加载与开战.md#kb-08-023-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/加载与开战.md#kb-08-023-1"
+    },
+    {
+      "id": "DG-08-023-1-4",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-023-1",
+      "problem": "episode数值被误译为资源周期，会与battle epoch混淆",
+      "evidence": "当资源周期小于16时",
+      "resolution": "当资源episode小于16时",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/加载与开战.md#kb-08-023-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/加载与开战.md#kb-08-023-1"
+    },
+    {
+      "id": "DG-08-023-1-5",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-023-1",
+      "problem": "“最小值48”缺少长度和单位",
+      "evidence": "该分支的最小值为48",
+      "resolution": "该响应的最小完整长度为48字节",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/加载与开战.md#kb-08-023-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/加载与开战.md#kb-08-023-1"
+    },
+    {
+      "id": "DG-05-017-6",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-05-017",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "CFDA 案例",
+      "resolution": "CFDA 分派分支",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/位置与入场.md#kb-05-017"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/位置与入场.md#kb-05-017"
+    },
+    {
+      "id": "DG-08-023-7-7",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-023-7",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "CF71 案例",
+      "resolution": "CF71 分派分支",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/位置与入场.md#kb-08-023-7"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/位置与入场.md#kb-08-023-7"
+    },
+    {
+      "id": "DG-08-023-7-8",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-023-7",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "CFDA 案例",
+      "resolution": "CFDA 分派分支",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/位置与入场.md#kb-08-023-7"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/位置与入场.md#kb-08-023-7"
+    },
+    {
+      "id": "DG-05-006-2-9",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-05-006-2",
+      "problem": "“恢复生命魔法”未说明与付费满资源复活不同；其他页明确六分之一HP、剩余MP和P0",
+      "evidence": "新阶段中的阵亡成员恢复生命、魔法和战斗状态",
+      "resolution": "新阶段中的阵亡成员按[死亡返回与重试资源策略](战斗资源.md#kb-07-020)建立部分生命、保留剩余魔法并重置火力与死亡状态",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-05-006-2"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-05-006-2"
+    },
+    {
+      "id": "DG-07-015-10",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-07-015",
+      "problem": "历史硬编码child1紧邻当前数据驱动规则，未标历史会被误实现为现行固定值",
+      "evidence": "ep7/dg2 退出顺序：",
+      "resolution": "历史ep7/dg2客户端运行样本的退出顺序（其中child1为当时硬编码回收；当前实现已改为数据驱动）：",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-07-015"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-07-015"
+    },
+    {
+      "id": "DG-09-021-3-11",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-09-021-3",
+      "problem": "同页明确队员可以合法发起且授权归房间，此摘要只称房主授权形成表面矛盾",
+      "evidence": "房主完成下一阶段授权后",
+      "resolution": "房间完成有效下一阶段授权后",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-09-021-3"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-09-021-3"
+    },
+    {
+      "id": "DG-05-015-12",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-05-015",
+      "problem": "开头只说七个战斗范围，后文现行资源已扩展L8，需要明确基线/选择性包",
+      "evidence": "Lumineos episode100保留通信／房间身份；资源查找转换及七个战斗资源范围见",
+      "resolution": "Lumineos episode100保留通信／房间身份；CN基线七个关卡及当前选择性扩展L8的资源查找范围见",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/快速入房与对等通信.md#kb-05-015"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/快速入房与对等通信.md#kb-05-015"
+    },
+    {
+      "id": "DG-06-003-1-13",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-06-003-1",
+      "problem": "R8称号授予链接误指准备房库存三行摘要",
+      "evidence": "成功stage1授予、失败不授予与旧grade23错误迁移的原限定见[准备房库存与房屋恢复同步](关卡与房间.md#kb-03-052-1)",
+      "resolution": "成功stage1授予、失败不授予与旧grade23错误迁移的原限定见[地宫称号](../角色/称号.md)",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-003-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-003-1"
+    },
+    {
+      "id": "DG-06-003-1-14",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-06-003-1",
+      "problem": "成绩持久化链接误指结算按钮权限规则",
+      "evidence": "独立成绩持久化见[结算页等待与动作授权](关卡与房间.md#kb-07-006-3)",
+      "resolution": "独立成绩持久化见[Lumineos成绩持久化边界](计分与结算.md#kb-07-023)",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-003-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-003-1"
+    },
+    {
+      "id": "DG-06-003-1-15",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-06-003-1",
+      "problem": "“生成的段落/槽位替代/缺失证明语义”译法含混，未说清资源选择作用",
+      "evidence": "客户端选择一个SMMO列表。生成的段落是一个槽位替代，而不是累积选择范围。选中的槽位缺失并不能证明运行时语义。",
+      "resolution": "客户端一次只选择一个SMMO列表；生成目录的segment列表示替代资源槽，不能把多个候选槽拼接为一份选择器域。所选槽缺失时应保留依赖缺口，不能据此推导其他槽的运行语义。",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-003-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-003-1"
+    },
+    {
+      "id": "DG-08-036-16",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-036",
+      "problem": "缺少空格导致列表不被Markdown识别",
+      "evidence": "-0x66EC30",
+      "resolution": "- 0x66EC30",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-08-036"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-08-036"
+    },
+    {
+      "id": "DG-08-036-17",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-036",
+      "problem": "章节episode被写为关卡，易与dungeon混淆",
+      "evidence": "读取资源关卡+0x1E534",
+      "resolution": "读取资源episode+0x1E534",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-08-036"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-08-036"
+    },
+    {
+      "id": "DG-08-034-18",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-034",
+      "problem": "历史70852/103124文件的仅BGM修改承诺与当前整关韩服替换范围混写，看似现行资源不变",
+      "evidence": "SSTG BGM字段补齐限定为资源格式／字节证据",
+      "resolution": "历史CN版L7的SSTG BGM字段补齐记录（当前已整关替换为韩服L7资源；以下文件长度和“字段外不变”只描述当次补齐操作）",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/资源格式与转换.md#kb-08-034"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/资源格式与转换.md#kb-08-034"
+    },
+    {
+      "id": "DG-08-032-19",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-032",
+      "problem": "数字文本ID被错称为密钥，与前文AES密钥混淆",
+      "evidence": "GS密钥2346/2347",
+      "resolution": "GS文本ID2346/2347",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+    },
+    {
+      "id": "DG-08-032-20",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-032",
+      "problem": "措辞或作用边界不明确",
+      "evidence": "GS._D20 读取从",
+      "resolution": "GS._D20 的读取链为",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+    },
+    {
+      "id": "DG-08-032-21",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-032",
+      "problem": "9字节是魔数而非完整包头，计数和目录仍属于头部结构",
+      "evidence": "NANA_PACK头文件大小为9字节",
+      "resolution": "NANA_PACK魔数长度为9字节",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+    },
+    {
+      "id": "DG-08-032-22",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-032",
+      "problem": "IM3图像提取命名不应称为exe文件名",
+      "evidence": "exe文件名000291-qz_minimap_v05_d08.im3",
+      "resolution": "提取文件名000291-qz_minimap_v05_d08.im3",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+    },
+    {
+      "id": "DG-08-032-23",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md#kb-08-032",
+      "problem": "原章节编号不再能定位范围",
+      "evidence": "内容边界06；等级命名空间03。",
+      "resolution": "资源覆盖见[身份和资源边界](关卡与房间.md#kb-06-003-1)；称号命名空间见[地宫称号](../角色/称号.md)。",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/文本与图像目录.md#kb-08-032"
+    },
+    {
+      "id": "DG-STRUCT-关卡与房间",
+      "category": "结构",
+      "source": "knowledge/业务/地宫/关卡与房间.md",
+      "problem": "单页混合10类独立职责，原页面74956字节；未分层的导航遗漏多个来源块",
+      "evidence": "原页含50个来源标记块，正文串联业务规则、报文字段、资源与历史验收",
+      "resolution": "将标记块完整迁移到同名目录的职责子页；创建目录索引、完整逐块导航及旧路径入口",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/房间身份.md",
+        "knowledge/业务/地宫/关卡与房间/成员资料与库存同步.md",
+        "knowledge/业务/地宫/关卡与房间/加载与开战.md",
+        "knowledge/业务/地宫/关卡与房间/位置与入场.md",
+        "knowledge/业务/地宫/关卡与房间/续关与观战.md",
+        "knowledge/业务/地宫/关卡与房间/快速入房与对等通信.md",
+        "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md",
+        "knowledge/业务/地宫/关卡与房间/资源格式与转换.md",
+        "knowledge/业务/地宫/关卡与房间/文本与图像目录.md",
+        "knowledge/业务/地宫/关卡与房间/跨模块指南与历史验证.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/索引.md"
+    },
+    {
+      "id": "DG-FORMAT-关卡与房间",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/关卡与房间.md",
+      "problem": "长段落将条件、动作、数值、证据和限制连续堆叠；泛化重复标题不能识别片段作用",
+      "evidence": "多块标题为“当前功能”“结算和角色资料结果锚点”或不含标题",
+      "resolution": "按精确片段作用命名标题；大块增加职责小节；长段落按完整句子分点，保留所有原数值、地址及限制",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/索引.md"
+    },
+    {
+      "id": "DG-04-005-4-26",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-005-4",
+      "problem": "链接标题称 kind20 调用者，实际目标是 D00F 请求构造表；不得暗示该表包含 PET 发射链的完整证据",
+      "evidence": "[D00F kind20调用者与未确认边界](伤害与目标.md#kb-08-023-6)",
+      "resolution": "[请求构造与发送字段](伤害与目标.md#kb-08-023-6)",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/攻击与防御.md#kb-04-005-4"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/攻击与防御.md#kb-04-005-4"
+    },
+    {
+      "id": "DG-04-005-4-27",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-005-4",
+      "problem": "所指目标未列 PET 11个发射函数的详细地址，原引用扩大其证据范围",
+      "evidence": "精确地址、对象归属及指令验证归",
+      "resolution": "请求构造字段见",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/攻击与防御.md#kb-04-005-4"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/攻击与防御.md#kb-04-005-4"
+    },
+    {
+      "id": "DG-04-013-28",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-013",
+      "problem": "“槽”未说明是资源选择槽而非三名房间成员槽",
+      "evidence": "完整目录覆盖864个槽、28,209个部件身份",
+      "resolution": "完整目录覆盖864个资源槽、28,209个部件身份",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-04-013"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-04-013"
+    },
+    {
+      "id": "DG-04-013-29",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-013",
+      "problem": "融合后的旧章节编号06/08无法解析到独立文档",
+      "evidence": "该选择遵循06/08中的槽位规则",
+      "resolution": "该选择遵循[资源身份与槽位规则](关卡与房间.md#kb-06-003-1)",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-04-013"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-04-013"
+    },
+    {
+      "id": "DG-08-023-6-30",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-023-6",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "每帧一字不差的两个指针残留",
+      "resolution": "所观察帧中重复出现的两个指针残留",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-023-6"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-023-6"
+    },
+    {
+      "id": "DG-08-023-6-31",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-023-6",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "真字段",
+      "resolution": "已写入字段",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-023-6"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-023-6"
+    },
+    {
+      "id": "DG-08-024-2-32",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-024-2",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "必须不能互换",
+      "resolution": "不得混用",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-024-2"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-024-2"
+    },
+    {
+      "id": "DG-08-030-10-33",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-030-10",
+      "problem": "措辞或作用边界不明确",
+      "evidence": "相反，它包含重复的不活跃的",
+      "resolution": "该样本同时包含重复的非活跃",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-10"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-10"
+    },
+    {
+      "id": "DG-08-030-10-34",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-030-10",
+      "problem": "观察未捕获 D014 与静态证实构造器存在应分别归属，原句易否定后者",
+      "evidence": "D014 的确切场景所有权仍然悬而未决",
+      "resolution": "D014 在该样本场景中的实际触发归属仍未确认；已确认的构造器与调用站点另见[请求构造与发送](伤害与目标.md#kb-08-023-6)",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-10"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-10"
+    },
+    {
+      "id": "DG-08-040-1-35",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-040-1",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "D010情况",
+      "resolution": "D010分派分支",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-040-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-040-1"
+    },
+    {
+      "id": "DG-08-040-1-36",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-040-1",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "客户端本地的伤害公式",
+      "resolution": "客户端权威生命扣减公式",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-040-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-040-1"
+    },
+    {
+      "id": "DG-08-040-1-37",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-040-1",
+      "problem": "本地红屏函数确实减防，原句“排除客户端防御”范围过大；只能确认权威HP接收边界",
+      "evidence": "静态地排除了客户端防御减益",
+      "resolution": "确认了客户端在D010接收边界直接应用绝对HP，而非在此处再次减防",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-040-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-040-1"
+    },
+    {
+      "id": "DG-04-014-38",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-014",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "肉身",
+      "resolution": "肉弹",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-014"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-014"
+    },
+    {
+      "id": "DG-04-014-39",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-014",
+      "problem": "“私有策略”未说明实现主体",
+      "evidence": "私有生命周期策略由生成/房间/战斗周期界定",
+      "resolution": "当前适配器的技能生命周期策略由生成、房间和战斗周期界定",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-014"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-014"
+    },
+    {
+      "id": "DG-04-014-40",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-014",
+      "problem": "本段首句规定 CF9D 清理由适配器实施，后文却将相同策略笼统归为客户端",
+      "evidence": "10000毫秒转换是客户端私有策略",
+      "resolution": "10000毫秒清理转换是当前适配器的本地兼容策略",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-014"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-014"
+    },
+    {
+      "id": "DG-04-015-41",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-015",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "肉身",
+      "resolution": "肉弹",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-015"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-015"
+    },
+    {
+      "id": "DG-04-015-42",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-015",
+      "problem": "相对时间未注明单位，与后文毫秒值并列会造成误读",
+      "evidence": "适配器相对时间为82 -> 113 -> CF9D123，以及147 -> 211 -> CF9D225；这些数值表示运行样本中的相对时间。",
+      "resolution": "样本记录的适配器相对时间为82 -> 113 -> CF9D123，以及147 -> 211 -> CF9D225；原片段未登记这些相对时间的单位，不能据此换算持续时长。",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-015"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-015"
+    },
+    {
+      "id": "DG-04-015-43",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-015",
+      "problem": "措辞或作用边界不明确",
+      "evidence": "活跃+0x80F8=1",
+      "resolution": "活跃标记+0x80F8=1",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-015"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-015"
+    },
+    {
+      "id": "DG-04-015-44",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-04-015",
+      "problem": "“弹射激活…毫秒后肉弹”语序不完整，时刻与持续时间混淆",
+      "evidence": "但这些标志保持到弹射激活30640/64203毫秒后肉弹。",
+      "resolution": "但这些标志在肉弹结束后仍保留，直至样本时间30640／64203毫秒处激活弹射。",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-015"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-04-015"
+    },
+    {
+      "id": "DG-09-026-2-45",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-09-026-2",
+      "problem": "旧章节号04不可定位",
+      "evidence": "采用04定义的",
+      "resolution": "采用[Boss肉弹接触规则](伤害与目标.md#kb-04-016)定义的",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-09-026-2"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-09-026-2"
+    },
+    {
+      "id": "DG-09-026-4-46",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-09-026-4",
+      "problem": "未说明四个伤害值对应哪个部件，且只称最后一次截断会误导第一块的500",
+      "evidence": "两块2000HP部件的目标实际扣血为1500／500／1500／500，最后一次扣血按剩余HP截断。",
+      "resolution": "构造示例包含两块各2000HP的部件：第一块实际扣血1500、500，第二块实际扣血1500、500；各部件第二次扣血均按剩余500HP截断。",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-09-026-4"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md#kb-09-026-4"
+    },
+    {
+      "id": "DG-06-003-4-47",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-06-003-4",
+      "problem": "示例没有区分适配器与客户端生命口径，易与客户端百分比缩放规则构成表面矛盾",
+      "evidence": "当前兼容规则取HP4412",
+      "resolution": "当前适配器兼容规则取min(4412,6176)=4412；客户端按资源百分比初始化的名义HP仍为6176",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-003-4"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-003-4"
+    },
+    {
+      "id": "DG-06-007-1-48",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-06-007-1",
+      "problem": "“正向”错误译法易被理解为方向或增长；这里要求生命值为正",
+      "evidence": "最小值(正向原始值,正向名义值)",
+      "resolution": "min(正原始HP,正名义HP)",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-007-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-007-1"
+    },
+    {
+      "id": "DG-06-007-1-49",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-06-007-1",
+      "problem": "原始行为未区分历史适配器和客户端，容易误读为原版客户端只用 rawHP",
+      "evidence": "而不是原始的仅正向原始值行为",
+      "resolution": "；历史适配器曾仅采用正原始HP，客户端初始化仍按所选百分比缩放",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-007-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-007-1"
+    },
+    {
+      "id": "DG-06-007-1-50",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-06-007-1",
+      "problem": "“无界楼层”不是本文定义的资源或状态术语",
+      "evidence": "无界楼层",
+      "resolution": "未分类关卡",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-007-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-007-1"
+    },
+    {
+      "id": "DG-06-011-51",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-06-011",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "终端化",
+      "resolution": "判定为终结",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-011"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-011"
+    },
+    {
+      "id": "DG-06-011-52",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-06-011",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "普通终端",
+      "resolution": "普通终结",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-011"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-011"
+    },
+    {
+      "id": "DG-06-011-53",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-06-011",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "终端状态",
+      "resolution": "终结状态",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-011"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-06-011"
+    },
+    {
+      "id": "DG-08-030-5-54",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md#kb-08-030-5",
+      "problem": "“指定位置/等价性比较”未说明比较字段，且与06-011精确selector关联结论混淆",
+      "evidence": "将显式目标+0x198与指定位置进行比较，而不是进行等价性比较",
+      "resolution": "将目标的关联字段+0x198与指定选择器比较；相同坐标或相同MMO资源名不能替代该关联条件",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-08-030-5"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md#kb-08-030-5"
+    },
+    {
+      "id": "DG-STRUCT-伤害与目标",
+      "category": "结构",
+      "source": "knowledge/业务/地宫/伤害与目标.md",
+      "problem": "单页混合6类独立职责，原页面58577字节；未分层的导航遗漏多个来源块",
+      "evidence": "原页含38个来源标记块，正文串联业务规则、报文字段、资源与历史验收",
+      "resolution": "将标记块完整迁移到同名目录的职责子页；创建目录索引、完整逐块导航及旧路径入口",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/攻击与防御.md",
+        "knowledge/业务/地宫/伤害与目标/入伤与协议.md",
+        "knowledge/业务/地宫/伤害与目标/场景伤害与红屏.md",
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md",
+        "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md",
+        "knowledge/业务/地宫/伤害与目标/预加载与变形目标.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/索引.md"
+    },
+    {
+      "id": "DG-FORMAT-伤害与目标",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标.md",
+      "problem": "长段落将条件、动作、数值、证据和限制连续堆叠；泛化重复标题不能识别片段作用",
+      "evidence": "多块标题为“当前功能”“结算和角色资料结果锚点”或不含标题",
+      "resolution": "按精确片段作用命名标题；大块增加职责小节；长段落按完整句子分点，保留所有原数值、地址及限制",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/索引.md"
+    },
+    {
+      "id": "DG-09-026-18-57",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-09-026-18",
+      "problem": "旧章节号04已失去导航功能",
+      "evidence": "使用04定义的",
+      "resolution": "使用[基础与有效上限规则](战斗资源.md#kb-04-018)定义的",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/上限与当前值.md#kb-09-026-18"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/上限与当前值.md#kb-09-026-18"
+    },
+    {
+      "id": "DG-04-006-58",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-04-006",
+      "problem": "整节验证标签不区分具体规则，与后文多处待验收边界容易冲突",
+      "evidence": "本节结论达到静态链、适配器构造、持久化与客户端派生验证。",
+      "resolution": "验证边界：本节分别包含静态指令、适配器响应构造、持久化事务和客户端派生验证；各项适用范围见对应段落，不能据此声明全部地图及多人流程已完成原客户端验收。",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/快照与资源继承.md#kb-04-006"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/快照与资源继承.md#kb-04-006"
+    },
+    {
+      "id": "DG-08-055-59",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-08-055",
+      "problem": "前文明确HP/MP各有一组，原句只称HP回写可能误导MP仍非零",
+      "evidence": "D012两组回复的HP回写字段清零",
+      "resolution": "当前适配器把D012的两组四槽HP和MP回复字段均清零",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/快照与资源继承.md#kb-08-055"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/快照与资源继承.md#kb-08-055"
+    },
+    {
+      "id": "DG-09-001-3-60",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-09-001-3",
+      "problem": "旧章节号02在拆分知识库中无明确入口",
+      "evidence": "共用02的资源策略",
+      "resolution": "共用[死亡返回资源策略](../城镇/场景切换.md#kb-02-010-1)",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-001-3"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-001-3"
+    },
+    {
+      "id": "DG-09-003-2-61",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-09-003-2",
+      "problem": "旧章节号02／07不能定位规则",
+      "evidence": "遵循02／07",
+      "resolution": "遵循[死亡返回资源策略](../城镇/场景切换.md#kb-02-010-1)与[死亡重试边界](战斗资源.md#kb-07-007)",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-003-2"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-003-2"
+    },
+    {
+      "id": "DG-09-003-2-62",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-09-003-2",
+      "problem": "死亡重试部分HP与金币/彩蛋满资源复活不同，原称“免费死亡续战”易混淆支付资格",
+      "evidence": "当前免费死亡续战策略",
+      "resolution": "当前显式死亡重试资源策略",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-003-2"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-003-2"
+    },
+    {
+      "id": "DG-03-022-63",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-03-022",
+      "problem": "次数载体引用错误地指向 CF99 门控或只含 CF84 的表，应指向完整次数和恢复事务",
+      "evidence": "[CF84 恢复字段](战斗资源.md#kb-08-023-4)",
+      "resolution": "[复活次数与资源同步](战斗资源.md#kb-03-021-2)",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/复活显示与组队恢复.md#kb-03-022"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/复活显示与组队恢复.md#kb-03-022"
+    },
+    {
+      "id": "DG-05-023-2-64",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-05-023-2",
+      "problem": "CF84/CF99字段表未维护CF72生命周期键",
+      "evidence": "完整键与apply gate见[连续地宫资源快照](战斗资源.md#kb-04-006)、[CF84 恢复字段](战斗资源.md#kb-08-023-4)",
+      "resolution": "完整键与apply gate见[CF72 完整应用与跨关Power](战斗资源.md#kb-08-062)",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/CF72与宠物生命周期.md#kb-05-023-2"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/CF72与宠物生命周期.md#kb-05-023-2"
+    },
+    {
+      "id": "DG-08-062-65",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md#kb-08-062",
+      "problem": "apply字段属于CF72，原句错误地使读者以为CF71本身有apply字段",
+      "evidence": "CF71 apply0保留Power",
+      "resolution": "同配置CF71附送的CF72 apply0保留Power",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/CF72与宠物生命周期.md#kb-08-062"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/CF72与宠物生命周期.md#kb-08-062"
+    },
+    {
+      "id": "DG-STRUCT-战斗资源",
+      "category": "结构",
+      "source": "knowledge/业务/地宫/战斗资源.md",
+      "problem": "单页混合5类独立职责，原页面36179字节；未分层的导航遗漏多个来源块",
+      "evidence": "原页含38个来源标记块，正文串联业务规则、报文字段、资源与历史验收",
+      "resolution": "将标记块完整迁移到同名目录的职责子页；创建目录索引、完整逐块导航及旧路径入口",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/上限与当前值.md",
+        "knowledge/业务/地宫/战斗资源/快照与资源继承.md",
+        "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+        "knowledge/业务/地宫/战斗资源/复活显示与组队恢复.md",
+        "knowledge/业务/地宫/战斗资源/CF72与宠物生命周期.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/索引.md"
+    },
+    {
+      "id": "DG-FORMAT-战斗资源",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源.md",
+      "problem": "长段落将条件、动作、数值、证据和限制连续堆叠；泛化重复标题不能识别片段作用",
+      "evidence": "多块标题为“当前功能”“结算和角色资料结果锚点”或不含标题",
+      "resolution": "按精确片段作用命名标题；大块增加职责小节；长段落按完整句子分点，保留所有原数值、地址及限制",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/索引.md"
+    },
+    {
+      "id": "DG-06-014-68",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-06-014",
+      "problem": "所指片段仅列幸运卡构造，没有Hans构造/散射详细地址",
+      "evidence": "[幸运卡场景与VIP页的既有客户端链路](掉落.md#kb-08-004-2)",
+      "resolution": "[金币与星星显示字段](掉落.md#kb-08-047-16)",
+      "targets": [
+        "knowledge/业务/地宫/掉落/卡池与奖励资格.md#kb-06-014"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/卡池与奖励资格.md#kb-06-014"
+    },
+    {
+      "id": "DG-07-016-2-69",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-07-016-2",
+      "problem": "卡池概率引用只含箱子重复领取摘要，详细规则实际位于06-014",
+      "evidence": "[身份和资源边界](掉落.md#kb-06-003-5)",
+      "resolution": "[精确卡池与分组抽取](掉落.md#kb-06-014)",
+      "targets": [
+        "knowledge/业务/地宫/掉落/卡池与奖励资格.md#kb-07-016-2"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/卡池与奖励资格.md#kb-07-016-2"
+    },
+    {
+      "id": "DG-09-020-10-70",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-09-020-10",
+      "problem": "卡池概率引用只含箱子重复领取摘要，详细规则实际位于06-014",
+      "evidence": "[身份和资源边界](掉落.md#kb-06-003-5)",
+      "resolution": "[精确卡池与分组抽取](掉落.md#kb-06-014)",
+      "targets": [
+        "knowledge/业务/地宫/掉落/卡池与奖励资格.md#kb-09-020-10"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/卡池与奖励资格.md#kb-09-020-10"
+    },
+    {
+      "id": "DG-06-016-71",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-06-016",
+      "problem": "概率公式未声明单位：百分比数值与基点混用会导致100倍误差",
+      "evidence": "R为有效rate组之和，按",
+      "resolution": "R为有效rate组百分数的数值之和（例如13%取R=13），bonus为百分数数值、幸运草倍率取1／1.2／2；按",
+      "targets": [
+        "knowledge/业务/地宫/掉落/掉卡率与宝石.md#kb-06-016"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/掉卡率与宝石.md#kb-06-016"
+    },
+    {
+      "id": "DG-06-017-72",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-06-017",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "普通终端",
+      "resolution": "普通终结",
+      "targets": [
+        "knowledge/业务/地宫/掉落/箱子与终结道具.md#kb-06-017"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/箱子与终结道具.md#kb-06-017"
+    },
+    {
+      "id": "DG-08-049-6-73",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-08-049-6",
+      "problem": "“上限2064”可能被误读成所有地图固定恢复2064，实际依资源episode变化",
+      "evidence": "CN基线episode16..22时单次HP增量上限为2064",
+      "resolution": "CN基线L1～L7（资源episode16..22）按该公式计算的单次HP增量最高为2064",
+      "targets": [
+        "knowledge/业务/地宫/掉落/箱子与终结道具.md#kb-08-049-6"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/箱子与终结道具.md#kb-08-049-6"
+    },
+    {
+      "id": "DG-08-046-3-74",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-08-046-3",
+      "problem": "卡池概率引用只含箱子重复领取摘要，详细规则实际位于06-014",
+      "evidence": "[身份和资源边界](掉落.md#kb-06-003-5)",
+      "resolution": "[精确卡池与分组抽取](掉落.md#kb-06-014)",
+      "targets": [
+        "knowledge/业务/地宫/掉落/领取与结果队列.md#kb-08-046-3"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/领取与结果队列.md#kb-08-046-3"
+    },
+    {
+      "id": "DG-08-047-14-75",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-08-047-14",
+      "problem": "融合后的旧主题号07不可定位",
+      "evidence": "主题07的“category=40”仅覆盖其中一种",
+      "resolution": "本页 category40 规则仅覆盖其中一种",
+      "targets": [
+        "knowledge/业务/地宫/掉落/领取与结果队列.md#kb-08-047-14"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/领取与结果队列.md#kb-08-047-14"
+    },
+    {
+      "id": "DG-08-047-3-76",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-08-047-3",
+      "problem": "原“没有零查找返回，因此…”否定语序与前文零查找不创建子对象结论矛盾",
+      "evidence": "在常见块 `0x6B4D99..0x6B4E38` 之前没有零查找返回，因此",
+      "resolution": "查找结果为0时，在公共构造块 `0x6B4D99..0x6B4E38` 之前返回，因此",
+      "targets": [
+        "knowledge/业务/地宫/掉落/宠物与卡片显示边界.md#kb-08-047-3"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/宠物与卡片显示边界.md#kb-08-047-3"
+    },
+    {
+      "id": "DG-08-047-6-77",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md#kb-08-047-6",
+      "problem": "空表头呈现为证据表但实际无记录；保留来源标记并明确证据缺口",
+      "evidence": "| 边界 | 地址/调用链 | 验证用途 |\n|---|---|---|",
+      "resolution": "原融合片段仅保留表头，未登记任何地址或结论，不能作为独立证据。已保留的卡片对象构造与领域15排除链见[卡片对象构造链](掉落.md#kb-08-047-3)。",
+      "targets": [
+        "knowledge/业务/地宫/掉落/宠物与卡片显示边界.md#kb-08-047-6"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/宠物与卡片显示边界.md#kb-08-047-6"
+    },
+    {
+      "id": "DG-STRUCT-掉落",
+      "category": "结构",
+      "source": "knowledge/业务/地宫/掉落.md",
+      "problem": "单页混合7类独立职责，原页面35665字节；未分层的导航遗漏多个来源块",
+      "evidence": "原页含27个来源标记块，正文串联业务规则、报文字段、资源与历史验收",
+      "resolution": "将标记块完整迁移到同名目录的职责子页；创建目录索引、完整逐块导航及旧路径入口",
+      "targets": [
+        "knowledge/业务/地宫/掉落/卡池与奖励资格.md",
+        "knowledge/业务/地宫/掉落/掉卡率与宝石.md",
+        "knowledge/业务/地宫/掉落/黄金粉产出.md",
+        "knowledge/业务/地宫/掉落/箱子与终结道具.md",
+        "knowledge/业务/地宫/掉落/领取与结果队列.md",
+        "knowledge/业务/地宫/掉落/宠物与卡片显示边界.md",
+        "knowledge/业务/地宫/掉落/金币与星星显示.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/索引.md"
+    },
+    {
+      "id": "DG-FORMAT-掉落",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落.md",
+      "problem": "长段落将条件、动作、数值、证据和限制连续堆叠；泛化重复标题不能识别片段作用",
+      "evidence": "多块标题为“当前功能”“结算和角色资料结果锚点”或不含标题",
+      "resolution": "按精确片段作用命名标题；大块增加职责小节；长段落按完整句子分点，保留所有原数值、地址及限制",
+      "targets": [
+        "knowledge/业务/地宫/掉落/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/索引.md"
+    },
+    {
+      "id": "DG-07-009-80",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-07-009",
+      "problem": "132028与前文243计分修正记录看似冲突，应声明全目录与已映射修正子集口径",
+      "evidence": "计分构造验证覆盖864槽、308623条正分目标和132028条type4目标",
+      "resolution": "计分构造验证覆盖864资源槽、308623条正分目标和全目标目录中的132028条type4目标",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/击杀计分与评级.md#kb-07-009"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/击杀计分与评级.md#kb-07-009"
+    },
+    {
+      "id": "DG-07-009-81",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-07-009",
+      "problem": "“均零需修正”语法不完整，可能理解为分数全部为零",
+      "evidence": "当前全资源校验对四段计分均零需修正",
+      "resolution": "当前全资源校验对四段计分均报告0项需修正",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/击杀计分与评级.md#kb-07-009"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/击杀计分与评级.md#kb-07-009"
+    },
+    {
+      "id": "DG-07-018-82",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-07-018",
+      "problem": "句尾逗号悬置",
+      "evidence": "主动使用、到期及事务归[VIP经验卡的主动使用与持久化](../卡片/兑换.md#kb-03-003)，",
+      "resolution": "主动使用、到期及事务归[VIP经验卡的主动使用与持久化](../卡片/兑换.md#kb-03-003)。",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/经验与倍率.md#kb-07-018"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/经验与倍率.md#kb-07-018"
+    },
+    {
+      "id": "DG-08-019-2-83",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-08-019-2",
+      "problem": "移动前原段落也无上表，悬空位置引用不能定位布局",
+      "evidence": "累计经验／阈值按上表进入",
+      "resolution": "累计经验／阈值进入",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/经验与倍率.md#kb-08-019-2"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/经验与倍率.md#kb-08-019-2"
+    },
+    {
+      "id": "DG-07-003-84",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-07-003",
+      "problem": "90和850没有说明单位及历史样本性质",
+      "evidence": "全队失败／零击杀首结算事务检查确认：",
+      "resolution": "历史事务构造样本（各值为经验）确认：全队失败／零击杀首次结算时，",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-07-003"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-07-003"
+    },
+    {
+      "id": "DG-07-003-85",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-07-003",
+      "problem": "样本回归结果未绑定版本",
+      "evidence": "默认回归包含此边界。",
+      "resolution": "默认回归包含此事务边界；受测版本归[验证状态](../../工程/验证状态.md)。",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-07-003"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-07-003"
+    },
+    {
+      "id": "DG-07-003-86",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-07-003",
+      "problem": "CF88是响应非调用，且不能由CF87本身推导死亡字段",
+      "evidence": "死亡调用 CF88 且进度增量为0",
+      "resolution": "角色死亡结果仍使用 CF88，通关进度增量为0",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-07-003"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-07-003"
+    },
+    {
+      "id": "DG-07-013-87",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-07-013",
+      "problem": "“依然安全”缺少可判断行为，掉落规则已有明确语义",
+      "evidence": "重复拾取和容量失效依然安全",
+      "resolution": "重复拾取不重复提交奖励；容量不足时不生成可领取卡牌记录",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-07-013"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-07-013"
+    },
+    {
+      "id": "DG-08-049-1-88",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md#kb-08-049-1",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "CF88 案件",
+      "resolution": "CF88 分派分支",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-08-049-1"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/结果协议与冻结.md#kb-08-049-1"
+    },
+    {
+      "id": "DG-STRUCT-计分与结算",
+      "category": "结构",
+      "source": "knowledge/业务/地宫/计分与结算.md",
+      "problem": "单页混合6类独立职责，原页面47765字节；未分层的导航遗漏多个来源块",
+      "evidence": "原页含30个来源标记块，正文串联业务规则、报文字段、资源与历史验收",
+      "resolution": "将标记块完整迁移到同名目录的职责子页；创建目录索引、完整逐块导航及旧路径入口",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/击杀计分与评级.md",
+        "knowledge/业务/地宫/计分与结算/经验与倍率.md",
+        "knowledge/业务/地宫/计分与结算/结果协议与冻结.md",
+        "knowledge/业务/地宫/计分与结算/评价持久化与排行榜.md",
+        "knowledge/业务/地宫/计分与结算/结算操作与控制器.md",
+        "knowledge/业务/地宫/计分与结算/跨模块指南.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/索引.md"
+    },
+    {
+      "id": "DG-FORMAT-计分与结算",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/计分与结算.md",
+      "problem": "长段落将条件、动作、数值、证据和限制连续堆叠；泛化重复标题不能识别片段作用",
+      "evidence": "多块标题为“当前功能”“结算和角色资料结果锚点”或不含标题",
+      "resolution": "按精确片段作用命名标题；大块增加职责小节；长段落按完整句子分点，保留所有原数值、地址及限制",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/计分与结算/索引.md"
+    },
+    {
+      "id": "DG-06-021-91",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-06-021",
+      "problem": "其他片段仅称最终D012/64，容易遗漏高episode中间终结也需排名尾部",
+      "evidence": "中间终结使用64字节并显式初始化排名尾部",
+      "resolution": "中间终结使用64字节并显式初始化排名尾部（该条件覆盖规则优先于普通D012/60长度）",
+      "targets": [
+        "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-021"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-021"
+    },
+    {
+      "id": "DG-08-041-92",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-08-041",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "终端状态",
+      "resolution": "终结状态",
+      "targets": [
+        "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+    },
+    {
+      "id": "DG-08-041-93",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-08-041",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "首终端",
+      "resolution": "首次终结",
+      "targets": [
+        "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+    },
+    {
+      "id": "DG-08-041-94",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-08-041",
+      "problem": "attack-basis没有解释其运算含义",
+      "evidence": "普通拥有者/来源报告共享`attack-basis`",
+      "resolution": "普通拥有者／来源报告共享`attack-basis`（来源攻击减部件基准）",
+      "targets": [
+        "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+    },
+    {
+      "id": "DG-08-041-95",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-08-041",
+      "problem": "“序号无关的死亡不会被核实完整”语义不明，需说明不能跨组件推断终结",
+      "evidence": "序号无关的死亡不会被核实完整",
+      "resolution": "不能仅凭该子对象局部能量变化证明其他ordinal组件也已死亡",
+      "targets": [
+        "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+    },
+    {
+      "id": "DG-08-041-96",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-08-041",
+      "problem": "“子对象+0x19”混淆数据包偏移与对象偏移",
+      "evidence": "中和应发生在子对象+0x19",
+      "resolution": "回收中性选择值应写入D012帧child字段+0x19",
+      "targets": [
+        "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+    },
+    {
+      "id": "DG-08-042-97",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-08-042",
+      "problem": "逆向工程译词、口语与同义术语混用，容易混淆终结、分派分支与技能名称",
+      "evidence": "过时转换器 at",
+      "resolution": "旧格式转换器位于 ",
+      "targets": [
+        "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042"
+    },
+    {
+      "id": "DG-08-042-98",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-08-042",
+      "problem": "措辞或作用边界不明确",
+      "evidence": "普通D012完整帧为60B",
+      "resolution": "普通生命更新D012完整帧为60字节",
+      "targets": [
+        "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042"
+    },
+    {
+      "id": "DG-08-042-99",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md#kb-08-042",
+      "problem": "完整帧说明遗漏中间终结64字节，易被截短为60",
+      "evidence": "首次／重复最终状态帧为64B",
+      "resolution": "首次／重复最终状态帧为64字节；高episode的中间终结也使用64字节，见[mode推进门控](首领.md#kb-08-056)",
+      "targets": [
+        "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042"
+    },
+    {
+      "id": "DG-STRUCT-首领",
+      "category": "结构",
+      "source": "knowledge/业务/地宫/首领.md",
+      "problem": "单页混合4类独立职责，原页面21705字节；未分层的导航遗漏多个来源块",
+      "evidence": "原页含14个来源标记块，正文串联业务规则、报文字段、资源与历史验收",
+      "resolution": "将标记块完整迁移到同名目录的职责子页；创建目录索引、完整逐块导航及旧路径入口",
+      "targets": [
+        "knowledge/业务/地宫/首领/生命来源与比较.md",
+        "knowledge/业务/地宫/首领/组件与零生命附件.md",
+        "knowledge/业务/地宫/首领/协议与部件回收.md",
+        "knowledge/业务/地宫/首领/阶段推进与开场.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/索引.md"
+    },
+    {
+      "id": "DG-FORMAT-首领",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/首领.md",
+      "problem": "长段落将条件、动作、数值、证据和限制连续堆叠；泛化重复标题不能识别片段作用",
+      "evidence": "多块标题为“当前功能”“结算和角色资料结果锚点”或不含标题",
+      "resolution": "按精确片段作用命名标题；大块增加职责小节；长段落按完整句子分点，保留所有原数值、地址及限制",
+      "targets": [
+        "knowledge/业务/地宫/首领/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/首领/索引.md"
+    },
+    {
+      "id": "DG-VERIFY-SCOPE",
+      "category": "信息",
+      "source": "knowledge/业务/地宫/*.md",
+      "problem": "多个“验证范围/发布状态”链接指向09-020或09-021的一行功能摘要，读者无法确认受测版本且容易误判完整验收",
+      "evidence": "地宫6大页中数十处链接指向kb-09-020-8、kb-09-020-11、kb-09-021-3或仅三行09-001-3",
+      "resolution": "统一指向工程验证状态；保留历史数值并明确每种证据的适用层级",
+      "targets": [
+        "knowledge/业务/地宫/索引.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/*.md"
+    },
+    {
+      "id": "DG-POLISH-103",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md",
+      "problem": "使用明确组别表示四个原始扣血数值",
+      "evidence": "两块各2000HP的部件：第一块实际扣血1500、500，第二块实际扣血1500、500",
+      "resolution": "两块各2000HP的部件：第一块实际扣血1500／500，第二块实际扣血1500／500",
+      "targets": [
+        "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md"
+    },
+    {
+      "id": "DG-POLISH-104",
+      "category": "信息",
+      "source": "knowledge/业务/地宫/关卡与房间/跨模块指南与历史验证.md",
+      "problem": "“本轮/由实机验收确认”未登记版本，易误读所有客户端场景已经确认",
+      "evidence": "本轮验证覆盖适配器状态机、持久奖励、独立地宫工作进程、Boss部件生命周期和客户端隔离指令；客户端界面与连续游玩由实机验收确认。",
+      "resolution": "原指南此段登记的验证覆盖适配器状态机、持久奖励、独立地宫工作进程、Boss部件生命周期和客户端隔离指令；未在该段登记受测提交。客户端界面与连续游玩需要独立实机验收，已验收场景以[验证状态](../../../工程/验证状态.md)登记为准。",
+      "targets": [
+        "knowledge/业务/地宫/关卡与房间/跨模块指南与历史验证.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/关卡与房间/跨模块指南与历史验证.md"
+    },
+    {
+      "id": "DG-POLISH-105",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "problem": "“弃用者”错误翻译，实际源码名称保留而作用须按当前适配器续关清理描述",
+      "evidence": "CF99 弃用者请求",
+      "resolution": "CF99 离场标志请求（REQ_FLYSHOOTING_SURRENDER_ABUSER）",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md"
+    },
+    {
+      "id": "DG-POLISH-106",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "problem": "“长期”隐含未经证实的时长语义",
+      "evidence": "长期控制器在设置应用字节+7之前发送",
+      "resolution": "控制器在设置应用字节+7之前发送；名称不证明计数器单位或处罚机制",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md"
+    },
+    {
+      "id": "DG-POLISH-107",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "problem": "计数阈值不能被直接称为长时间或换算毫秒",
+      "evidence": "长时间运行的控制器在其计数器超过 `0xE10` 时发送 CF99",
+      "resolution": "控制器在计数器超过 `0xE10` 时发送 CF99（此处未确认计数单位）",
+      "targets": [
+        "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md"
+    },
+    {
+      "id": "DG-POLISH-108",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落/卡池与奖励资格.md",
+      "problem": "主题拆分后“下节”引用失效",
+      "evidence": "其概率及宠物加成与默认原生入口的区别，统一见下节“黑曜石与卡片获得率”",
+      "resolution": "其概率及宠物加成与默认原生入口的区别，统一见[黑曜石与卡片获得率](掉卡率与宝石.md#kb-06-016)",
+      "targets": [
+        "knowledge/业务/地宫/掉落/卡池与奖励资格.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/卡池与奖励资格.md"
+    },
+    {
+      "id": "DG-POLISH-109",
+      "category": "表述",
+      "source": "knowledge/业务/地宫/掉落/领取与结果队列.md",
+      "problem": "“下方拾取表”在原片段与新布局中不能唯一定位",
+      "evidence": "详见下方拾取表",
+      "resolution": "详见[领取字段与结果队列](#kb-07-002)",
+      "targets": [
+        "knowledge/业务/地宫/掉落/领取与结果队列.md"
+      ],
+      "status": "resolved",
+      "current_source": "knowledge/业务/地宫/掉落/领取与结果队列.md"
+    },
+    {
+      "id": "ROUTE-01",
+      "category": "信息",
+      "source": "manifest/document_fusion.json#heading_routes",
+      "current_source": "manifest/document_fusion.json",
+      "problem": "原章节拆分后部分存在性可通过的链接落到父片段首子页，购房／推荐、经验同步、多开与小地图流程会被误读。",
+      "evidence": "交叉只读复核与旧章节标题语义对照，共修正19处正文链接和42条章节路由。",
+      "resolution": "逐一对照原章节标题路由到对应职责页；聚合章节的稳定父锚点放在目录索引，操作指南按其具体目的指向完整流程。",
+      "targets": [
+        "knowledge/工程/客户端兼容/自动兼容清单.md",
+        "knowledge/指南/完整适配器与客户端兼容说明.md",
+        "knowledge/指南/L7-L8资源移植.md"
+      ],
+      "status": "resolved"
+    },
+    {
+      "id": "STRUCT-02",
+      "category": "结构",
+      "source": "knowledge/工程/索引.md",
+      "current_source": "knowledge/工程/索引.md",
+      "problem": "工程拆分目录起初缺少目录内索引；部分业务索引“旧入口”文字变为自身链接，目录导航职责不清。",
+      "evidence": "6个工程主题目录与21个业务主题目录的导航复核。",
+      "resolution": "补齐全部目录索引，主导航直接进入目录；去除无效自链接文字，旧主题页保留兼容入口。",
+      "targets": [
+        "knowledge/工程/索引.md",
+        "knowledge/业务/索引.md"
+      ],
+      "status": "resolved"
+    },
+    {
+      "id": "DG-CF87-BOUNDARY",
+      "category": "信息",
+      "source": "knowledge/业务/地宫/计分与结算.md",
+      "current_source": "knowledge/业务/地宫/计分与结算/评价持久化与排行榜.md",
+      "problem": "“非死亡CF87”残留简写与“CF87无已证实死亡字段”有表面矛盾，容易虚构新增字段。",
+      "evidence": "评级持久化及成员资料同步正文与CF87结果字段证据。",
+      "resolution": "明确非死亡指适配器该角色存活与成功结算状态，不表示CF87含已确认死亡字段；保留全部帧布局及状态资格。",
+      "targets": [
+        "knowledge/业务/地宫/计分与结算/评价持久化与排行榜.md",
+        "knowledge/业务/地宫/关卡与房间/成员资料与库存同步.md"
+      ],
+      "status": "resolved"
+    }
+  ],
+  "document_routes": [
+    {
+      "from": "knowledge/业务/住宅/家具.md",
+      "to": "knowledge/业务/住宅/家具/索引.md"
+    },
+    {
+      "from": "knowledge/业务/住宅/房屋归属.md",
+      "to": "knowledge/业务/住宅/房屋归属/索引.md"
+    },
+    {
+      "from": "knowledge/业务/卡片/兑换.md",
+      "to": "knowledge/业务/卡片/兑换/索引.md"
+    },
+    {
+      "from": "knowledge/业务/卡片/合成.md",
+      "to": "knowledge/业务/卡片/合成/索引.md"
+    },
+    {
+      "from": "knowledge/业务/地宫/伤害与目标.md",
+      "to": "knowledge/业务/地宫/伤害与目标/索引.md"
+    },
+    {
+      "from": "knowledge/业务/地宫/关卡与房间.md",
+      "to": "knowledge/业务/地宫/关卡与房间/索引.md"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源.md",
+      "to": "knowledge/业务/地宫/战斗资源/索引.md"
+    },
+    {
+      "from": "knowledge/业务/地宫/掉落.md",
+      "to": "knowledge/业务/地宫/掉落/索引.md"
+    },
+    {
+      "from": "knowledge/业务/地宫/计分与结算.md",
+      "to": "knowledge/业务/地宫/计分与结算/索引.md"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领.md",
+      "to": "knowledge/业务/地宫/首领/索引.md"
+    },
+    {
+      "from": "knowledge/业务/城镇/场景切换.md",
+      "to": "knowledge/业务/城镇/场景切换/索引.md"
+    },
+    {
+      "from": "knowledge/业务/娱乐/奖励.md",
+      "to": "knowledge/业务/娱乐/奖励/索引.md"
+    },
+    {
+      "from": "knowledge/业务/娱乐/房间.md",
+      "to": "knowledge/业务/娱乐/房间/索引.md"
+    },
+    {
+      "from": "knowledge/业务/宠物/宝石.md",
+      "to": "knowledge/业务/宠物/宝石/索引.md"
+    },
+    {
+      "from": "knowledge/业务/宠物/成长.md",
+      "to": "knowledge/业务/宠物/成长/索引.md"
+    },
+    {
+      "from": "knowledge/业务/宠物/所有权.md",
+      "to": "knowledge/业务/宠物/所有权/索引.md"
+    },
+    {
+      "from": "knowledge/业务/库存/快捷栏.md",
+      "to": "knowledge/业务/库存/快捷栏/索引.md"
+    },
+    {
+      "from": "knowledge/业务/库存/消耗品.md",
+      "to": "knowledge/业务/库存/消耗品/索引.md"
+    },
+    {
+      "from": "knowledge/业务/库存/物品实例.md",
+      "to": "knowledge/业务/库存/物品实例/索引.md"
+    },
+    {
+      "from": "knowledge/业务/社交/情侣.md",
+      "to": "knowledge/业务/社交/情侣/索引.md"
+    },
+    {
+      "from": "knowledge/业务/竞技/战斗.md",
+      "to": "knowledge/业务/竞技/战斗/索引.md"
+    },
+    {
+      "from": "knowledge/业务/竞技/房间.md",
+      "to": "knowledge/业务/竞技/房间/索引.md"
+    },
+    {
+      "from": "knowledge/业务/经济/商城.md",
+      "to": "knowledge/业务/经济/商城/索引.md"
+    },
+    {
+      "from": "knowledge/业务/角色/技能.md",
+      "to": "knowledge/业务/角色/技能/索引.md"
+    },
+    {
+      "from": "knowledge/业务/角色/新手引导.md",
+      "to": "knowledge/业务/角色/新手引导/索引.md"
+    },
+    {
+      "from": "knowledge/业务/角色/等级经验.md",
+      "to": "knowledge/业务/角色/等级经验/索引.md"
+    },
+    {
+      "from": "knowledge/业务/角色/角色资料.md",
+      "to": "knowledge/业务/角色/角色资料/索引.md"
+    },
+    {
+      "from": "knowledge/工程/住宅与家具客户端兼容.md",
+      "to": "knowledge/工程/住宅与家具客户端兼容/索引.md"
+    },
+    {
+      "from": "knowledge/工程/历史验证/既有记录.md",
+      "to": "knowledge/工程/历史验证/既有记录/索引.md"
+    },
+    {
+      "from": "knowledge/工程/启动运行.md",
+      "to": "knowledge/工程/启动运行/索引.md"
+    },
+    {
+      "from": "knowledge/工程/地宫资源兼容.md",
+      "to": "knowledge/工程/地宫资源兼容/索引.md"
+    },
+    {
+      "from": "knowledge/工程/客户端兼容.md",
+      "to": "knowledge/工程/客户端兼容/索引.md"
+    },
+    {
+      "from": "knowledge/工程/资源安装.md",
+      "to": "knowledge/工程/资源安装/索引.md"
+    },
+    {
+      "from": "knowledge/指南/构建与验证.md",
+      "to": "knowledge/指南/构建与验证/索引.md"
+    }
+  ],
+  "preserved_baselines": {
+    "manifest/knowledge_baseline.json.gz": "d4a66f21600cf2ef22b0acb6812c3c1ea60fd0cd54edf875d9a92fda1141dd3c",
+    "manifest/document_fusion_baseline.json.gz": "7261da8299457949bbe74dcb416002426d4da73a826cda8ed63668e26511b80c"
+  },
+  "validation": {
+    "knowledge": {
+      "sources": 9,
+      "navigation": 1,
+      "queries": 51,
+      "blocks": 317,
+      "fragments": 733,
+      "links": 3376,
+      "edited_fragments": 700
+    },
+    "fusion": {
+      "sources": 18,
+      "fragments": 155,
+      "chars": 132007,
+      "links": 3376,
+      "edited_fragments": 143
+    },
+    "strict_mode": "Historical text comparison intentionally reports reviewed edits; archived baselines and historical hashes are unchanged.",
+    "client_acceptance": false,
+    "unit_tests": {
+      "total": 133,
+      "passed": 128,
+      "skipped": 5,
+      "reason": "Host does not permit symlink fixture creation; Windows junction checks passed."
+    },
+    "source_only_package": "passed",
+    "release_identity": {
+      "critical_files": 1168,
+      "runtime_files": 218,
+      "hash_check": "passed",
+      "runtime_contract": "passed",
+      "user_client_presence": "not_tested_in_documentation_worktree"
+    }
+  },
+  "preservation": {
+    "knowledge_archive_sha256": "d4a66f21600cf2ef22b0acb6812c3c1ea60fd0cd54edf875d9a92fda1141dd3c",
+    "fusion_archive_sha256": "7261da8299457949bbe74dcb416002426d4da73a826cda8ed63668e26511b80c",
+    "knowledge_source_characters": 345456,
+    "fusion_source_characters": 132007,
+    "knowledge_markers": 733,
+    "fusion_markers": 155,
+    "split_parents": 3,
+    "split_children": 18,
+    "code_examples": "Module-level review confirms original technical code examples preserved; explanatory text lists may be converted to tables.",
+    "gameplay_source_changed": false,
+    "technical_address_values_preserved": 2864,
+    "technical_code_fences_preserved": 54
+  }
+}

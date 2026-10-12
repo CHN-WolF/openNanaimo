@@ -48,7 +48,8 @@ REPOSITORY_FILES = [
     'scripts/deploy_card_use_update.py',
     'scripts/prepare_card_page_update.py',
     'scripts/test_card_page_update.py',
-    'docs/event-card-rewards.md',
+    'knowledge/指南/event-card-rewards.md',
+    'knowledge/业务/卡片/兑换.md',
     'tests/CardUseRegression/CardUseRegression.csproj',
     'tests/CardUseRegression/Program.cs',
     'tests/CardPageUnionRegression/CardPageUnionRegression.csproj',
@@ -59,8 +60,24 @@ REPOSITORY_FILES = [
     'scripts/generate_inventory_card_catalog.py',
     'scripts/test_inventory_card_catalog.py',
     'scripts/test_event_card_terminal.py',
-    'docs/level200/internal-layout.md',
-    'docs/level200/README.md',
+    'knowledge/基础/桥接布局.md',
+    'knowledge/指南/level200/README.md',
+    'knowledge/业务/角色/等级经验.md',
+    'scripts/verify_knowledge.py',
+    'scripts/test_verify_knowledge.py',
+    'scripts/verify_document_fusion.py',
+    'scripts/test_verify_document_fusion.py',
+    'manifest/knowledge_migration.json',
+    'manifest/knowledge_baseline.json.gz',
+    'manifest/document_fusion.json',
+    'manifest/document_fusion_baseline.json.gz',
+    'knowledge/索引.md',
+    'knowledge/指南/索引.md',
+    'knowledge/工程/适配器架构.md',
+    'knowledge/工程/住宅与家具客户端兼容.md',
+    'knowledge/工程/子弹DIY兼容.md',
+    'knowledge/工程/地宫资源兼容.md',
+    'knowledge/业务/住宅/公寓引导.md',
     'gui_launcher/level200_client_sites.json',
     'gui_launcher/level200_client_check.ps1',
     'scripts/test_live_dungeon_experience.py',
@@ -69,7 +86,7 @@ REPOSITORY_FILES = [
     'scripts/migrate_native_progression_records.py',
     'scripts/migrate_character_experience_v3.py',
     'scripts/level200_compat.py',
-    'docs/客户端二进制补丁.md',
+    'knowledge/指南/客户端二进制补丁.md',
     'scripts/test_basic_gameplay_boundaries.py',
     'scripts/test_gameplay_bugfixes.py',
     'scripts/test_charge_mp.py',
@@ -161,6 +178,17 @@ REPOSITORY_FILES = [
     'start_nanaimo_launcher.bat',
 ]
 
+# The fusion manifest explicitly declares the active documentation snapshot.
+# Keep every unified document in the contract on subsequent runtime refreshes.
+_fusion_documents = json.loads((ROOT / 'manifest/document_fusion.json').read_text('utf-8'))
+REPOSITORY_FILES += list(_fusion_documents['validation']['current_documents'])
+REPOSITORY_FILES += [
+    'README.md', 'resource-packs/README.md',
+    'scripts/export_patch.py', 'scripts/refresh_patch_manifest.py', 'scripts/test_export_patch.py',
+    'scripts/package_korean_resource_kit.py', 'scripts/test_package_korean_resource_kit.py',
+    'scripts/test_pet_localization_levels.py',
+]
+
 # Only files explicitly referenced by the preview index enter the runtime contract.
 _projectile_previews = json.loads((ROOT / 'gui_launcher/data/previews/projectile_frames.json').read_text('utf-8-sig'))
 REPOSITORY_FILES += sorted({'gui_launcher/data/previews/projectiles/' + r['gif']
@@ -216,6 +244,12 @@ def runtime_records() -> dict[str, dict]:
 
 def main() -> None:
     critical = {rel: record(safe_file(rel)) for rel in sorted(set(REPOSITORY_FILES))}
+    # All current topic pages have a release identity, including nested leaves.
+    # This records local hashes only; export candidacy and approval stay separate.
+    for path in sorted((ROOT / 'knowledge').rglob('*.md')):
+        rel = path.relative_to(ROOT).as_posix()
+        critical[rel] = record(safe_file(rel))
+    critical['manifest/knowledge_review.json'] = record(safe_file('manifest/knowledge_review.json'))
 
     runtime = runtime_records()
     critical.update(runtime)
@@ -273,8 +307,8 @@ def main() -> None:
             'manifest': f'{RUNTIME_ROOT}/adapter_manifest.json',
             'file_count': len(runtime),
             'files': runtime,
-            'delivery': 'release-archive-required',
-            'source_tracking': 'generated-runtime-is-not-source-tracked',
+            'delivery': 'repository-or-release-archive',
+            'source_tracking': 'complete-runtime-is-source-tracked',
         },
         'critical_files': critical,
         'source_closure_count': closure['count'],

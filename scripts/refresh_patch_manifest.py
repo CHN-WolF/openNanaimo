@@ -2,7 +2,8 @@
 """Refresh exact patch candidates, never approvals. Default: read-only JSON report.
 
 Only existing allowlist entries, the declared native/managed closure, and explicit --add paths
-are read. No recursive discovery, legacy-path fallback, builds or installers.
+are read. Known retired document paths are mapped explicitly; no discovery,
+legacy-file fallback, builds or installers.
 """
 from __future__ import annotations
 
@@ -17,10 +18,43 @@ import tempfile
 import export_patch as patch
 
 
+# Exact candidate migration only. New paths receive new hashes and still require
+# independent path/hash review; old files are never read as a fallback.
+DOCUMENT_PATH_MIGRATION = {
+    'docs/L7-L8资源移植.md': 'knowledge/指南/L7-L8资源移植.md',
+    'docs/apartment_guide_lifecycle.md': 'knowledge/业务/住宅/公寓引导.md',
+    'docs/event-card-rewards.md': 'knowledge/指南/event-card-rewards.md',
+    'docs/level200/README.md': 'knowledge/指南/level200/README.md',
+    'docs/level200/internal-layout.md': 'knowledge/基础/桥接布局.md',
+    'docs/住宅土地卡片与温度计恢复.md': 'knowledge/指南/住宅土地卡片与温度计恢复.md',
+    'docs/单身公寓.md': 'knowledge/指南/单身公寓.md',
+    'docs/启动流程与源码索引.md': 'knowledge/指南/启动流程与源码索引.md',
+    'docs/地宫与背包更新说明.md': 'knowledge/指南/地宫与背包更新说明.md',
+    'docs/子弹DIY与篮球试玩.md': 'knowledge/指南/子弹DIY与篮球试玩.md',
+    'docs/完整适配器与客户端兼容说明.md': 'knowledge/指南/完整适配器与客户端兼容说明.md',
+    'docs/客户端二进制补丁.md': 'knowledge/指南/客户端二进制补丁.md',
+    'docs/文件清单与导出工具.md': 'knowledge/指南/文件清单与导出工具.md',
+    'docs/构建与验证.md': 'knowledge/指南/构建与验证.md',
+    'docs/第三方与许可说明.md': 'knowledge/指南/第三方与许可说明.md',
+    'docs/运行依赖.md': 'knowledge/指南/运行依赖.md',
+    'docs/韩服L7-L8与宠物资源说明.md': 'knowledge/指南/韩服L7-L8与宠物资源说明.md',
+    'docs/韩服宠物佩戴等级下放方案.md': 'knowledge/指南/韩服宠物佩戴等级下放方案.md',
+}
+
+
 def rebuild(root: Path, previous: dict, additions: list[str] | None = None) -> tuple[dict, dict]:
     root = patch.no_links(root)
-    patch.validate_manifest({**previous, 'files': [row for row in previous['files']
-                             if row.get('path') != 'gui_launcher/inventory_admin_backend.py']})
+    validated_rows = []
+    for row in previous['files']:
+        name = row.get('path')
+        if name == 'gui_launcher/inventory_admin_backend.py':
+            continue
+        if name in DOCUMENT_PATH_MIGRATION:
+            if row.get('layer') != 'docs':
+                raise patch.ExportError('retired document must have its original docs layer')
+            row = {**row, 'path': DOCUMENT_PATH_MIGRATION[name], 'layer': 'knowledge'}
+        validated_rows.append(row)
+    patch.validate_manifest({**previous, 'files': validated_rows})
     old = {e['path']: e for e in previous['files']}
     closure_path = patch.safe_file(root, 'manifest/source_closure.json')
     closure = patch.validated_closure(patch.load_json(closure_path))
@@ -38,6 +72,9 @@ def rebuild(root: Path, previous: dict, additions: list[str] | None = None) -> t
             continue
         if name == 'gui_launcher/inventory_admin_backend.py':
             continue  # Retired production Python backend; managed source/runtime replaces it.
+        if name in DOCUMENT_PATH_MIGRATION:
+            selected[DOCUMENT_PATH_MIGRATION[name]] = 'knowledge'
+            continue
         selected[name] = entry['layer']
     for row in closure:
         selected[row['path']] = 'source'
@@ -81,7 +118,11 @@ def rebuild(root: Path, previous: dict, additions: list[str] | None = None) -> t
         elif (prior['layer'], prior['size'], prior['sha256'].lower()) != (layer, size, sha):
             changes.append({'path': name, 'change': 'bytes_or_layer_changed_existing_review_must_be_rechecked'})
     for name in sorted(old.keys() - selected.keys()):
-        changes.append({'path': name, 'change': 'removed_from_declared_C_closure'})
+        if name in DOCUMENT_PATH_MIGRATION:
+            changes.append({'path': name, 'change': 'retired_document_candidate',
+                            'replacement': DOCUMENT_PATH_MIGRATION[name]})
+        else:
+            changes.append({'path': name, 'change': 'removed_from_declared_C_closure'})
     candidate = {
         'schema_version': 1,
         'purpose': 'exact_hash_patch_candidates_pending_per_file_review_not_a_full_game',
@@ -170,9 +211,9 @@ def main(argv=None) -> int:
             raise patch.ExportError('workspace root does not exist')
         control = patch.no_links(args.allowlist or root / 'manifest/patch_allowlist.json')
         before = patch.digest(control)
-        # Rebuild validates the current schema after removing the one retired
-        # production Python backend. Strict export loading must not preempt
-        # that migration; all remaining rows still pass payload_policy.
+        # Rebuild validates exact retired-path mappings and the current schema.
+        # Strict export loading must not preempt candidate migration; all active
+        # rows still pass payload_policy and no review decisions are generated.
         candidate, report = rebuild(root, patch.load_json(control), args.add)
         if args.write:
             if patch.digest(patch.no_links(control)) != before:

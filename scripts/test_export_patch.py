@@ -57,7 +57,7 @@ class ExportPatchTests(unittest.TestCase):
         self.destination = self.base / "output"
         self.doc = {"schema_version": 1, "files": []}
         self.reviews = {}
-        self.add("docs/文件清单与导出工具.md", "docs", b"Reviewed technical notes.\n")
+        self.add("README.md", "docs", b"Reviewed technical notes.\n")
 
     def add(self, name, layer, data=b"test\n"):
         p = self.root / name
@@ -133,7 +133,7 @@ class ExportPatchTests(unittest.TestCase):
         self.doc["files"].pop()  # exists locally but NOT on allowlist
         patch.export_tree(self.root, self.destination, self.plan(), self.reviews)
         names = {p.relative_to(self.destination).as_posix() for p in self.destination.rglob("*") if p.is_file()}
-        self.assertEqual(names, {"docs/文件清单与导出工具.md", "PATCH_EXPORT_COMPLETE.json"})
+        self.assertEqual(names, {"README.md", "PATCH_EXPORT_COMPLETE.json"})
         receipt = json.loads((self.destination / "PATCH_EXPORT_COMPLETE.json").read_text("utf-8"))
         self.assertFalse(receipt["complete_playable_game"])
         self.assertFalse(receipt["official_baseline_verified"])
@@ -149,6 +149,8 @@ class ExportPatchTests(unittest.TestCase):
             "knowledge/业务/宠物/所有权.md": "# 所有权\n",
             "knowledge/工程/验证状态.md": "# 验证状态\n",
             "knowledge/工程/历史验证/既有记录.md": "# 既有记录\n",
+            "knowledge/指南/文件清单与导出工具.md": "# 导出指南\n",
+            "knowledge/指南/level200/README.md": "# 桥接操作\n",
         }
         for name, text in expected.items():
             self.add(name, "knowledge", text.encode("utf-8"))
@@ -169,6 +171,11 @@ class ExportPatchTests(unittest.TestCase):
                      "knowledge/业务/宠物/private/记录.md",
                      "knowledge/工程/历史验证/private/记录.md",
                      "knowledge/基础/规则.json",
+                     "knowledge/指南/其他目录/规则.md",
+                     "knowledge/指南/level200/子目录/规则.md",
+                     "knowledge/指南/规则.json",
+                     "knowledge/基础/子目录/规则.md",
+                     "knowledge/工程/其他目录/规则.md",
                      "knowledge/业务/宠物/外观.png",
                      "knowledge/历史验证/记录.md"):
             with self.subTest(path=name), self.assertRaises(patch.ExportError):
@@ -181,6 +188,84 @@ class ExportPatchTests(unittest.TestCase):
                      "knowledge/业务/宠物/存档.json.gz", "manifest/knowledge_baseline.zip"):
             with self.subTest(path=name), self.assertRaises(patch.ExportError):
                 patch.payload_policy(name, "source")
+
+    def test_topic_document_export_keeps_review_and_directory_boundaries(self):
+        index = 'knowledge/业务/地宫/关卡与房间/索引.md'
+        leaf = 'knowledge/业务/地宫/关卡与房间/房间身份.md'
+        self.add(index, 'knowledge', '[房间身份](房间身份.md)\n'.encode('utf-8'))
+        self.add(leaf, 'knowledge', '# 房间身份\n'.encode('utf-8'))
+        plan = self.plan(patch.expanded_layers({'docs'}))
+        self.assertTrue(plan['export_ready'])
+        patch.export_tree(self.root, self.destination, plan, self.reviews)
+        self.assertEqual((self.destination / leaf).read_bytes(), (self.root / leaf).read_bytes())
+        (self.root / leaf).write_text('# 已修改的房间规则\n', 'utf-8')
+        self.assertFalse(self.plan(patch.expanded_layers({'docs'}))['export_ready'])
+        for name in ('knowledge/业务/地宫/未登记主题/规则.md',
+                     'knowledge/业务/地宫/关卡与房间/额外目录/规则.md',
+                     'knowledge/业务/地宫/关卡与房间/backups/规则.md',
+                     'knowledge/业务/地宫/关卡与房间/资源.png'):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name, 'knowledge')
+
+    def test_review_registry_does_not_authorize_other_manifest_payloads(self):
+        patch.payload_policy('manifest/knowledge_review.json', 'source')
+        for name in ('manifest/knowledge_review_private.json', 'manifest/knowledge_review.json.gz'):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name, 'source')
+
+    def test_document_fusion_evidence_is_exactly_scoped_source(self):
+        for name in ("manifest/document_fusion.json", "manifest/document_fusion_baseline.json.gz",
+                     "scripts/verify_document_fusion.py", "scripts/test_verify_document_fusion.py"):
+            patch.payload_policy(name, "source")
+        for name in ("manifest/document_fusion_private.json", "manifest/document_fusion_other.json.gz",
+                     "knowledge/指南/document_fusion.json.gz", "manifest/document_fusion_baseline.zip"):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name, "source")
+
+    def test_default_cli_includes_guides_facts_and_fusion_audit(self):
+        self.refresh_fixture()
+        self.add('adapter/nanaimo_adapter.exe', 'runtime')
+        self.add('knowledge/指南/导出.md', 'knowledge', '[规则](../工程/导出规则.md)\n'.encode('utf-8'))
+        self.add('knowledge/工程/导出规则.md', 'knowledge')
+        for name in ('manifest/document_fusion.json', 'manifest/document_fusion_baseline.json.gz',
+                     'scripts/verify_document_fusion.py', 'scripts/test_verify_document_fusion.py'):
+            self.add(name, 'source')
+        self.control()
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(patch.main(['--root', str(self.root)]), 0)
+        plan = json.loads(output.getvalue())
+        self.assertEqual(set(plan['layers']), {'runtime', 'source', 'knowledge', 'docs'})
+        self.assertEqual({row['path'] for row in plan['files']},
+                         {row['path'] for row in self.doc['files']})
+        for selection in ({'docs'}, {'source'}, {'runtime'}, {'testports'}, {'knowledge'}):
+            self.assertTrue({'docs', 'knowledge'} <= patch.expanded_layers(selection))
+        reviewed_plan = self.plan(patch.expanded_layers({'runtime', 'source', 'knowledge'}))
+        self.assertTrue(reviewed_plan['export_ready'])
+        patch.export_tree(self.root, self.destination, reviewed_plan, self.reviews)
+        self.assertEqual((self.destination / 'manifest/document_fusion_baseline.json.gz').read_bytes(),
+                         (self.root / 'manifest/document_fusion_baseline.json.gz').read_bytes())
+
+    def test_explicit_docs_selection_exports_unified_documentation(self):
+        self.add('knowledge/指南/导出.md', 'knowledge', '# 导出\n'.encode('utf-8'))
+        self.add('knowledge/工程/导出规则.md', 'knowledge', '# 规则\n'.encode('utf-8'))
+        plan = self.plan(patch.expanded_layers({'docs'}))
+        self.assertTrue(plan['export_ready'])
+        patch.export_tree(self.root, self.destination, plan, self.reviews)
+        receipt = json.loads((self.destination / 'PATCH_EXPORT_COMPLETE.json').read_text('utf-8'))
+        self.assertEqual({row['path'] for row in receipt['files']},
+                         {'README.md', 'knowledge/指南/导出.md', 'knowledge/工程/导出规则.md'})
+
+    def test_retired_docs_paths_are_never_active_payloads(self):
+        patch.payload_policy("README.md", "docs")
+        for name in ("docs/文件清单与导出工具.md", "docs/level200/README.md",
+                     "docs/unknown.md", "knowledge/指南/文件清单与导出工具.md"):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name, "docs")
+        for name in refresh.DOCUMENT_PATH_MIGRATION:
+            for layer in patch.LAYERS:
+                with self.subTest(path=name, layer=layer), self.assertRaises(patch.ExportError):
+                    patch.payload_policy(name, layer)
 
     def test_chinese_paths_still_reject_ambiguous_or_unsafe_names(self):
         bad = ("knowledge/../秘密.md", "knowledge/知识库\\索引.md",
@@ -228,7 +313,7 @@ class ExportPatchTests(unittest.TestCase):
 
     def test_case_collision(self):
         bad = copy.deepcopy(self.doc)
-        row = dict(bad["files"][0]); row["path"] = "DOCS/文件清单与导出工具.md"
+        row = dict(bad["files"][0]); row["path"] = "readme.md"
         bad["files"].append(row)
         with self.assertRaises(patch.ExportError):
             patch.load_manifest(self.control(bad))
@@ -275,8 +360,8 @@ class ExportPatchTests(unittest.TestCase):
         self.assertEqual(self.plan({"knowledge"})["files"][0]["status"], "privacy_marker_blocked")
 
     def test_public_download_urls_are_not_drive_paths(self):
-        self.add('docs/download.md', 'docs', b'https://example.com/downloads https://example.org/toolchain')
-        self.assertEqual(self.plan({'docs'})['files'][0]['status'], 'ready')
+        self.add('knowledge/指南/download.md', 'knowledge', b'https://example.com/downloads https://example.org/toolchain')
+        self.assertEqual(self.plan({'knowledge'})['files'][0]['status'], 'ready')
 
     def test_any_drive_absolute_path_is_private(self):
         for index, (drive, separator) in enumerate((('X', '/'), ('c', chr(92)), ('D', '/'))):
@@ -317,11 +402,16 @@ class ExportPatchTests(unittest.TestCase):
         self.assertFalse(self.plan({"source"})["export_ready"])
 
     def test_toolchain_dependencies_selected(self):
-        self.assertEqual(patch.expanded_layers({"source"}), {"source", "docs"})
-        self.assertEqual(patch.expanded_layers({"runtime"}), {"runtime", "docs"})
-        self.assertEqual(patch.expanded_layers({"source", "python", "tcc"}), {"source", "docs", "python", "tcc"})
-        self.assertEqual(patch.expanded_layers({"runtime"}), {"runtime", "docs"})
+        self.assertEqual(patch.expanded_layers({"source"}), {"source", "docs", "knowledge"})
+        self.assertEqual(patch.expanded_layers({"runtime"}), {"runtime", "docs", "knowledge"})
+        self.assertEqual(patch.expanded_layers({"source", "python", "tcc"}), {"source", "docs", "knowledge", "python", "tcc"})
+        self.assertEqual(patch.expanded_layers({"runtime"}), {"runtime", "docs", "knowledge"})
         self.assertNotIn("testports", patch.expanded_layers({"runtime", "source", "knowledge"}))
+        self.assertEqual(patch.expanded_layers({"docs"}), {"docs", "knowledge"})
+        self.assertEqual(patch.expanded_layers({"knowledge"}), {"docs", "knowledge"})
+        self.assertEqual(patch.expanded_layers({"testports"}), {"testports", "docs", "knowledge"})
+        self.assertEqual(patch.expanded_layers({"runtime", "source", "knowledge"}),
+                         {"runtime", "source", "knowledge", "docs"})
 
     def symlink(self, target, link, directory=False):
         try:
@@ -337,12 +427,13 @@ class ExportPatchTests(unittest.TestCase):
             self.plan()
 
     def test_symlink_parent(self):
-        directory = self.root / "docs"
+        self.add('knowledge/指南/link.md', 'knowledge')
+        directory = self.root / "knowledge"
         external = self.base / "external-docs"
         directory.rename(external)
         self.symlink(external, directory, True)
         with self.assertRaises(patch.ExportError):
-            self.plan()
+            self.plan({'docs', 'knowledge'})
 
     def test_symlink_root(self):
         alias = self.base / "alias"
@@ -366,7 +457,8 @@ class ExportPatchTests(unittest.TestCase):
 
     @unittest.skipUnless(os.name == "nt", "Windows junction test")
     def test_windows_junction_parent(self):
-        directory = self.root / "docs"
+        self.add('knowledge/指南/link.md', 'knowledge')
+        directory = self.root / "knowledge"
         external = self.base / "external-docs"
         directory.rename(external)
         result = subprocess.run(["cmd", "/c", "mklink", "/J", str(directory), str(external)], capture_output=True)
@@ -374,7 +466,7 @@ class ExportPatchTests(unittest.TestCase):
             self.skipTest("host does not permit junction creation")
         try:
             with self.assertRaises(patch.ExportError):
-                self.plan()
+                self.plan({'docs', 'knowledge'})
         finally:
             # Remove only this verified fixture junction, not its target.
             self.assertTrue(directory.absolute().is_relative_to(self.root.absolute()))
@@ -504,6 +596,40 @@ class ExportPatchTests(unittest.TestCase):
             self.assertEqual(refresh.main(['--root', str(self.root), '--write']), 2)
         self.assertEqual(control.read_bytes(), before)
 
+    def test_refresh_migrates_only_declared_docs_candidates_without_approval(self):
+        self.refresh_fixture()
+        old_name = 'docs/文件清单与导出工具.md'
+        new_name = refresh.DOCUMENT_PATH_MIGRATION[old_name]
+        self.add(old_name, 'docs', b'old reviewed content\n')
+        old_review = self.reviews[old_name.casefold()]
+        target = self.root / new_name
+        target.parent.mkdir(parents=True)
+        target.write_bytes(b'new guide content\n')
+        candidate, report = refresh.rebuild(self.root, self.doc)
+        names = {row['path'] for row in candidate['files']}
+        self.assertNotIn(old_name, names)
+        self.assertIn(new_name, names)
+        entry = next(row for row in candidate['files'] if row['path'] == new_name)
+        self.assertEqual(entry['layer'], 'knowledge')
+        self.assertEqual(entry['sha256'], hashlib.sha256(target.read_bytes()).hexdigest())
+        self.assertFalse(patch.review_ok(entry, {old_name.casefold(): old_review}))
+        self.assertIn({'path': old_name, 'change': 'retired_document_candidate',
+                       'replacement': new_name}, report['changes'])
+        self.assertTrue((self.root / old_name).is_file())
+        # A missing replacement must fail, even when the old source still exists.
+        target.unlink()
+        with self.assertRaises(patch.ExportError):
+            refresh.rebuild(self.root, self.doc)
+
+    def test_refresh_cannot_migrate_unknown_or_wrong_layer_docs_paths(self):
+        self.refresh_fixture()
+        for name, layer in [('docs/not-declared.md', 'docs'),
+                            ('docs/文件清单与导出工具.md', 'source')]:
+            previous = copy.deepcopy(self.doc)
+            previous['files'].append(dict(path=name, layer=layer, size=0, sha256='0' * 64))
+            with self.subTest(path=name, layer=layer), self.assertRaises(patch.ExportError):
+                refresh.rebuild(self.root, previous)
+
     def test_refresh_includes_only_declared_embedded_compatibility_recipe(self):
         self.refresh_fixture()
         name = 'managed-host/Resources/client-compatibility.json'
@@ -525,7 +651,7 @@ class ExportPatchTests(unittest.TestCase):
 
     def test_refresh_hash_change_expires_old_review(self):
         self.refresh_fixture()
-        (self.root / 'docs/文件清单与导出工具.md').write_bytes(b'changed\n')
+        (self.root / 'README.md').write_bytes(b'changed\n')
         candidate, report = refresh.rebuild(self.root, self.doc)
         self.assertEqual(len(report['changes']), 1)
         plan = patch.inventory(self.root, candidate, {'docs'}, self.reviews)
@@ -628,14 +754,14 @@ class ExportPatchTests(unittest.TestCase):
         self.assertTrue(all('redistribution_approved' not in r and 'license_choice' not in r for r in candidate['files']))
 
     def test_reparse_attribute_guard_without_symlink_privileges(self):
-        p = self.root / 'docs/文件清单与导出工具.md'
+        p = self.root / 'README.md'
         original = Path.lstat
         def reparse(path, *args, **kwargs):
             if path == p:
                 return mock.Mock(st_mode=original(path).st_mode, st_file_attributes=0x400)
             return original(path, *args, **kwargs)
         with mock.patch.object(Path, 'lstat', reparse), self.assertRaises(patch.ExportError):
-            patch.safe_file(self.root, 'docs/文件清单与导出工具.md')
+            patch.safe_file(self.root, 'README.md')
 
     def test_runtime_claims_stay_blocked_even_after_approved_export(self):
         self.add('adapter/nanaimo_adapter.exe', 'runtime')

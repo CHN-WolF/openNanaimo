@@ -927,25 +927,13 @@
         "sha256": "0388592AD03CAE6025409410578D58F3276983E409A350033AE2B2613E6C906A"
       }
     },
-    "delivery": "release-archive-required",
-    "source_tracking": "generated-runtime-is-not-source-tracked"
+    "delivery": "repository-or-release-archive",
+    "source_tracking": "complete-runtime-is-source-tracked"
   },
   "critical_files": {
-    "docs/event-card-rewards.md": {
-      "size": 5832,
-      "sha256": "A88BD802CD185C45CA6C31DDC335E88B67D69A6BBBD339C75CFDAC9BC894CC22"
-    },
-    "docs/level200/README.md": {
-      "size": 4915,
-      "sha256": "E7114F954AC5FBF1CB3114D699FBB7D7C895D5CCC7E33C9C60AA938626C46B8C"
-    },
-    "docs/level200/internal-layout.md": {
-      "size": 2657,
-      "sha256": "AD6C5659E77BF8701E0E442BA540A57272BBE73A3A73540B60E0175A1C2F9B84"
-    },
-    "docs/客户端二进制补丁.md": {
-      "size": 29986,
-      "sha256": "AA8EE6AC7357A9ED1C6C62E91CE07559C8B9085A7D978BD2E7A077D61637F7FD"
+    "README.md": {
+      "size": 14001,
+      "sha256": "5BCA4F92413FE007E743BDDC5AACDC2818894ADBF2126FD70C512AF8A4D7A19D"
     },
     "gui_launcher/client_connect.ps1": {
       "size": 4447,
@@ -3091,6 +3079,386 @@
       "size": 58487,
       "sha256": "8D608A0884E2799857010109D453BDD773E7AD35885C56C02C347F2FEF8AE170"
     },
+    "knowledge/业务/住宅/公寓引导.md": {
+      "size": 2649,
+      "sha256": "14615F5A9537C39B433E6DAFFCB84C204120AEED3182A8CAC670F8B7A2E2CD18"
+    },
+    "knowledge/业务/住宅/家具.md": {
+      "size": 2224,
+      "sha256": "AE40274226B13ACD15FBFC772EB5EFBD3F7C1FD00E4156DD3B654E62D8CD80B9"
+    },
+    "knowledge/业务/住宅/屋外装修.md": {
+      "size": 8383,
+      "sha256": "39F28DDBFA48CE9949A1C0088F1E2DBB322450E374D4FB2E1E0914A667C503F2"
+    },
+    "knowledge/业务/住宅/房屋归属.md": {
+      "size": 2790,
+      "sha256": "C74D308F11CA9BCBCE13D55AB5480B6CA749A62E993E6874B4343041B28E8AD7"
+    },
+    "knowledge/业务/住宅/索引.md": {
+      "size": 712,
+      "sha256": "383A0786043FFAB7E5A955CE9C2E2EBED3F279FC017ED6F839F4605655010FC0"
+    },
+    "knowledge/业务/住宅/访问恢复.md": {
+      "size": 9435,
+      "sha256": "02F253796E74B38FAC7C27675B7FD4A4754ECAED27D146B53CF156A6886DAB86"
+    },
+    "knowledge/业务/卡片/兑换.md": {
+      "size": 2773,
+      "sha256": "6CDE7CA3182CFF43D70713480C1B5B8FA51CA556974FBFCF0784219931529B4A"
+    },
+    "knowledge/业务/卡片/卡册.md": {
+      "size": 11938,
+      "sha256": "7EA57C958A0E6E8E39BB285018D8F17F81215E1C03D96CCFF95144F9A04646AC"
+    },
+    "knowledge/业务/卡片/合成.md": {
+      "size": 3670,
+      "sha256": "5E33E95E7CFA7A7866E18D1BEFCBF39D95094E63FFC2207D0B4118510CD9AAF7"
+    },
+    "knowledge/业务/卡片/索引.md": {
+      "size": 472,
+      "sha256": "20C170D42DE3FE4201028428D9747AA2CBCE11497526070C18A3A1268870B05D"
+    },
+    "knowledge/业务/地宫/伤害与目标.md": {
+      "size": 1159,
+      "sha256": "F122E181229C77B56E99FF249B3F4FE4DA2E381E44B76D891360D70EDD8B7E62"
+    },
+    "knowledge/业务/地宫/关卡与房间.md": {
+      "size": 1720,
+      "sha256": "6F9AD49BC28C269C353BDB8491A99A47806CDE7F96D2E34B8573178604DE157D"
+    },
+    "knowledge/业务/地宫/战斗资源.md": {
+      "size": 998,
+      "sha256": "94229EEDBB10CD608DBC95A88F3025841EFDF745F92E54BBD05CB07BC42A3FF4"
+    },
+    "knowledge/业务/地宫/掉落.md": {
+      "size": 1187,
+      "sha256": "78D4D1BC88C7169435250BFFD354502EC4AFB4ECB8866B9E25EE002BB29371F7"
+    },
+    "knowledge/业务/地宫/索引.md": {
+      "size": 1694,
+      "sha256": "9C0B45208B32135C0433CA8336FBDF0130C7310056F3CF28BF1490220A32DF12"
+    },
+    "knowledge/业务/地宫/计分与结算.md": {
+      "size": 1141,
+      "sha256": "CC29947CB5BB5B25E637931BEB321D7136513811CA780B7AC55C35BFF9C9D72B"
+    },
+    "knowledge/业务/地宫/首领.md": {
+      "size": 775,
+      "sha256": "445A2F454A53D2778781E94DF70548ED23DE54752391BF9984832797F208BDD5"
+    },
+    "knowledge/业务/城镇/场景切换.md": {
+      "size": 3223,
+      "sha256": "29D5FA80F53E1E2A2959FA168A536038B9C77595578900926F4369FB1D508769"
+    },
+    "knowledge/业务/城镇/索引.md": {
+      "size": 433,
+      "sha256": "784B7E1230C6771C0E4986AB86B2DFA0AAE486A2F7F566DB73F557B4A345A2D0"
+    },
+    "knowledge/业务/城镇/角色实体.md": {
+      "size": 9021,
+      "sha256": "2775080E87E94C85BB387689361E7B47833350B7A51180F33ACF857F7ECF54D2"
+    },
+    "knowledge/业务/娱乐/奖励.md": {
+      "size": 2049,
+      "sha256": "EA6B2B71749ECBE61249354AB9E4A987E59492C8A58BD360C752240E10BF154E"
+    },
+    "knowledge/业务/娱乐/对局.md": {
+      "size": 6952,
+      "sha256": "9D873C211184382CB4D5DDE4FB7D1172804CEA4BDA1AF6357F4DCD183D61B735"
+    },
+    "knowledge/业务/娱乐/房间.md": {
+      "size": 2072,
+      "sha256": "3F63C2BF0873FD4CF060049D4365F781231D5F1D5E43AD271B9407C773D4E3FA"
+    },
+    "knowledge/业务/娱乐/索引.md": {
+      "size": 506,
+      "sha256": "4806F362B696A6A2C2183627BD5DCA40D8E030AB789CE8B2820A7A4F119B4CBB"
+    },
+    "knowledge/业务/宠物/发射器.md": {
+      "size": 10132,
+      "sha256": "C0531153886FFC473AE335AB1B2AEB16699E11AF82060A47C95247E522F4D5DE"
+    },
+    "knowledge/业务/宠物/宝石.md": {
+      "size": 2045,
+      "sha256": "63DECB2213694ED417CD8F76470FDBC41737C7D2E33440F99F6DA5422B9D7084"
+    },
+    "knowledge/业务/宠物/成长.md": {
+      "size": 2161,
+      "sha256": "4207600CBC052427D31FA72CB021CFB6B469FAFE5FF9E82BAD97CE0E7889819F"
+    },
+    "knowledge/业务/宠物/所有权.md": {
+      "size": 3899,
+      "sha256": "7CD56D4BE5ADFDE1E298AF8461DD9ABE11FB451111B462733174BC6AC531505D"
+    },
+    "knowledge/业务/宠物/索引.md": {
+      "size": 649,
+      "sha256": "FDB0E4E24E704D7EA1F3848EF6F79B34842DC028B1181E5EF43DF69DD3C5E45B"
+    },
+    "knowledge/业务/库存/快捷栏.md": {
+      "size": 2407,
+      "sha256": "D7DFD34F05DA4DD0205D7DD122F70364F04C6D7F30576DCE71401946767608E5"
+    },
+    "knowledge/业务/库存/消耗品.md": {
+      "size": 3942,
+      "sha256": "8C07D705FB5DCB47E03211D54850449F9B7C0A5AC4A5F5FE81BAF4192B72C76D"
+    },
+    "knowledge/业务/库存/物品实例.md": {
+      "size": 4831,
+      "sha256": "1B3201BA024C36D43D6364110B1EFC2DB9A0DD63A06002C972B6A178531BFE9A"
+    },
+    "knowledge/业务/库存/索引.md": {
+      "size": 609,
+      "sha256": "43D060A18C6E2AC759F971030702449C14DA309F518680AE0668A9AA771EA45B"
+    },
+    "knowledge/业务/库存/装备.md": {
+      "size": 9198,
+      "sha256": "98C7544E8998BA50858D54785C240D7D85E62CD1DF74E97F1E81E1729974A0F9"
+    },
+    "knowledge/业务/社交/好友.md": {
+      "size": 6099,
+      "sha256": "101AAB49E5B83C8F378F62CE771DDF39DF54F8DD6DECF817101D8D0614E5B4A7"
+    },
+    "knowledge/业务/社交/师徒.md": {
+      "size": 7473,
+      "sha256": "07013D851DF4DD8507C02D3BE05DFB314DB7251C2DAB0F51032427EAC61B795C"
+    },
+    "knowledge/业务/社交/情侣.md": {
+      "size": 2593,
+      "sha256": "A4BF20A8AB34DF89D064D959B6E6BFFADEFAEBAF36996A8D3A4E9A3BB75D7101"
+    },
+    "knowledge/业务/社交/索引.md": {
+      "size": 547,
+      "sha256": "077C2E99F8E2CF23C81A6CB478118729AEC97FC6CF89A43AFCB39501DA82B7C6"
+    },
+    "knowledge/业务/社交/组队.md": {
+      "size": 1832,
+      "sha256": "EB490AE81FC779D2F51F282B67AE89F23ABB1CC06021D0C07D02F7271E6F2076"
+    },
+    "knowledge/业务/竞技/战斗.md": {
+      "size": 2187,
+      "sha256": "244A50F30704217A4B7392F2931D469C86F547357A23B4C448EE5230F6AA9726"
+    },
+    "knowledge/业务/竞技/房间.md": {
+      "size": 2283,
+      "sha256": "4052B56EDC303A707AAAC03C0C0FA8871F7CC5A518E9AC5565FDC807F770448B"
+    },
+    "knowledge/业务/竞技/索引.md": {
+      "size": 526,
+      "sha256": "18C98875895E36523F26E84D7945D6F6E05086FAAF2AA1B1AA8F8446566D92A9"
+    },
+    "knowledge/业务/竞技/结算.md": {
+      "size": 9977,
+      "sha256": "576DA717CBA803F38F2BE0C2EF66951AA3D0A0D1D05EDCEFE4C310568FE94DC5"
+    },
+    "knowledge/业务/索引.md": {
+      "size": 693,
+      "sha256": "C5362737B78E6566D2C60BF359DAE2E8ED4BBB4F62CFCB16F5C623A2D958A37C"
+    },
+    "knowledge/业务/经济/卡片交易所.md": {
+      "size": 3904,
+      "sha256": "90AB0F11791A7F5A22336B174069843115214EA2817A0326B8E6442DD9F3A57B"
+    },
+    "knowledge/业务/经济/商城.md": {
+      "size": 3121,
+      "sha256": "42385F34847F8C8F1DB9B42F17C93B7B5D7E7BCDACB06651A21CD566938D326C"
+    },
+    "knowledge/业务/经济/玩家交易.md": {
+      "size": 7629,
+      "sha256": "919872E924745DD7EFD2956BFCDED49251B0AC93CBD3E89FDA6855E658629AB7"
+    },
+    "knowledge/业务/经济/索引.md": {
+      "size": 609,
+      "sha256": "0EFD46562B7669D91D5CD3D3F6C6FE25B387CB38278DDD1DEFFCE001C1A693B1"
+    },
+    "knowledge/业务/经济/货币.md": {
+      "size": 10813,
+      "sha256": "22B960D3A9021615217676A6D82C2F1EF417AEE9BAD8C4F9AE1242333841990B"
+    },
+    "knowledge/业务/角色/任务.md": {
+      "size": 8446,
+      "sha256": "0C63A2E427B3A601F18C94769DEF766577B6594EE7C52903EA325DB4D0FFD1A3"
+    },
+    "knowledge/业务/角色/技能.md": {
+      "size": 1825,
+      "sha256": "E1FAF5FF1052B68387C6B23AF4818B32FD4D0975BDBB25F029517E52F7F31820"
+    },
+    "knowledge/业务/角色/新手引导.md": {
+      "size": 3352,
+      "sha256": "DB06F0F796918CED9E7037A7F10E5845C211FFF3C62A645A580C7A418A236540"
+    },
+    "knowledge/业务/角色/称号.md": {
+      "size": 10872,
+      "sha256": "EC7B1A6F6E08E82FB014C35DCD03606BA72A3F06DF8F629F74E2033F12E9E4FB"
+    },
+    "knowledge/业务/角色/等级经验.md": {
+      "size": 4945,
+      "sha256": "82D1F4AD7D70B41EE7BDD03F34898C95AA0B744B9D6AF7A842ACA31AC62313DE"
+    },
+    "knowledge/业务/角色/索引.md": {
+      "size": 972,
+      "sha256": "4D10A43D663EA2A8985A650F69FD67BBC9ACD6DA0EE3DD4F240E2A284AF15DC3"
+    },
+    "knowledge/业务/角色/角色创建.md": {
+      "size": 5041,
+      "sha256": "9427EFDCF81B46508F6979FBA03485A24374AC949FC80D3CB6C0C9FAA3EB7A05"
+    },
+    "knowledge/业务/角色/角色资料.md": {
+      "size": 2349,
+      "sha256": "6C6225C71F7D0E9245ECB04003F71628DA61890E2D620D07BC32A0D368D572C2"
+    },
+    "knowledge/业务/角色/账号身份.md": {
+      "size": 2455,
+      "sha256": "B54D141B47D988BD6A143C26A67BD249AD6F6667EC2D6D4CA3AF04A55AD2496A"
+    },
+    "knowledge/基础/内部桥接.md": {
+      "size": 2859,
+      "sha256": "540CB907EFA54DCF982473885DA1EAD50CFC38D0F33F218C1F7DE19A523EF611"
+    },
+    "knowledge/基础/协议分帧.md": {
+      "size": 4798,
+      "sha256": "8A534A92047DA27859EF4C1E25DD47B0CB61A9F1928624CA58DED80782095342"
+    },
+    "knowledge/基础/持久化.md": {
+      "size": 2626,
+      "sha256": "E5B36962C4567CE7607D91817B50720540A86D9E75A3B068545E7E48CA505E39"
+    },
+    "knowledge/基础/桥接布局.md": {
+      "size": 5584,
+      "sha256": "21BC18A09D1EECBA7056F891CE64FEEB2FC18263539B1C90CF4FA13966F29AED"
+    },
+    "knowledge/基础/索引.md": {
+      "size": 733,
+      "sha256": "42026B3B317D312ACE425CAF988654964EAD9045D853EB196926D8AE950CFDA6"
+    },
+    "knowledge/基础/连接会话.md": {
+      "size": 3744,
+      "sha256": "29F79F855831A234A1706480FB6C32B3D05E34782EDD601949C5C956B3F65540"
+    },
+    "knowledge/工程/住宅与家具客户端兼容.md": {
+      "size": 852,
+      "sha256": "D1CE65F753B809ECC96BFBF0BD37701F3A9864B69983EA211CF4C0EE3FA911B6"
+    },
+    "knowledge/工程/历史验证/文档导出旧约定.md": {
+      "size": 1877,
+      "sha256": "02898ED80A6B7202E262BB90CB821FA2824B519CABD49F413D73B31A9D1775E7"
+    },
+    "knowledge/工程/历史验证/既有记录.md": {
+      "size": 1400,
+      "sha256": "C7E9619FCC06AA965BC904EF77A011A62BA0F318C6CAFF61F9CE2E2F18FCA0B8"
+    },
+    "knowledge/工程/启动运行.md": {
+      "size": 1247,
+      "sha256": "CED8B4E2D2A2FBB1072E3D0BC32A41F6A2048638E13C3B02E747F132CF172C2A"
+    },
+    "knowledge/工程/地宫资源兼容.md": {
+      "size": 1183,
+      "sha256": "FF7FD2C5E2448AC6E29E94F86094971664DF8C522AFA73DF00FD358C110C37F9"
+    },
+    "knowledge/工程/子弹DIY兼容.md": {
+      "size": 7546,
+      "sha256": "9530F765E3112520C8D6117FBFBF1487311A67C86C30531DE1C3CA29F7EEB95D"
+    },
+    "knowledge/工程/客户端兼容.md": {
+      "size": 2822,
+      "sha256": "AEDD9C090EB67431707E6511DBEFD32A71140F3DD78F9C05E1DAA75A8A22D362"
+    },
+    "knowledge/工程/构建发布.md": {
+      "size": 12042,
+      "sha256": "49265C8950E09DA6B4E8E169C7C43E1A05EDAA340549B220E4FB616A8B4358CC"
+    },
+    "knowledge/工程/知识维护.md": {
+      "size": 8177,
+      "sha256": "27151413DEAF4CCAF6A930351AC1B5BA05813F4B59B76D98E7112E2ABE7823FD"
+    },
+    "knowledge/工程/索引.md": {
+      "size": 1648,
+      "sha256": "696826C1197C9DC7EB100B56A1543AE0D5CACF5CE76D2ACF02CB3DF77C51557A"
+    },
+    "knowledge/工程/资源安装.md": {
+      "size": 2226,
+      "sha256": "B90B340C6088CAB5E49245A72C5C9E04A7DE12B404025C5D0BA9F1F49767FA92"
+    },
+    "knowledge/工程/适配器架构.md": {
+      "size": 9300,
+      "sha256": "A241211B1E6CD0C12B4C953003D862E6AC8E916D5AEDF79F913C64266A4D3BE1"
+    },
+    "knowledge/工程/验证状态.md": {
+      "size": 20116,
+      "sha256": "4AF4ECDE8F6611CB92917881311EB474E1F658D1832B402B96765FF99D7C6094"
+    },
+    "knowledge/指南/L7-L8资源移植.md": {
+      "size": 3356,
+      "sha256": "03CBE3F8680E8E7347BBF9FBF34038F02BF98A01C84DDE5790A10617904B5D4E"
+    },
+    "knowledge/指南/event-card-rewards.md": {
+      "size": 1701,
+      "sha256": "377BD37581EA1232BA137097B23DA87409CA1EA9008FE67A1FAB06B5ABFFE14D"
+    },
+    "knowledge/指南/level200/README.md": {
+      "size": 925,
+      "sha256": "B05FAC733909C4EF8FB8A3C3B81152A244721B96791E6C3BC95B206A0421456F"
+    },
+    "knowledge/指南/住宅土地卡片与温度计恢复.md": {
+      "size": 627,
+      "sha256": "78B466C58A5A2459D0B7DFBCFC0BC8B87750D02D11154F1B876A30E7F2548351"
+    },
+    "knowledge/指南/单身公寓.md": {
+      "size": 1267,
+      "sha256": "C127FAF2CA71D1D024F47BEC0586C40268EE3713F3A70AA9976DF19FE7FEBA8B"
+    },
+    "knowledge/指南/启动流程与源码索引.md": {
+      "size": 7010,
+      "sha256": "AD24B1F92945B6385B070F242BC12B828A640EC1D00E64C0F83FC42B4C71E0B4"
+    },
+    "knowledge/指南/地宫与背包更新说明.md": {
+      "size": 1560,
+      "sha256": "922A16DAA75217B0AA9AA185C2DDA8EDC8C5B29C1190CE9D2BCF3B86750170CC"
+    },
+    "knowledge/指南/子弹DIY与篮球试玩.md": {
+      "size": 1735,
+      "sha256": "5A1F27A8FE44550E7FA76F9CA78855F2B74A09CB247EB62F777051BD6CDB83A0"
+    },
+    "knowledge/指南/完整适配器与客户端兼容说明.md": {
+      "size": 2197,
+      "sha256": "770ABFC8735F1F61E37F134B5164782E7C5FC6A0A43CF929FB9686C6C6BEE75D"
+    },
+    "knowledge/指南/客户端二进制补丁.md": {
+      "size": 5150,
+      "sha256": "6D33F58ACD5ABCBBB7617A5D0B13DDE97A0E1BF3ABCBE6DE0E9BA38F4CB1EAC6"
+    },
+    "knowledge/指南/文件清单与导出工具.md": {
+      "size": 9388,
+      "sha256": "81580A9F0B97619BD9405CAF09CDD96E4A51867F46FBFE5D33DCC5165F1E8D28"
+    },
+    "knowledge/指南/构建与验证.md": {
+      "size": 2850,
+      "sha256": "DD4B381162D1C197025B787B96A4965EEF55DFE0FAF2B6D259C5FE4418084788"
+    },
+    "knowledge/指南/第三方与许可说明.md": {
+      "size": 2953,
+      "sha256": "19842014D6DBE7BEBC2579354151447D7085743965245C73B4E8389C8718A755"
+    },
+    "knowledge/指南/索引.md": {
+      "size": 2061,
+      "sha256": "BE9621EA0C3EE4D79E0BC2170FE4C1778B855F21C3641DF35CDD9096F36557A2"
+    },
+    "knowledge/指南/运行依赖.md": {
+      "size": 9639,
+      "sha256": "D3A54C3CF77E2A990F2EB12144D156F094C41445CDA56D780A793848F182BCE1"
+    },
+    "knowledge/指南/韩服L7-L8与宠物资源说明.md": {
+      "size": 6737,
+      "sha256": "79B3E57071CEA546FF635727390244829507E0DA2D32A83D37FD7B1311EB689D"
+    },
+    "knowledge/指南/韩服宠物佩戴等级下放方案.md": {
+      "size": 1249,
+      "sha256": "330BB767E8871E7F1FC3336C9A59B5B1B5798B1B3063CD27F85955A5D6F924EB"
+    },
+    "knowledge/索引.md": {
+      "size": 23767,
+      "sha256": "31AE1D07AAF5C613A6140E6988F7822DBFCBBD7AC6DDE0C526686BE2B1D9EDA8"
+    },
     "managed/Services/ArenaTargetCatalog.cs": {
       "size": 1948,
       "sha256": "908A05DDA63002AC525A931CFAA1F6B054A5CE3EEB14FDBF43526629CCF6E5DE"
@@ -3107,9 +3475,25 @@
       "size": 2282,
       "sha256": "2265669D495F00C10B54C06CC402D6E1D3193C323CA9493874F27D2AB38BECE7"
     },
+    "manifest/document_fusion.json": {
+      "size": 408348,
+      "sha256": "8B5271852754DF510D0B3BE890772663035AEFC165BCA64D6476ECF1F7D8AA9F"
+    },
+    "manifest/document_fusion_baseline.json.gz": {
+      "size": 95252,
+      "sha256": "7261DA8299457949BBE74DCB416002426D4DA73A826CDA8ED63668E26511B80C"
+    },
     "manifest/hero_dragon_resources.json": {
       "size": 17803,
       "sha256": "D3772C723536ACD0CE0C6A4207508C7B594CB7EACCF33BB27A1A1D28AB7F49E5"
+    },
+    "manifest/knowledge_baseline.json.gz": {
+      "size": 305419,
+      "sha256": "D4A66F21600CF2EF22B0ACB6812C3C1EA60FD0CD54EDF875D9A92FDA1141DD3C"
+    },
+    "manifest/knowledge_migration.json": {
+      "size": 415127,
+      "sha256": "8C7B84DD654440D668339DF93CECEF5E5636A61B050ECEB59CBD6998818D1BA7"
     },
     "manifest/korean_pet_resources.json": {
       "size": 882389,
@@ -3155,6 +3539,10 @@
       "size": 3609366,
       "sha256": "D242A4216946D9CD8250753540F29D295A5E4BD9E2507661A0B910A15AC39101"
     },
+    "resource-packs/README.md": {
+      "size": 1355,
+      "sha256": "1D6B1694A50B6317C5E617B812C7222A646B982069101FED38EC0B0CA3471300"
+    },
     "scripts/apartment_exterior_panel.py": {
       "size": 17446,
       "sha256": "1F2013880AE0079F1D529B27BFB41C0FFD153962C1BB48B424D19A0E533E6E77"
@@ -3192,8 +3580,8 @@
       "sha256": "36E3D399CB2D20CE529B27C0D037CC76BA3E5C06F9C9D41FD13FF53C2172B888"
     },
     "scripts/deploy_card_use_update.py": {
-      "size": 8811,
-      "sha256": "C685494F634DD03BFFA3C8319376A14B5418507B52A193AA119A33431AB78E0D"
+      "size": 8870,
+      "sha256": "25AE2699F103C6E3DF8B94126A72584150A6BC9AAADBC52CBED29922729AED09"
     },
     "scripts/deploy_lumineos_release.py": {
       "size": 7395,
@@ -3226,6 +3614,10 @@
     "scripts/entertainment_room_compat.py": {
       "size": 2159,
       "sha256": "032774731901A7C0F6B3793C3381DEE4369115E65AC254BCAD8F4694D5517570"
+    },
+    "scripts/export_patch.py": {
+      "size": 29816,
+      "sha256": "D5B7D9CA3E8465BDAD30231F82B9B295BEDAF47C98B0E50F9C2C2215CEF0C4BB"
     },
     "scripts/generate_arena_targets.py": {
       "size": 2986,
@@ -3279,6 +3671,10 @@
       "size": 2151,
       "sha256": "10823EDFAC7B6F8105EA4D0291F57B64667E3DFC80CD1A3E9415B7E844C2DF54"
     },
+    "scripts/package_korean_resource_kit.py": {
+      "size": 12851,
+      "sha256": "9E61BF0099001F2E65ACB89D0ECB5E7AB563D7A2AEF07184C1F17AA7B5723137"
+    },
     "scripts/player_trade_compat.py": {
       "size": 2938,
       "sha256": "69B84EC7A3C8769F73D6F4B17933C3FD54171D0ED0918D9EDA080F4AB84369EB"
@@ -3312,8 +3708,12 @@
       "sha256": "C39201979F023102B0D62C1BFAD95497DCFE870B020D97E79342B0ADBBBFC242"
     },
     "scripts/refresh_manifest.py": {
-      "size": 13514,
-      "sha256": "E633D86D421954A8C046BB330EF0E09B58C2EEE661A9FA31458787AC43A24314"
+      "size": 15324,
+      "sha256": "0D96669B4444C2B481B7F1EDBBF3D11D41A8647197FB858DAAEDA5591A2B1EAB"
+    },
+    "scripts/refresh_patch_manifest.py": {
+      "size": 12916,
+      "sha256": "823209A2D8BF602282F9672C6FD3BB73DFE79F71B05150B79BB929E61B20F803"
     },
     "scripts/refresh_source_manifest.py": {
       "size": 8662,
@@ -3399,6 +3799,10 @@
       "size": 10683,
       "sha256": "B9D097F3EA5F5626C288B8E11A4DCEEB77AC4DB79768A81A6A09CD17DF43182B"
     },
+    "scripts/test_export_patch.py": {
+      "size": 47529,
+      "sha256": "38A07D25171C979060A04BB0E7231ADAF1979D7F2D9496F5840F8037BD940303"
+    },
     "scripts/test_gameplay_bugfixes.py": {
       "size": 8329,
       "sha256": "3E516B64A78D87AF1D567DBF18549A29D6B4BBE1A3030CCC0ED60A985C6C0A00"
@@ -3435,9 +3839,17 @@
       "size": 6024,
       "sha256": "D6F8D2943BC35809A11990495E2E5B80C692301AB9637F81973F34F34EDF9EA9"
     },
+    "scripts/test_package_korean_resource_kit.py": {
+      "size": 10948,
+      "sha256": "A2BC40AB7CA6644E8B72E9727AAC654AA7126A3EBF9141DA92AAB8C6C0A8731E"
+    },
     "scripts/test_pet_lifetime.py": {
       "size": 2928,
       "sha256": "CDE080158856E19F36A53207ED324A6732DE4D6ECC12E494056CEB061D3AD3CB"
+    },
+    "scripts/test_pet_localization_levels.py": {
+      "size": 8049,
+      "sha256": "319A10A1968EA898F964BE7FC6FD083749279B44DFBB6DB550C78165431F4C4A"
     },
     "scripts/test_player_trade_compat.py": {
       "size": 6954,
@@ -3451,13 +3863,29 @@
       "size": 8243,
       "sha256": "844A26D75A7806813EC2C4A54D4FD955174B99E35EFBDF4E86C84F384E9BE804"
     },
+    "scripts/test_verify_document_fusion.py": {
+      "size": 13378,
+      "sha256": "EDFB8DE5EB89A5356FFCA66F2EE81E6BD485A290A19584AA7C47220C39CEC578"
+    },
+    "scripts/test_verify_knowledge.py": {
+      "size": 9758,
+      "sha256": "F18CC1D2E3D96C927C9A68C95D73FCDBDE856AAD40D6570963883C1545D13FC3"
+    },
     "scripts/verify_client_baseline.py": {
       "size": 3062,
       "sha256": "90200160D643CD22F30D6F9022883F90B64FB81D461D3848DAAC956BF9278F58"
     },
+    "scripts/verify_document_fusion.py": {
+      "size": 15073,
+      "sha256": "784E238144281BF79F9A7E3D4F83EA9CAC51B424CD949EDD74F4DBBDB6BCBF21"
+    },
+    "scripts/verify_knowledge.py": {
+      "size": 14516,
+      "sha256": "FFFC673F13B95404C989A063A950168FD5F6A125C950EFE0AD26EEB6616D4D83"
+    },
     "scripts/verify_package.py": {
-      "size": 13302,
-      "sha256": "50EA99B7B640C69B2E902A393C5BFD21161F478C4903A0C8305BE84E59492182"
+      "size": 13458,
+      "sha256": "8E5AFD7FE884C0B953B97C3289222701173A28CDD8A751672F18E7F1786F52C3"
     },
     "start_nanaimo_launcher.bat": {
       "size": 164,
@@ -3542,6 +3970,766 @@
     "tests/NativeDungeonPoolRegression/Program.cs": {
       "size": 2410,
       "sha256": "4FE38BFB1CF770A1C0076C97053C624BFAF7665B21AA27399150D49C08D844E6"
+    },
+    "knowledge/业务/住宅/家具/客户端实例与快照.md": {
+      "size": 5987,
+      "sha256": "48F3460C9DA9F13C541B0532BC2B3BF43F2E9B67736C21D421B598DB07D6F6A7"
+    },
+    "knowledge/业务/住宅/家具/库存布局与期限.md": {
+      "size": 7989,
+      "sha256": "3B90778B1FD835C34ED0423EC82B4BA8C617D31D535AE93C4EFFA0D41676ED98"
+    },
+    "knowledge/业务/住宅/家具/索引.md": {
+      "size": 382,
+      "sha256": "43B43CFCB546A0D374DABAC936C29A2E0C326002D997B04BB76B69DA3FEDEB5F"
+    },
+    "knowledge/业务/住宅/房屋归属/公寓进入与归属.md": {
+      "size": 4390,
+      "sha256": "A525AD8893F7BDE0B68CDF0AB262612D553AAD2E91C81BCECD1B4220A47E5062"
+    },
+    "knowledge/业务/住宅/房屋归属/土地卡与地址释放.md": {
+      "size": 7044,
+      "sha256": "5443A718BB3CC80E86FA80BC63DF33FE48E93AAEED6009016A724559A5843657"
+    },
+    "knowledge/业务/住宅/房屋归属/推荐购房与租期.md": {
+      "size": 6720,
+      "sha256": "9AF8D76306700EA0D56BB436149E0E74D146CFFE26E6372EA42F19726399D0FA"
+    },
+    "knowledge/业务/住宅/房屋归属/索引.md": {
+      "size": 510,
+      "sha256": "43B1B01E5E845D38049FB7FBB9E26707EAA952E1E4155878EA38845A4ED4FDA3"
+    },
+    "knowledge/业务/卡片/兑换/VIP经验权益.md": {
+      "size": 5293,
+      "sha256": "543A19069E01B460BBD09220C79E6A8301CFE12D82907990DB808C86B91E7ABC"
+    },
+    "knowledge/业务/卡片/兑换/发布与验证.md": {
+      "size": 2009,
+      "sha256": "E66E3191C54DAF631913FF954035B21BEACCC78FA9D98EC29932E3C300CFB4D4"
+    },
+    "knowledge/业务/卡片/兑换/幸运卡开奖.md": {
+      "size": 3893,
+      "sha256": "A6F8FAD2E076EEB1B6E89435E15353417E1B70479A38622349F3B717BFB7FD68"
+    },
+    "knowledge/业务/卡片/兑换/活动卡事务.md": {
+      "size": 6581,
+      "sha256": "69450F3E6DDF8738E5C3F7E0D4D2E055EA5C0ACAEF736F3EB6EC6F864A21585D"
+    },
+    "knowledge/业务/卡片/兑换/活动卡配置.md": {
+      "size": 4042,
+      "sha256": "4BCFB3B6586036FC08668912E89D14218320B126AFE140867BF4AFD82052C6FE"
+    },
+    "knowledge/业务/卡片/兑换/索引.md": {
+      "size": 671,
+      "sha256": "C8543F528237467DD0BACB54755D1B0787BE7F9055D31A98B8F5BBD8F3638CD2"
+    },
+    "knowledge/业务/卡片/合成/SP与引导控制器.md": {
+      "size": 10118,
+      "sha256": "7FA61DC5B09FE631F54131410DEE38AD549833729A15AF8B84BD94E0F58C8824"
+    },
+    "knowledge/业务/卡片/合成/整页黄金粉兑换.md": {
+      "size": 4387,
+      "sha256": "FAF3627A658210F5D0B9123879BBB6E31F20CAFA6D7575D8EE948E2BC2A244B5"
+    },
+    "knowledge/业务/卡片/合成/普通配方与钥匙.md": {
+      "size": 5249,
+      "sha256": "4E64216861481C5C9AAA0BEEFD2BEE843AC75B9F806856D19C4DAC1DDBD945A2"
+    },
+    "knowledge/业务/卡片/合成/索引.md": {
+      "size": 503,
+      "sha256": "F471D67959F91147CE5A45FECC0F6F0E864EFFF692FE2B043556E100353F760C"
+    },
+    "knowledge/业务/地宫/伤害与目标/入伤与协议.md": {
+      "size": 20290,
+      "sha256": "9438977AC0319F47C347BAADA10D5DDD6134F5823CE1F71A8A710C495E4DF56E"
+    },
+    "knowledge/业务/地宫/伤害与目标/场景伤害与红屏.md": {
+      "size": 8550,
+      "sha256": "B0957DC910304E5E981F26D40C9790A8737E4A027107DB0845B1746186C22F1E"
+    },
+    "knowledge/业务/地宫/伤害与目标/攻击与防御.md": {
+      "size": 10769,
+      "sha256": "C07104CE3FFDEBEBEFB4C07484115A086DB6EC057961D85366BCD605D3336571"
+    },
+    "knowledge/业务/地宫/伤害与目标/目标身份与生命账本.md": {
+      "size": 10542,
+      "sha256": "DCF69A347051F5DB9F17CB615D4C04BA8F0A724706CE1E1E7B22550DFD8F2FB2"
+    },
+    "knowledge/业务/地宫/伤害与目标/索引.md": {
+      "size": 2384,
+      "sha256": "648C9EB2DCC434E242E84F97658F2610A01B10DBCF3870515AE76746DFEFCFE7"
+    },
+    "knowledge/业务/地宫/伤害与目标/肉弹保护与数字反馈.md": {
+      "size": 9527,
+      "sha256": "D62FA4B01C27A66ECC61D49AF89F367176FB435D5AA17B4429527F8102864CB8"
+    },
+    "knowledge/业务/地宫/伤害与目标/预加载与变形目标.md": {
+      "size": 4948,
+      "sha256": "FE6669210E318383929AF10ACD1EAD295744354B1E731C89436EEA1E49193150"
+    },
+    "knowledge/业务/地宫/关卡与房间/位置与入场.md": {
+      "size": 5445,
+      "sha256": "E78C5ACBC58BFCB14A3B77CA2C76E884B60677F2793852F604B4EEE49043AF2E"
+    },
+    "knowledge/业务/地宫/关卡与房间/加载与开战.md": {
+      "size": 8905,
+      "sha256": "D5DD41AFFA6E947D48637EF389CE92C3645BFB1C7084C5D54C68F77487CDFD08"
+    },
+    "knowledge/业务/地宫/关卡与房间/快速入房与对等通信.md": {
+      "size": 5452,
+      "sha256": "375D36B26FD8B570462BC07BB7D81CC4F7C0E1F5065AAEC7B463AB7F0A1AA92B"
+    },
+    "knowledge/业务/地宫/关卡与房间/成员资料与库存同步.md": {
+      "size": 10310,
+      "sha256": "520A24C237C58EF7C577F4217C1C0EAA9ECB02EFE72D4F48B8F5DA8904526EB8"
+    },
+    "knowledge/业务/地宫/关卡与房间/房间身份.md": {
+      "size": 4538,
+      "sha256": "10B2BE59FA72DC5224118095BBE02FE0B16A6CF6E889DB8A6088E2809EA78D60"
+    },
+    "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md": {
+      "size": 19181,
+      "sha256": "2E584D3FC006537329CB7A9475360EB5EE69F0209F9365A9633065BBD95DAF41"
+    },
+    "knowledge/业务/地宫/关卡与房间/文本与图像目录.md": {
+      "size": 4066,
+      "sha256": "02FE97B9BDC6F2704B5B1BCC64C3348BF02C37E69DE4AA020CBA407695F749B4"
+    },
+    "knowledge/业务/地宫/关卡与房间/索引.md": {
+      "size": 2779,
+      "sha256": "F137CF529CF6EE4DB542640F464DB511886A1730BA4E1F68C866B2587D8AB05B"
+    },
+    "knowledge/业务/地宫/关卡与房间/续关与观战.md": {
+      "size": 13970,
+      "sha256": "01ACC8D737EE499DE90D0773D82C2F6D0BA46E3F891B0C02789C43180C9C1020"
+    },
+    "knowledge/业务/地宫/关卡与房间/资源格式与转换.md": {
+      "size": 9180,
+      "sha256": "C7A6AA87445E017584E5BEBB15E0E31701276E46A90F9599FC196DA9EF34BF99"
+    },
+    "knowledge/业务/地宫/关卡与房间/跨模块指南与历史验证.md": {
+      "size": 4869,
+      "sha256": "27635BF97F28D74B4242663D51DBC7C02C714A37D46B4199C076B828721EDEEB"
+    },
+    "knowledge/业务/地宫/战斗资源/CF72与宠物生命周期.md": {
+      "size": 4432,
+      "sha256": "5FD2434219EBDA889928622AFD05B8EC88C753EB8059EE3B8A2E636AD08F7D08"
+    },
+    "knowledge/业务/地宫/战斗资源/上限与当前值.md": {
+      "size": 4563,
+      "sha256": "CFC1CBB0DC0EA685EBE07E4126BE1DD56FEEBD8A674A6F26F8AC66F7E01BE3E4"
+    },
+    "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md": {
+      "size": 13801,
+      "sha256": "AFDB84567276CDA5176F5ED09647B19E9916172D0A0476A92C7BAB75BF01196B"
+    },
+    "knowledge/业务/地宫/战斗资源/复活显示与组队恢复.md": {
+      "size": 7257,
+      "sha256": "7EC91CC8A9B3CE5E4663E4B2F3287912F7B0FFB05536733BF9DCFF7720AD656E"
+    },
+    "knowledge/业务/地宫/战斗资源/快照与资源继承.md": {
+      "size": 10445,
+      "sha256": "CC8082C96AE9234766235582D9F7B8E6DB27A2C44FE8F50EC8176488A5976E82"
+    },
+    "knowledge/业务/地宫/战斗资源/索引.md": {
+      "size": 1950,
+      "sha256": "86BF8E707D0E4E6B55921FAABBC924F90358B741338FCF9FD03DAA94BEABA4ED"
+    },
+    "knowledge/业务/地宫/掉落/卡池与奖励资格.md": {
+      "size": 10520,
+      "sha256": "F52AF8233E9106D162AB69F75CE72298AF834087F31CB1D070457C5D96DE17B6"
+    },
+    "knowledge/业务/地宫/掉落/宠物与卡片显示边界.md": {
+      "size": 7152,
+      "sha256": "B2EA98E04DFF3CEA4D714EB6A5657669217BC243A5B2A5D08D94ECBB30DA0303"
+    },
+    "knowledge/业务/地宫/掉落/掉卡率与宝石.md": {
+      "size": 5522,
+      "sha256": "18D604A0E60D1923B408257B7C001CB5E8D31850C33ACD5D8EF0FA40841D8497"
+    },
+    "knowledge/业务/地宫/掉落/箱子与终结道具.md": {
+      "size": 7201,
+      "sha256": "31CEBCD0ACDF9EDA8CCE977E1BDCAD49E95EF2497F9649B33B44E785E52682CB"
+    },
+    "knowledge/业务/地宫/掉落/索引.md": {
+      "size": 1602,
+      "sha256": "50BE50EA0088AAFB0D606A440495838ED6AF8C7916A74F4F54B10376C17F7220"
+    },
+    "knowledge/业务/地宫/掉落/金币与星星显示.md": {
+      "size": 3319,
+      "sha256": "F696594E55B1F21272E156429136A0074B72C147F27334672A196843F9C01042"
+    },
+    "knowledge/业务/地宫/掉落/领取与结果队列.md": {
+      "size": 7327,
+      "sha256": "EC9D33E9E62DC78A12C3FEDEAA96FE4ACAE2FFD3A6BDFDBB865BAE64509A621D"
+    },
+    "knowledge/业务/地宫/掉落/黄金粉产出.md": {
+      "size": 1999,
+      "sha256": "9F9585F09E533D327F9E05AF9A7CBC8C5F94C77FEFB51726A94E00C73AFD70D4"
+    },
+    "knowledge/业务/地宫/计分与结算/击杀计分与评级.md": {
+      "size": 16367,
+      "sha256": "B488F9AD6FBEF30533D8882BF4C25E6D2246E38B88002C180FB1E40537726396"
+    },
+    "knowledge/业务/地宫/计分与结算/索引.md": {
+      "size": 2102,
+      "sha256": "2119F301CBA0A76404F59415BB9B0CB8A8216C3C9E4480FD2CBB88CF33CA1CFA"
+    },
+    "knowledge/业务/地宫/计分与结算/经验与倍率.md": {
+      "size": 8438,
+      "sha256": "3329E3CA667A8FE0A3D212441353BA2C3FAAB7DB489531B68007E3180F85AA44"
+    },
+    "knowledge/业务/地宫/计分与结算/结果协议与冻结.md": {
+      "size": 10711,
+      "sha256": "A98BF945B9F908F9549029AB711B2E3AF885A8449CC2B11555B1CBB491FB5CFF"
+    },
+    "knowledge/业务/地宫/计分与结算/结算操作与控制器.md": {
+      "size": 9261,
+      "sha256": "696076D336CC7F2B269570D0649C44E71150A1A05BD1478EB8DE146CFC397A29"
+    },
+    "knowledge/业务/地宫/计分与结算/评价持久化与排行榜.md": {
+      "size": 7641,
+      "sha256": "AEF569F8E74AF47AD527BF34C395DBAD3DAFAB1830575F052176DB1E61167B68"
+    },
+    "knowledge/业务/地宫/计分与结算/跨模块指南.md": {
+      "size": 1888,
+      "sha256": "72BBF7A9624A87E90BBD5BD794FB8ED7C198ECBC8F5E730FAEA8EFCB0176E814"
+    },
+    "knowledge/业务/地宫/首领/协议与部件回收.md": {
+      "size": 10835,
+      "sha256": "2BAD70AB65C40BF9820C8775860DE17FFC7AFAC1AEB5C9CEB48D23AE9740C0B3"
+    },
+    "knowledge/业务/地宫/首领/生命来源与比较.md": {
+      "size": 3368,
+      "sha256": "40326B6A941309D2003A906A61A766838B0CDD8D91C52E76F6D8D5DC390462B2"
+    },
+    "knowledge/业务/地宫/首领/索引.md": {
+      "size": 2082,
+      "sha256": "9F12CF350BF3992B548099BF1B38BAE4E6A2A7F71DEC865B2C6C89B65FA19E43"
+    },
+    "knowledge/业务/地宫/首领/组件与零生命附件.md": {
+      "size": 8189,
+      "sha256": "DFF613CAB9CEF44B3AE78CFC9FFF2935C37F7F187779A953202934699F1F3D00"
+    },
+    "knowledge/业务/地宫/首领/阶段推进与开场.md": {
+      "size": 2887,
+      "sha256": "DC5009B42F3A19314EA0DB5716BF089A51429460763664418F98C522B8C8FAE6"
+    },
+    "knowledge/业务/城镇/场景切换/村庄拓扑与兼容资源.md": {
+      "size": 10037,
+      "sha256": "95388CBFBC556B0F1D1FA70EA9E20F3DDE9ED1D011A5BF49161686A60A0C54F4"
+    },
+    "knowledge/业务/城镇/场景切换/索引.md": {
+      "size": 524,
+      "sha256": "13445F96338C11EB8CF55EAD42E3AC4892F6AFD8BF9566B91F8B0E437FAB9A53"
+    },
+    "knowledge/业务/城镇/场景切换/页面返回与生命周期.md": {
+      "size": 9855,
+      "sha256": "9B5B367281C1C7E2A15BE11404F87AAD504FBD80FD9BD942AA527943C0AB7688"
+    },
+    "knowledge/业务/城镇/场景切换/频道重连.md": {
+      "size": 5753,
+      "sha256": "D9E0DE31312870688E5812B77997157ABF17FA34A8B4A3C9DEDD59467CD47AC5"
+    },
+    "knowledge/业务/娱乐/奖励/卡片宠物与纪录策略.md": {
+      "size": 6425,
+      "sha256": "65B77E24DADD0ECF019A71C3FBADCE85A97583D4EF1284B8F883D05994404EFA"
+    },
+    "knowledge/业务/娱乐/奖励/索引.md": {
+      "size": 410,
+      "sha256": "6497BF3CCE8769BFA624872F334E8FF2EBD7D613E943CF776BDA542D00EC4131"
+    },
+    "knowledge/业务/娱乐/奖励/结果排名与版本字段.md": {
+      "size": 7001,
+      "sha256": "D14778B262261FC3B316DB089D2DE3B92F8F48C3BEB132C1C90FD46C6737221D"
+    },
+    "knowledge/业务/娱乐/房间/大厅列表与邀请载体.md": {
+      "size": 8043,
+      "sha256": "37B2AC4E43DB8F6B452F2D811D41035775CBB7379655EB85E363A30B6F025514"
+    },
+    "knowledge/业务/娱乐/房间/成员准备与房间状态.md": {
+      "size": 6370,
+      "sha256": "ABB5A6E36477EDD928BAE2EA0284C22E8C14BF46E05C7C4BDDC5113706442BC1"
+    },
+    "knowledge/业务/娱乐/房间/索引.md": {
+      "size": 400,
+      "sha256": "BB018CC8ACFF690126F9CF73F271577A1BA716F1F074FAB7F6BD2568A208D359"
+    },
+    "knowledge/业务/宠物/宝石/吸收速度与攻击.md": {
+      "size": 13681,
+      "sha256": "28CFE337902AF0893F4F7816289C30D7851B3BC728EFD598530D72BE73BE215E"
+    },
+    "knowledge/业务/宠物/宝石/索引.md": {
+      "size": 366,
+      "sha256": "28318F1E149C6596BA4E87861F2AC3A8F0B67C1B855F3F77C81170AF247F38BC"
+    },
+    "knowledge/业务/宠物/宝石/镶嵌移除与资源.md": {
+      "size": 7412,
+      "sha256": "949A1CBC32B1A90ADA7A2B1844EA6A81272EAB7D6EED7E1175CF7C91D6623CD2"
+    },
+    "knowledge/业务/宠物/成长/客户端成长消费链.md": {
+      "size": 7594,
+      "sha256": "39AE93C1A6AA2CC1BC8C195266ACFE05C1EEE95E3C3F490B0B194A0C0414ED6C"
+    },
+    "knowledge/业务/宠物/成长/索引.md": {
+      "size": 386,
+      "sha256": "416290C3A4EABFF5E4525BECA519C33F5B047556F9A2DF151D6F9BCF47BAB6EB"
+    },
+    "knowledge/业务/宠物/成长/阶段与奖励策略.md": {
+      "size": 12379,
+      "sha256": "30EFD11426A3A472889E26155D1B75F25088B1DCB8D1560DD291F8A6AB568376"
+    },
+    "knowledge/业务/宠物/所有权/佩戴等级与中文命名.md": {
+      "size": 6013,
+      "sha256": "50E7AF73B8E7A415EFB7B7E037D27E9212F10723A1BD788C7E749724FD38C5BF"
+    },
+    "knowledge/业务/宠物/所有权/家族授予与期限.md": {
+      "size": 6686,
+      "sha256": "FB1F24411372CD24D7B1AE3EA4D7A1D6D42DA880B374A7EB7AC2B3D73C1F4722"
+    },
+    "knowledge/业务/宠物/所有权/库存选择与状态.md": {
+      "size": 4428,
+      "sha256": "7D699510CA384996ECC75ADE83A579AC5FEA6C261A4A7CD5FB659BEE5116550B"
+    },
+    "knowledge/业务/宠物/所有权/索引.md": {
+      "size": 791,
+      "sha256": "59E142A92211866E9F632282E8F3776ED8E57762B43738588538925DD2DB3CE7"
+    },
+    "knowledge/业务/宠物/所有权/资源身份与移植.md": {
+      "size": 10103,
+      "sha256": "7775D6FA52605FF78B0AC761FCB7C068AB2EDE3254AE145A3BB220A05DFB61D2"
+    },
+    "knowledge/业务/宠物/所有权/追加宠物对照表.md": {
+      "size": 6138,
+      "sha256": "B1F2EF46F3D60ADB18D2B04D0A9FA488782F98BC26F92BD50D6019A4A56C7737"
+    },
+    "knowledge/业务/库存/快捷栏/布局刷新与保护.md": {
+      "size": 5463,
+      "sha256": "D07667EB9D60F96F523375C3EC8A946C92D4BE34DE9BED49A166E890D4093C00"
+    },
+    "knowledge/业务/库存/快捷栏/索引.md": {
+      "size": 371,
+      "sha256": "ADA3AA756836E3D572ABD59B54BD9FA4C08057B97DDB9D4C16B4680EEFAA46C2"
+    },
+    "knowledge/业务/库存/快捷栏/绑定消费与权限.md": {
+      "size": 9630,
+      "sha256": "5F0CC6068EDF421792520E656C9185C5DEB52ED679E88D1CF47AAC855C3EE47A"
+    },
+    "knowledge/业务/库存/消耗品/复活礼包.md": {
+      "size": 7106,
+      "sha256": "D8AE81EA2C3E549198EBC38B626A5D2F146F904C82AFBFEBE07A68B38075A5CA"
+    },
+    "knowledge/业务/库存/消耗品/扩充券与期限.md": {
+      "size": 2923,
+      "sha256": "1D755F79B250AA4C29E97E1BC1788EF941FBE35B447F47EF0E1D187714516B2D"
+    },
+    "knowledge/业务/库存/消耗品/索引.md": {
+      "size": 572,
+      "sha256": "04E9295FCEFC8E33A535A148671AE8F63009789C16179055EC8A7A77C7E32EDB"
+    },
+    "knowledge/业务/库存/消耗品/飞行道具.md": {
+      "size": 2719,
+      "sha256": "76419DFCF2CDF4F237D3549708C2337B7F6697030B04D83FF7ECB9483FB84449"
+    },
+    "knowledge/业务/库存/消耗品/食物与通用使用.md": {
+      "size": 9801,
+      "sha256": "5AA3E0A7C8382E398A15E5CABBA9338AB2B05339043FBD007C38983651298651"
+    },
+    "knowledge/业务/库存/物品实例/实例身份与持久化.md": {
+      "size": 10078,
+      "sha256": "DF0F2976A2B4C80047234338EC807C26CB4669B6619C286C14391BC4C8926540"
+    },
+    "knowledge/业务/库存/物品实例/搬运丢弃与刷新.md": {
+      "size": 7717,
+      "sha256": "866144C32041B77E03F6AC89DAEA0761961E5E6F622E10569390731CCE5020EC"
+    },
+    "knowledge/业务/库存/物品实例/索引.md": {
+      "size": 647,
+      "sha256": "4866B4506F032E2FFF24A4646CF3F3D65068604879C2D7DC2C8E5029D0AB6EBA"
+    },
+    "knowledge/业务/库存/物品实例/编号分类与目录.md": {
+      "size": 10250,
+      "sha256": "B4031B27AD4A1A45D79FDD777EFA70249E2FD6354FD1E45CCE4C1B9E80DCF27B"
+    },
+    "knowledge/业务/库存/物品实例/跨模块一致性.md": {
+      "size": 1813,
+      "sha256": "5432C37FEB6E071DAE8DFD4D0A944B578ED9184197229454213AD3B41A8441C0"
+    },
+    "knowledge/业务/社交/情侣/关系权益与共享恢复.md": {
+      "size": 7534,
+      "sha256": "5883A198DCACCCD2EC318DEAE57441A1CD537EB2251E5DE4B35376E0A1AB081E"
+    },
+    "knowledge/业务/社交/情侣/索引.md": {
+      "size": 520,
+      "sha256": "41E4A2F983A3E7CEF74E9F7E9A56D44464968CB51F12DCAF926986269D5BE3D6"
+    },
+    "knowledge/业务/社交/情侣/资料场景与客户端字段.md": {
+      "size": 8289,
+      "sha256": "1026AE9F62138A20C76AA4548EE412F62F514FBC99A540F204ABA14BF44C061C"
+    },
+    "knowledge/业务/社交/情侣/跨模块场景一致性.md": {
+      "size": 1744,
+      "sha256": "921E1CE73273DBA25C0B2D91758DE1E0716DF599DABD007D3283A0CFC065F5FF"
+    },
+    "knowledge/业务/竞技/战斗/星星计分与死亡爆分.md": {
+      "size": 9129,
+      "sha256": "1013153A8C6DA429AC656E3875E27260864B57A9D888D870BFDE1FA33980D7ED"
+    },
+    "knowledge/业务/竞技/战斗/索引.md": {
+      "size": 390,
+      "sha256": "08E50E9DCAC9684C16EC1995F072B8913940C3284A6B0B7897E34A47D5C31FF1"
+    },
+    "knowledge/业务/竞技/战斗/资源伤害与碰撞.md": {
+      "size": 8847,
+      "sha256": "43EBDEE4518EB24568FE10AC951D207DEDDBEF1A6BB57312308730D87BC9524C"
+    },
+    "knowledge/业务/竞技/房间/发布与验证.md": {
+      "size": 2387,
+      "sha256": "0DFF484BF4A706637A260C8D2151209AF208D1642920A1B9B43DCD22DB30E8B8"
+    },
+    "knowledge/业务/竞技/房间/大厅与客户端运行字段.md": {
+      "size": 5832,
+      "sha256": "604306B15F7C188DB37AC395806EDD67E790D88118FF7DF0E75F4E1A94135237"
+    },
+    "knowledge/业务/竞技/房间/成员轮次与加载资格.md": {
+      "size": 7711,
+      "sha256": "DFB9F52DC3DE33302D71B9B36547B8DCFA807E0406715BA4C916194AC5DACA09"
+    },
+    "knowledge/业务/竞技/房间/索引.md": {
+      "size": 525,
+      "sha256": "E67E48D5F48825E87665C37812B60A5B1FA0845445F73F82F64C59FD41B296D4"
+    },
+    "knowledge/业务/经济/商城/客户端详情与预览.md": {
+      "size": 3479,
+      "sha256": "8E9D8ADAE3933E2DF4B3E9A277354795D9B9275FB1269DB4A1173B9DC987F25B"
+    },
+    "knowledge/业务/经济/商城/待领取分页与纪念礼物.md": {
+      "size": 4981,
+      "sha256": "C6F2936418D7E9B7595D553768B1CCAAD7C3E2BD4B8D33F831FB7ABB746763BF"
+    },
+    "knowledge/业务/经济/商城/目录币种与购买.md": {
+      "size": 6769,
+      "sha256": "76F61FA8F3BA29FC9259F13D49F334EBEB9EFA01462339FE0B75C3454683C44B"
+    },
+    "knowledge/业务/经济/商城/索引.md": {
+      "size": 524,
+      "sha256": "A7D17FA470E02EFA54BCF51C984DFEA5B065F9BBEB25CFB9775836B80D5DA34D"
+    },
+    "knowledge/业务/角色/技能/学习装备与权限.md": {
+      "size": 6867,
+      "sha256": "228D086D0708E7B54BF966909BC2551802F7FCF87CCD55E17E1DA2B671D294FF"
+    },
+    "knowledge/业务/角色/技能/激活清理与碰撞.md": {
+      "size": 8137,
+      "sha256": "B155757C5F3073DFC7DA4C59043410C5045370611016D1CAEF52CED121349400"
+    },
+    "knowledge/业务/角色/技能/索引.md": {
+      "size": 370,
+      "sha256": "1255B15333DB754A4B607EC26608F10B9D2B46E50AE09041180D11BA88143393"
+    },
+    "knowledge/业务/角色/新手引导/故事引导与推荐人.md": {
+      "size": 7777,
+      "sha256": "BA9BBCDD3E13392DB17C2824F4B4CCBB7FE2B3F7954E56194C5ED659BBF4466D"
+    },
+    "knowledge/业务/角色/新手引导/教程与外观.md": {
+      "size": 5850,
+      "sha256": "6493D9576FA5E9C7223B9B15FD32540336D1EFDC54E4BD4C1E8032D8E3C66120"
+    },
+    "knowledge/业务/角色/新手引导/索引.md": {
+      "size": 592,
+      "sha256": "996F4D8F886F7CF5385DBF31B8E844132B817C086DD6557037A9C9BFF87E13F5"
+    },
+    "knowledge/业务/角色/新手引导/跨村前置.md": {
+      "size": 10698,
+      "sha256": "C215232A4940248A3FE0B90CDD8D395AD91B71291D875495B6C46064EACF016B"
+    },
+    "knowledge/业务/角色/新手引导/验证范围.md": {
+      "size": 1373,
+      "sha256": "F64A689A0E8B10DEBCBA33A84EB1C0812DA6D7CA10E330B95BFBFD41E0813319"
+    },
+    "knowledge/业务/角色/等级经验/人物成长与同步.md": {
+      "size": 8392,
+      "sha256": "F32A9F3030770CF380A1D2BB1EE1A3147D3F910D558F0A3CBE7E2FE8C5FD9AC8"
+    },
+    "knowledge/业务/角色/等级经验/协议载体.md": {
+      "size": 18813,
+      "sha256": "431BFF1A7AB7BAE77F957F81411D601DC262E262BD7F4661D93DE172730B3DC7"
+    },
+    "knowledge/业务/角色/等级经验/发布与验证.md": {
+      "size": 3078,
+      "sha256": "8CC3489E7510750958E9A6B9CA483353B6A3073D239CBCFDAE204849587941EE"
+    },
+    "knowledge/业务/角色/等级经验/客户端版本与显示.md": {
+      "size": 11313,
+      "sha256": "5E35A9D405C4C7EBFBD6CF35C63F01AAD28D487EB6ED6A5FBBC2EBA8E12EA75C"
+    },
+    "knowledge/业务/角色/等级经验/持久化与离线迁移.md": {
+      "size": 3892,
+      "sha256": "21C2911F43E7F636355933EB3CAC4A985E31C1B93719A59115ABAC95D25C7042"
+    },
+    "knowledge/业务/角色/等级经验/曲线与经验奖励.md": {
+      "size": 11577,
+      "sha256": "37C90A79C524FE3F38C246CE57E835CFEF3A3659257AB73FC290538B5ED2CE3E"
+    },
+    "knowledge/业务/角色/等级经验/索引.md": {
+      "size": 831,
+      "sha256": "537C6742CDC8A05E9F34E3EE55330F88C30B5AE44D76E61618B4E7E150B51FC2"
+    },
+    "knowledge/业务/角色/角色资料/查看与关系日期.md": {
+      "size": 6029,
+      "sha256": "98756B22E2C5B6C129AFA807B86FEEE33A55EAC740161DB7391267E36F13263A"
+    },
+    "knowledge/业务/角色/角色资料/索引.md": {
+      "size": 393,
+      "sha256": "76CE4D2C1B70201DBAB0EFAD476FE0089951D482933A00E9E05F270DF8ED8829"
+    },
+    "knowledge/业务/角色/角色资料/资料与资源载体.md": {
+      "size": 10096,
+      "sha256": "59F290D1D5D3E01BB467D1AE77F18F1DD8187C4F3CAF4AAD864E4540320A3576"
+    },
+    "knowledge/工程/住宅与家具客户端兼容/家具快照与点击.md": {
+      "size": 3619,
+      "sha256": "13CF5D2B958C0A01B94622FC084478042559EE622F7BED6932059AEFF51F3CAD"
+    },
+    "knowledge/工程/住宅与家具客户端兼容/屋外装修.md": {
+      "size": 10159,
+      "sha256": "7926FE7E5AB11BC6A66C9944E6BA13D40002AC4A051C5724472BF59CF0702695"
+    },
+    "knowledge/工程/住宅与家具客户端兼容/索引.md": {
+      "size": 789,
+      "sha256": "3A4BE38F81544A16973DFD072433DE90A6D9CA635C77552D2BB8CD818672B801"
+    },
+    "knowledge/工程/住宅与家具客户端兼容/购房与房屋推荐.md": {
+      "size": 4180,
+      "sha256": "537361886F1B138C3111B7844319E3485E1510ACF35CFFB179CF87C8AFEDAEEA"
+    },
+    "knowledge/工程/历史验证/既有记录/启动器与客户端.md": {
+      "size": 5174,
+      "sha256": "ED9894F9E6496BCEAF5D0CD96F06320B297F1FEB78EB33568B03B671C23877B2"
+    },
+    "knowledge/工程/历史验证/既有记录/社交娱乐与竞技.md": {
+      "size": 6592,
+      "sha256": "4A60DED27E324BACB9E412AC3A6C9DA4A139C610A1DBFE305DC0FD2474EFA744"
+    },
+    "knowledge/工程/历史验证/既有记录/索引.md": {
+      "size": 1335,
+      "sha256": "04EBE6EBD60BFB106B9879DD95FCBD46AFE884B5F7F8E4ED25920D598FAAA460"
+    },
+    "knowledge/工程/历史验证/既有记录/综合矩阵与发布.md": {
+      "size": 9331,
+      "sha256": "FD77CF5CB660827C4D805CB703D455F111EB8B0275C246B796984DFE64828D22"
+    },
+    "knowledge/工程/历史验证/既有记录/角色库存与地宫.md": {
+      "size": 12684,
+      "sha256": "5540A3210C098C781B513681F1C8C31D6AD1704285887698C7FE172B818166D2"
+    },
+    "knowledge/工程/历史验证/既有记录/资源与可选子弹.md": {
+      "size": 1676,
+      "sha256": "252174E50F786139772440F70AF25C8895753910B169339867E26B4C1259D830"
+    },
+    "knowledge/工程/启动运行/出生点与位置恢复.md": {
+      "size": 893,
+      "sha256": "9CB9BAE8A16CEB1207D3AA750CBFE532F22B2E345BA3A30EEF3B3962C6AC9FB7"
+    },
+    "knowledge/工程/启动运行/启动模式与服务.md": {
+      "size": 9618,
+      "sha256": "5C94D56A31B8AC11EE34B11999CDD21A43F3C0140D07C6C216ECB341508136B9"
+    },
+    "knowledge/工程/启动运行/社交槽位与多开.md": {
+      "size": 5246,
+      "sha256": "2A5D6A5818A6C407428DCAA11482028BD198814EF528F687651E4E304D73A2C2"
+    },
+    "knowledge/工程/启动运行/索引.md": {
+      "size": 1188,
+      "sha256": "499C7591FA1ADBFE54F621FB5687D56AB39D318E42CEC9B85E1C6AF3CF635ABD"
+    },
+    "knowledge/工程/启动运行/账号与离线编辑.md": {
+      "size": 11208,
+      "sha256": "3C780922BF2C736C1A35602F10B805A4533D69CD15CF3D76506525C0E72932C2"
+    },
+    "knowledge/工程/启动运行/运行目录与隔离诊断.md": {
+      "size": 2191,
+      "sha256": "91C9B1828A17E4D790B153F96E4CBF6D51A2F775900185EE03DC3A458477A6E9"
+    },
+    "knowledge/工程/地宫资源兼容/场景衔接与旧美术迁移.md": {
+      "size": 4777,
+      "sha256": "9F1AD9478AE761A57BC8588C406A57E19EF99D71B7147C34BD96C81929B9C4A2"
+    },
+    "knowledge/工程/地宫资源兼容/小地图补丁.md": {
+      "size": 7961,
+      "sha256": "611EFADC6DFB5D2E433D2220551FA101A39D2D402305D78A480F1ECAE27047F4"
+    },
+    "knowledge/工程/地宫资源兼容/索引.md": {
+      "size": 1118,
+      "sha256": "E3CEE1C15D77DB7AE8E58ACFA10187E22DC948074195D23E236016BE9496B93F"
+    },
+    "knowledge/工程/地宫资源兼容/范围与前置进度.md": {
+      "size": 5270,
+      "sha256": "D1BBB3BBADC7AEFE193E84B1839AA03BBF8CC689DEF9EAB4A908D4B17BEBD552"
+    },
+    "knowledge/工程/地宫资源兼容/资源与程序配套部署.md": {
+      "size": 6928,
+      "sha256": "5FDF740A54A96E9C1A71781F0FA3AD958BE42C06226426D5A3DB2A7C83CCBAA1"
+    },
+    "knowledge/工程/地宫资源兼容/道路与资源别名.md": {
+      "size": 3464,
+      "sha256": "E3DEEA4A56D4F792D721881EA5638B178DF50B90AE178A116FE4ADD5361637D5"
+    },
+    "knowledge/工程/客户端兼容/原生状态与旧版迁移.md": {
+      "size": 4190,
+      "sha256": "CEA43F6B701B4EF5F4042F4C2F0BCC7529241BDE47FDAA403CFFF9DBBA8442DF"
+    },
+    "knowledge/工程/客户端兼容/复活快捷栏布局.md": {
+      "size": 4765,
+      "sha256": "D210BCF8F9AB7C351C1745D088AF4DAC2F0994C54753E1056FBF12D4E9A0F833"
+    },
+    "knowledge/工程/客户端兼容/娱乐室进度与结果.md": {
+      "size": 9695,
+      "sha256": "D491894D7EE212DCBD31CDEC792A7A0BDF91DA9C85DA0FF37A5232C29F9797BA"
+    },
+    "knowledge/工程/客户端兼容/建角与新手引导.md": {
+      "size": 8334,
+      "sha256": "5352EF9617197D1A0CA32ED26104A8D46D2528BFF9A9A3559D001E26FC8AF166"
+    },
+    "knowledge/工程/客户端兼容/手动结算与队员回城.md": {
+      "size": 4541,
+      "sha256": "C2642DC5716C5EEBFFAF7B12B0DB7F96F03A7647C9DC484A0310070724D7CD3A"
+    },
+    "knowledge/工程/客户端兼容/玩家交易取消.md": {
+      "size": 2905,
+      "sha256": "47055A7287CAB0994A0C804088DEE5695E339FE5F2E8EABC276F18A6718049CA"
+    },
+    "knowledge/工程/客户端兼容/礼物刷新预览.md": {
+      "size": 1694,
+      "sha256": "A6DA94AA02E7EE4E97906745DF0D6D41D4ADF02E1ECA623304536BAE943D5183"
+    },
+    "knowledge/工程/客户端兼容/社交多开二进制.md": {
+      "size": 5484,
+      "sha256": "7FDC4E83BBA9A6A55A08E71B7DE70839106D142D68D86D3D8ABDBBAB99D75DF1"
+    },
+    "knowledge/工程/客户端兼容/竞技结果与复赛.md": {
+      "size": 6491,
+      "sha256": "2729AB4DE24E59748A4D7A194E167AE73D86FEF9F0BBAA24CEDC2A3ACABB7D7E"
+    },
+    "knowledge/工程/客户端兼容/等级200字段与显示.md": {
+      "size": 2834,
+      "sha256": "4FB797D67B56692A464C0E84B6E14523885993A4BB5495D2F7A4E234A56780DD"
+    },
+    "knowledge/工程/客户端兼容/索引.md": {
+      "size": 2612,
+      "sha256": "7BB1D15D6C902B64B9BF1493418B30236B5CE0D2870FD2529E2F68DDBD4EA3AA"
+    },
+    "knowledge/工程/客户端兼容/组队结果入口与排序.md": {
+      "size": 6431,
+      "sha256": "0BBDCA7B2D44342144EB5E5E41BAFB3B2AFF65A52E71A15563287D8F31F21446"
+    },
+    "knowledge/工程/客户端兼容/经验与本地等级.md": {
+      "size": 9335,
+      "sha256": "95C4CA0F76641B290E6553B6EFD47088CFE400C8CD7605FAA2D2E43C771AAFB8"
+    },
+    "knowledge/工程/客户端兼容/自动兼容清单.md": {
+      "size": 9097,
+      "sha256": "0763A4B234D33D088DF7AD4C93E89BEB8B68916BEE51CD921C6C2A9E3FF879A4"
+    },
+    "knowledge/工程/客户端兼容/连续挑战状态清理.md": {
+      "size": 2718,
+      "sha256": "092301FF970D4DF843BA33A6369BDE4EE891B631EFCBDAC035490033DCA46418"
+    },
+    "knowledge/工程/客户端兼容/首领血条.md": {
+      "size": 4387,
+      "sha256": "C50B87FF399C06987144C46799FF86683FB2A0FEA3EB839D41B023E0C7AE8234"
+    },
+    "knowledge/工程/资源安装/事务与恢复.md": {
+      "size": 4770,
+      "sha256": "7B3FBBB5C2C1913E4634C4F6A009A6ADC44D043C358B0A1CC01BE06291316658"
+    },
+    "knowledge/工程/资源安装/历史地宫依赖检查.md": {
+      "size": 4319,
+      "sha256": "82E0BA29E95FC73D82F9E928A7AD8C21A22205DE50EC5DB3BEEC6497FE716263"
+    },
+    "knowledge/工程/资源安装/娱乐室状态资源.md": {
+      "size": 1589,
+      "sha256": "0B1CF1D4E93B72DB62476BDF581F0113CD1A35A870ADA543D05905E00916B488"
+    },
+    "knowledge/工程/资源安装/子弹资源事务.md": {
+      "size": 1039,
+      "sha256": "5B3A1579FD56B2CF55DA998DF5D20B9120927B918226FFE891C1CB4DDA569169"
+    },
+    "knowledge/工程/资源安装/索引.md": {
+      "size": 2115,
+      "sha256": "9C7267CB9B95D9E120DFC3CE6B1E1C27E72B18E80FB2E73504E126FC7AE0696C"
+    },
+    "knowledge/工程/资源安装/资源清单与包组成.md": {
+      "size": 4309,
+      "sha256": "588A14DD8475DD1AFBBF58511374C8C3731C45D377C49D7522088C8B8FE8A26E"
+    },
+    "knowledge/工程/资源安装/追加宠物安装.md": {
+      "size": 5539,
+      "sha256": "3E41DE5DF14DC5AE08397C210E765754238EE3FA92CC6CFA1B73ED743F7C5157"
+    },
+    "knowledge/工程/资源安装/追加装扮与家具.md": {
+      "size": 2617,
+      "sha256": "202884F74E3EFD16A7FA6A73C44C4BDB75A0C7D1E2347336E6925BA891E57BFD"
+    },
+    "knowledge/工程/资源安装/韩服资源集成范围.md": {
+      "size": 7146,
+      "sha256": "9306FE0A88D3EA61A161FA1683991639FB56465ADB1130B23F8B05BFE8657DB1"
+    },
+    "knowledge/工程/资源安装/验证与未确认依赖.md": {
+      "size": 1516,
+      "sha256": "97400D0F8E74448C3E2EC6CE1D47C3F8684A885F160CCE89B6136A9E9834D4EF"
+    },
+    "knowledge/指南/构建与验证/GUI与离线工具.md": {
+      "size": 3429,
+      "sha256": "78625BF5C6993112DD984CAA9534A8B405915171D300D52355950593DA15049F"
+    },
+    "knowledge/指南/构建与验证/人物成长与计分.md": {
+      "size": 5527,
+      "sha256": "D954EE8DDDCBE9C540601F425BFB49D5892036C46E58C9310452FD3046ACDE3B"
+    },
+    "knowledge/指南/构建与验证/全量回归.md": {
+      "size": 3733,
+      "sha256": "5824C02EB70D35A1A3DAB17510DE0F36CFB8226DBCD4B0DBB5FD39AA126F8911"
+    },
+    "knowledge/指南/构建与验证/原生构建.md": {
+      "size": 1190,
+      "sha256": "2DF075A86B9197D6CB6CC5F801E26A0A4A0A1EFDA61CFFF29B7E99CB21631264"
+    },
+    "knowledge/指南/构建与验证/地宫专项.md": {
+      "size": 6267,
+      "sha256": "35F8FDFD31523B5BF70FE077C05E390560D9C04EAE2990868B56AB94FF26E322"
+    },
+    "knowledge/指南/构建与验证/客户端派生.md": {
+      "size": 1644,
+      "sha256": "E3EBAC25E56A422BA3AE6D2E0316ED4745E4028E03C893E4AAB6575156CC1D87"
+    },
+    "knowledge/指南/构建与验证/库存与首领专项.md": {
+      "size": 1119,
+      "sha256": "435E91253D1F892C03113609AD3FB5003CA0E7EFE60046924BD0B63D72E83C68"
+    },
+    "knowledge/指南/构建与验证/恢复与宠物专项.md": {
+      "size": 3651,
+      "sha256": "3F36209A7B40DC346E21C71F0C10C30BFEC4E04CE7786A2D3BA96D5569E1132A"
+    },
+    "knowledge/指南/构建与验证/托管与完整构建.md": {
+      "size": 3508,
+      "sha256": "799DAE898F55FB46F95053A3F4721D1BCA7294A8E1F1256FB89A3D209E65DF56"
+    },
+    "knowledge/指南/构建与验证/文档与发布检查.md": {
+      "size": 3514,
+      "sha256": "B74AF7C09C3BE92D6FF5202FCA14C2F2FB037F4820D2BB351DD51524D488DC92"
+    },
+    "knowledge/指南/构建与验证/竞技与娱乐专项.md": {
+      "size": 5910,
+      "sha256": "562B659E22FAB39B9112771F24B0C4C7E6374BEC5D93D5C1ECA742EDC9A90E1A"
+    },
+    "knowledge/指南/构建与验证/索引.md": {
+      "size": 1846,
+      "sha256": "C25D6084BEE2A0A5B82965761DBCD9C9F88F4BE9CE0BF8CF120B85D1D44BFF58"
+    },
+    "manifest/knowledge_review.json": {
+      "size": 208663,
+      "sha256": "A07A132A01DFF6EF7145E918305D88ED6D8528911A72FFC9089CF5AD1236B51E"
     },
     "adapter_runtime/Microsoft.CSharp.dll": {
       "size": 1005392,
