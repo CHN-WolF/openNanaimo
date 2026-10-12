@@ -1,10 +1,10 @@
-# Event-card reward configuration
+# 活动卡奖池配置
 
-The adapter implements dedicated `C3FD/C3FE` redemption with explicitly configured reward pools. Each enabled page defines weighted single-item, item-bundle or Hans rewards. Configuration enables redemption; card drops, collection and album display remain active independently. The optional reviewed pool is installed through a separate administrative action.
+适配器通过专用C3FD/C3FE按显式奖池配置兑换。每个启用页定义带权重的单物品、物品组合或Hans奖励。配置决定兑换是否开放；掉落、收集与卡册展示独立运行。可选已审核奖池通过独立管理操作安装。
 
-## Configuration
+## 配置
 
-The UTF-8 file `event-card-rewards.json` resides beside the active `game.db`, normally in `adapter_data`. The adapter reads it for each new redemption. The disabled configuration is:
+UTF-8文件`event-card-rewards.json`位于活动`game.db`旁，通常在`adapter_data`。每次新兑换读取该文件。禁用兑换的配置为：
 
 ```json
 {
@@ -13,17 +13,17 @@ The UTF-8 file `event-card-rewards.json` resides beside the active `game.db`, no
 }
 ```
 
-The root object has exactly `Version` (integer **1**) and `Pages` (an array). Each page has exactly `Page` and `Rewards`: `Page` is a unique integer from 1 through 10, and `Rewards` is a nonempty array. Each reward uses exactly one of the following field sets; names are case-sensitive and unknown or duplicate fields are rejected.
+根对象仅含`Version`（整数**1**）与`Pages`数组。每页仅含`Page`与`Rewards`：Page为1至10中的唯一整数，Rewards为非空数组。每个奖励必须严格采用下列一组字段；字段名区分大小写，未知或重复字段均拒绝。
 
-| Reward form | Exact fields | Constraints and effect |
+| 奖励形式 | 精确字段 | 约束与效果 |
 |---|---|---|
-| Single item | `Code`, `Quantity`, `Weight` | `Code` is an existing shop-catalog item, not a card-catalog entry; `Quantity` is exactly 1. Grants that item. |
-| Item bundle | `Bundle`, `Weight` | `Bundle` contains 1..20 distinct eligible item codes. Grants one of every listed item in a single transaction. No `Code`, `Quantity` or `Hans` fields are permitted. |
-| Hans variant | `Code`, `Quantity`, `Weight`, `Hans` | `Code` must still be an eligible catalog item and `Quantity` must be 1. `Hans` is an integer in 0..1000000; a positive value grants that many Hans instead of the item, while zero uses ordinary single-item behavior. |
+| 单物品 | `Code`, `Quantity`, `Weight` | Code是现有商城物品，不是卡片目录条目；Quantity必须为1，发放该物品。 |
+| 物品组合 | `Bundle`, `Weight` | Bundle包含1..20个不同的合法物品代码，在同一事务各发1件；不得同时使用Code、Quantity或Hans。 |
+| Hans变体 | `Code`, `Quantity`, `Weight`, `Hans` | Code仍须是合法目录物品，Quantity为1；Hans为0..1000000整数，正数直接发放对应Hans替代物品，零沿用普通单物品行为。 |
 
-Eligible items include clothing, pets, pet materials, furniture and ordinary items, even when catalog purchasing is disabled. Item codes must be unique across all entries and bundle members within one page; this also applies to the validated `Code` in a Hans entry. Each `Weight` is an integer in 1..10000, and all weights on one page must sum to **10000**. Weights define the adapter reward probabilities.
+合法物品包括衣物、宠物、宠物材料、家具与普通道具，目录禁止购买的物品也可作为奖励。同一页内所有奖励项及Bundle成员的代码须唯一，Hans项的校验Code同样参与去重。每个Weight为1..10000整数，一页权重之和必须为**10000**。权重定义适配器奖品概率。
 
-The following complete configuration illustrates all three forms with catalog codes from the shipped pool:
+以下完整配置使用随仓库奖池中的目录代码，演示三种形式：
 
 ```json
 {
@@ -41,44 +41,35 @@ The following complete configuration illustrates all three forms with catalog co
 }
 ```
 
-The Hans entry uses `Code` as its catalog-validated reward identity and grants exactly 200 Hans. Clothing rewards are resolved to the character gender; timed clothing extends its stored expiration.
+Hans项以Code作为目录校验身份，实际发放200 Hans。衣物奖励按角色性别解析；限时衣物延长已存期限。
 
-The size limit is 64 KiB. Strict parsing checks required fields, duplicate keys, item eligibility and page uniqueness. Invalid or absent configuration returns a bounded failure and preserves all cards. Rewards use the ordinary-item response branch. Atomic configuration replacement keeps each redemption on one complete configuration.
+文件大小上限64 KiB。严格解析检查必需字段、重复键、物品资格与页号唯一性。配置无效或缺失时返回受限失败并保留全部卡片。奖励使用普通物品响应分支；原子替换配置保证每次兑换读取一份完整配置。
 
-Page P consumes one of each of the ten codes starting at `50000001 + (P - 1) * 10`. Pages1–4 describe secret-stage warrior series, page5 special outfits/diamonds, page6 mascot pets/outfits/items, and pages7–10 are placeholders. Redemption values come from the explicit configuration.
+第P页消费从`50000001 + (P - 1) * 10`开始的十种卡各一张。页1～4为秘密关卡战士系列，页5为特殊服装／钻石，页6为吉祥物宠物／服装／道具，页7～10保留占位。实际奖品由显式配置决定。
 
-## Transaction and retries
+## 事务与重试
 
-- The current account/character session authorizes the request. Ten-card consumption, the selected item/bundle/Hans grant, quick-slot/furniture remapping and the receipt commit in one transaction. Every bundle member is granted in the same atomic commit.
-- Insufficient capacity preserves the selected reward in `EventCardPendingDraws` and keeps all ten cards. The same pending reward remains selected when space becomes available; each retry uses the preserved selection.
-- Pet rewards merge by creature family. The 15/30/90/180-day and level variants share one ownership row. A timed variant adds its authored days to the remaining term; a permanent variant makes the row permanent. Stage, level, experience, durability and gem slots stay intact. Active pets determine ownership, capacity and client inventory; a newly awarded expired pet starts a fresh term. A duplicate permanent-pet draw commits card consumption, preserves the owned pet, clears the pending draw and returns the fixed already-owned text, completing redemption. Shop purchases and inbox claims use the same merge policy; purchases against a permanent family commit their price while preserving that pet. Materials stack and consume capacity by quantity. Detailed ownership and transaction rules are maintained in knowledge topic03.
-- Reward-distribution changes with pending draws require administrative review.
-- A committed `(character, session, request ID)` receipt returns its original reward, including after the page is disabled. Request correlation uses a ten-second window with at most256 entries; persistent receipts enforce committed transaction identity.
-- Responses carry fixed operator-facing text encoded as GBK (the client's own text encoding), at most 23 encoded bytes, followed by an explicit NUL terminator. Control characters, percent signs and characters outside GBK are rejected; longer text is truncated to the byte budget instead of failing the response.
+- 请求由当前账号／角色会话授权。十张卡消费、所选物品／组合／Hans发放、快捷栏／家具实例重映射及回执在同一事务提交，组合中所有成员一起原子发放。
+- 容量不足时在EventCardPendingDraws保留所选奖品，十张卡全部保留。腾出空间后仍发同一奖品，每次重试沿用保存的选择。
+- 宠物奖励按生物家族合并，15/30/90/180天及等级变体共享一行所有权记录。限时变体叠加目录天数，永久变体本次将到期值设为0，既有行仍保留原`ItemCode`；后续永久判定的实现边界见[宠物所有权](../knowledge/业务/宠物/所有权.md#kb-03-004-2)；阶段、等级、经验、耐久与宝石槽保持。有效宠物参与持有、容量与客户端库存；已到期宠物再次获奖从该次重新起算。重复永久宠物开奖提交扣卡、保留已有宠物、清除待开奖记录，并返回固定已拥有提示完成兑换。商城购买及待领取物品采用相同合并政策，已永久持有同族的购买提交价款并保留原宠物。材料按数量堆叠并占容量。详细所有权与事务规则由知识库[宠物所有权](../knowledge/业务/宠物/所有权.md)和[物品实例](../knowledge/业务/库存/物品实例.md)维护。
+- 带待开奖记录的奖池分发变更需要管理审核。
+- 已提交的(character, session, request ID)回执返回原奖品，即使该页后来禁用。请求关联窗口为十秒、最多256项；持久回执保证已提交事务身份。
+- 响应向玩家客户端发送固定GBK提示（客户端编码），最多23个编码字节并显式追加NUL。拒绝控制字符、百分号及GBK无法编码字符；超长提示按字节预算截断，不使整个响应失败。
 
-## Validation scope
+## 验证范围
 
-`CardUseRegression` covers parser and dispatcher behavior, session authorization, atomic inventory transactions, capacity preservation, retries and configured redemption using isolated databases and synthetic reward pools. These checks establish adapter behavior; client interaction has its own acceptance record in knowledge topic09.
+CardUseRegression以隔离数据库及合成奖池验证解析、分发、会话授权、原子库存事务、容量保奖、重试及配置兑换。这些检查证明适配器行为；客户端交互采用知识库[工程／验证状态](../knowledge/工程/验证状态.md)的独立验收记录。
 
-## Shipped default pool
+## 随仓库默认奖池
 
-The reviewed default for both card-use flows ships with the repository at
-`release/components/cards/event-card-rewards.json` (page 1-4 pools: boss pet by
-duration, whole warrior outfit set, three warrior gems, whole warrior decoration
-set, bread plus drink, and a direct 200-Hans grant). It is registered in
-`manifest/open_release_manifest.json` and the patch allowlist, but it is **not**
-auto-installed: copy it beside the active database before starting the adapter.
+两种卡片使用流程的已审核默认奖池位于`release/components/cards/event-card-rewards.json`。页1～4包括按期限区分的Boss宠物、整套战士衣物、三颗战士宝石、整套战士装饰、面包加饮料，以及直接200 Hans奖励。文件登记在`manifest/open_release_manifest.json`及导出候选清单中，但**不自动安装**；启动适配器前须复制到活动数据库旁。
 
 ```powershell
 Copy-Item release/components/cards/event-card-rewards.json <install-root>/adapter_data/event-card-rewards.json
 ```
 
-This file uses the same three forms documented above. Installing the reviewed pool is a separate administrative action from building the adapter or enabling card drops.
+该文件使用上述三种形式。安装已审核奖池与构建适配器、开放卡片掉落是独立管理操作。
 
-## Default page weights
+## 默认页权重
 
-Pages 1–4 each use a total weight of 10,000. The four page-specific pet entries
-have weights 40, 28, 20 and 12; the warrior outfit set has 400, the three-gem
-bundle 500, the decoration set 1,000, bread plus drink 4,125, and the entry
-combining item `46000008` with 200 Hans has 3,875. Item codes, quantities and
-whole-bundle delivery follow the checked-in configuration.
+页1～4各自总权重为10,000。四个页专属宠物项权重为40、28、20、12；整套战士衣物400、三宝石组合500、装饰组合1,000、面包饮料组合4,125、代码46000008与200 Hans组合项3,875。代码、数量与整组发放以仓库配置为准。

@@ -144,6 +144,13 @@ class ExportPatchTests(unittest.TestCase):
         expected = {
             "knowledge/知识库索引.md": "# 工程知识库\n",
             "knowledge/authority/01-协议分帧与连接.md": "# 协议分帧\n",
+            "knowledge/索引.md": "# 知识库索引\n",
+            "knowledge/业务/索引.md": "# 业务索引\n",
+            "knowledge/基础/内部桥接.md": "# 内部桥接\n",
+            "knowledge/业务/地宫/关卡与房间.md": "# 关卡与房间\n",
+            "knowledge/业务/宠物/所有权.md": "# 所有权\n",
+            "knowledge/工程/验证状态.md": "# 验证状态\n",
+            "knowledge/工程/历史验证/既有记录.md": "# 既有记录\n",
         }
         for name, text in expected.items():
             self.add(name, "knowledge", text.encode("utf-8"))
@@ -156,6 +163,24 @@ class ExportPatchTests(unittest.TestCase):
         for name, text in expected.items():
             self.assertIn(name, paths)
             self.assertEqual((self.destination / name).read_text("utf-8"), text)
+
+    def test_knowledge_layers_reject_unscoped_directories_and_assets(self):
+        for name in ("knowledge/业务/未知模块/规则.md",
+                     "knowledge/业务/宠物/private/记录.md",
+                     "knowledge/工程/历史验证/private/记录.md",
+                     "knowledge/基础/规则.json",
+                     "knowledge/业务/宠物/外观.png",
+                     "knowledge/历史验证/记录.md"):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name, "knowledge")
+
+    def test_knowledge_migration_evidence_is_exactly_scoped_source(self):
+        for name in ("manifest/knowledge_migration.json", "manifest/knowledge_baseline.json.gz"):
+            patch.payload_policy(name, "source")
+        for name in ("manifest/knowledge_private.json", "manifest/knowledge_other.json.gz",
+                     "knowledge/业务/宠物/存档.json.gz", "manifest/knowledge_baseline.zip"):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name, "source")
 
     def test_chinese_paths_still_reject_ambiguous_or_unsafe_names(self):
         bad = ("knowledge/../秘密.md", "knowledge/知识库\\索引.md",

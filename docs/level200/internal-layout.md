@@ -1,60 +1,49 @@
-﻿# Level-200 internal bridge layout (little-endian)
+# 200级内部桥接布局（小端序）
 
-The managed adapter and native worker use this versioned state contract.
-Curve version 3: exact KR T[0..200]; level cap 200, total/bar cap T[200]. Pet EXP remains DWORD.
+托管适配器与原生worker使用此版本化状态约定。曲线版本3采用精确KR T[0..200]；等级上限200，累计经验与经验条上限为T[200]。宠物经验仍使用DWORD。
 
-## F100 / F102 snapshot v4 (card inventory extension)
+## F100 / F102快照v4（卡片库存扩展）
 
-Payload length **5704**, full frame 5712. Old 5120/5124/5144-byte states are rejected
-on the live wire. No implicit journal upgrade. Both peers must ship together.
+payload长度为**5704**，完整帧5712。运行期拒绝旧5120/5124/5144字节状态，不隐式升级待提交日志。两端程序必须配套发布。
 
-| Payload offset | Width | Meaning |
+| payload偏移 | 宽度 | 含义 |
 |---|---:|---|
-| 0 | 4 | success/schema discriminator: 4 (0 = rejected) |
-| 4 | 4 | character UID, unchanged |
-| 8 | 4 | level 1..200 |
-| 12 | 4 | reserved, MUST be zero; no longer character EXP |
-| 16..271 | unchanged | resources, identity, pet EXP at 156, skills and quick slots |
-| 272..1951 | 420 x 4 | picture cards 13000001..13000420, including gold powder |
-| 1952..5119 | unchanged | item count/rows, couple ring, handles, grade and clear masks |
-| 5120 | 4 | couple partner UID, unchanged |
-| 5124 | 4 | schema version, exactly 4 |
-| 5128 | 4 | payload length, exactly 5704 |
-| 5132 | 4 | curve version, exactly 3 |
-| 5136 | 8 | real total character EXP, unsigned LE, limited to T[200] |
-| 5144..5223 | 20 x 4 | SP cards 12000001..12000020 |
-| 5224..5623 | 100 x 4 | event cards 50000001..50000100 |
-| 5624..5703 | 20 x 4 | special/VIP cards 22000001..22000020 (lucky A-H are 11..18) |
+| 0 | 4 | 成功／schema判别：4（0表示拒绝） |
+| 4 | 4 | 角色UID，保持原值 |
+| 8 | 4 | 等级1..200 |
+| 12 | 4 | 保留位，必须为零；不再存人物经验 |
+| 16..271 | 不变 | 资源、身份、+156宠物经验、技能与快捷栏 |
+| 272..1951 | 420 x 4 | 图片卡13000001..13000420，含黄金粉卡 |
+| 1952..5119 | 不变 | 道具数量／记录、情侣戒指、句柄、称号与通关mask |
+| 5120 | 4 | 伴侣UID，保持原值 |
+| 5124 | 4 | schema版本，必须为4 |
+| 5128 | 4 | payload长度，必须为5704 |
+| 5132 | 4 | 曲线版本，必须为3 |
+| 5136 | 8 | 真实人物累计经验，无符号小端，上限T[200] |
+| 5144..5223 | 20 x 4 | SP卡12000001..12000020 |
+| 5224..5623 | 100 x 4 | 活动卡50000001..50000100 |
+| 5624..5703 | 20 x 4 | 特殊／VIP卡22000001..22000020（幸运卡A～H为11..18） |
 
-The 560 quantities are byte-bounded DWORDs. Extended albums MUST NOT be read or
-written at 272 + index*4 for index >=420; that collides with the item count/array.
-Curve version remains **3**. F10B remains v3/48; this is not another EXP migration.
-Startup upgrades validated inactive v3 recovery profiles in one SQL transaction,
-archives exact old bytes/SHA-256 in NativeCardProfileArchives, and seeds extension
-counts from CharacterCards only. Never recover cards from an old polluted worker
-sidecar. Current profiles are idempotent. Pending old reward journals are NOT
-implicitly upgraded; recover them with the matching old pair before switching.
+560项数量以DWORD承载，但每项受BYTE数量上限限制。index>=420的扩展卡册不得使用272+index*4读写，否则会覆盖道具数量／数组。曲线版本仍为**3**，F10B仍为v3/48；本次库存扩展不再次迁移经验。启动时在单一SQL事务升级已验证、非活动的v3恢复档，将精确旧字节及SHA-256归档到NativeCardProfileArchives，并仅从CharacterCards初始化扩展数量。不得从已污染的旧worker sidecar恢复卡片。当前档案重复升级保持幂等；待提交旧奖励日志不隐式升级，切换程序前应使用匹配旧程序对恢复。
 
-Old workers reject both the length and discriminator; no low-DWORD compatibility.
-Constructor verifies version/length/curve before interpreting authoritative state.
+旧worker拒绝新长度与判别值，不提供低DWORD兼容。构造器先校验版本、长度与曲线，再解释权威状态。
 
-## F10B live authoritative progression v3
+## F10B实时权威成长v3
 
-Payload length **48**, full frame 56. Old 32-byte payloads are rejected.
+payload长度为**48**，完整帧56。拒绝旧32字节payload。
 
-| Payload offset | Width | Meaning |
+| payload偏移 | 宽度 | 含义 |
 |---|---:|---|
-| 0 | 4 | version = 3 |
-| 4 | 4 | payload length = 48 |
-| 8 | 4 | curve version = 3 |
+| 0 | 4 | 版本=3 |
+| 4 | 4 | payload长度=48 |
+| 8 | 4 | 曲线版本=3 |
 | 12 | 4 | UID |
-| 16 | 4 | level |
-| 20 | 8 | real total EXP |
-| 28 | 4 | base maximum HP |
-| 32 | 4 | base maximum MP |
-| 36 | 4 | attack |
-| 40 | 4 | defense |
-| 44 | 4 | battle epoch |
+| 16 | 4 | 等级 |
+| 20 | 8 | 真实累计经验 |
+| 28 | 4 | 基础最大HP |
+| 32 | 4 | 基础最大MP |
+| 36 | 4 | 攻击 |
+| 40 | 4 | 防御 |
+| 44 | 4 | 战斗代次 |
 
-Both internal formats carry authoritative total EXP. C355, CF71,
-C57C and CF88 retain their retail lengths; their character EXP is projected.
+两种内部格式都携带权威累计经验。C355、CF71、C57C与CF88保持原客户端长度，人物经验使用投影值。

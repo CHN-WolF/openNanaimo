@@ -1,21 +1,21 @@
-# Apartment Guide and Scene Lifecycle
+# 公寓引导与场景生命周期
 
-## Entry and room ownership
+## 进入与房间归属
 
-Apartment entry synchronizes room state, player state, and the interior object snapshot. Owner and visitor sessions remain independent. A single-player room publishes its local actor exactly once; existing actors are sent to a newcomer, and a newly entered actor is sent only to other sessions in the room.
+进入公寓时同步房间状态、玩家状态与室内对象快照。房主与访客会话相互独立。单人房间只发布一次本人角色；已有角色发送给新访客，新进入角色只发送给房间内其他会话。
 
-The original client starts the apartment guide for an owner room at LV3 or above while its apartment-guide completion bit is unset. The server accepts apartment guide completion after the main tutorial, including older profiles without a separate introduction ledger.
+原客户端在房主角色达到LV3且公寓引导完成位尚未设置时启动公寓引导。适配器在主教程完成后接受公寓引导完成请求，也兼容没有独立介绍账本的旧档案。客户端触发资格与适配器提交资格分别维护。
 
-## Guide completion and resource consistency
+## 引导完成与资源一致性
 
-The Jack Dudu guide uses guide ID 5. Its completion response carries the same effective maximum HP and MP as the room's current resource snapshot. The client applies these maximum values before it displays the guide reward window, while retaining its existing current HP and MP. Keeping both values in the same resource model prevents the guide health bars from exceeding their texture bounds.
+Jack Dudu引导使用guide ID 5。完成响应携带与当前房间资源快照相同的有效最大HP和MP。客户端在显示引导奖励窗口前应用这些最大值，同时保留现有当前HP和MP。统一资源模型避免引导生命条越过纹理边界。
 
-Completion retains the existing actor, furniture, recovery schedule, current HP/MP, and saved base attributes. A character without an effective-resource snapshot uses the same profile maxima as ordinary room synchronization. The welcome reward is one 100-Hans certificate in the ordinary game-item inventory. Using the certificate credits 100 Hans in the same transaction that consumes it. Reward and completion are committed together, and repeated confirmation grants the certificate once.
+完成引导保留已有角色、家具、恢复周期、当前HP/MP及保存的基础属性。没有有效资源快照时使用普通房间同步相同的档案上限。欢迎奖励是在普通游戏道具库存中发放一张100 Hans凭证；使用时在同一事务扣除凭证并增加100 Hans。奖励与完成状态一起提交，重复确认只发放一次。
 
-Subsequent refresh, recommendation, decoration, and exit operations use the ordinary room lifecycle. Visit counters, recommendation points, and recovery state remain separate persisted values.
+后续刷新、推荐、装修与退出沿用普通房间生命周期。访问计数、推荐点数和恢复状态分别持久化。
 
-## Validation scope
+## 验证范围
 
-Construction checks cover response fields and lengths, resource consistency for pet-equipped and unequipped characters, repeated and out-of-order completion, delayed completion, room entry failure, local actor uniqueness, owner/visitor separation, and unchanged saved HP/MP.
+构造检查覆盖响应字段与长度、携宠与无宠角色的资源一致性、重复及乱序完成、延迟完成、入室失败、本人角色唯一性、房主与访客隔离，以及保存HP/MP保持不变。
 
-Original-client acceptance of the changed adapter must confirm the final dialogue, reward confirmation, room interaction, recovery, exit, and reentry with an effective-resource bonus equipped.
+修改后的适配器仍需原客户端验收最终对话、奖励确认、房间交互、恢复、退出及再次进入；验收应装备有效资源加成。

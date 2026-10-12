@@ -117,12 +117,18 @@ def payload_policy(value: str, layer: str) -> None:
                 or (parts[0] == "scripts" and p.suffix in {".py", ".ps1"})
                 or value in DUNGEON7_ARTWORK
                 or value in card_generation_sources
-                or value in {"manifest/source_closure.json", "manifest/lumineos_combat.json", "manifest/l7_combat.json", "manifest/lumineos_resource_port.json", "manifest/korean_pet_resources.json"})
+                or value in {"manifest/source_closure.json", "manifest/lumineos_combat.json", "manifest/l7_combat.json", "manifest/lumineos_resource_port.json", "manifest/korean_pet_resources.json",
+                             "manifest/knowledge_migration.json", "manifest/knowledge_baseline.json.gz"})
     elif layer == "docs":
         good = value == "README.md" or (parts[0] == "docs" and p.suffix == ".md")
     elif layer == "knowledge":
-        good = value == "knowledge/知识库索引.md" or (
-            len(parts) == 3 and parts[:2] == ["knowledge", "authority"] and p.suffix == ".md")
+        modules = {"角色", "城镇", "库存", "卡片", "宠物", "经济", "社交", "住宅", "地宫", "竞技", "娱乐"}
+        good = p.suffix == ".md" and (
+            value in {"knowledge/知识库索引.md", "knowledge/索引.md", "knowledge/业务/索引.md"}
+            or (len(parts) == 3 and parts[:2] == ["knowledge", "authority"])
+            or (len(parts) == 3 and parts[:2] in (["knowledge", "基础"], ["knowledge", "工程"]))
+            or (len(parts) == 4 and parts[:2] == ["knowledge", "业务"] and parts[2] in modules)
+            or (len(parts) == 4 and parts[:3] == ["knowledge", "工程", "历史验证"]))
     elif layer in {"python", "tcc"}:
         good = (len(parts) >= 3 and parts[:2] == ["tools", layer]
                 and (p.suffix.lower() in {".py", ".pyd", ".dll", ".exe", ".h", ".a", ".def",
