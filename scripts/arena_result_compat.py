@@ -10,15 +10,15 @@ RESET_CAVE_VA = CAVE_VA + CAVE_SPAN
 RESET_CAVE_SPAN = 64
 CLEANUP_CAVE_VA = RESET_CAVE_VA + RESET_CAVE_SPAN
 CLEANUP_CAVE_SPAN = 80
-# A previously installed rematch build kept a narrow game-type-1 guard while
-# using the current manager/arena reset body. Keep this exact byte sequence as a bounded
+# An older rematch build constrained the manager loss counter while
+# using an earlier manager/arena reset body. Keep this exact byte sequence as a bounded
 # migration input; it is not a wildcard acceptance rule.
 RESET_MIXED_LEGACY = bytes.fromhex(
     'e85966d3ff9c6080780301752e837808017228837808047722'
     '83b8f0100000067519c64007008b48348948408b0dc02fd70085'
     'c97405e845ca0600619dc3cccc'
 )
-def cleanup_encoding():
+def cleanup_encoding(previous=False):
     code = bytearray()
     def call(target):
         code.extend(b'\xE8' + struct.pack('<i', target - CLEANUP_CAVE_VA - len(code) - 5))
@@ -26,7 +26,12 @@ def cleanup_encoding():
     code.extend(bytes.fromhex('9c60'))
     call(0x006658E0)
     jumps = []
-    for compare, branch in (('80780301', 0x75), ('83780801', 0x72), ('83780804', 0x77)):
+    # Result publication is already the arena boundary. The manager +8 is a
+    # consecutive-loss counter; both winners and losers need independent cleanup.
+    guards = [('80780301', 0x75)]
+    if previous:
+        guards += [('83780801', 0x72), ('83780804', 0x77)]
+    for compare, branch in guards:
         code.extend(bytes.fromhex(compare))
         jumps.append(len(code)); code.extend(bytes([branch, 0]))
     code.extend(bytes.fromhex('83b8f010000004'))
@@ -45,17 +50,16 @@ def cleanup_encoding():
     if len(code) > CLEANUP_CAVE_SPAN:
         raise ValueError('Arena terminal cleanup exceeds reserved region')
     return bytes(code).ljust(CLEANUP_CAVE_SPAN, b'\xCC')
-def reset_encodings(legacy=False, previous=False):
+def reset_encodings(legacy=False, previous=False, loss_guard=False):
     code = bytearray(b'\xE8' + struct.pack('<i', 0x00419BBE - RESET_CAVE_VA - 5))
     def call(target):
         code.extend(b'\xE8' + struct.pack('<i', target - RESET_CAVE_VA - len(code) - 5))
     code.extend(bytes.fromhex('9c60'))
     jumps = []
-    for compare, branch in (
-        ('80780301', 0x75),  # Multiplayer arena mode, not PvE or entertainment.
-        ('83780801', 0x72),
-        ('83780804', 0x77),
-    ):
+    guards = [('80780301', 0x75)]
+    if legacy or previous or loss_guard:
+        guards += [('83780801', 0x72), ('83780804', 0x77)]
+    for compare, branch in guards:
         code.extend(bytes.fromhex(compare))
         jumps.append(len(code)); code.extend(bytes([branch, 0]))
     # The hook is the authorized CF8C rematch boundary itself. Keep the
@@ -127,5 +131,7 @@ def legacy_encodings(va):
         return (encodings(legacy=True)[1],)
     if va == RESET_CAVE_VA:
         return (reset_encodings(legacy=True)[1], RESET_MIXED_LEGACY,
-                reset_encodings(previous=True)[1])
+                reset_encodings(previous=True)[1], reset_encodings(loss_guard=True)[1])
+    if va == CLEANUP_CAVE_VA:
+        return (cleanup_encoding(previous=True),)
     return ()

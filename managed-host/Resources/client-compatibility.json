@@ -319,12 +319,13 @@
     {
       "group": "dungeon-state",
       "va": 7222624,
-      "target": "e85966d3ff9c6080780301751f837808017219837808047713c64007008b0dc02fd70085c97405e854ca0600619dc3cccccccccccccccccccccccccccccccccc",
+      "target": "e85966d3ff9c60807803017513c64007008b0dc02fd70085c97405e860ca0600619dc3cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
       "known": [
         "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
         "e85966d3ff9c6080780301751f83780801721983780804771383b8f010000006750ac64007008b4834894840619dc3cccccccccccccccccccccccccccccccccc",
         "e85966d3ff9c6080780301752e83780801722883780804772283b8f0100000067519c64007008b48348948408b0dc02fd70085c97405e845ca0600619dc3cccc",
-        "e85966d3ff9c6080780301752583780801721f837808047719c64007008b48348948408b0dc02fd70085c97405e84eca0600619dc3cccccccccccccccccccccc"
+        "e85966d3ff9c6080780301752583780801721f837808047719c64007008b48348948408b0dc02fd70085c97405e84eca0600619dc3cccccccccccccccccccccc",
+        "e85966d3ff9c6080780301751f837808017219837808047713c64007008b0dc02fd70085c97405e854ca0600619dc3cccccccccccccccccccccccccccccccccc"
       ],
       "operation": "patch_arena_rematch_activity_code",
       "known_hashes": []
@@ -342,9 +343,10 @@
     {
       "group": "dungeon-state",
       "va": 7222688,
-      "target": "e89080d3ff9c60e83423f8ff80780301752d83780801722783780804772183b8f010000004740983b8f010000006750f8b0dc02fd70085c97405e801ca0600619dc3cccccccccccccccccccccccccccc",
+      "target": "e89080d3ff9c60e83423f8ff80780301752183b8f010000004740983b8f010000006750f8b0dc02fd70085c97405e80dca0600619dc3cccccccccccccccccccccccccccccccccccccccccccccccccccc",
       "known": [
-        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "e89080d3ff9c60e83423f8ff80780301752d83780801722783780804772183b8f010000004740983b8f010000006750f8b0dc02fd70085c97405e801ca0600619dc3cccccccccccccccccccccccccccc"
       ],
       "operation": "patch_arena_terminal_cleanup_code",
       "known_hashes": []

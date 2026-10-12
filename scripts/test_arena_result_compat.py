@@ -15,9 +15,9 @@ class ArenaResultTests(unittest.TestCase):
     @unittest.skipUnless(uc, 'x86 execution engine required')
     def test_shared_rematch_preserves_manager_flags_and_main_loop_counters(self):
         for mode in (0, 1, 2):
-            for game_type in (0, 1, 4, 5):
+            for losses in (0, 1, 4, 5, 0xFFFFFFFF):
                 for page in (4, 6, 7):
-                    with self.subTest(mode=mode, game_type=game_type, page=page):
+                    with self.subTest(mode=mode, losses=losses, page=page):
                         m = uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_32)
                         m.mem_map(0x400000, 0xA00000); m.mem_map(0x2000000, 0x30000)
                         m.mem_write(recipe.RESET_CAVE_VA, recipe.reset_encodings()[1])
@@ -25,7 +25,7 @@ class ArenaResultTests(unittest.TestCase):
                         def put(a, v): m.mem_write(a, struct.pack('<I', v))
                         def get(a): return struct.unpack('<I', m.mem_read(a, 4))[0]
                         m.mem_write(manager + 3, bytes([mode])); m.mem_write(manager + 7, b'\x01')
-                        put(manager + 8, game_type); put(manager + 0x10F0, page)
+                        put(manager + 8, losses); put(manager + 0x10F0, page)
                         flags = bytes((i * 17 + 3) % 256 for i in range(2000))
                         m.mem_write(manager + 0x12, flags)
                         main_loop = 0x2020000
@@ -51,7 +51,7 @@ class ArenaResultTests(unittest.TestCase):
                             machine.reg_write(x86.UC_X86_REG_ESP, sp + 4)
                         m.hook_add(uc.UC_HOOK_CODE, intercept)
                         m.emu_start(recipe.RESET_CAVE_VA, end + 1, count=80)
-                        eligible = mode == 1 and 1 <= game_type <= 4
+                        eligible = mode == 1
                         self.assertEqual(bytes(m.mem_read(manager + 7, 1)), b'\0' if eligible else b'\1')
                         self.assertEqual(bytes(m.mem_read(manager + 0x12, 2000)), flags)
                         self.assertEqual(get(main_loop + 0x34), 10000)
@@ -96,6 +96,19 @@ class ArenaResultTests(unittest.TestCase):
         off = compat._va_offset(target, recipe.RESET_CAVE_VA, recipe.RESET_CAVE_SPAN)
         previous[off:off + recipe.RESET_CAVE_SPAN] = recipe.RESET_MIXED_LEGACY
         self.assertEqual(compat.patch_dungeon_state_controls(bytes(previous))[0], target)
+
+    def test_every_registered_previous_encoding_migrates_exactly(self):
+        raw, _ = synthetic_pe()
+        target, _ = compat.patch_dungeon_state_controls(raw)
+        for _, va, original, current in recipe.patch_sites():
+            at = compat._va_offset(target, va, len(current))
+            for previous in recipe.legacy_encodings(va):
+                with self.subTest(va=hex(va), previous=previous.hex()):
+                    self.assertEqual(len(previous), len(current))
+                    source = bytearray(target)
+                    source[at:at + len(previous)] = previous
+                    migrated, _ = compat.patch_dungeon_state_controls(bytes(source))
+                    self.assertEqual(migrated, target)
 
     def test_patch_idempotence_and_conflicts(self):
         raw, _ = synthetic_pe()

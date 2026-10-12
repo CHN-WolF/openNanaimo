@@ -3,7 +3,7 @@
     "role":  "full Nanaimo adapter",
     "launcher_tools":  2,
     "state_storage":  "sqlite",
-    "built_at":  "2026-10-11T23:23:55Z",
+    "built_at":  "2026-10-12T00:38:04Z",
     "framework":  "net8.0/win-x64/self-contained",
     "sdk":  "8.0.425",
     "files":  [
@@ -119,18 +119,18 @@
                   },
                   {
                       "name":  "Nanaimo.Adapter.dll",
-                      "size":  1581056,
-                      "sha256":  "0CEC3105ADA8BC9E2C75C84284B7D29571B906647FC5F96BBC68837046C4F4EF"
+                      "size":  1581568,
+                      "sha256":  "9D515AD8D8334C1ACE5EA817255FE2AD24FC179D2DFFB331419244E7B6326A05"
                   },
                   {
                       "name":  "Nanaimo.Adapter.exe",
                       "size":  151552,
-                      "sha256":  "2E3D3355BFE35B86DE1E9F9AC116AF0DA02BFEBF02AD14DF69A7C1CEFDF36A64"
+                      "sha256":  "E0F91199F39CC2B15AF494F36562006B1F75E442B9B29962ED2C7AC5D2757617"
                   },
                   {
                       "name":  "Nanaimo.Adapter.pdb",
-                      "size":  227308,
-                      "sha256":  "66A970BEF29868EBA79D28A7BD5FAFA6EE71DECF5C9CD9BDD4B6713A238B0D4B"
+                      "size":  501924,
+                      "sha256":  "139936B312059B0B00F7B7FD09CA09025E2BBFE1FDFBB90E82D2FAFEAD31BD00"
                   },
                   {
                       "name":  "Nanaimo.Adapter.runtimeconfig.json",
@@ -140,12 +140,12 @@
                   {
                       "name":  "Nanaimo.Gameplay.dll",
                       "size":  5816832,
-                      "sha256":  "D95BF17D536E8C81033C657459C943DCC23C178AEEC526AC78105A397B3A45D4"
+                      "sha256":  "928B40EFBEB1FF6CDD4B2841CC237A6A1A76A12F498A48ADCC96282AF7235492"
                   },
                   {
                       "name":  "Nanaimo.Gameplay.pdb",
-                      "size":  572500,
-                      "sha256":  "BFF751605A089C4ED9FB9C2FB4590BB4F25323465A049EDBAC9FE9FE3691EDAE"
+                      "size":  1160208,
+                      "sha256":  "243812D0FC30C51561EE3862E4CAACD3F16394C047CF86D1B5A410F548EAED9D"
                   },
                   {
                       "name":  "nanaimo_gameplay_bridge.exe",

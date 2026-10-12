@@ -303,8 +303,8 @@
     },
     {
       "path": "managed-host/Resources/client-compatibility.json",
-      "size": 61675,
-      "sha256": "B4B6A5E8EB37D52B59A04EF5391FD327FBE387EFC23E4A18956E025C0C27D7EE"
+      "size": 61987,
+      "sha256": "40C1E5FC8111841DFAA0427FFADF7AEC515957997A5CEA040F4CEE936C4C921B"
     },
     {
       "path": "managed-host/ShopCurrencyPaginationChecks.cs",

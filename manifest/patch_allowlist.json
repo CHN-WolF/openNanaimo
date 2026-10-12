@@ -139,8 +139,8 @@
     {
       "path": "docs/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01.md",
       "layer": "docs",
-      "size": 29054,
-      "sha256": "cb39482a627205f56efebb5522ecc3993364e5929015797c79da273993371e97",
+      "size": 29335,
+      "sha256": "5fe73bb080920ec123b01b4c631472c02193ceaa24a0451988cca1cbe9208f79",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -155,8 +155,8 @@
     {
       "path": "docs/\u6784\u5efa\u4e0e\u9a8c\u8bc1.md",
       "layer": "docs",
-      "size": 31488,
-      "sha256": "c23bf93f9875592cd3d5b707ff3bd04543debb5da325fa837ff753a127f5787d",
+      "size": 31590,
+      "sha256": "4c38a23286ec859908d01bf31439e307928b2cd03dcad6bb8f1502f028307497",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -315,8 +315,8 @@
     {
       "path": "knowledge/authority/05-\u623f\u95f4\u4e0e\u591a\u4eba\u540c\u6b65.md",
       "layer": "knowledge",
-      "size": 46389,
-      "sha256": "34a1566bfacee33b8cd0692c20515f4fe07dfc49fff1850702ae945c3c976a91",
+      "size": 46516,
+      "sha256": "93e4018c577d6ed5033b6fd05e279bbe3b1505e8bb93f13a536e0fda320980ab",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -339,24 +339,24 @@
     {
       "path": "knowledge/authority/08-\u9759\u6001\u5730\u5740\u4e0e\u8c03\u7528\u94fe.md",
       "layer": "knowledge",
-      "size": 264199,
-      "sha256": "35354cdc59959c8ee318bbd5a299bf82cfcaa4d7a9ccbec6dbc2d665c401544c",
+      "size": 265073,
+      "sha256": "b983cf1400b217703748a7017981a7bf15a21b118a5335a1d47426e4b7f5dd6c",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/authority/09-\u8fd0\u884c\u914d\u7f6e\u4e0e\u9a8c\u8bc1.md",
       "layer": "knowledge",
-      "size": 71748,
-      "sha256": "769bd82f897346f32115a59fab3c167c72cde46fcb169aafc46d91122981fd68",
+      "size": 71967,
+      "sha256": "66dd1e1582d057e327f28726bd3fbf76e78b41847b05514f498a31f6b5249570",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u77e5\u8bc6\u5e93\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 11687,
-      "sha256": "b4057946b3a4d1b6467bb38e4c4c93abafa77939a3be596f5556abe1de180c90",
+      "size": 11708,
+      "sha256": "fe510e9a12c594a2d1b052a38c42e86375091f145973265c8b487ea0cd1a08d6",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -787,8 +787,8 @@
     {
       "path": "managed-host/Resources/client-compatibility.json",
       "layer": "source",
-      "size": 61675,
-      "sha256": "b4b6a5e8eb37d52b59a04ef5391fd327fbe387efc23e4a18956e025c0c27d7ee",
+      "size": 61987,
+      "sha256": "40c1e5fc8111841dfaa0427ffadf7aec515957997a5cea040f4cee936c4c921b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2252,7 +2252,7 @@
       "path": "manifest/source_closure.json",
       "layer": "source",
       "size": 68172,
-      "sha256": "8d2559ad4fc88074756f146be991b183db06dce4550ec4abff6b6ed3b7c26aaa",
+      "sha256": "17d3957c434ec97fccc681ff9a1c78835b99b7fb1821190f095b5b8b891a1808",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3267,16 +3267,16 @@
     {
       "path": "scripts/arena_result_compat.py",
       "layer": "source",
-      "size": 5953,
-      "sha256": "9e2c8c972c7ff55d7e993ce657d884711d260cbdc4fda2bcf90a5e734b985009",
+      "size": 6302,
+      "sha256": "4c2e76b95d7528051a4c17382c025ab82b3f90c70e7af27ac3cdb223ae524cdd",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "scripts/arena_state_probe.py",
       "layer": "source",
-      "size": 5500,
-      "sha256": "d8c69cb3b870ba0f8b779a12f88869d6074a9253145a52a041e5ee955ac04c20",
+      "size": 5771,
+      "sha256": "5ae124d89650c4cfbf34c5d18bb911617d7d94da0ea52e17974422958ee2af2b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3747,24 +3747,24 @@
     {
       "path": "scripts/test_arena_result_compat.py",
       "layer": "source",
-      "size": 11815,
-      "sha256": "6da43cc3fb17390f152f8441d5f0247da0514a31eec1cb440ce411c1c8636fcd",
+      "size": 12523,
+      "sha256": "57ee99373c426717e9f8d8b3bc2b6269dc081106ba5eb062c63d533e0c183316",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "scripts/test_arena_round_boundary_client.py",
       "layer": "source",
-      "size": 8115,
-      "sha256": "d1c5f9667193376fc9c7e2b885b7acc82c60e898f94e9e9d67e167fb90944ea3",
+      "size": 10085,
+      "sha256": "a3fc004101ba463ef82ecbd4d8630f4fc840125514c9942fa94176a643372961",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "scripts/test_arena_state_probe.py",
       "layer": "source",
-      "size": 2980,
-      "sha256": "048bd8435d63f13fce316cd0bf6e611f94578f40a5a0c4db859d0822f0b361ce",
+      "size": 3531,
+      "sha256": "859e7400320d71a55112345ca786403d1aeea4ab5052709e1cc4195ff007dfb5",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },

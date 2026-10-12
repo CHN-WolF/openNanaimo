@@ -1,5 +1,6 @@
 """Isolated arena terminal cleanup; not original-client gameplay acceptance."""
 import hashlib
+from itertools import product
 import os
 import struct
 import unittest
@@ -18,17 +19,17 @@ class ArenaRoundBoundaryTests(unittest.TestCase):
     @unittest.skipUnless(uc, 'x86 execution engine required')
     def test_cleanup_scope_original_sort_registers_flags_and_stack(self):
         for mode in (0, 1, 2):
-            for game_type in (0, 1, 4, 5):
+            for losses in (0, 1, 4, 5, 0xFFFFFFFF):
                 for page in (0, 3, 4, 6, 7):
                     for existing in (False, True):
-                        with self.subTest(mode=mode, game_type=game_type, page=page, existing=existing):
+                        with self.subTest(mode=mode, losses=losses, page=page, existing=existing):
                             m = uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_32)
                             m.mem_map(0x400000, 0xA00000); m.mem_map(0x2000000, 0x40000)
                             m.mem_write(recipe.CLEANUP_CAVE_VA, recipe.cleanup_encoding())
                             manager, arena, result, stack, end = 0x2000000, 0x2010000, 0x2020000, 0x203E000, 0x203F000
                             def put(a, v): m.mem_write(a, struct.pack('<I', v))
                             def get(a): return struct.unpack('<I', m.mem_read(a, 4))[0]
-                            m.mem_write(manager + 3, bytes([mode])); put(manager + 8, game_type)
+                            m.mem_write(manager + 3, bytes([mode])); put(manager + 8, losses)
                             put(manager + 0x10F0, page); put(0xD72FC0, arena if existing else 0)
                             put(arena + 0x1C, 7); put(stack, end)
                             regs = (x86.UC_X86_REG_EBX, x86.UC_X86_REG_ECX, x86.UC_X86_REG_EDX,
@@ -53,7 +54,7 @@ class ArenaRoundBoundaryTests(unittest.TestCase):
                                 m.reg_write(x86.UC_X86_REG_EIP, get(sp)); m.reg_write(x86.UC_X86_REG_ESP, sp + 4)
                             m.hook_add(uc.UC_HOOK_CODE, intercept)
                             m.emu_start(recipe.CLEANUP_CAVE_VA, end + 1, count=150)
-                            eligible = mode == 1 and 1 <= game_type <= 4 and page in (4, 6) and existing
+                            eligible = mode == 1 and page in (4, 6) and existing
                             self.assertEqual(calls.count(0x74FFE0), int(eligible))
                             self.assertEqual(calls.count(0x41B635), 1)
                             self.assertEqual(get(arena + 0x1C), 0 if eligible else 7)
@@ -62,6 +63,31 @@ class ArenaRoundBoundaryTests(unittest.TestCase):
                             self.assertEqual(m.reg_read(x86.UC_X86_REG_ESP), stack + 4)
                             self.assertEqual(m.reg_read(x86.UC_X86_REG_EFLAGS), 0x246)
                             for reg, val in zip(regs, vals): self.assertEqual(m.reg_read(reg), val)
+
+    @unittest.skipUnless(uc, 'x86 execution engine required')
+    def test_native_win_and_loss_writers_own_manager_counter(self):
+        client = Path(os.environ.get('NANAIMO_AUDIT_CLIENT', str(Path(__file__).resolve().parents[2] / 'game.exe')))
+        if not client.is_file(): self.skipTest('user-supplied original client required')
+        data = client.read_bytes()
+        writers = ((0x708530, 0x15, '6e3aa6146def134dffbbe8e4a41607a7546380138e1ef1ea6a9c195ab03b2af7'),
+                   (0x708CE0, 0x1A, 'd274229e94077decaeb69a6800c6ddc2758f5226eb996435fa1cb2e35c44fa76'))
+        for va, length, digest in writers:
+            offset = compat._va_offset(data, va, length)
+            code = data[offset:offset + length]
+            self.assertEqual(hashlib.sha256(code).hexdigest(), digest)
+            m = uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_32)
+            m.mem_map(0x400000, 0x400000); m.mem_map(0x2000000, 0x30000)
+            m.mem_write(va, code)
+            manager, stack, end = 0x2000000, 0x202E000, 0x202F000
+            for previous in (0, 1, 4, 5):
+                m.mem_write(manager + 8, struct.pack('<I', previous))
+                m.mem_write(stack, struct.pack('<I', end))
+                m.reg_write(x86.UC_X86_REG_ECX, manager)
+                m.reg_write(x86.UC_X86_REG_ESP, stack)
+                m.emu_start(va, end, count=30)
+                actual = struct.unpack('<I', m.mem_read(manager + 8, 4))[0]
+                self.assertEqual(actual, 0 if va == 0x708530 else previous + 1)
+                self.assertEqual(m.reg_read(x86.UC_X86_REG_ESP), stack + 4)
 
     @unittest.skipUnless(uc, 'x86 execution engine required')
     def test_native_old_arena_terminal_cannot_stop_next_world(self):
@@ -74,20 +100,20 @@ class ArenaRoundBoundaryTests(unittest.TestCase):
         reset, terminal, stop = code(0x74FFE0, 0x1C6), code(0x7530C2, 0x44), code(0x66F3A0, 0x38)
         self.assertEqual(hashlib.sha256(reset).hexdigest(), '26f5bd34b393d65df4c26701c2b818955e564bfc37ffad7bef2f044d52d86823')
         self.assertEqual(hashlib.sha256(terminal).hexdigest(), '94b8ed82290285fce1150a5b5846bb54c9c2016e1c3a499ee1a0489ff87dfdd1')
-        for boundary in (None, 'entry', 'rematch'):
-            repaired = boundary is not None
+        for boundary, losses in product((None, 'entry', 'rematch', 'old-entry', 'old-rematch'), (0, 1, 4, 5)):
+            repaired = boundary in ('entry', 'rematch') or boundary in ('old-entry', 'old-rematch') and 1 <= losses <= 4
             m = uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_32)
             m.mem_map(0x400000, 0xA00000); m.mem_map(0x2000000, 0x60000)
             manager, arena, world, anim, vt, stack, end = 0x2000000, 0x2010000, 0x2020000, 0x2030000, 0x2031000, 0x205E000, 0x205F000
             def put(a, v): m.mem_write(a, struct.pack('<I', v))
             def get(a): return struct.unpack('<I', m.mem_read(a, 4))[0]
             m.mem_write(0x74FFE0, reset); m.mem_write(0x7530C2, terminal); m.mem_write(0x66F3A0, stop)
-            m.mem_write(recipe.CLEANUP_CAVE_VA, recipe.cleanup_encoding())
-            m.mem_write(recipe.RESET_CAVE_VA, recipe.reset_encodings()[1])
+            m.mem_write(recipe.CLEANUP_CAVE_VA, recipe.cleanup_encoding(previous=boundary == 'old-entry'))
+            m.mem_write(recipe.RESET_CAVE_VA, recipe.reset_encodings(loss_guard=boundary == 'old-rematch')[1])
             for thunk, target in ((0x41C409, 0x74FFE0), (0x403E27, 0x66F3A0)):
                 m.mem_write(thunk, b'\xE9' + struct.pack('<i', target - thunk - 5))
             put(0xD72FC0, arena); m.mem_write(manager + 3, b'\1')
-            put(manager + 8, 4); put(manager + 0x10F0, 6 if boundary == 'rematch' else 4)
+            put(manager + 8, losses); put(manager + 0x10F0, 6 if boundary in ('rematch', 'old-rematch') else 4)
             put(anim, vt); put(vt + 16, 0x401010)
             for off in (0x20, 0x128, 0x12C, 0x130, 0x34): put(arena + off, anim)
             # UI/resource calls are stubs; reset, stale terminal and world-stop writes are native instructions.
@@ -106,11 +132,13 @@ class ArenaRoundBoundaryTests(unittest.TestCase):
             m.hook_add(uc.UC_HOOK_CODE, intercept)
             for epoch in range(5):
                 put(arena + 0x1C, 7); put(arena + 0x124, 1); put(world, 1)
-                if repaired:
+                if boundary is not None:
                     put(stack, end); m.reg_write(x86.UC_X86_REG_ESP, stack)
-                    start = recipe.RESET_CAVE_VA if boundary == 'rematch' else recipe.CLEANUP_CAVE_VA
+                    start = recipe.RESET_CAVE_VA if boundary in ('rematch', 'old-rematch') else recipe.CLEANUP_CAVE_VA
                     m.emu_start(start, end + 1, count=1000)
-                    self.assertEqual(get(arena + 0x1C), 0); self.assertEqual(get(arena + 0x124), 0)
+                    self.assertEqual(get(arena + 0x1C), 0 if repaired else 7)
+                    self.assertEqual(get(arena + 0x124), 0 if repaired else 1)
+                    self.assertEqual(get(manager + 8), losses)
                     self.assertEqual(get(world), 1)
                 put(world, 1); m.reg_write(x86.UC_X86_REG_EBP, stack); put(stack - 0x1C, arena)
                 m.reg_write(x86.UC_X86_REG_ESP, stack - 0x100)

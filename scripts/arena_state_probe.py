@@ -24,11 +24,14 @@ def decode_snapshot(read):
     """Separate pure bounded reads from Win32 access for fixture validation."""
     def u32(address): return struct.unpack('<I', read(address, 4))[0]
     def u8(address): return read(address, 1)[0]
+    def f32(address): return struct.unpack("<f", read(address, 4))[0]
     result = {}
     definitions = {
-        'manager': (0xD72CE4, 0xD72CE8, {'mode': (3, 1), 'game_type': (8, 4), 'page': (0x10F0, 4),
-                              'leave_latch': (7, 1), 'world_enabled': (1, 1)}),
-        'world': (0xD72D1E, 0xD72D20, {'running': (0, 4), 'local_actor': (0x14, 4), 'stage': (0x24, 4)}),
+        'manager': (0xD72CE4, 0xD72CE8, {'mode': (3, 1), 'consecutive_losses': (8, 4), 'page': (0x10F0, 4),
+                              'leave_latch': (7, 1), 'world_enabled': (1, 1),
+                              'previous_page': (0x10EC, 4),
+                              'battle_limit': (0x1E5C8, 'f32'), 'battle_elapsed': (0x1E5CC, 'f32')}),
+        'world': (0xD72D1E, 0xD72D20, {'running': (0, 4), 'update_gate': (4, 4), 'local_actor': (0x14, 4), 'stage': (0x24, 4)}),
         'arena': (0xD72FBE, 0xD72FC0, {'state': (0x1C, 4), 'previous_state': (0x18, 4),
                            'update_counter': (0xC, 4), 'end_latch': (0x124, 4), 'animation': (0x20, 4)}),
         'ready': (0xD72EB6, 0xD72EB8, {'state': (0x24, 4), 'previous_state': (0x20, 4),
@@ -42,7 +45,7 @@ def decode_snapshot(read):
             initialized = u8(flag)
             row = {'address': address, 'initialized': initialized}
             if initialized and address:
-                row.update({key: (u8 if width == 1 else u32)(address + offset)
+                row.update({key: ({'f32': f32, 1: u8, 4: u32}[width])(address + offset)
                             for key, (offset, width) in fields.items()})
             result[name] = row
         except (OSError, ValueError, struct.error, IndexError) as exc:
