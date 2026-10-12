@@ -86,8 +86,9 @@ def synthetic_pe(furniture=compat.FURNITURE_OLD,
         (0x2D0000, 0x10000, 0x1A9400), # three-digit actor nameplate
         (0x390000, 0x10000, 0x1B9400), # direct-trade C4BE controller
         (0x240000, 0x10000, 0x1C9400), # entertainment CF86 ranking renderer
+        (0x2C0000, 0x10000, 0x1D9400), # terminal MMO effect state guard
     ]
-    data = bytearray(0x1D9400)
+    data = bytearray(0x1E9400)
     data[:2] = b'MZ'
     struct.pack_into('<I', data, 0x3C, 0x80)
     data[0x80:0x84] = b'PE\0\0'
@@ -118,6 +119,8 @@ def synthetic_pe(furniture=compat.FURNITURE_OLD,
     for _, va, old, _ in compat.level200_compat.patch_sites():
         put(va, old)
     for _, va, old, _ in compat.BOSS_HEALTH_DISPLAY_SITES:
+        put(va, old)
+    for _, va, old, _ in compat.BOSS_TERMINAL_EFFECT_SITES:
         put(va, old)
     put(0xA67B73, character_skip)
     put(0xA67BE3, character_gate)

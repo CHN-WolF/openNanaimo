@@ -113,7 +113,7 @@ int main(void){
     CHECK(combat_economy_coin_amount_for_hp(0xFFFFFFFFu)==42949672u);
     CHECK(combat_economy_coin_amount_for_hp(200u)==2u);
     CHECK(combat_economy_coin_amount_for_hp(4000u)==40u);
-    puts("COMBAT_SCORE_SYNC_PASS profiles=864 targets=484547");return 0;
+    printf("COMBAT_SCORE_SYNC_PASS profiles=%u targets=%u\n",HP_SYNC_PROFILE_COUNT,HP_SYNC_TARGET_DEF_COUNT);return 0;
 }
 '''
 
@@ -126,7 +126,7 @@ REACHABILITY_HARNESS = r"""
 #define CHECK(x) do {if(!(x)){printf("FAIL %d: %s\n",__LINE__,#x);return 1;}}while(0)
 static struct hp_sync_context hp;
 int main(void){
-    unsigned pi,i,positive=0,type4=0,affected=0;
+    unsigned pi,i,positive=0,type4=0,affected=0,challenge_profiles=0,challenge_positive=0,challenge_type4=0;
     struct crate_drop_policy_context crate;
     struct stable_monster_hp_attack attack;
     struct stable_monster_hp_decision d;
@@ -138,8 +138,10 @@ int main(void){
     for(pi=0;pi<HP_SYNC_PROFILE_COUNT;pi++){
         const struct hp_sync_profile_def*p=&hp_sync_profiles[pi];
         const struct combat_score_profile_def*sp;
+        unsigned challenge=(p->hd_id==0u&&p->stage_id>=24u&&p->stage_id<=27u);
         unsigned reachable=0,is_affected=(p->stage_id==1u&&p->stage_index==0u&&
             ((p->hd_id==0u&&p->dungeon_id==0u)||(p->hd_id==1u&&p->dungeon_id==1u)));
+        if(challenge)challenge_profiles++;
         hp_sync_init(&hp);
         CHECK(hp_sync_select_resource_domain(&hp,p->hd_id,p->stage_id,p->dungeon_id,p->stage_index,p->difficulty));
         CHECK(hp_sync_select_segment(&hp,p->segment));CHECK(hp.profile==p);
@@ -152,14 +154,14 @@ int main(void){
             const struct hp_sync_target_def*t=&hp_sync_target_defs[p->first_row+i];
             unsigned value=combat_score_target_scores[p->first_row+i],before=score.total;
             if(t->target_type==4u){
-                type4++;CHECK(value==0u);
+                type4++;if(challenge)challenge_type4++;CHECK(value==0u);
                 stable_monster_hp_apply_report(&hp,&crate,p->stage_id,i,1,1,&attack,10,&d);
                 CHECK(d.hit.old_hp==d.hit.new_hp);
                 CHECK(combat_economy_score_ordinary_terminal(&score,&hp,i,d.hit.old_hp,d.hit.new_hp)==before);
                 continue;
             }
             if(!value)continue;
-            positive++;
+            positive++;if(challenge)challenge_positive++;
             stable_monster_hp_apply_report(&hp,&crate,p->stage_id,i,1,1,&attack,10,&d);
             CHECK(d.hit.old_hp>0&&d.hit.new_hp==0);reachable+=value;
             if(is_affected){
@@ -186,7 +188,8 @@ int main(void){
         CHECK(teamplay_settlement_member_rating(0,1,50000,sp->total_max,-1)==5u);
         CHECK(teamplay_settlement_member_rating(1,0,0,sp->total_max,-1)==0u);
     }
-    CHECK(HP_SYNC_PROFILE_COUNT==864u&&positive==308623u&&affected==18u&&type4==131848u);
+    CHECK(HP_SYNC_PROFILE_COUNT-challenge_profiles==864u&&positive-challenge_positive==308623u&&affected==18u&&type4-challenge_type4==131848u);
+    CHECK(challenge_profiles==9u&&challenge_positive==2277u&&challenge_type4==1854u);
     printf("COMBAT_SCORE_REACHABILITY_PASS profiles=%u scoring_rows=%u type4=%u affected=%u\n",HP_SYNC_PROFILE_COUNT,positive,type4,affected);
     return 0;
 }
@@ -259,7 +262,7 @@ int main(void){
     CHECK(!teamplay_rating_damaged(-1));teamplay_rating_record_hp_loss(12u,1000u,0u);
     CHECK(teamplay_rating_damaged(-1));CHECK(combat_economy_rating(maximum,1u,&boss)==4u);
     teamplay_score_begin(13u);CHECK(!teamplay_rating_damaged(-1));
-    puts("DUNGEON_RATING_STATE_PASS profiles=864 party=1/2/3 damage=actual-loss freeze=terminal identity=stable");
+    printf("DUNGEON_RATING_STATE_PASS profiles=%u party=1/2/3 damage=actual-loss freeze=terminal identity=stable\n",HP_SYNC_PROFILE_COUNT);
     return 0;
 }
 '''
@@ -318,7 +321,10 @@ class CombatEconomyValueTests(unittest.TestCase):
         profiles=numeric_rows(hp,'static const struct hp_sync_profile_def')
         targets=numeric_rows(hp,'static const struct hp_sync_target_def')
         actual=list(map(int,re.findall(r'(\d+)u',generated.split('static const unsigned combat_score_target_scores',1)[1].split('};',1)[0])))
-        self.assertEqual(len(actual),len(targets));self.assertEqual(len(profiles),864)
+        self.assertEqual(len(actual),len(targets))
+        challenges=[p for p in profiles if p[1]==0 and 24<=p[0]<=27]
+        self.assertEqual(len(profiles)-len(challenges),864)
+        self.assertEqual(len(challenges),9)
         max_rows={tuple(row[:5]):row[8:] for row in numeric_rows(generated,'static const struct combat_score_profile_def')}
         matched=set(); excluded_rows=0; excluded_points={}
         for p in profiles:

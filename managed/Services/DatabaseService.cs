@@ -91,9 +91,11 @@ public sealed partial class DatabaseService
 
     private readonly string _databasePath;
     private readonly string _connectionString;
+    private readonly bool _readOnly;
 
     public DatabaseService(string baseDirectory, bool readOnly = false)
     {
+        _readOnly = readOnly;
         _databasePath = Path.Combine(baseDirectory, "game.db");
         if (!File.Exists(_databasePath))
             throw new FileNotFoundException("未找到 adapter 数据库，请确认配置文件夹内存在 game.db。", _databasePath);
@@ -109,6 +111,8 @@ public sealed partial class DatabaseService
     }
 
     public string DatabasePath => _databasePath;
+
+    internal bool IsReadOnly => _readOnly;
 
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {

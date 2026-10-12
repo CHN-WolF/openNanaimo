@@ -51,13 +51,14 @@ public sealed partial class NetworkAdapterService
             && episode < (hd == 0 ? DungeonEpisodeCount : 4)
             && dungeon < 3 && stage <= 1 && (stage == 0 || dungeon == 2);
         var lumineosTuple = DungeonTitleProgression.IsLumineosTuple(hd, episode, dungeon, stage);
+        var monkTuple = MonkChallengePolicy.IsPlayableTuple(hd, episode, dungeon, stage);
         if (!session.OnlineTracked || session.Character is null
             || request.Length != 8 + DungeonStageRecordsPayloadLength
             || BinaryPrimitives.ReadUInt16LittleEndian(request.AsSpan(4, 2)) != request.Length
             || BinaryPrimitives.ReadUInt16LittleEndian(request.AsSpan(6, 2)) != 0xCF15
             || BinaryPrimitives.ReadUInt16LittleEndian(request.AsSpan(8, 2)) != DungeonEpisodeCount
             || !IsDungeonStageRecordsSelectorValid(request[10], request[11], lumineosTuple)
-            || (!standardTuple && !lumineosTuple)
+            || (!standardTuple && !lumineosTuple && !monkTuple)
             || difficulty >= DungeonDifficultyCount)
             return null;
         var records = await _database.GetDungeonStageLeaderboardAsync(
@@ -109,6 +110,13 @@ public sealed partial class NetworkAdapterService
                 || pending.HdIndex != session.NativeDungeonHdIndex || pending.Episode != session.NativeDungeonEpisode
                 || pending.Dungeon != session.NativeDungeonDungeon || pending.Stage != session.NativeDungeonStage
                 || pending.LogicalDifficulty != session.NativeDungeonLogicalDifficulty)
+            {
+                memo.Pending = null;
+                return null;
+            }
+            if (MonkChallengePolicy.IsReservedEpisode(pending.Episode)
+                && !IsMonkPrototypeSelectionAllowed(pending.HdIndex, pending.Episode,
+                    pending.Dungeon, pending.Stage, pending.LogicalDifficulty, session.PartyId))
             {
                 memo.Pending = null;
                 return null;

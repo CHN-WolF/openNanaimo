@@ -165,6 +165,28 @@ public sealed partial class NetworkAdapterService
         if (session.NativeDungeonExitRequested && opcode is not (0xCF73 or 0xCF1D))
             return opcode is >= 0xCF00 and <= 0xD03F or 0xC587 or 0x03E8 or 0x044C or 0x0514 or 0x0578 or 0x05DC or 0x0640;
         if (session.NativeDungeon is null) return false;
+        if (opcode is 0xCF6C or 0xCF77)
+        {
+            var selectionOffset = opcode == 0xCF6C ? 34 : 10;
+            if (frame.Length > selectionOffset + 1
+                && MonkChallengePolicy.IsReservedEpisode(frame[selectionOffset + 1]))
+            {
+                var valid = opcode == 0xCF6C
+                    ? TryParseNativeDungeonSelectionFrame(frame, out var hd, out var ep,
+                        out var dg, out var st, out var diff)
+                        && IsMonkPrototypeSelectionAllowed(hd, ep, dg, st, diff, session.PartyId)
+                    : frame.Length == 16
+                        && DungeonNavigationPolicy.TryParseQuickEntry(frame.AsSpan(8), out var selected)
+                        && IsMonkPrototypeSelectionAllowed(selected.HdIndex, selected.Episode,
+                            selected.Dungeon, 0, selected.WireDifficulty, session.PartyId);
+                if (!valid || !DungeonCombatCatalog.HasStage(0, MonkChallengePolicy.FirstEpisode, 0, 0))
+                    return true;
+            }
+        }
+        if (session.NativeDungeonSelectionValid
+            && MonkChallengePolicy.IsReservedEpisode(session.NativeDungeonEpisode)
+            && (opcode == 0xCF75 || (opcode == 0xCF7F && session.PartyId != 0)))
+            return true;
         if (opcode is 0xCF77 or 0xCF6C or 0xCF70)
             await PublishNativePartyIdentityAsync(session, token);
         if (opcode == 0xCF70 && frame.Length == 12)
@@ -294,6 +316,10 @@ public sealed partial class NetworkAdapterService
             }
             else if (opcode == 0xCF8B)
             {
+                if (MonkChallengePolicy.IsReservedEpisode(session.NativeDungeonEpisode)
+                    && (frame.Length != 12 || frame[8] != 0
+                        || BinaryPrimitives.ReadUInt16LittleEndian(frame.AsSpan(10)) != 1))
+                    return true;
 
                 // A reset is not a free-standing worker command: consume
                 // malformed, repeated and pre-settlement requests here.
@@ -430,9 +456,15 @@ public sealed partial class NetworkAdapterService
             && dungeon + stage <= 3;
         var lumineosTuple = DungeonTitleProgression.IsLumineosTuple(
             hdIndex, episode, dungeon, stage);
-        return (standardTuple || lumineosTuple)
+        var monkTuple = MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, dungeon, stage);
+        return (standardTuple || lumineosTuple || monkTuple)
             && logicalDifficulty < DungeonDifficultyCount;
     }
+
+    internal static bool IsMonkPrototypeSelectionAllowed(
+        byte hd, byte episode, byte dungeon, byte stage, byte difficulty, long partyId)
+        => MonkChallengePolicy.IsPlayableTuple(hd, episode, dungeon, stage)
+            && difficulty < DungeonDifficultyCount && partyId == 0;
 
     internal static byte ExtractPackedDungeonReadyRoomRank(
         byte packedRatings,
@@ -494,6 +526,11 @@ public sealed partial class NetworkAdapterService
         var mode = BinaryPrimitives.ReadUInt16LittleEndian(request.Slice(10, 2));
         var responseRealStage = response[0x28];
         var responseDungeon = BinaryPrimitives.ReadUInt16LittleEndian(response.Slice(0x2E, 2));
+        if (MonkChallengePolicy.IsReservedEpisode(episode))
+            return MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, currentDungeon, currentStage)
+                && currentLogicalDifficulty < DungeonDifficultyCount
+                && mode == 1 && requestedRealStage == 0
+                && responseDungeon == 0 && responseRealStage == 0;
         // Wire domains are distinct; resource aliases must never authorize room transitions.
         var lumineos = hdIndex == 0 && episode == DungeonTitleProgression.LumineosWireEpisode;
         var maxDungeon = lumineos ? 7 : 2;
@@ -1134,6 +1171,11 @@ public sealed partial class NetworkAdapterService
                         response, memberUid, out var rating, out var score, out var experienceAward))
                     continue;
                 if (session.NativeDungeonDeathLatched) rating = 0;
+                if (MonkChallengePolicy.IsReservedEpisode(session.NativeDungeonEpisode)
+                    && !IsMonkPrototypeSelectionAllowed(session.NativeDungeonHdIndex,
+                        session.NativeDungeonEpisode, session.NativeDungeonDungeon,
+                        session.NativeDungeonStage, session.NativeDungeonLogicalDifficulty, session.PartyId))
+                    rating = 0;
                 settlement = new NativeDungeonSettlementRecord(
                     session.NativeDungeonHdIndex,
                     session.NativeDungeonEpisode,
@@ -1171,7 +1213,8 @@ public sealed partial class NetworkAdapterService
             && liveEpoch.ManagedEpoch == session.NativeBattleEpoch)
             await SynchronizeNativeExperienceAsync(session, liveEpoch.NativeEpoch, token);
         resourceCommit.Dispose(); // Publication and quest work do not hold the resource commit gate.
-        if (settlement is { Rating: > 0 } completed && persistSettlementRank && !session.NativeDungeonDeathLatched)
+        if (settlement is { Rating: > 0 } completed && persistSettlementRank && !session.NativeDungeonDeathLatched
+            && !MonkChallengePolicy.IsReservedEpisode(completed.Episode))
         {
             session.QuestClearEpisode = completed.Episode;
             session.QuestClearDifficulty = completed.LogicalDifficulty;

@@ -598,6 +598,21 @@ BOSS_HEALTH_DISPLAY_SITES = (
     ('boss_health_width', 0x00742E12, bytes.fromhex('DB8008010000'), bytes.fromhex('DB800C010000')),
 )
 
+# Completed animation state3 is still present in the child vector. D013 can
+# revisit it; the native state setter refuses to move it back to state2.
+BOSS_TERMINAL_EFFECT_SITES = (
+    ('boss_terminal_effect_guard', 0x006CD78F,
+     bytes.fromhex('83B8C0030000020F846A010000'),
+     bytes.fromhex('83B8C0030000020F8D6A010000')),
+)
+
+
+def patch_boss_terminal_effects(data: bytes) -> tuple[bytes, dict]:
+    rows = {}
+    for name, va, old, new in BOSS_TERMINAL_EFFECT_SITES:
+        data, rows[name] = _patch_site(data, va, old, new, name, 'the terminal effect state guard differs')
+    return data, _migration_report('patch_boss_terminal_effects', **rows)
+
 
 def patch_boss_health_display(data: bytes) -> tuple[bytes, dict]:
     rows = {}
@@ -659,12 +674,13 @@ def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:
     data, actor_level = dungeon_experience_compat.patch_local_actor_level(data, _patch_site)
     data, level200 = level200_compat.patch(data, _patch_site)
     data, boss_health = patch_boss_health_display(data)
+    data, boss_terminal = patch_boss_terminal_effects(data)
     data, quickbar = patch_quickbar_refresh(data)
     data, player_trade = player_trade_compat.patch(data, _patch_site)
     return data, _migration_report('patch_dungeon_state_controls', timer=timer,
         other_timer=other_timer, mouse_confirmation=mouse, power_cleanup=power, result_entry=result_entry,
         social_gameplay=_migration_report('patch_social_gameplay', **gameplay),
-        settlement_experience=experience, actor_level=actor_level, level200=_migration_report("patch_level200", **level200), boss_health=boss_health, quickbar=quickbar,
+        settlement_experience=experience, actor_level=actor_level, level200=_migration_report("patch_level200", **level200), boss_health=boss_health, boss_terminal=boss_terminal, quickbar=quickbar,
         member_town=_migration_report('patch_settlement_member_town', **member_town),
         player_trade=_migration_report('patch_player_trade', **player_trade))
 
@@ -1118,6 +1134,7 @@ def _verify_client_bytes(data: bytes, furniture: bool, revival_display: bool, du
                               for name, va, _, new in dungeon_experience_compat.patch_sites())
         expected_sites.extend((name, va, new) for name, va, _, new in level200_compat.patch_sites())
         expected_sites.extend((name, va, new) for name, va, _, new in BOSS_HEALTH_DISPLAY_SITES)
+        expected_sites.extend((name, va, new) for name, va, _, new in BOSS_TERMINAL_EFFECT_SITES)
         expected_sites.extend((name, va, new) for name, va, _, new in quickbar_refresh_sites())
         expected_sites.extend((name, va, new) for name, va, _, new in SETTLEMENT_MEMBER_TOWN_SITES)
         expected_sites.extend((name, va, new) for name, va, _, new in social_gameplay_patch_sites())

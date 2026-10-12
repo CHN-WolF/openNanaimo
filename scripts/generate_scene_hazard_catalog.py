@@ -132,10 +132,12 @@ def audit(registry):
         negative_by_resource[name] = sample
 
     counts = collections.Counter()
+    challenge_counts = collections.Counter()
     resource_rows = collections.Counter()
     hazard_rows = collections.Counter()
     unclassified_rows = collections.Counter()
     for hd, dg, stage, difficulty, _incomplete, episode, _resource_count, _first_resource, _smmo in scopes:
+        previous_counts = counts.copy()
         profile = profile_by_key.get((hd, episode, dg, stage, difficulty, stage))
         if profile is None:
             raise ValueError(f"Missing selected HP profile: {(hd, episode, dg, stage, difficulty, stage)}")
@@ -185,6 +187,11 @@ def audit(registry):
             else:
                 counts["unclassified"] += 1
                 unclassified_rows[resource_name] += 1
+        if hd == 0 and 24 <= episode <= 27:
+            if dg != 0 or stage != 0:
+                raise ValueError('Invalid monk challenge hazard scope')
+            challenge_counts.update({key: value - previous_counts[key]
+                                     for key, value in counts.items()})
 
     for name, policy in policy_by_resource.items():
         if hazard_rows[name] != policy["expected_selected_rows"]:
@@ -194,14 +201,15 @@ def audit(registry):
             raise ValueError(f"Negative unclassified-row drift: {name} expected={sample['expected_unclassified_rows']} actual={unclassified_rows[name]}")
 
     required = {
-        "scopes": 288,
-        "type4": 44441,
-        "association_candidates": 31788,
-        "exact_associated": 29916,
-        "broken_association": 1887,
-        "standalone": 12653,
+        "scopes": 288 + challenge_counts["scopes"],
+        "type4": 44441 + challenge_counts["type4"],
+        "association_candidates": 31788 + challenge_counts["association_candidates"],
+        "exact_associated": 29916 + challenge_counts["exact_associated"],
+        "broken_association": 1887 + challenge_counts["broken_association"],
+        "standalone": 12653 + challenge_counts["standalone"],
         "registered_hazards": sum(p["expected_selected_rows"] for p in registry["policies"]),
-        "unclassified": 14525 - sum(p["expected_selected_rows"] for p in registry["policies"]),
+        "unclassified": 14525 + challenge_counts["type4"] - challenge_counts["exact_associated"]
+            - sum(p["expected_selected_rows"] for p in registry["policies"]),
     }
     for key, expected in required.items():
         if counts[key] != expected:

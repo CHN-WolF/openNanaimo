@@ -780,6 +780,8 @@ public sealed partial class DatabaseService
         NativeDungeonState before, NativeDungeonState after, CancellationToken token, string? commitId = null,
         bool recovering = false, NativeDungeonSettlementRecord? settlement = null)
     {
+        if (IsReadOnly)
+            throw new InvalidOperationException("Native dungeon settlement requires a read-write database.");
         if (before.Get(4) != after.Get(4) || after.Get(4) != characterId
             || before.Get(68) != after.Get(68)
             || !before.Bytes.AsSpan(88, 24).SequenceEqual(after.Bytes.AsSpan(88, 24)))
@@ -1061,7 +1063,9 @@ public sealed partial class DatabaseService
                 && result.Dungeon + result.Stage <= 3;
             var lumineosTuple = DungeonTitleProgression.IsLumineosTuple(
                 result.HdIndex, result.Episode, result.Dungeon, result.Stage);
-            if ((!standardTuple && !lumineosTuple)
+            var monkTuple = MonkChallengePolicy.IsPlayableTuple(
+                result.HdIndex, result.Episode, result.Dungeon, result.Stage);
+            if ((!standardTuple && !lumineosTuple && !monkTuple)
                 || result.LogicalDifficulty >= 3
                 || result.Rating > DungeonRewardPolicy.ClearRatingS
                 || result.Score < 0
@@ -1069,6 +1073,13 @@ public sealed partial class DatabaseService
                 throw new InvalidDataException("Native dungeon settlement tuple is invalid.");
 
             var now = DateTime.UtcNow.ToString("O");
+            if (monkTuple && result.Rating > 0)
+            {
+                var challenge = await CommitMonkChallengeSuccessAsync(connection, transaction,
+                    characterId, sessionId, result, token, recovering);
+                if (challenge.Status is not (MonkChallengeCommitStatus.Applied or MonkChallengeCommitStatus.Duplicate))
+                    throw new InvalidOperationException("Monk challenge settlement ownership or cycle is invalid.");
+            }
             if (standardTuple)
             {
                 // The retained worker's CF88 is the visible result authority on the

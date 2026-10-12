@@ -11,12 +11,19 @@ class PreloadedTargetTests(unittest.TestCase):
     def test_generated_catalog_closure(self):
         model=json.loads(catalog.REGISTRY.read_text('utf8'))
         self.assertEqual(catalog.OUTPUT.read_text('utf8'),catalog.render(model))
-        self.assertEqual(len(model['rows']),22913)
-        self.assertEqual(len(model['scopes']),864)
-        self.assertEqual(len(model['resources']),87)
-        self.assertEqual(sum(bool(s['preload_count']) for s in model['scopes']),600)
-        self.assertEqual(sum(r[2]==4 for r in model['rows']),12669)
-        self.assertEqual(sum(row[2]==4 and 'pig' in model['resources'][row[7]] for row in model['rows']),90)
+        scopes=[s for s in model['scopes'] if not (s['hd']==0 and 24<=s['episode']<=27)]
+        profiles={s['profile_row'] for s in scopes}
+        rows=[r for r in model['rows'] if r[0] in profiles]
+        self.assertEqual(len(rows),22913)
+        self.assertEqual(len(scopes),864)
+        self.assertEqual(len({r[7] for r in rows}),87)
+        self.assertEqual(sum(bool(s['preload_count']) for s in scopes),600)
+        self.assertEqual(sum(r[2]==4 for r in rows),12669)
+        self.assertEqual(sum(r[2]==4 and 'pig' in model['resources'][r[7]] for r in rows),90)
+        challenges=[s for s in model['scopes'] if s not in scopes]
+        self.assertEqual(len(challenges),9)
+        self.assertEqual({s['preload_count'] for s in challenges},{489})
+        self.assertEqual(len(model['rows'])-len(rows),4401)
 
     def test_every_slot_is_contiguous_and_old_transformations_are_preserved(self):
         model=json.loads(catalog.REGISTRY.read_text('utf8'))
@@ -82,7 +89,7 @@ int main(void){unsigned pi,i,j,seen=0,report_only=0,positive=0,static_scene=0,sc
    assert(state&&!state->terminal&&state->hp==row->hp);
   }
  }
- assert(seen==22913&&report_only>=12669&&scope_count==864);
+ assert(seen==PRELOADED_TARGET_COUNT&&report_only>=12669&&scope_count==HP_SYNC_PROFILE_COUNT);
  printf("ALL_PRELOADS_PASS scopes=%u rows=%u retained=%u positive=%u static_scene=%u\n",scope_count,seen,report_only,positive,static_scene);
  return 0;
 }

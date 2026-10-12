@@ -554,6 +554,16 @@
     },
     {
       "group": "dungeon-state",
+      "va": 7133071,
+      "target": "83b8c0030000020f8d6a010000",
+      "known": [
+        "83b8c0030000020f846a010000"
+      ],
+      "operation": "boss_terminal_effect_guard",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
       "va": 7221504,
       "target": "558bec51ff751cff7518ff7514ff7510ff750cff7508e8359effff50e8bf27f8ff80780300751183b8f01000000475088b4dfce8d89bffff588be55dc21800cc",
       "known": [
