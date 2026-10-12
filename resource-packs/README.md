@@ -1,6 +1,6 @@
 # 韩服移植资源包
 
-- `nanaimo-korean-resource-kit.zip`：1905项韩服白名单输入、882项已转换L7/L8输出，以及安装工具和配方。
+- `nanaimo-korean-resource-kit.zip`：2350项去重韩服白名单输入、1328项L7/L8安装输出及保留校验项，以及安装工具和配方；数量和文件身份以包内清单为准。
 - `nanaimo-korean-resource-kit.zip.sha256`：ZIP的SHA-256。包内`kit-manifest.json`逐文件登记大小与摘要。
 - 支持英雄龙24项、其他121条追加宠物526项安装资源，以及L7外观／BGM补齐和L8资源；共享基础CN资源由用户自备客户端提供。
 
