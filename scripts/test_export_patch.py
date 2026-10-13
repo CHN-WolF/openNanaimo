@@ -207,9 +207,9 @@ class ExportPatchTests(unittest.TestCase):
             with self.subTest(path=name), self.assertRaises(patch.ExportError):
                 patch.payload_policy(name, 'knowledge')
 
-    def test_review_registry_does_not_authorize_other_manifest_payloads(self):
-        patch.payload_policy('manifest/knowledge_review.json', 'source')
-        for name in ('manifest/knowledge_review_private.json', 'manifest/knowledge_review.json.gz'):
+    def test_retired_review_registry_is_not_an_export_payload(self):
+        for name in ('manifest/knowledge_review.json', 'manifest/knowledge_review_private.json',
+                     'manifest/knowledge_review.json.gz'):
             with self.subTest(path=name), self.assertRaises(patch.ExportError):
                 patch.payload_policy(name, 'source')
 

@@ -285,8 +285,6 @@ def main() -> None:
         if rel.startswith('knowledge/evidence/'):
             continue
         critical[rel] = record(safe_file(rel))
-    critical['manifest/knowledge_review.json'] = record(safe_file('manifest/knowledge_review.json'))
-
     runtime = runtime_records()
     critical.update(runtime)
     closure = json.loads((ROOT / 'manifest/source_closure.json').read_text('utf-8-sig'))

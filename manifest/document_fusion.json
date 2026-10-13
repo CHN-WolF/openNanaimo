@@ -335,7 +335,7 @@
       "start": 1015,
       "end": 1942,
       "source_sha256": "a0b6d3962e201ebd9aaeab9d34a6d035ec576bdde71e4fe2b07197fb2b7305cf",
-      "target": "knowledge/业务/角色/等级经验/协议载体.md",
+      "target": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md",
       "initial_target": "knowledge/指南/level200/README.md",
       "initial_sha256": "a0b6d3962e201ebd9aaeab9d34a6d035ec576bdde71e4fe2b07197fb2b7305cf",
       "content_sha256": "a0b6d3962e201ebd9aaeab9d34a6d035ec576bdde71e4fe2b07197fb2b7305cf"
@@ -621,7 +621,7 @@
       "start": 8541,
       "end": 8957,
       "source_sha256": "c2de11c605da8d8f81096dddb609f63ab557822e4f7d1c97978a8a946d843fae",
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/发布身份与清单.md",
       "initial_target": "knowledge/指南/启动流程与源码索引.md",
       "initial_sha256": "c2de11c605da8d8f81096dddb609f63ab557822e4f7d1c97978a8a946d843fae",
       "content_sha256": "c2de11c605da8d8f81096dddb609f63ab557822e4f7d1c97978a8a946d843fae"
@@ -643,7 +643,7 @@
       "start": 9410,
       "end": 9756,
       "source_sha256": "e84c4649270910bffd77c7f26cc39f412bb4903cb07f84aaf9622101ecfd6d05",
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "initial_target": "knowledge/指南/启动流程与源码索引.md",
       "initial_sha256": "e84c4649270910bffd77c7f26cc39f412bb4903cb07f84aaf9622101ecfd6d05",
       "content_sha256": "e84c4649270910bffd77c7f26cc39f412bb4903cb07f84aaf9622101ecfd6d05"
@@ -720,7 +720,7 @@
       "start": 1305,
       "end": 1546,
       "source_sha256": "0d79965649172d05b1ba9557f17a55e1c7fdfcf44263581bd7aa59f4e59beb6c",
-      "target": "knowledge/业务/角色/称号.md",
+      "target": "knowledge/业务/角色/称号/持久进度与显示资源.md",
       "initial_target": "knowledge/指南/地宫与背包更新说明.md",
       "initial_sha256": "0d79965649172d05b1ba9557f17a55e1c7fdfcf44263581bd7aa59f4e59beb6c",
       "content_sha256": "0d79965649172d05b1ba9557f17a55e1c7fdfcf44263581bd7aa59f4e59beb6c"
@@ -1090,7 +1090,7 @@
       "start": 35460,
       "end": 36549,
       "source_sha256": "ca041721c4592efaf4ef0256f645f5eb9c27e24b5a0ff4981d7ee37451ee6f50",
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "initial_target": "knowledge/指南/完整适配器与客户端兼容说明.md",
       "initial_sha256": "6c78e13ebdb794f87aa1795a09032c304660f00edd711ca9a48ca2d2055ca1c6",
       "content_sha256": "c1e55bc653d74d367e8526b9d9c4c74c9395d3c45e09c9ed23207c42a443cff4"
@@ -1101,7 +1101,7 @@
       "start": 36549,
       "end": 38194,
       "source_sha256": "3bf523a5f2ad405b6b138541801ff37b01030328a49991c5b655e48130e818ab",
-      "target": "knowledge/工程/客户端兼容/首领血条.md",
+      "target": "knowledge/工程/客户端兼容/BOSS血条.md",
       "initial_target": "knowledge/指南/完整适配器与客户端兼容说明.md",
       "initial_sha256": "3bf523a5f2ad405b6b138541801ff37b01030328a49991c5b655e48130e818ab",
       "content_sha256": "3bf523a5f2ad405b6b138541801ff37b01030328a49991c5b655e48130e818ab"
@@ -1145,7 +1145,7 @@
       "start": 0,
       "end": 104,
       "source_sha256": "bd80d4a89699732ca273df82e6e4afa8e960fa9007d7e721481eba1304a61bc3",
-      "target": "knowledge/指南/客户端二进制补丁.md",
+      "target": "knowledge/指南/客户端二进制补丁/统一安装与恢复.md",
       "initial_target": "knowledge/指南/客户端二进制补丁.md",
       "initial_sha256": "bd80d4a89699732ca273df82e6e4afa8e960fa9007d7e721481eba1304a61bc3",
       "content_sha256": "bd80d4a89699732ca273df82e6e4afa8e960fa9007d7e721481eba1304a61bc3"
@@ -1244,7 +1244,7 @@
       "start": 7123,
       "end": 7410,
       "source_sha256": "63136359c7a9ee2c956f3e512ecb55c317bdb37c242a73abae2e942f93e2cdca",
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/程序与数据配套.md",
       "initial_target": "knowledge/指南/客户端二进制补丁.md",
       "initial_sha256": "63136359c7a9ee2c956f3e512ecb55c317bdb37c242a73abae2e942f93e2cdca",
       "content_sha256": "63136359c7a9ee2c956f3e512ecb55c317bdb37c242a73abae2e942f93e2cdca"
@@ -1255,7 +1255,7 @@
       "start": 7410,
       "end": 9328,
       "source_sha256": "07dfc2c013c7eec4dd6ff2ff5a3decd8cabeaa592b943e89d1ca2f3fd41968fc",
-      "target": "knowledge/指南/客户端二进制补丁.md",
+      "target": "knowledge/指南/客户端二进制补丁/统一安装与恢复.md",
       "initial_target": "knowledge/指南/客户端二进制补丁.md",
       "initial_sha256": "07dfc2c013c7eec4dd6ff2ff5a3decd8cabeaa592b943e89d1ca2f3fd41968fc",
       "content_sha256": "07dfc2c013c7eec4dd6ff2ff5a3decd8cabeaa592b943e89d1ca2f3fd41968fc"
@@ -1288,7 +1288,7 @@
       "start": 15781,
       "end": 15986,
       "source_sha256": "b1700423361fc63eabe812a6a6517421039a04f9d146d5b63bfd5a0131b7a0f7",
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "initial_target": "knowledge/指南/客户端二进制补丁.md",
       "initial_sha256": "b1700423361fc63eabe812a6a6517421039a04f9d146d5b63bfd5a0131b7a0f7",
       "content_sha256": "b1700423361fc63eabe812a6a6517421039a04f9d146d5b63bfd5a0131b7a0f7"
@@ -1563,7 +1563,7 @@
       "start": 14642,
       "end": 15147,
       "source_sha256": "e583459be0ee1d26345c47c98fbf2db4952d933b04feb37d24992afd421e85cb",
-      "target": "knowledge/指南/构建与验证/库存与首领专项.md",
+      "target": "knowledge/指南/构建与验证/库存与BOSS专项.md",
       "initial_target": "knowledge/指南/构建与验证.md",
       "initial_sha256": "e583459be0ee1d26345c47c98fbf2db4952d933b04feb37d24992afd421e85cb",
       "content_sha256": "e583459be0ee1d26345c47c98fbf2db4952d933b04feb37d24992afd421e85cb"
@@ -2383,11 +2383,11 @@
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#kb-08-023-6",
-      "to": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-023-6"
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-023-6"
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#kb-08-024-2",
-      "to": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-024-2"
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-024-2"
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#kb-08-026-11",
@@ -2395,11 +2395,11 @@
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#kb-08-030-10",
-      "to": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-10"
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-030-10"
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#kb-08-030-2",
-      "to": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-2"
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-030-2"
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#kb-08-030-4",
@@ -2427,7 +2427,7 @@
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#kb-08-046-2",
-      "to": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-046-2"
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-046-2"
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#kb-08-049-9",
@@ -2467,7 +2467,7 @@
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#人物等级与战斗运算的独立消费链",
-      "to": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-046-2"
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-046-2"
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#地宫7-3预加载井口身份",
@@ -2535,7 +2535,7 @@
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#本地受击效果与技能保护",
-      "to": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-2"
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-030-2"
     },
     {
       "from": "knowledge/业务/地宫/伤害与目标.md#水柱接触伤害与同房复活验证",
@@ -2599,7 +2599,7 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#cf70cf71准备房身份",
-      "to": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-08-066"
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-08-066"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#cf77快速入房与cf78阶段字段",
@@ -2715,11 +2715,11 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-06-008",
-      "to": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-008"
+      "to": "knowledge/业务/地宫/关卡与房间/超级BOSS加载与重置.md#kb-06-008"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-07-006-3",
-      "to": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-07-006-3"
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-07-006-3"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-07-015",
@@ -2727,7 +2727,7 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-07-017",
-      "to": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-07-017"
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-07-017"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-08-023-1",
@@ -2771,7 +2771,7 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-08-036",
-      "to": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-08-036"
+      "to": "knowledge/业务/地宫/关卡与房间/超级BOSS加载与重置.md#kb-08-036"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-08-037",
@@ -2795,7 +2795,7 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-08-066",
-      "to": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-08-066"
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-08-066"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-08-074-2",
@@ -2803,7 +2803,7 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#kb-09-021-3",
-      "to": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-09-021-3"
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-09-021-3"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#入口进度和可见性",
@@ -2923,7 +2923,7 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#第七层-lumineos-副本超级boss资源重置边界",
-      "to": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-008"
+      "to": "knowledge/业务/地宫/关卡与房间/超级BOSS加载与重置.md#kb-06-008"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#组队续关与观战",
@@ -2939,11 +2939,11 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#结算页等待与动作授权",
-      "to": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-008"
+      "to": "knowledge/业务/地宫/关卡与房间/超级BOSS加载与重置.md#kb-06-008"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#补充规则与示例",
-      "to": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-09-021-3"
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-09-021-3"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#超级boss续战与客户端发起的退出",
@@ -2995,7 +2995,7 @@
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#验证入口",
-      "to": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-09-021-3"
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-09-021-3"
     },
     {
       "from": "knowledge/业务/地宫/关卡与房间.md#验证范围",
@@ -3007,7 +3007,7 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#c368当前与最大生命魔法",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-029-17"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-029-17"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#cf72-完整应用与跨关power",
@@ -3071,7 +3071,7 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-07-007",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-07-007"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-07-007"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-07-020",
@@ -3079,11 +3079,11 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-08-023-10",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-023-10"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-023-10"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-08-023-2",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-023-2"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-023-2"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-08-023-4",
@@ -3095,7 +3095,7 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-08-026-20",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-026-20"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-026-20"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-08-029-10",
@@ -3103,7 +3103,7 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-08-029-17",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-029-17"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-029-17"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-08-029-7",
@@ -3131,15 +3131,15 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-09-001-3",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-001-3"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-001-3"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-09-003-2",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-003-2"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-003-2"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-09-006-5",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-006-5"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-006-5"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#kb-09-020-13",
@@ -3231,7 +3231,7 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#当前功能",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-006-5"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-006-5"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#当前功能-1",
@@ -3239,7 +3239,7 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#房间角色加载地图和继续条件门控",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-023-2"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-023-2"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#房间角色加载地图和继续条件门控-1",
@@ -3295,7 +3295,7 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#连续挑战客户端兼容与安装",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-003-2"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-003-2"
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#验证入口",
@@ -3307,7 +3307,7 @@
     },
     {
       "from": "knowledge/业务/地宫/战斗资源.md#验证记录的版本边界--独立地宫自检的运行边界",
-      "to": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-001-3"
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-001-3"
     },
     {
       "from": "knowledge/业务/地宫/掉落.md#d034d035",
@@ -3771,119 +3771,119 @@
     },
     {
       "from": "knowledge/业务/地宫/首领.md#boss-组件分体与多阶段终结",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#boss-组件分体与多阶段终结"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#boss-组件分体与多阶段终结"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#boss部件拓扑伤害与结果记录",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#boss部件拓扑伤害与结果记录"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#boss部件拓扑伤害与结果记录"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-06-004",
-      "to": "knowledge/业务/地宫/首领/生命来源与比较.md#kb-06-004"
+      "to": "knowledge/业务/地宫/BOSS/生命来源与比较.md#kb-06-004"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-06-018",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-018"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-06-018"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-06-019",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-019"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-06-019"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-06-020",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-020"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-06-020"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-06-021",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-021"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-06-021"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-06-022",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-06-022"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-06-022"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-08-041",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-08-041"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-08-042",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-08-042"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-08-048-2",
-      "to": "knowledge/业务/地宫/首领/阶段推进与开场.md#kb-08-048-2"
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#kb-08-048-2"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-08-049-8",
-      "to": "knowledge/业务/地宫/首领/阶段推进与开场.md#kb-08-049-8"
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#kb-08-049-8"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-08-056",
-      "to": "knowledge/业务/地宫/首领/阶段推进与开场.md#kb-08-056"
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#kb-08-056"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-08-072-4",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-072-4"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-08-072-4"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-09-020-11",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-09-020-11"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-09-020-11"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#kb-09-026-22",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-09-026-22"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-09-026-22"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#l8-boss-血量来源与同阶段比较",
-      "to": "knowledge/业务/地宫/首领/生命来源与比较.md#l8-boss-血量来源与同阶段比较"
+      "to": "knowledge/业务/地宫/BOSS/生命来源与比较.md#l8-boss-血量来源与同阶段比较"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#冬季持久体资源和回收闭合",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#冬季持久体资源和回收闭合"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#冬季持久体资源和回收闭合"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#地宫3-3零生命门框",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#地宫3-3零生命门框"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#地宫3-3零生命门框"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#地宫与战斗资源契约",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-09-020-11"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-09-020-11"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#地宫结算p弹与分体-boss-调用链",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-08-042"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#库存提示sp完成与首领血条",
-      "to": "knowledge/业务/地宫/首领/阶段推进与开场.md#kb-08-056"
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#kb-08-056"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#当前功能",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-072-4"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-08-072-4"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#接触伤害与零生命附件",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#接触伤害与零生命附件"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#接触伤害与零生命附件"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#结算和角色资料结果锚点",
-      "to": "knowledge/业务/地宫/首领/阶段推进与开场.md#kb-08-048-2"
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#kb-08-048-2"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#肉弹与boss接触边界及验证限制",
-      "to": "knowledge/业务/地宫/首领/协议与部件回收.md#肉弹与boss接触边界及验证限制"
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#肉弹与boss接触边界及验证限制"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#超级-boss-的-mode-推进门控",
-      "to": "knowledge/业务/地宫/首领/阶段推进与开场.md#超级-boss-的-mode-推进门控"
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#超级-boss-的-mode-推进门控"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#通用组件账本",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#通用组件账本"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#通用组件账本"
     },
     {
       "from": "knowledge/业务/地宫/首领.md#验证入口",
-      "to": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-09-026-22"
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-09-026-22"
     },
     {
       "from": "knowledge/业务/城镇/场景切换.md#c365c366-坐车付款失败映射",
@@ -5579,7 +5579,7 @@
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#df-05-003",
-      "to": "knowledge/业务/角色/等级经验/协议载体.md#df-05-003"
+      "to": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md#df-05-003"
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#df-05-004",
@@ -5599,7 +5599,7 @@
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#kb-03-001",
-      "to": "knowledge/业务/角色/等级经验/协议载体.md#kb-03-001"
+      "to": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md#kb-03-001"
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#kb-03-002-2",
@@ -5607,7 +5607,7 @@
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#kb-03-006-4",
-      "to": "knowledge/业务/角色/等级经验/协议载体.md#kb-03-006-4"
+      "to": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md#kb-03-006-4"
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#kb-04-005-1",
@@ -5631,11 +5631,11 @@
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#kb-08-016",
-      "to": "knowledge/业务/角色/等级经验/协议载体.md#kb-08-016"
+      "to": "knowledge/业务/角色/等级经验/协议载体/客户端经验与HUD消费链.md#kb-08-016"
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#kb-08-017-1",
-      "to": "knowledge/业务/角色/等级经验/协议载体.md#kb-08-017-1"
+      "to": "knowledge/业务/角色/等级经验/协议载体/显示数值与浮点精度.md#kb-08-017-1"
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#kb-08-019-1",
@@ -5735,7 +5735,7 @@
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#玩家累计经验数值上界与显示精度",
-      "to": "knowledge/业务/角色/等级经验/协议载体.md#kb-08-017-1"
+      "to": "knowledge/业务/角色/等级经验/协议载体/显示数值与浮点精度.md#kb-08-017-1"
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#玩家累计经验范围与原生曲线边界",
@@ -5755,7 +5755,7 @@
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#统一数据库存储与旧档迁移",
-      "to": "knowledge/业务/角色/等级经验/协议载体.md#kb-03-001"
+      "to": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md#kb-03-001"
     },
     {
       "from": "knowledge/业务/角色/等级经验.md#角色成长与社交地宫一致性",
@@ -6867,7 +6867,7 @@
     },
     {
       "from": "knowledge/工程/客户端兼容.md#df-11-007",
-      "to": "knowledge/工程/客户端兼容/首领血条.md#df-11-007"
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#df-11-007"
     },
     {
       "from": "knowledge/工程/客户端兼容.md#df-11-009",
@@ -6927,7 +6927,7 @@
     },
     {
       "from": "knowledge/工程/客户端兼容.md#kb-09-035-8",
-      "to": "knowledge/工程/客户端兼容/首领血条.md#kb-09-035-8"
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#kb-09-035-8"
     },
     {
       "from": "knowledge/工程/客户端兼容.md#kb-09-036-1",
@@ -7015,7 +7015,7 @@
     },
     {
       "from": "knowledge/工程/客户端兼容.md#应用校验与回退",
-      "to": "knowledge/工程/客户端兼容/首领血条.md#应用校验与回退"
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#应用校验与回退"
     },
     {
       "from": "knowledge/工程/客户端兼容.md#当前功能",
@@ -7063,7 +7063,7 @@
     },
     {
       "from": "knowledge/工程/客户端兼容.md#站点及完整字节",
-      "to": "knowledge/工程/客户端兼容/首领血条.md#站点及完整字节"
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#站点及完整字节"
     },
     {
       "from": "knowledge/工程/客户端兼容.md#竞技娱乐师徒与交易验证范围",
@@ -7111,7 +7111,7 @@
     },
     {
       "from": "knowledge/工程/客户端兼容.md#首领权威血条二进制修改",
-      "to": "knowledge/工程/客户端兼容/首领血条.md#首领权威血条二进制修改"
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#首领权威血条二进制修改"
     },
     {
       "from": "knowledge/工程/客户端兼容.md#验证入口",
@@ -7483,7 +7483,7 @@
     },
     {
       "from": "knowledge/指南/启动流程与源码索引.md#11-验证范围",
-      "to": "knowledge/工程/验证状态.md#df-08-014"
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#df-08-014"
     },
     {
       "from": "knowledge/指南/启动流程与源码索引.md#2-本地与社交-network-启动",
@@ -7515,7 +7515,7 @@
     },
     {
       "from": "knowledge/指南/启动流程与源码索引.md#9-构建与发布文件",
-      "to": "knowledge/工程/构建发布.md#df-08-012"
+      "to": "knowledge/工程/构建发布/发布身份与清单.md#df-08-012"
     },
     {
       "from": "knowledge/指南/启动流程与源码索引.md#gui-侧",
@@ -7819,7 +7819,7 @@
     },
     {
       "from": "knowledge/指南/完整适配器与客户端兼容说明.md#应用校验与回退",
-      "to": "knowledge/工程/客户端兼容/首领血条.md#应用校验与回退"
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#应用校验与回退"
     },
     {
       "from": "knowledge/指南/完整适配器与客户端兼容说明.md#新手引导与启动器装备隔离",
@@ -7839,7 +7839,7 @@
     },
     {
       "from": "knowledge/指南/完整适配器与客户端兼容说明.md#站点及完整字节",
-      "to": "knowledge/工程/客户端兼容/首领血条.md#站点及完整字节"
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#站点及完整字节"
     },
     {
       "from": "knowledge/指南/完整适配器与客户端兼容说明.md#资源派生与旧版迁移",
@@ -7859,7 +7859,7 @@
     },
     {
       "from": "knowledge/指南/完整适配器与客户端兼容说明.md#首领权威血条二进制修改",
-      "to": "knowledge/工程/客户端兼容/首领血条.md#首领权威血条二进制修改"
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#首领权威血条二进制修改"
     },
     {
       "from": "knowledge/指南/客户端二进制补丁.md#1-预检与生成",
@@ -8091,7 +8091,7 @@
     },
     {
       "from": "knowledge/指南/构建与验证.md#df-14-016",
-      "to": "knowledge/指南/构建与验证/库存与首领专项.md#df-14-016"
+      "to": "knowledge/指南/构建与验证/库存与BOSS专项.md#df-14-016"
     },
     {
       "from": "knowledge/指南/构建与验证.md#df-14-017",
@@ -8151,7 +8151,7 @@
     },
     {
       "from": "knowledge/指南/构建与验证.md#库存与首领状态专项",
-      "to": "knowledge/指南/构建与验证/库存与首领专项.md#库存与首领状态专项"
+      "to": "knowledge/指南/构建与验证/库存与BOSS专项.md#库存与首领状态专项"
     },
     {
       "from": "knowledge/指南/构建与验证.md#成套构建合同",
@@ -8292,6 +8292,642 @@
     {
       "from": "knowledge/指南/韩服宠物佩戴等级下放方案.md#韩服宠物原始佩戴等级与中文译名",
       "to": "knowledge/业务/宠物/所有权/佩戴等级与中文命名.md#韩服宠物原始佩戴等级与中文译名"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-03-028",
+      "to": "knowledge/业务/卡片/卡册/数量与库存迁移.md#kb-03-028"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-03-040-3",
+      "to": "knowledge/业务/卡片/卡册/数量与库存迁移.md#kb-03-040-3"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-03-051-1",
+      "to": "knowledge/业务/卡片/卡册/册页布局与新增提示.md#kb-03-051-1"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-08-004-3",
+      "to": "knowledge/业务/卡片/卡册/册页布局与新增提示.md#kb-08-004-3"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-08-029-18",
+      "to": "knowledge/业务/卡片/卡册/册页布局与新增提示.md#kb-08-029-18"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-08-029-2",
+      "to": "knowledge/业务/卡片/卡册/数量与库存迁移.md#kb-08-029-2"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-08-047-13",
+      "to": "knowledge/业务/卡片/卡册/战斗展示与SP反馈.md#kb-08-047-13"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-08-047-15",
+      "to": "knowledge/业务/卡片/卡册/战斗展示与SP反馈.md#kb-08-047-15"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-08-072-1",
+      "to": "knowledge/业务/卡片/卡册/册页布局与新增提示.md#kb-08-072-1"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-08-072-3",
+      "to": "knowledge/业务/卡片/卡册/战斗展示与SP反馈.md#kb-08-072-3"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-09-017-3",
+      "to": "knowledge/业务/卡片/卡册/数量与库存迁移.md#kb-09-017-3"
+    },
+    {
+      "from": "knowledge/业务/卡片/卡册.md#kb-09-017-5",
+      "to": "knowledge/业务/卡片/卡册/数量与库存迁移.md#kb-09-017-5"
+    },
+    {
+      "from": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-023-6",
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-023-6"
+    },
+    {
+      "from": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-024-2",
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-024-2"
+    },
+    {
+      "from": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-10",
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-030-10"
+    },
+    {
+      "from": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-030-2",
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-030-2"
+    },
+    {
+      "from": "knowledge/业务/地宫/伤害与目标/入伤与协议.md#kb-08-046-2",
+      "to": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md#kb-08-046-2"
+    },
+    {
+      "from": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-06-008",
+      "to": "knowledge/业务/地宫/关卡与房间/超级BOSS加载与重置.md#kb-06-008"
+    },
+    {
+      "from": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md#kb-08-036",
+      "to": "knowledge/业务/地宫/关卡与房间/超级BOSS加载与重置.md#kb-08-036"
+    },
+    {
+      "from": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-07-006-3",
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-07-006-3"
+    },
+    {
+      "from": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-07-017",
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-07-017"
+    },
+    {
+      "from": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-08-066",
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-08-066"
+    },
+    {
+      "from": "knowledge/业务/地宫/关卡与房间/续关与观战.md#kb-09-021-3",
+      "to": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md#kb-09-021-3"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-07-007",
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-07-007"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-023-10",
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-023-10"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-023-2",
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-023-2"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-026-20",
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-026-20"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-08-029-17",
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-08-029-17"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-001-3",
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-001-3"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-003-2",
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-003-2"
+    },
+    {
+      "from": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md#kb-09-006-5",
+      "to": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md#kb-09-006-5"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-06-022",
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-06-022"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-041",
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-08-041"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-042",
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-08-042"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/协议与部件回收.md#kb-08-072-4",
+      "to": "knowledge/业务/地宫/BOSS/协议与部件回收.md#kb-08-072-4"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/生命来源与比较.md#kb-06-004",
+      "to": "knowledge/业务/地宫/BOSS/生命来源与比较.md#kb-06-004"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-018",
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-06-018"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-019",
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-06-019"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-020",
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-06-020"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-06-021",
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-06-021"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-09-020-11",
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-09-020-11"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/组件与零生命附件.md#kb-09-026-22",
+      "to": "knowledge/业务/地宫/BOSS/组件与零生命附件.md#kb-09-026-22"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/阶段推进与开场.md#kb-08-048-2",
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#kb-08-048-2"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/阶段推进与开场.md#kb-08-049-8",
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#kb-08-049-8"
+    },
+    {
+      "from": "knowledge/业务/地宫/首领/阶段推进与开场.md#kb-08-056",
+      "to": "knowledge/业务/地宫/BOSS/阶段推进与开场.md#kb-08-056"
+    },
+    {
+      "from": "knowledge/业务/宠物/发射器.md#kb-04-003-1",
+      "to": "knowledge/业务/宠物/发射器/资源身份与移植.md#kb-04-003-1"
+    },
+    {
+      "from": "knowledge/业务/宠物/发射器.md#kb-04-004-5",
+      "to": "knowledge/业务/宠物/发射器/资源身份与移植.md#kb-04-004-5"
+    },
+    {
+      "from": "knowledge/业务/宠物/发射器.md#kb-04-010",
+      "to": "knowledge/业务/宠物/发射器/蓄力发射与MP账本.md#kb-04-010"
+    },
+    {
+      "from": "knowledge/业务/宠物/发射器.md#kb-04-022",
+      "to": "knowledge/业务/宠物/发射器/子弹DIY与篮球资源.md#kb-04-022"
+    },
+    {
+      "from": "knowledge/业务/宠物/发射器.md#kb-08-023-8",
+      "to": "knowledge/业务/宠物/发射器/蓄力发射与MP账本.md#kb-08-023-8"
+    },
+    {
+      "from": "knowledge/业务/宠物/发射器.md#kb-08-078",
+      "to": "knowledge/业务/宠物/发射器/子弹DIY与篮球资源.md#kb-08-078"
+    },
+    {
+      "from": "knowledge/业务/宠物/发射器.md#kb-09-026-6",
+      "to": "knowledge/业务/宠物/发射器/蓄力发射与MP账本.md#kb-09-026-6"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-03-013",
+      "to": "knowledge/业务/库存/装备/外观快照与实例身份.md#kb-03-013"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-03-044-5",
+      "to": "knowledge/业务/库存/装备/外观快照与实例身份.md#kb-03-044-5"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-03-045",
+      "to": "knowledge/业务/库存/装备/外观快照与实例身份.md#kb-03-045"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-03-050",
+      "to": "knowledge/业务/库存/装备/期限效果与资源范围.md#kb-03-050"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-08-058-1",
+      "to": "knowledge/业务/库存/装备/外观快照与实例身份.md#kb-08-058-1"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-08-058-3",
+      "to": "knowledge/业务/库存/装备/期限效果与资源范围.md#kb-08-058-3"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-08-059-2",
+      "to": "knowledge/业务/库存/装备/期限效果与资源范围.md#kb-08-059-2"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-09-019-1",
+      "to": "knowledge/业务/库存/装备/登录初始化与验证.md#kb-09-019-1"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-09-019-3",
+      "to": "knowledge/业务/库存/装备/登录初始化与验证.md#kb-09-019-3"
+    },
+    {
+      "from": "knowledge/业务/库存/装备.md#kb-09-020-6",
+      "to": "knowledge/业务/库存/装备/外观快照与实例身份.md#kb-09-020-6"
+    },
+    {
+      "from": "knowledge/业务/社交/师徒.md#kb-05-004",
+      "to": "knowledge/业务/社交/师徒/关系课程与毕业.md#kb-05-004"
+    },
+    {
+      "from": "knowledge/业务/社交/师徒.md#kb-05-027-3",
+      "to": "knowledge/业务/社交/师徒/广告收费与纪念礼物.md#kb-05-027-3"
+    },
+    {
+      "from": "knowledge/业务/社交/师徒.md#kb-07-021-2",
+      "to": "knowledge/业务/社交/师徒/广告收费与纪念礼物.md#kb-07-021-2"
+    },
+    {
+      "from": "knowledge/业务/社交/师徒.md#kb-07-022-5",
+      "to": "knowledge/业务/社交/师徒/关系课程与毕业.md#kb-07-022-5"
+    },
+    {
+      "from": "knowledge/业务/社交/师徒.md#kb-08-073-3",
+      "to": "knowledge/业务/社交/师徒/申请资料与解除协议.md#kb-08-073-3"
+    },
+    {
+      "from": "knowledge/业务/社交/师徒.md#kb-08-076-2",
+      "to": "knowledge/业务/社交/师徒/申请资料与解除协议.md#kb-08-076-2"
+    },
+    {
+      "from": "knowledge/业务/社交/师徒.md#kb-09-041-5",
+      "to": "knowledge/业务/社交/师徒/关系课程与毕业.md#kb-09-041-5"
+    },
+    {
+      "from": "knowledge/业务/经济/玩家交易.md#kb-03-044-1",
+      "to": "knowledge/业务/经济/玩家交易/握手报价与房间生命周期.md#kb-03-044-1"
+    },
+    {
+      "from": "knowledge/业务/经济/玩家交易.md#kb-03-044-7",
+      "to": "knowledge/业务/经济/玩家交易/结算取消与客户端兼容.md#kb-03-044-7"
+    },
+    {
+      "from": "knowledge/业务/经济/玩家交易.md#kb-05-025",
+      "to": "knowledge/业务/经济/玩家交易/握手报价与房间生命周期.md#kb-05-025"
+    },
+    {
+      "from": "knowledge/业务/经济/玩家交易.md#kb-08-071",
+      "to": "knowledge/业务/经济/玩家交易/结算取消与客户端兼容.md#kb-08-071"
+    },
+    {
+      "from": "knowledge/业务/经济/玩家交易.md#kb-09-034-1",
+      "to": "knowledge/业务/经济/玩家交易/结算取消与客户端兼容.md#kb-09-034-1"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-07-001",
+      "to": "knowledge/业务/经济/货币/钱包与Hans奖励.md#kb-07-001"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-07-010",
+      "to": "knowledge/业务/经济/货币/钱包与Hans奖励.md#kb-07-010"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-07-011",
+      "to": "knowledge/业务/经济/货币/KR金额与资源边界.md#kb-07-011"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-07-016-1",
+      "to": "knowledge/业务/经济/货币/CN金币动画与HUD.md#kb-07-016-1"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-07-016-3",
+      "to": "knowledge/业务/经济/货币/钱包与Hans奖励.md#kb-07-016-3"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-08-044",
+      "to": "knowledge/业务/经济/货币/KR金额与资源边界.md#kb-08-044"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-08-047-10",
+      "to": "knowledge/业务/经济/货币/CN金币动画与HUD.md#kb-08-047-10"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-08-047-12",
+      "to": "knowledge/业务/经济/货币/CN金币动画与HUD.md#kb-08-047-12"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-08-047-18",
+      "to": "knowledge/业务/经济/货币/CN金币动画与HUD.md#kb-08-047-18"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-08-047-8",
+      "to": "knowledge/业务/经济/货币/CN金币动画与HUD.md#kb-08-047-8"
+    },
+    {
+      "from": "knowledge/业务/经济/货币.md#kb-09-026-17",
+      "to": "knowledge/业务/经济/货币/钱包与Hans奖励.md#kb-09-026-17"
+    },
+    {
+      "from": "knowledge/业务/角色/任务.md#kb-03-048",
+      "to": "knowledge/业务/角色/任务/目录进度与交付事务.md#kb-03-048"
+    },
+    {
+      "from": "knowledge/业务/角色/任务.md#kb-03-049",
+      "to": "knowledge/业务/角色/任务/目标分数与多目标验证.md#kb-03-049"
+    },
+    {
+      "from": "knowledge/业务/角色/任务.md#kb-08-069",
+      "to": "knowledge/业务/角色/任务/窗口协议与客户端消费.md#kb-08-069"
+    },
+    {
+      "from": "knowledge/业务/角色/任务.md#kb-09-001-2",
+      "to": "knowledge/业务/角色/任务/目录进度与交付事务.md#kb-09-001-2"
+    },
+    {
+      "from": "knowledge/业务/角色/称号.md#df-09-006",
+      "to": "knowledge/业务/角色/称号/持久进度与显示资源.md#df-09-006"
+    },
+    {
+      "from": "knowledge/业务/角色/称号.md#kb-03-011",
+      "to": "knowledge/业务/角色/称号/持久进度与显示资源.md#kb-03-011"
+    },
+    {
+      "from": "knowledge/业务/角色/称号.md#kb-03-012",
+      "to": "knowledge/业务/角色/称号/持久进度与显示资源.md#kb-03-012"
+    },
+    {
+      "from": "knowledge/业务/角色/称号.md#kb-08-012-1",
+      "to": "knowledge/业务/角色/称号/城镇位域与资料载体.md#kb-08-012-1"
+    },
+    {
+      "from": "knowledge/业务/角色/称号.md#kb-08-049-7",
+      "to": "knowledge/业务/角色/称号/城镇位域与资料载体.md#kb-08-049-7"
+    },
+    {
+      "from": "knowledge/业务/角色/等级经验/协议载体.md#df-05-003",
+      "to": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md#df-05-003"
+    },
+    {
+      "from": "knowledge/业务/角色/等级经验/协议载体.md#kb-03-001",
+      "to": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md#kb-03-001"
+    },
+    {
+      "from": "knowledge/业务/角色/等级经验/协议载体.md#kb-03-006-4",
+      "to": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md#kb-03-006-4"
+    },
+    {
+      "from": "knowledge/业务/角色/等级经验/协议载体.md#kb-08-016",
+      "to": "knowledge/业务/角色/等级经验/协议载体/客户端经验与HUD消费链.md#kb-08-016"
+    },
+    {
+      "from": "knowledge/业务/角色/等级经验/协议载体.md#kb-08-017-1",
+      "to": "knowledge/业务/角色/等级经验/协议载体/显示数值与浮点精度.md#kb-08-017-1"
+    },
+    {
+      "from": "knowledge/工程/客户端兼容/首领血条.md#df-11-007",
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#df-11-007"
+    },
+    {
+      "from": "knowledge/工程/客户端兼容/首领血条.md#kb-09-035-8",
+      "to": "knowledge/工程/客户端兼容/BOSS血条.md#kb-09-035-8"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#df-08-012",
+      "to": "knowledge/工程/构建发布/发布身份与清单.md#df-08-012"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#df-12-010",
+      "to": "knowledge/工程/构建发布/程序与数据配套.md#df-12-010"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-004-5",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-004-5"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-007-1",
+      "to": "knowledge/工程/构建发布/程序与数据配套.md#kb-09-007-1"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-009-3",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-009-3"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-011-1",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-011-1"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-012-2",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-012-2"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-018-2",
+      "to": "knowledge/工程/构建发布/发布身份与清单.md#kb-09-018-2"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-020-1",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-020-1"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-020-3",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-020-3"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-022",
+      "to": "knowledge/工程/构建发布/发布身份与清单.md#kb-09-022"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-023",
+      "to": "knowledge/工程/构建发布/发布身份与清单.md#kb-09-023"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-026-15",
+      "to": "knowledge/工程/构建发布/发布身份与清单.md#kb-09-026-15"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-026-8",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-026-8"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-029-1",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-029-1"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-035-6",
+      "to": "knowledge/工程/构建发布/发布身份与清单.md#kb-09-035-6"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-041-2",
+      "to": "knowledge/工程/构建发布/发布身份与清单.md#kb-09-041-2"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-042-2",
+      "to": "knowledge/工程/构建发布/集成范围.md#kb-09-042-2"
+    },
+    {
+      "from": "knowledge/工程/构建发布.md#kb-09-042-4",
+      "to": "knowledge/工程/构建发布/程序与数据配套.md#kb-09-042-4"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#df-08-014",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#df-08-014"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#df-11-006",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#df-11-006"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#df-12-014",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#df-12-014"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-05-022",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-05-022"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-000",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#kb-09-000"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-001-1",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#kb-09-001-1"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-004-6",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-004-6"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-006-3",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-006-3"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-006-6",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-006-6"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-009-4",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-009-4"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-012-4",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-012-4"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-019-4",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-019-4"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-026-10",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-026-10"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-026-16",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-026-16"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-027-1",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#kb-09-027-1"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-027-3",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#kb-09-027-3"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-027-5",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#kb-09-027-5"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-028",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#kb-09-028"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-029-7",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-029-7"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-030-3",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-030-3"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-032-2",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-032-2"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-033-2",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-033-2"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-035-1",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#kb-09-035-1"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-035-3",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-035-3"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-035-5",
+      "to": "knowledge/工程/验证状态/层级与版本归属.md#kb-09-035-5"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-036-5",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-036-5"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-037-5",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-037-5"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-038-5",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-038-5"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-039-7",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-039-7"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-040-4",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-040-4"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-041-6",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-041-6"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-042-14",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-042-14"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-042-6",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-042-6"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-042-8",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-042-8"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-043-2",
+      "to": "knowledge/工程/验证状态/社交竞技与娱乐验收.md#kb-09-043-2"
+    },
+    {
+      "from": "knowledge/工程/验证状态.md#kb-09-043-4",
+      "to": "knowledge/工程/验证状态/地宫与成长验收.md#kb-09-043-4"
+    },
+    {
+      "from": "knowledge/指南/客户端二进制补丁.md#df-12-001",
+      "to": "knowledge/指南/客户端二进制补丁/统一安装与恢复.md#df-12-001"
+    },
+    {
+      "from": "knowledge/指南/客户端二进制补丁.md#df-12-011",
+      "to": "knowledge/指南/客户端二进制补丁/统一安装与恢复.md#df-12-011"
+    },
+    {
+      "from": "knowledge/指南/构建与验证/库存与首领专项.md#df-14-016",
+      "to": "knowledge/指南/构建与验证/库存与BOSS专项.md#df-14-016"
     }
   ],
   "validation": {

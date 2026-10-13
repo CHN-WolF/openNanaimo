@@ -48,7 +48,7 @@
     "knowledge/知识库索引.md": {
       "chars": 5689,
       "sha256": "61ea4cd8e811d8918f75eb9fb44553821e8dbc72bf6622c8cfdbdaabf04dabcc",
-      "target": "knowledge/索引.md",
+      "target": "knowledge/指南/专题检索.md",
       "query_count": 51
     }
   },
@@ -83,7 +83,7 @@
     "业务/经济/玩家交易.md": "玩家直接交易、准备锁、确认、取消、原子交换",
     "业务/经济/卡片交易所.md": "挂单、查询、收入领取、收回和列表刷新",
     "业务/社交/好友.md": "好友、屏蔽、私聊及名单",
-    "业务/社交/组队.md": "持久队伍、邀请、接受、队长和解散",
+    "业务/社交/组队.md": "会话内存队伍、邀请、接受、队长和解散",
     "业务/社交/情侣.md": "求婚、分手、戒指、权益、表情、共享用药和关系礼物",
     "业务/社交/师徒.md": "师徒、课程、广告、毕业和关系礼物",
     "业务/住宅/房屋归属.md": "公寓、街区住宅、土地卡、租期和删除",
@@ -91,8 +91,8 @@
     "业务/住宅/屋外装修.md": "屋外面板、外观、招牌、商店、资源和保存",
     "业务/住宅/访问恢复.md": "TODAY/TOTAL、推荐、公寓引导、温度计与非战斗恢复",
     "业务/地宫/战斗资源.md": "有效HP/MP、快照、死亡、复活、连续关卡和P继承",
-    "业务/地宫/首领.md": "Boss部件拓扑、生命、分体和多阶段终结",
-    "业务/地宫/掉落.md": "普通/Boss卡池、概率、奖励生成、领取及幂等",
+    "业务/地宫/BOSS.md": "BOSS部件拓扑、生命、分体和多阶段终结",
+    "业务/地宫/掉落.md": "普通/BOSS卡池、概率、奖励生成、领取及幂等",
     "业务/竞技/房间.md": "天空竞技场房间、准备、加载、名单与复赛周期",
     "业务/竞技/战斗.md": "竞技目标、碰撞、道具、星星、玩家HP、伤害与积分转移",
     "业务/竞技/结算.md": "竞技计时、队伍胜负、奖励、排名及结果页复位",
@@ -512,7 +512,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 29756,
       "end": 30723,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/数量与库存迁移.md",
       "title": "卡片合成与钥匙 / 战斗卡片入库与独立扩展区",
       "original_sha256": "410a3047cba27a9290a90df337fa1d2347adbb748226e4e8fe7e2871d3b0964b",
       "migrated_sha256": "e3fc3a24697225eeea7cec941d0918c2917d89be7e1d89843241d1c23c21fc3f"
@@ -523,7 +523,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 44989,
       "end": 45434,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/数量与库存迁移.md",
       "title": "库存编辑与持久化载体",
       "original_sha256": "723eaa5ec2d41fed7a5a941e582bf083eab25179b73d88b7128fd86557638fd5",
       "migrated_sha256": "eb07b6c7e145db26ecd6e703d8a2876f6e31d4bc7442202bcc4e7c41fede2136"
@@ -534,7 +534,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 55902,
       "end": 56111,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/册页布局与新增提示.md",
       "title": "库存新增提示与奖励实例同步",
       "original_sha256": "dbc107e607945a194f1a3ad0d4005adda7785441bb0400047c5c9ba8e0b0a5fd",
       "migrated_sha256": "fe2939a7f30f1fe6e1dd20da63901dc0d3881bfc69735492a2095002a114802f"
@@ -545,7 +545,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 3703,
       "end": 3955,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/册页布局与新增提示.md",
       "title": "幸运卡场景与VIP页的既有客户端链路",
       "original_sha256": "c4c9ed87a16acafe0c0108defa25d1e00ea998f8df07426670c55d9564db7b2b",
       "migrated_sha256": "9e7e3535011ccce54ef01b8f9ffde3dfe90901e6fb22a0fc8f7ba5e0d78be293"
@@ -556,7 +556,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 52010,
       "end": 52540,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/数量与库存迁移.md",
       "title": "卡牌合成、密钥和学习行门控条件 / 整页组合的独立册页元组",
       "original_sha256": "21b3a35700e57f1e2de35d4387283f542ef78e952f9786f413ecc236792c7f24",
       "migrated_sha256": "554d65c902becfefe2219cd614fc58a9190dbfec855eb4d3d0a4405cc591f059"
@@ -567,7 +567,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 58966,
       "end": 59039,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/册页布局与新增提示.md",
       "title": "卡牌合成、密钥和学习行门控条件 / 整页组合的独立册页元组",
       "original_sha256": "984492e028c6c8657007aa18211a33dcff483c98d7b50258d4cea6e12b11c36c",
       "migrated_sha256": "d19f5406bcd143fce53b378cafcab223094dacba9cfb1e3a085b91d1df3c8fba"
@@ -578,7 +578,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 93483,
       "end": 93853,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/战斗展示与SP反馈.md",
       "title": "原生汉斯、卡片、星星和拾取展示 / 秘密Epi4 PET/卡展示排除",
       "original_sha256": "6caa4dcdee54389c2717400b259191bf8709c7850aad474c7e0f852d93c6a492",
       "migrated_sha256": "9cf5df0043dd595e24b96d23c3a105394ce3bef344ffc3c79a8c6e13ed62046e"
@@ -589,7 +589,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 94240,
       "end": 95158,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/战斗展示与SP反馈.md",
       "title": "原生汉斯、卡片、星星和拾取展示 / 秘密Epi4 PET/卡展示排除",
       "original_sha256": "ff44c126777f5594b1723a879f7d225f7d61ab5573a93bc1882c2f10460ead9c",
       "migrated_sha256": "a2768c2842b36bd50e84253d2007f2d3317e0775a937ee35fc5cc8263010ac21"
@@ -600,7 +600,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 130939,
       "end": 131151,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/册页布局与新增提示.md",
       "title": "库存提示、SP完成与首领血条",
       "original_sha256": "c123e85563cb53f972428d8b87b312ea85fe7bb1ee375ac1c270fefa349e0423",
       "migrated_sha256": "8fbdcd00394cc811cd68b9c94ad6bbccb9828f09acd7e0a2f1803280e332c300"
@@ -611,7 +611,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 131344,
       "end": 131547,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/战斗展示与SP反馈.md",
       "title": "库存提示、SP完成与首领血条",
       "original_sha256": "7efa99bbe20ab6a1513ed81c2cf1eecb0eb8bf0840266901732f3aa1f68e45c7",
       "migrated_sha256": "7efa99bbe20ab6a1513ed81c2cf1eecb0eb8bf0840266901732f3aa1f68e45c7"
@@ -622,7 +622,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 11637,
       "end": 11697,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/数量与库存迁移.md",
       "title": "启动模式与 GUI 契约",
       "original_sha256": "bc08778fe8f9d80dd30b07e7f3ffa44f436445e8776c37bb3bbeaa0a87e45f86",
       "migrated_sha256": "bc08778fe8f9d80dd30b07e7f3ffa44f436445e8776c37bb3bbeaa0a87e45f86"
@@ -633,7 +633,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 11762,
       "end": 11783,
-      "target": "knowledge/业务/卡片/卡册.md",
+      "target": "knowledge/业务/卡片/卡册/数量与库存迁移.md",
       "title": "启动模式与 GUI 契约",
       "original_sha256": "828dd0d75c08875a693e93d4bc0d62f0adf6581bf13fdf231be5eb0fe602ffb6",
       "migrated_sha256": "5e1372cf566db2286c7737873af59e89685a0a2765565dbeff2786968763e81a"
@@ -1018,7 +1018,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 38577,
       "end": 39979,
-      "target": "knowledge/业务/地宫/伤害与目标/入伤与协议.md",
+      "target": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md",
       "title": "房间角色、加载、地图和继续条件门控",
       "original_sha256": "d7355298141ada43e4274d4d7e73015b100b8c8b49970bd07a9774e4c12f829e",
       "migrated_sha256": "87280e991577245fe09b9e46088744a6e51ea91683b59d3e57d2ef520f7ced7d"
@@ -1029,7 +1029,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 43139,
       "end": 43290,
-      "target": "knowledge/业务/地宫/伤害与目标/入伤与协议.md",
+      "target": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md",
       "title": "房间角色、加载、地图和继续条件门控 / 准备房金币与复活支付能力",
       "original_sha256": "6cb5e9ef178c192cd1827595e8e9c64e7e5c75e5f697a32f26fec0072e5e06d5",
       "migrated_sha256": "7e3ff8a90cdc756f5291b53b04d5ed69b7c0a50a159ccce8ec4d6c8f6431e353"
@@ -1051,7 +1051,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 62520,
       "end": 63538,
-      "target": "knowledge/业务/地宫/伤害与目标/入伤与协议.md",
+      "target": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md",
       "title": "技能、伤势和清理",
       "original_sha256": "09f6fb34ed1d89f921c0e71a29aa1e4efaf88ade5c1d23b76c3de621a0f11b55",
       "migrated_sha256": "09f6fb34ed1d89f921c0e71a29aa1e4efaf88ade5c1d23b76c3de621a0f11b55"
@@ -1095,7 +1095,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 65540,
       "end": 65720,
-      "target": "knowledge/业务/地宫/伤害与目标/入伤与协议.md",
+      "target": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md",
       "title": "技能、伤势和清理",
       "original_sha256": "5b2ce8437e7408343f095226eded074a09b14e634adaff1175bcf8d01d71b775",
       "migrated_sha256": "49d0468282738424ef0d8721d6ba035c11948375c84fad6438f2a482420e57e0"
@@ -1139,7 +1139,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 90279,
       "end": 90704,
-      "target": "knowledge/业务/地宫/伤害与目标/入伤与协议.md",
+      "target": "knowledge/业务/地宫/伤害与目标/请求构造与字段.md",
       "title": "原生汉斯、卡片、星星和拾取展示 / 宝石type7、碰撞请求与卡片裁决边界（CN）",
       "original_sha256": "ce5101b40eece90e101ea40ecfc1f123ab98be415bd07a868b17ed0185556cd3",
       "migrated_sha256": "ce5101b40eece90e101ea40ecfc1f123ab98be415bd07a868b17ed0185556cd3"
@@ -1513,7 +1513,7 @@
       "source": "knowledge/authority/06-目标掉落与首领.md",
       "start": 9043,
       "end": 10067,
-      "target": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md",
+      "target": "knowledge/业务/地宫/关卡与房间/超级BOSS加载与重置.md",
       "title": "第七层 lumineos 副本：超级Boss资源/重置边界",
       "original_sha256": "273004040867ad85fc82799fb722c37d7e5d6f4b857ea4b5769e491c5659fda0",
       "migrated_sha256": "273004040867ad85fc82799fb722c37d7e5d6f4b857ea4b5769e491c5659fda0"
@@ -1524,7 +1524,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 9349,
       "end": 9861,
-      "target": "knowledge/业务/地宫/关卡与房间/续关与观战.md",
+      "target": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md",
       "title": "EXP 累计与升级",
       "original_sha256": "213cff1a3d852c0513e1323d283bd04c68979bacd05f02bceaf62d512b99bf99",
       "migrated_sha256": "e4bb4f494589a835d43ba713c818726c9c13aacfd9cad6b446c7347f56a38ed3"
@@ -1546,7 +1546,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 20346,
       "end": 20446,
-      "target": "knowledge/业务/地宫/关卡与房间/续关与观战.md",
+      "target": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md",
       "title": "结算续关的CF99前置条件",
       "original_sha256": "4d169e3c137d8ea0269430eb8a7933206f66576688a8f1d198a64d6ee7a37c11",
       "migrated_sha256": "c3a995f7e920a970e794287fd5a39c2ed82e617d6c9dbfbb8caf614e3b06570b"
@@ -1667,7 +1667,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 72431,
       "end": 74186,
-      "target": "knowledge/业务/地宫/关卡与房间/拉米诺斯资源.md",
+      "target": "knowledge/业务/地宫/关卡与房间/超级BOSS加载与重置.md",
       "title": "拉米涅奥斯战斗资源选择 / 超级Boss重置和命名资源加载",
       "original_sha256": "c2d13a57752ddc6ea362b7d21b357242a09121112eb633d1ad7f32085219dc6e",
       "migrated_sha256": "5426dd58a9a33f224197183281e364becfd26c6c46c59937a0185b0743febf10"
@@ -1733,7 +1733,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 122304,
       "end": 124354,
-      "target": "knowledge/业务/地宫/关卡与房间/续关与观战.md",
+      "target": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md",
       "title": "结算续关标志与加载分支",
       "original_sha256": "ec57c8de55734ee7a1208ce05c5365d07a09199b5a5f95212abfcd6d73565f85",
       "migrated_sha256": "fb08795a3652140622ae4d69198532f74c032cc9d4ed37beea76876bf8b789af"
@@ -1755,7 +1755,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 16295,
       "end": 16386,
-      "target": "knowledge/业务/地宫/关卡与房间/续关与观战.md",
+      "target": "knowledge/业务/地宫/关卡与房间/续关授权与加载门控.md",
       "title": "状态同步与运行时传输",
       "original_sha256": "d3241738573aaa2ab74d27ac024e90c9444fb984a9572d56c4f83a8e7fb6ffd9",
       "migrated_sha256": "d3241738573aaa2ab74d27ac024e90c9444fb984a9572d56c4f83a8e7fb6ffd9"
@@ -1854,7 +1854,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 9940,
       "end": 10686,
-      "target": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "target": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md",
       "title": "玩家死亡重试和结算边界",
       "original_sha256": "91743ec78052ed67245ef46bc21c55829a4b3bdf8db5af0d0e573289e7021f92",
       "migrated_sha256": "fe3d51251ea29f59f2862361c863e20a53bcb67aadd4bcd447d71f5527c236cc"
@@ -1876,7 +1876,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 36083,
       "end": 36314,
-      "target": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "target": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md",
       "title": "房间角色、加载、地图和继续条件门控",
       "original_sha256": "73b32a4415665f563e3a771161b9e3dac66bd8242c0f5c06383adda3cc066628",
       "migrated_sha256": "38f4e170e2a2b61c24a22d24c51fbea2985d7de48c9d8ef93cb94ebbe28678be"
@@ -1898,7 +1898,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 42338,
       "end": 42802,
-      "target": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "target": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md",
       "title": "房间角色、加载、地图和继续条件门控",
       "original_sha256": "7bdc5db8180a69bb7cf75a23b91587e200d57044f1c265053c7c291494bb19cb",
       "migrated_sha256": "d7f7a98546456207c9d38cf4dfb60f2f15efd4f5282cc9239d5337c22dbd0655"
@@ -1920,7 +1920,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 48694,
       "end": 48785,
-      "target": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "target": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md",
       "title": "背包、宠物、商店和快捷栏",
       "original_sha256": "606837ba9fae4bf429c64146d42106b128071f1f87de9a48286d6a8a2beb42de",
       "migrated_sha256": "606837ba9fae4bf429c64146d42106b128071f1f87de9a48286d6a8a2beb42de"
@@ -1953,7 +1953,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 58754,
       "end": 58966,
-      "target": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "target": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md",
       "title": "卡牌合成、密钥和学习行门控条件 / 整页组合的独立册页元组",
       "original_sha256": "6da77a6f84ce4db61827bbf1055fc131f17b132d26b06dede15785678dfd1c82",
       "migrated_sha256": "78d60a81add857744df5dd3bbe2ae80eeab8aa2c3df7f40a0ac5900d22ef3821"
@@ -2019,7 +2019,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 1342,
       "end": 1430,
-      "target": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "target": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md",
       "title": "验证记录的版本边界",
       "original_sha256": "4c6da83022571b3279f44138ff845609bf4438b3daaba571f0e498cf5746a790",
       "migrated_sha256": "635b360389c659858ca85ebfded92c65dbc8feac9f16dbafe701cd9bd9d7ce37"
@@ -2030,7 +2030,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 2539,
       "end": 2651,
-      "target": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "target": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md",
       "title": "验证记录的版本边界 / 独立地宫自检的运行边界",
       "original_sha256": "05ef0df705eacc09921aead63d70a5c5647093e5322a6b5ecb62a38162b197fc",
       "migrated_sha256": "05ef0df705eacc09921aead63d70a5c5647093e5322a6b5ecb62a38162b197fc"
@@ -2041,7 +2041,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 4040,
       "end": 4070,
-      "target": "knowledge/业务/地宫/战斗资源/复活支付与死亡退出.md",
+      "target": "knowledge/业务/地宫/战斗资源/死亡退出与重试.md",
       "title": "连续挑战客户端兼容与安装",
       "original_sha256": "54c1be3f7167faa7b88d00af7883939f01861a34fa7e64d7b7e43e9c11d11710",
       "migrated_sha256": "79c9b06ad45dfd8333ea23e7d13e99604fdea1dde91e48c26550f6f117e6c503"
@@ -2767,7 +2767,7 @@
       "source": "knowledge/authority/06-目标掉落与首领.md",
       "start": 6613,
       "end": 7748,
-      "target": "knowledge/业务/地宫/首领/生命来源与比较.md",
+      "target": "knowledge/业务/地宫/BOSS/生命来源与比较.md",
       "title": "L8 Boss 血量来源与同阶段比较",
       "original_sha256": "db00472cd19cca1598b8d10830978a976bc85bff7effbfce7567b41bc4c9a150",
       "migrated_sha256": "2e8f3ce6518b0798ae7623b7e69944a4ed95264b435a867fdfceebc000a5fc0c"
@@ -2778,7 +2778,7 @@
       "source": "knowledge/authority/06-目标掉落与首领.md",
       "start": 19628,
       "end": 19649,
-      "target": "knowledge/业务/地宫/首领/组件与零生命附件.md",
+      "target": "knowledge/业务/地宫/BOSS/组件与零生命附件.md",
       "title": "Boss 组件、分体与多阶段终结",
       "original_sha256": "9648cf364a9427faa2b0a0c1404c8912594b4c6e54ad69cf733c5ab6c68e9443",
       "migrated_sha256": "9648cf364a9427faa2b0a0c1404c8912594b4c6e54ad69cf733c5ab6c68e9443"
@@ -2789,7 +2789,7 @@
       "source": "knowledge/authority/06-目标掉落与首领.md",
       "start": 19649,
       "end": 20010,
-      "target": "knowledge/业务/地宫/首领/组件与零生命附件.md",
+      "target": "knowledge/业务/地宫/BOSS/组件与零生命附件.md",
       "title": "Boss 组件、分体与多阶段终结 / 接触伤害与零生命附件",
       "original_sha256": "ef94c2ba91809012d93d676665e83f5164ac60c329e33e2b3fad56fd6dbdeb63",
       "migrated_sha256": "8fecef8bd0ca8c3c20f744db7d9c430766983164037502938a93aabeb392a72f"
@@ -2800,7 +2800,7 @@
       "source": "knowledge/authority/06-目标掉落与首领.md",
       "start": 20010,
       "end": 20595,
-      "target": "knowledge/业务/地宫/首领/组件与零生命附件.md",
+      "target": "knowledge/业务/地宫/BOSS/组件与零生命附件.md",
       "title": "Boss 组件、分体与多阶段终结 / 地宫3-3零生命门框",
       "original_sha256": "6cc8ef6181d85f5a79d8c03c559a280aaa1998ac24da455703e97a5b5679efa3",
       "migrated_sha256": "442574e8bbdf13c0b16249ea2fc1b839a6a6ad141733b894b13e3afc21665346"
@@ -2811,7 +2811,7 @@
       "source": "knowledge/authority/06-目标掉落与首领.md",
       "start": 20595,
       "end": 22158,
-      "target": "knowledge/业务/地宫/首领/组件与零生命附件.md",
+      "target": "knowledge/业务/地宫/BOSS/组件与零生命附件.md",
       "title": "Boss 组件、分体与多阶段终结 / 通用组件账本",
       "original_sha256": "4e77422c2a33205c8189a02668154cd068c7c786efd5c048b762b3b4fee8b4cf",
       "migrated_sha256": "0e03856bfcbc44765d2132e716a566380cf4a7de3d7ab6bb5200af19db9a4b90"
@@ -2822,7 +2822,7 @@
       "source": "knowledge/authority/06-目标掉落与首领.md",
       "start": 22158,
       "end": 22678,
-      "target": "knowledge/业务/地宫/首领/协议与部件回收.md",
+      "target": "knowledge/业务/地宫/BOSS/协议与部件回收.md",
       "title": "肉弹与Boss接触边界及验证限制",
       "original_sha256": "13b8257353f2f6efc7070eb32fb66c43d55fe56aa6952aacb547afe9591f09cd",
       "migrated_sha256": "2e0a53ab0e7233fcd30009ea2aa732a3fa416826cd20c75689ca9e9223691070"
@@ -2833,7 +2833,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 82204,
       "end": 85093,
-      "target": "knowledge/业务/地宫/首领/协议与部件回收.md",
+      "target": "knowledge/业务/地宫/BOSS/协议与部件回收.md",
       "title": "Boss部件拓扑、伤害与结果记录",
       "original_sha256": "585345818cad1b58689280bf4d5a35cf574c7ba32a1a40128719e77133290fb1",
       "migrated_sha256": "53e71f1bc08c74d283b06c5c3d2a990105a598f3a6bd7f5cb4c91f7660397ba7"
@@ -2844,7 +2844,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 85093,
       "end": 86129,
-      "target": "knowledge/业务/地宫/首领/协议与部件回收.md",
+      "target": "knowledge/业务/地宫/BOSS/协议与部件回收.md",
       "title": "Boss部件拓扑、伤害与结果记录 / 冬季持久体资源和回收闭合",
       "original_sha256": "b3750a640c0fd0eb0142de17943ed23387b876daf119e72f5e773bf74a2e1e1e",
       "migrated_sha256": "d543c64c0912d6f500fe7a88f2f557b7c4e04af9d701e2d3b0362a727f62337a"
@@ -2855,7 +2855,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 97313,
       "end": 97363,
-      "target": "knowledge/业务/地宫/首领/阶段推进与开场.md",
+      "target": "knowledge/业务/地宫/BOSS/阶段推进与开场.md",
       "title": "地宫结算、P弹与分体 Boss 调用链",
       "original_sha256": "994193ca401ba1fb6d28e16aa776b117e29d458e43338a6a11110c6cfa32167f",
       "migrated_sha256": "b284e6cbe79ff2eef8ba5a9a4a414a0b25f15660c32e3589b8583f4fcc1a2148"
@@ -2866,7 +2866,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 101446,
       "end": 101654,
-      "target": "knowledge/业务/地宫/首领/阶段推进与开场.md",
+      "target": "knowledge/业务/地宫/BOSS/阶段推进与开场.md",
       "title": "结算和角色资料结果锚点",
       "original_sha256": "0c500bcd0d7be6e8d7845c2ea7aaf26bd1279841b2fccab7bed4f0bb78961704",
       "migrated_sha256": "86c847ee6a91ef8301c1972ce89a4e7d0a90b92417fa547a6d750c25154da33b"
@@ -2877,7 +2877,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 112510,
       "end": 113080,
-      "target": "knowledge/业务/地宫/首领/阶段推进与开场.md",
+      "target": "knowledge/业务/地宫/BOSS/阶段推进与开场.md",
       "title": "超级 Boss 的 mode 推进门控",
       "original_sha256": "6dd14aadc95b278c926509ffe50f5626d62b2645d0f2e11faaf978fed63eadb0",
       "migrated_sha256": "5613b461f6dca29d37ecbee58c09e7c94de49845bfd9311a3e4876e5610364da"
@@ -2888,7 +2888,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 131547,
       "end": 131723,
-      "target": "knowledge/业务/地宫/首领/协议与部件回收.md",
+      "target": "knowledge/业务/地宫/BOSS/协议与部件回收.md",
       "title": "库存提示、SP完成与首领血条",
       "original_sha256": "7e5aa2341d4f7aa833c2903ee2c3b8d866f4b45a54a0ed7beab29ef2681d172f",
       "migrated_sha256": "a2c47f604c209dd1bbeb992fae655a47efd3d8ef8341bf4bf8f5f5c4be593850"
@@ -2899,7 +2899,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 15914,
       "end": 15966,
-      "target": "knowledge/业务/地宫/首领/组件与零生命附件.md",
+      "target": "knowledge/业务/地宫/BOSS/组件与零生命附件.md",
       "title": "当前功能",
       "original_sha256": "ccd47740595b6c6cabd0337eb8ddf9cdeabee71efcf8bd0c5931f774a0f897af",
       "migrated_sha256": "ccd47740595b6c6cabd0337eb8ddf9cdeabee71efcf8bd0c5931f774a0f897af"
@@ -2910,7 +2910,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 20294,
       "end": 20342,
-      "target": "knowledge/业务/地宫/首领/组件与零生命附件.md",
+      "target": "knowledge/业务/地宫/BOSS/组件与零生命附件.md",
       "title": "地宫与战斗资源契约",
       "original_sha256": "0a0c61a8b41ae0831aec485d3b8b323be7dac6221e0dbbe090fb149385e38f58",
       "migrated_sha256": "0a0c61a8b41ae0831aec485d3b8b323be7dac6221e0dbbe090fb149385e38f58"
@@ -3427,7 +3427,7 @@
       "source": "knowledge/authority/04-宠物与战斗.md",
       "start": 1243,
       "end": 1574,
-      "target": "knowledge/业务/宠物/发射器.md",
+      "target": "knowledge/业务/宠物/发射器/资源身份与移植.md",
       "title": "宠物身份和发射器字段",
       "original_sha256": "a3cefe9c6f64c8fcec3a9576050950f102909093163906278a2f6fc4b01ef927",
       "migrated_sha256": "a3cefe9c6f64c8fcec3a9576050950f102909093163906278a2f6fc4b01ef927"
@@ -3438,7 +3438,7 @@
       "source": "knowledge/authority/04-宠物与战斗.md",
       "start": 4687,
       "end": 4885,
-      "target": "knowledge/业务/宠物/发射器.md",
+      "target": "knowledge/业务/宠物/发射器/资源身份与移植.md",
       "title": "韩服新增宠物与移植边界",
       "original_sha256": "da0da445bf276ad9f2275053ff24a5d953f7692cdd377fbafa6d051fb201ada3",
       "migrated_sha256": "da0da445bf276ad9f2275053ff24a5d953f7692cdd377fbafa6d051fb201ada3"
@@ -3449,7 +3449,7 @@
       "source": "knowledge/authority/04-宠物与战斗.md",
       "start": 13748,
       "end": 14733,
-      "target": "knowledge/业务/宠物/发射器.md",
+      "target": "knowledge/业务/宠物/发射器/蓄力发射与MP账本.md",
       "title": "蓄力与远程发射器",
       "original_sha256": "60200d47e1381507b57c4c57e272ec74344b357922e0cbdf602445cb9018cd6b",
       "migrated_sha256": "2081457d8a798ac10253420f3aca8178e8b9cf1ca68b351fc8898cd527bf2283"
@@ -3460,7 +3460,7 @@
       "source": "knowledge/authority/04-宠物与战斗.md",
       "start": 24901,
       "end": 25309,
-      "target": "knowledge/业务/宠物/发射器.md",
+      "target": "knowledge/业务/宠物/发射器/子弹DIY与篮球资源.md",
       "title": "可选子弹 DIY 与独立篮球",
       "original_sha256": "dbff962fa8ba9d34edb78907267a193bb2d17d4b7b627d7c23ff068364562561",
       "migrated_sha256": "c3c35c87f2deb0e5373603bf0f212014d1c8602412ab0c757268f097ef48ca3c"
@@ -3471,7 +3471,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 41236,
       "end": 42120,
-      "target": "knowledge/业务/宠物/发射器.md",
+      "target": "knowledge/业务/宠物/发射器/蓄力发射与MP账本.md",
       "title": "房间角色、加载、地图和继续条件门控",
       "original_sha256": "814336d2fbba11bf18018b999da186b8abcce047ab2818de6106e0c58dd045e3",
       "migrated_sha256": "43dd66ec5ac35cf4340cf9797d8fbb2b3d660e827ee42e598d2d44c738661c9b"
@@ -3482,7 +3482,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 136000,
       "end": 136756,
-      "target": "knowledge/业务/宠物/发射器.md",
+      "target": "knowledge/业务/宠物/发射器/子弹DIY与篮球资源.md",
       "title": "可选 DIY 发射与隔离反向补丁",
       "original_sha256": "3b1d1f207f6bd2540cc7c8124c4aa22078b81686271f6756a6e7dbd358b09472",
       "migrated_sha256": "ba1b6bdc8920b5527a9a2076b41e2244a368488fda1009fb09aa2885f67bf978"
@@ -3493,7 +3493,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 19290,
       "end": 19437,
-      "target": "knowledge/业务/宠物/发射器.md",
+      "target": "knowledge/业务/宠物/发射器/蓄力发射与MP账本.md",
       "title": "地宫与战斗资源契约",
       "original_sha256": "dac49465519f99f53bccde4348047d1a3c36c7d9a0884c0f11c156da6e760634",
       "migrated_sha256": "9e371a50f7c51a63eaf5e0f4ebf01fbece7711caafe9f3de6130f437079d6fbf"
@@ -4494,7 +4494,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 12645,
       "end": 13756,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/外观快照与实例身份.md",
       "title": "外观和应用装备",
       "original_sha256": "86898d6dfc10cac64666b1ffd21ceffea9aa8e2d726a59105f65aa495c60126c",
       "migrated_sha256": "a6f67816ce9cd91e1fc3294f5e051d9ac76ac8199c4c435efc908bcbf99996e4"
@@ -4505,7 +4505,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 51945,
       "end": 52098,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/外观快照与实例身份.md",
       "title": "玩家直接交易：C4AF..C4C1",
       "original_sha256": "aabce62f4684e52180d99eeae2f3d524fcf0dd8bab486e823ae44209ecc31773",
       "migrated_sha256": "aabce62f4684e52180d99eeae2f3d524fcf0dd8bab486e823ae44209ecc31773"
@@ -4516,7 +4516,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 52723,
       "end": 52873,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/外观快照与实例身份.md",
       "title": "衣物列表与已装备快照的一致身份",
       "original_sha256": "597ced80aada010a1100c01815c52852f448bccc43a4f8c7e9d66033ac91ef58",
       "migrated_sha256": "d5f9ebca1ab43f4c28b4579538d982cbb52ae0b867f4e0a185cd1b0b21cc3fce"
@@ -4527,7 +4527,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 55657,
       "end": 55902,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/期限效果与资源范围.md",
       "title": "任务目录、固定主线与奖励事务 / 时装期限与旧档兼容",
       "original_sha256": "c7f58045e5a8d5488d57cba10cf4353dec87800e2f036ba1c7b36d99b98d7e9d",
       "migrated_sha256": "3184bde6ee368299e898389b58778a66488d0ae50ae798f6a1e012c939a6f1af"
@@ -4538,7 +4538,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 114921,
       "end": 115561,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/外观快照与实例身份.md",
       "title": "衣物身份、资源效果与礼物显示边界",
       "original_sha256": "c5bd03b79932fd44a7fd6600ae7e91d9e6cdfd038a306ccd4385b8895cf73a07",
       "migrated_sha256": "f86b9e50002779f02e101d94411282a8813bc8c910c6c53090f8faa1af64ae56"
@@ -4549,7 +4549,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 115697,
       "end": 115834,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/期限效果与资源范围.md",
       "title": "衣物身份、资源效果与礼物显示边界",
       "original_sha256": "63cd3b196630e514410ca81f7f792e7eb89c69adfc9038a1a2793804c581f399",
       "migrated_sha256": "08a6d8e031c9e083c8c859f1dc9b258ad5b4c34143ec4e5b1c5ee788992e61db"
@@ -4560,7 +4560,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 115998,
       "end": 116057,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/期限效果与资源范围.md",
       "title": "衣物身份、资源效果与礼物显示边界 / 韩服追加装扮与家具的离线资源边界",
       "original_sha256": "51f4d165fa07441aa807f022660c55bfa289a4c9d8ba7a50c63931ad2c5590f6",
       "migrated_sha256": "77a2d8c86f8563c05c39d21763e311fa851ccce42ef72472adf5ecbaf9ba043e"
@@ -4571,7 +4571,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 14396,
       "end": 14492,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/登录初始化与验证.md",
       "title": "装备登录初始化",
       "original_sha256": "5a01ba5268cf6d53c3098262ff7b381a02613c031a6c0e6e43ffdc6fd655f1ab",
       "migrated_sha256": "9ea48e0a61b7103b7dfb82b924d5e11c0e4c936c4854d725cf647be40f752c1d"
@@ -4582,7 +4582,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 14630,
       "end": 14680,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/登录初始化与验证.md",
       "title": "装备登录初始化",
       "original_sha256": "ca08ca6a5051559ae917d7b6b7bf3f7bbc40cc193676ece9d39acc8e865e1f27",
       "migrated_sha256": "ca08ca6a5051559ae917d7b6b7bf3f7bbc40cc193676ece9d39acc8e865e1f27"
@@ -4593,7 +4593,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 15559,
       "end": 15616,
-      "target": "knowledge/业务/库存/装备.md",
+      "target": "knowledge/业务/库存/装备/外观快照与实例身份.md",
       "title": "当前功能",
       "original_sha256": "9e726e3c8793c0b3fc2f307f697ccbbde2e26911c4f716139de10c7f7ff62ae4",
       "migrated_sha256": "9e726e3c8793c0b3fc2f307f697ccbbde2e26911c4f716139de10c7f7ff62ae4"
@@ -4637,7 +4637,7 @@
       "source": "knowledge/authority/05-房间与多人同步.md",
       "start": 2885,
       "end": 3540,
-      "target": "knowledge/业务/社交/师徒.md",
+      "target": "knowledge/业务/社交/师徒/关系课程与毕业.md",
       "title": "师徒关系与课程",
       "original_sha256": "8b23cc8e5aef28363c3cde7059e6214712bba338bf019227ec3775bc7ae02f7f",
       "migrated_sha256": "6cfbdd08db0bc33b198c06325166096cfa04dc9d2f85b2af505ee669f1ba9e16"
@@ -4648,7 +4648,7 @@
       "source": "knowledge/authority/05-房间与多人同步.md",
       "start": 18282,
       "end": 18447,
-      "target": "knowledge/业务/社交/师徒.md",
+      "target": "knowledge/业务/社交/师徒/广告收费与纪念礼物.md",
       "title": "娱乐室房间与对局",
       "original_sha256": "580f3781fc7e21dcf77d5ae78fd44be6cfb0138d43f111d859516954ddcf500c",
       "migrated_sha256": "1d9264ef9c9328031ad8d7f9cfd7517807f5276fdb34e2307a4cc0773df8d684"
@@ -4659,7 +4659,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 21484,
       "end": 21556,
-      "target": "knowledge/业务/社交/师徒.md",
+      "target": "knowledge/业务/社交/师徒/广告收费与纪念礼物.md",
       "title": "关系纪念礼物",
       "original_sha256": "9c67d2251a11b32b6c38087ba55fe47575c082add1d1b2f540bf899b5fd7439c",
       "migrated_sha256": "9c67d2251a11b32b6c38087ba55fe47575c082add1d1b2f540bf899b5fd7439c"
@@ -4670,7 +4670,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 24034,
       "end": 24321,
-      "target": "knowledge/业务/社交/师徒.md",
+      "target": "knowledge/业务/社交/师徒/关系课程与毕业.md",
       "title": "娱乐与师徒奖励策略",
       "original_sha256": "6ba5f77f18046d849281afcc0ff2c265243791b272bcbc84d0f2289b604fa6ad",
       "migrated_sha256": "6ba5f77f18046d849281afcc0ff2c265243791b272bcbc84d0f2289b604fa6ad"
@@ -4681,7 +4681,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 132204,
       "end": 132368,
-      "target": "knowledge/业务/社交/师徒.md",
+      "target": "knowledge/业务/社交/师徒/申请资料与解除协议.md",
       "title": "竞技场玩家事件与交易所回显",
       "original_sha256": "8e17854d4b5fe1f767d8facc208d5353c18881d1294f680366abf42e7231a13f",
       "migrated_sha256": "a9eb32ca06f852a21829736ca9e1b79be501be7db8011b2351c97bb0fcb2cb74"
@@ -4692,7 +4692,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 134060,
       "end": 134627,
-      "target": "knowledge/业务/社交/师徒.md",
+      "target": "knowledge/业务/社交/师徒/申请资料与解除协议.md",
       "title": "组队资料与师徒原生页面",
       "original_sha256": "9308012636cc125cb8e302fe8b5229a919db8e644905fdc0200275bb78ad4dba",
       "migrated_sha256": "0cf6f3e22733700f0deebd7a2d8216f05810e7f3106cd7372b10ea1f06634aad"
@@ -4703,7 +4703,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 27460,
       "end": 27563,
-      "target": "knowledge/业务/社交/师徒.md",
+      "target": "knowledge/业务/社交/师徒/关系课程与毕业.md",
       "title": "角色成长与社交地宫一致性",
       "original_sha256": "225d0d123f6fc52049d4312fbbb5602508b2f810b77a96947a2343aa98843008",
       "migrated_sha256": "225d0d123f6fc52049d4312fbbb5602508b2f810b77a96947a2343aa98843008"
@@ -5330,7 +5330,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 49597,
       "end": 50642,
-      "target": "knowledge/业务/经济/玩家交易.md",
+      "target": "knowledge/业务/经济/玩家交易/握手报价与房间生命周期.md",
       "title": "玩家直接交易：C4AF..C4C1",
       "original_sha256": "2dfa6c629e1401720520ed059edbec71eba46fcbd1015a88615cfe1ac9cac495",
       "migrated_sha256": "13d29ce43bee23889347165f17f965e1d9a297608c884c25e2f6e58e90de78af"
@@ -5341,7 +5341,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 52264,
       "end": 52723,
-      "target": "knowledge/业务/经济/玩家交易.md",
+      "target": "knowledge/业务/经济/玩家交易/结算取消与客户端兼容.md",
       "title": "玩家直接交易：C4AF..C4C1",
       "original_sha256": "dcdad8a522dc8f8c7a4a91aa479445d8ce961d3d753057dfc6248156ca50b50c",
       "migrated_sha256": "131a49114833778d9f60b2d8dd15940d766ffc50c13ca1617cd3a0e51de3a2e5"
@@ -5352,7 +5352,7 @@
       "source": "knowledge/authority/05-房间与多人同步.md",
       "start": 16293,
       "end": 16589,
-      "target": "knowledge/业务/经济/玩家交易.md",
+      "target": "knowledge/业务/经济/玩家交易/握手报价与房间生命周期.md",
       "title": "玩家直接交易房间路由",
       "original_sha256": "dc2ecf31d367d7c5a906f4ec334cb55189787055c69460ff7e46e67489292a21",
       "migrated_sha256": "065fd968f3473da7610f77535d38ca1e4849fea6c687474ba3757dc3054244f2"
@@ -5363,7 +5363,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 129567,
       "end": 130939,
-      "target": "knowledge/业务/经济/玩家交易.md",
+      "target": "knowledge/业务/经济/玩家交易/结算取消与客户端兼容.md",
       "title": "玩家直接交易的 managed dispatch 闭环",
       "original_sha256": "b7297784aaf633aa1622f27d5016ce3f75ba63a8b0080e9e97f0953bb91e668a",
       "migrated_sha256": "ffaad920b00d1db297eed83770b5bdca8ea37ed80fc4811a4220450fc5c28ab2"
@@ -5374,7 +5374,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 23543,
       "end": 23712,
-      "target": "knowledge/业务/经济/玩家交易.md",
+      "target": "knowledge/业务/经济/玩家交易/结算取消与客户端兼容.md",
       "title": "玩家直接交易验证与安装范围",
       "original_sha256": "bc1e9eca61c9265dcc289ab78141ee1428b066992bd30521a261e659b94632af",
       "migrated_sha256": "bc1e9eca61c9265dcc289ab78141ee1428b066992bd30521a261e659b94632af"
@@ -5385,7 +5385,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 22,
       "end": 391,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/钱包与Hans奖励.md",
       "title": "Boss最终终结的Hans奖励",
       "original_sha256": "510da0d5647dc0d99f390fbfc1951d3071214b11e21b051b9d91497ad97895be",
       "migrated_sha256": "e0377b5598b6ad1bbdcdfdb964b27c908a55134694477c04183f01e4d48b870f"
@@ -5396,7 +5396,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 16746,
       "end": 17392,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/钱包与Hans奖励.md",
       "title": "货币边界",
       "original_sha256": "76fcddb4d15d01fc030a6a509cfe144759cdc738b2e13a59ce7b50fb07c5b070",
       "migrated_sha256": "76fcddb4d15d01fc030a6a509cfe144759cdc738b2e13a59ce7b50fb07c5b070"
@@ -5407,7 +5407,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 17392,
       "end": 17860,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/KR金额与资源边界.md",
       "title": "货币边界 / 韩服击杀金币的数值来源",
       "original_sha256": "714b7aa3926f6b4f2074737c0de7cb7404c1493f28971c50b386ad8ca1795bb5",
       "migrated_sha256": "550c6bce63b8c9e98875cfb89cbcd9af4fa5cda66f82b715a70dcfdc9e2eec1f"
@@ -5418,7 +5418,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 19494,
       "end": 19721,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/CN金币动画与HUD.md",
       "title": "原生汉斯和持久账号策略",
       "original_sha256": "c666dbadccc4d06f4d5b91490ebbb89bf495c2287a0579a96ca433b2850b6c6b",
       "migrated_sha256": "c666dbadccc4d06f4d5b91490ebbb89bf495c2287a0579a96ca433b2850b6c6b"
@@ -5429,7 +5429,7 @@
       "source": "knowledge/authority/07-拾取结算与奖励.md",
       "start": 20195,
       "end": 20346,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/钱包与Hans奖励.md",
       "title": "原生汉斯和持久账号策略",
       "original_sha256": "407f64ad71679b0225c63051eee43145c39203fdf9e5fe03020a1b22817c65ad",
       "migrated_sha256": "347691198a13c3a1834ff50c83cade6af2aa45aa75bf0810cf0a17408281e00d"
@@ -5440,7 +5440,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 88035,
       "end": 89297,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/KR金额与资源边界.md",
       "title": "韩服击杀Hans金额消费链",
       "original_sha256": "c98a9d7d3319c491b9daac43cefac970ba8f6954abfebf6fd4ce78aa9f77012f",
       "migrated_sha256": "385d0ce9e200201e80b3af3c06b6723888b18482d064efa3962315eaeccda9ab"
@@ -5451,7 +5451,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 92926,
       "end": 93190,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/CN金币动画与HUD.md",
       "title": "原生汉斯、卡片、星星和拾取展示 / 秘密Epi4 PET/卡展示排除",
       "original_sha256": "6cdb34e25be1b10569bfb0344e3d6a4cc77508528127618fbeb8e9faddebba67",
       "migrated_sha256": "2524f37fc7990a9ec1d89ec622cc6e0283bf27b7874fbbca00be83e533b759a6"
@@ -5462,7 +5462,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 93250,
       "end": 93331,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/CN金币动画与HUD.md",
       "title": "原生汉斯、卡片、星星和拾取展示 / 秘密Epi4 PET/卡展示排除",
       "original_sha256": "0877a81fc493b526e9bffdfa4b3e99b3b8966b989bb35653697e28f38a315691",
       "migrated_sha256": "c138d460feade2937dcf111406259fdf88e7a77103f5bcb981b9e397faddfc2f"
@@ -5473,7 +5473,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 93410,
       "end": 93483,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/CN金币动画与HUD.md",
       "title": "原生汉斯、卡片、星星和拾取展示 / 秘密Epi4 PET/卡展示排除",
       "original_sha256": "8f1dfdf0b08f1a72348a5d44ac0e62029bb15d47cbb0c87a0e8b1ffee4557000",
       "migrated_sha256": "e214a486c70ed2f3a0f6fbabee60c1d9b94bec44b92a388e2f60b995ea2ef183"
@@ -5484,7 +5484,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 96609,
       "end": 96719,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/CN金币动画与HUD.md",
       "title": "原生汉斯、卡片、星星和拾取展示 / 秘密Epi4 PET/卡展示排除",
       "original_sha256": "8218c51babd19d4b1b410817beee5d301b84ee2ef8093d638417478a1f2e1217",
       "migrated_sha256": "a327f8cff9e7ac50113c7be40f6eab083bf79d0c4eedfbbc3cbc731905472179"
@@ -5495,7 +5495,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 19985,
       "end": 20032,
-      "target": "knowledge/业务/经济/货币.md",
+      "target": "knowledge/业务/经济/货币/钱包与Hans奖励.md",
       "title": "地宫与战斗资源契约",
       "original_sha256": "35933bee04b75ca50353728f1aa1247dba174a39b388dbd6eded6074eade0b29",
       "migrated_sha256": "35933bee04b75ca50353728f1aa1247dba174a39b388dbd6eded6074eade0b29"
@@ -5506,7 +5506,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 53620,
       "end": 54687,
-      "target": "knowledge/业务/角色/任务.md",
+      "target": "knowledge/业务/角色/任务/目录进度与交付事务.md",
       "title": "任务目录、固定主线与奖励事务",
       "original_sha256": "cda0e89774f3a05a5d7a71fe0ba09ba59e4a04710b08a59bba4d82e86eda9c8a",
       "migrated_sha256": "f5106d951f94f44f7dfbcc7f10d71d3a3e3b05b3c27d0a04937cacefc8ad6516"
@@ -5517,7 +5517,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 54687,
       "end": 55657,
-      "target": "knowledge/业务/角色/任务.md",
+      "target": "knowledge/业务/角色/任务/目标分数与多目标验证.md",
       "title": "任务目录、固定主线与奖励事务 / 目标分数任务：资源与当前适配器判定",
       "original_sha256": "781f69b527e73e4d104f107ffeccc3b64345f00b1dc00928faeb35b34727f681",
       "migrated_sha256": "781f69b527e73e4d104f107ffeccc3b64345f00b1dc00928faeb35b34727f681"
@@ -5528,7 +5528,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 127684,
       "end": 128858,
-      "target": "knowledge/业务/角色/任务.md",
+      "target": "knowledge/业务/角色/任务/窗口协议与客户端消费.md",
       "title": "任务窗口与交付边界",
       "original_sha256": "1ac98c2515ab023dc9185f47cab89bbec1ffa154963ebf94d65f97eb435058e2",
       "migrated_sha256": "f59c81f16c22a90569c26e54b53d6a4ffdc77885beff62f3c51f5aa8db2c606e"
@@ -5539,7 +5539,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 1242,
       "end": 1342,
-      "target": "knowledge/业务/角色/任务.md",
+      "target": "knowledge/业务/角色/任务/目录进度与交付事务.md",
       "title": "验证记录的版本边界",
       "original_sha256": "77b64ce5c0e1a996b1ba4c5083235ab6135e1dcbc6bbacb7b1e79ad7b97d155f",
       "migrated_sha256": "d2c7100482a8d5049567d7ec92cbe173252bc94d7d6a64ed9319f7bebe9e9119"
@@ -5847,7 +5847,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 10494,
       "end": 11944,
-      "target": "knowledge/业务/角色/称号.md",
+      "target": "knowledge/业务/角色/称号/持久进度与显示资源.md",
       "title": "副本等级与称号状态",
       "original_sha256": "25921966885b19a0ab8f78d3782a756c0b53ebbfdee8a75ad7393d2f2be99be2",
       "migrated_sha256": "18ac3b2816f23a0a3db0664971cf4d496aed94273d8d64c0c66dab21ae6fc131"
@@ -5858,7 +5858,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 11944,
       "end": 12645,
-      "target": "knowledge/业务/角色/称号.md",
+      "target": "knowledge/业务/角色/称号/持久进度与显示资源.md",
       "title": "副本等级与称号状态 / 称号等级的持久化与显示",
       "original_sha256": "5365120ea485322125af711ee9e0d87cd7710ab4d35bed1c684d1accf9bdc1be",
       "migrated_sha256": "43a80f92a789ead2165486e9e846006f8fa4a365f9cc4cea4ae6bc9f93e57255"
@@ -5869,7 +5869,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 9310,
       "end": 10529,
-      "target": "knowledge/业务/角色/称号.md",
+      "target": "knowledge/业务/角色/称号/城镇位域与资料载体.md",
       "title": "登录、村庄和教程 / 城镇称号与角色等级",
       "original_sha256": "ddbbe795331cf45f866774e0077e8cc25352754cf90aa64d77ec4b80f9be4bdd",
       "migrated_sha256": "6e18d4b2421ebb7ebf632e4f7a5e24d4a97b624d8f8def8fe6d6643b0cc5a7dc"
@@ -5880,7 +5880,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 100450,
       "end": 101446,
-      "target": "knowledge/业务/角色/称号.md",
+      "target": "knowledge/业务/角色/称号/城镇位域与资料载体.md",
       "title": "结算和角色资料结果锚点",
       "original_sha256": "23911af219904112edf6f63b9d30f8437c7f5b205f8dcd4d538be20471f40d1d",
       "migrated_sha256": "111950933650ddde55301fa943c479cd8bc6fe9f5836f5acb4214de783b4b892"
@@ -5891,7 +5891,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 22,
       "end": 539,
-      "target": "knowledge/业务/角色/等级经验/协议载体.md",
+      "target": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md",
       "title": "200级经验状态与内部版本边界",
       "original_sha256": "f41a1927d860a46c5d06f90576b84b1b8439c1795ea2c401e44ef00359c40f94",
       "migrated_sha256": "9d4a3b93f93829236d1d0699046df7bcc02fecbd4ed279ba6cba7f03a909bc51"
@@ -5913,7 +5913,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 6264,
       "end": 8529,
-      "target": "knowledge/业务/角色/等级经验/协议载体.md",
+      "target": "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md",
       "title": "资料载体和验证",
       "original_sha256": "7220f5c9ad46965ed32ccc6e958e00f67b0981876392537b809c09bae41ac9a0",
       "migrated_sha256": "a998618a46e491695c2f61cdd5c8d57c004be5113e5f9f6cc00ca9fdae3458aa"
@@ -5979,7 +5979,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 13451,
       "end": 17034,
-      "target": "knowledge/业务/角色/等级经验/协议载体.md",
+      "target": "knowledge/业务/角色/等级经验/协议载体/客户端经验与HUD消费链.md",
       "title": "玩家经验载体和HUD静态调用链闭合",
       "original_sha256": "93ef67187f55229c6b6d6360bd44c5a700fbb120cf3d8af0e2918a83a5710476",
       "migrated_sha256": "d634d12297fe8e87e4a844c3f848da7d25f3fa2614b22fd2a6523c3664a5d79e"
@@ -5990,7 +5990,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 17034,
       "end": 18290,
-      "target": "knowledge/业务/角色/等级经验/协议载体.md",
+      "target": "knowledge/业务/角色/等级经验/协议载体/显示数值与浮点精度.md",
       "title": "玩家经验载体和HUD静态调用链闭合 / 玩家累计经验数值上界与显示精度",
       "original_sha256": "e81bfc0949262975e6d71b49520f85c0f75528d6fdb1cc8f21f4e6c3fe94ef22",
       "migrated_sha256": "0148e6619a009180e2d910b030d455c33eee8dc3faa388bc47f162df886c4dd9"
@@ -7387,7 +7387,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 24510,
       "end": 24547,
-      "target": "knowledge/工程/客户端兼容/首领血条.md",
+      "target": "knowledge/工程/客户端兼容/BOSS血条.md",
       "title": "基础游戏状态验证",
       "original_sha256": "2fc8f84326d779947973918d76d0b9e705bafeb8c9c2bc14d843009c7993d650",
       "migrated_sha256": "2fc8f84326d779947973918d76d0b9e705bafeb8c9c2bc14d843009c7993d650"
@@ -7420,7 +7420,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 3331,
       "end": 3404,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "卡片整页组合、主动使用与发布范围",
       "original_sha256": "65b23e79b44dbd325588d791a946e608cb467f95befea159bb632526201ca40c",
       "migrated_sha256": "65b23e79b44dbd325588d791a946e608cb467f95befea159bb632526201ca40c"
@@ -7431,7 +7431,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 4153,
       "end": 4282,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/程序与数据配套.md",
       "title": "200级成套发布与数据版本",
       "original_sha256": "7339e6f324583c6f9f933753c9537af660c7c7fc110b8f3e82d1708e7a819300",
       "migrated_sha256": "7339e6f324583c6f9f933753c9537af660c7c7fc110b8f3e82d1708e7a819300"
@@ -7442,7 +7442,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 5235,
       "end": 5291,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "黄金粉末成长与英雄龙寿命",
       "original_sha256": "e5cd73088c47fe999e3df0d53766461b28fb0252b502cfe13d935b71ed12037e",
       "migrated_sha256": "e5cd73088c47fe999e3df0d53766461b28fb0252b502cfe13d935b71ed12037e"
@@ -7453,7 +7453,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 5708,
       "end": 5874,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "验证摘要与历史覆盖",
       "original_sha256": "cabd4b845651f7b93fbd4a366b4d9376f1b4fb3b90cfc41ef20c9a8ce8cf9a14",
       "migrated_sha256": "cabd4b845651f7b93fbd4a366b4d9376f1b4fb3b90cfc41ef20c9a8ce8cf9a14"
@@ -7464,7 +7464,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 7594,
       "end": 7785,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "验证摘要与历史覆盖 / 历史未归属记录：构造验证覆盖",
       "original_sha256": "8ca16bda1b1b29d125b084b1e94386bbfa16bd7c61834258a07c317a02866f6a",
       "migrated_sha256": "8ca16bda1b1b29d125b084b1e94386bbfa16bd7c61834258a07c317a02866f6a"
@@ -7475,7 +7475,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 14273,
       "end": 14396,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/发布身份与清单.md",
       "title": "当前运行结构",
       "original_sha256": "b13705724a4456c316e86c84cd8a1a61fc539a5f9f8edd03a221efc34758895b",
       "migrated_sha256": "b13705724a4456c316e86c84cd8a1a61fc539a5f9f8edd03a221efc34758895b"
@@ -7486,7 +7486,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 14701,
       "end": 15243,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "当前功能",
       "original_sha256": "022d5ae1b83a2e16cac641d064537d1a2974e1c921206bceda7bc98c4f1c32d1",
       "migrated_sha256": "643407dde181ef45407a6c34ba6256eb4f98b420f862e294375986e5a1174e5f"
@@ -7497,7 +7497,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 15300,
       "end": 15384,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "当前功能",
       "original_sha256": "fbf4dfc712778804326c130e82aa86888d020cfeb595ed7538420a76ba6fe571",
       "migrated_sha256": "fbf4dfc712778804326c130e82aa86888d020cfeb595ed7538420a76ba6fe571"
@@ -7508,7 +7508,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 16524,
       "end": 16535,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/发布身份与清单.md",
       "title": "发布产物身份",
       "original_sha256": "13a0fa81d473035f4e96acf58e54639ba98110b8669734f4aa1606ff1875b34a",
       "migrated_sha256": "13a0fa81d473035f4e96acf58e54639ba98110b8669734f4aa1606ff1875b34a"
@@ -7519,7 +7519,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 16535,
       "end": 18156,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/发布身份与清单.md",
       "title": "发布产物身份 / 统一发布包",
       "original_sha256": "f4d8d03bc1edd2f4b2f8a343d097d9ede2e37dfe6ee43705b39f284f37a52719",
       "migrated_sha256": "f4d8d03bc1edd2f4b2f8a343d097d9ede2e37dfe6ee43705b39f284f37a52719"
@@ -7530,7 +7530,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 19505,
       "end": 19554,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "地宫与战斗资源契约",
       "original_sha256": "927a00b49a395a3d749279fd166072bf049c9a69d8f3571a0924c05a45e11fc6",
       "migrated_sha256": "927a00b49a395a3d749279fd166072bf049c9a69d8f3571a0924c05a45e11fc6"
@@ -7541,7 +7541,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 19859,
       "end": 19968,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/发布身份与清单.md",
       "title": "地宫与战斗资源契约",
       "original_sha256": "e707ada88b0240054fd713e8f5ad3bb83eacec54c6a83a9a214b4063e98e0590",
       "migrated_sha256": "e707ada88b0240054fd713e8f5ad3bb83eacec54c6a83a9a214b4063e98e0590"
@@ -7552,7 +7552,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 20985,
       "end": 20996,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "集成发布验证",
       "original_sha256": "b6dde6d9cde11f98ef04bbae9bbecfb7474328813857f7b466154a34a29616a6",
       "migrated_sha256": "b6dde6d9cde11f98ef04bbae9bbecfb7474328813857f7b466154a34a29616a6"
@@ -7563,7 +7563,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 24416,
       "end": 24450,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/发布身份与清单.md",
       "title": "基础游戏状态验证",
       "original_sha256": "41180345595ea7116a2815aae1be9c5e674245ecf6375b471669a03758bebe9e",
       "migrated_sha256": "41180345595ea7116a2815aae1be9c5e674245ecf6375b471669a03758bebe9e"
@@ -7574,7 +7574,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 26982,
       "end": 27058,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/发布身份与清单.md",
       "title": "角色成长与社交地宫一致性",
       "original_sha256": "63ea3e953f69db5de3e0e39616d814929609d56a77f152fedde58aabd6886c8f",
       "migrated_sha256": "63ea3e953f69db5de3e0e39616d814929609d56a77f152fedde58aabd6886c8f"
@@ -7585,7 +7585,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 27865,
       "end": 27948,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/集成范围.md",
       "title": "天空竞技场发布验证",
       "original_sha256": "fc580dd7764655118d020defbe4d2a104b8ef3791279c1af9ed426874fe998ea",
       "migrated_sha256": "fc580dd7764655118d020defbe4d2a104b8ef3791279c1af9ed426874fe998ea"
@@ -7596,7 +7596,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 28024,
       "end": 28052,
-      "target": "knowledge/工程/构建发布.md",
+      "target": "knowledge/工程/构建发布/程序与数据配套.md",
       "title": "天空竞技场发布验证",
       "original_sha256": "07463dd2c75f7c9edd45ba17b14067dbab09a3d9b0bef68b8dc97c3e9ea009a2",
       "migrated_sha256": "07463dd2c75f7c9edd45ba17b14067dbab09a3d9b0bef68b8dc97c3e9ea009a2"
@@ -7816,7 +7816,7 @@
       "source": "knowledge/authority/05-房间与多人同步.md",
       "start": 14940,
       "end": 15036,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "多人运行验证边界",
       "original_sha256": "e084747973a96dc8cc1134d21e8056477687ca89a5b6750fa55c90fe511b99a4",
       "migrated_sha256": "e084747973a96dc8cc1134d21e8056477687ca89a5b6750fa55c90fe511b99a4"
@@ -7827,7 +7827,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 0,
       "end": 16,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "title": "引言",
       "original_sha256": "3f764ac742e7dafc69af0067470286d00d2b6495d5f95b0cc47862189ff0bca5",
       "migrated_sha256": "8ce58d02ffe4baeacf2e7d7d46fcd5ead11c0b18fc55942a70ed6221ea202e98"
@@ -7838,7 +7838,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 16,
       "end": 1242,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "title": "验证记录的版本边界",
       "original_sha256": "dfa3e7013b175096cf35fe5e1c5471647dbc599c203e9cf133c6c81d07c4a485",
       "migrated_sha256": "ef627e38c505cc8cc60a493db449d5c57e31a7d2a8ef46f0395473cc39d785f9"
@@ -7849,7 +7849,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 3404,
       "end": 3436,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "卡片整页组合、主动使用与发布范围",
       "original_sha256": "50f49715c99e10537157a900b546ce08be7fe0db6b6845f6622cea9fed29d928",
       "migrated_sha256": "50f49715c99e10537157a900b546ce08be7fe0db6b6845f6622cea9fed29d928"
@@ -7860,7 +7860,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 3917,
       "end": 3964,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "连续挑战客户端兼容与安装",
       "original_sha256": "20183e0cebff55bdf14988440e75d6b1776bf7f78705e6ab227a52682ea815e3",
       "migrated_sha256": "20183e0cebff55bdf14988440e75d6b1776bf7f78705e6ab227a52682ea815e3"
@@ -7871,7 +7871,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 4070,
       "end": 4153,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "连续挑战客户端兼容与安装",
       "original_sha256": "2a0d4b513b49fbba4af47d64d99d6edd69a3edc4ce2d27355d5e7dc0da214e07",
       "migrated_sha256": "2a0d4b513b49fbba4af47d64d99d6edd69a3edc4ce2d27355d5e7dc0da214e07"
@@ -7882,7 +7882,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 5291,
       "end": 5371,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "黄金粉末成长与英雄龙寿命",
       "original_sha256": "207ca4af663bdd9cddbf62f51b8cdb93a235dc11f277b97567cf170db3d878a1",
       "migrated_sha256": "207ca4af663bdd9cddbf62f51b8cdb93a235dc11f277b97567cf170db3d878a1"
@@ -7893,7 +7893,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 8625,
       "end": 8722,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "验证摘要与历史覆盖 / 历史未归属记录：构造验证覆盖",
       "original_sha256": "639fe51fffb5fb8bd5b1f495e55936f5a83832ab10eb2da4b6aa76ab6551fcf2",
       "migrated_sha256": "639fe51fffb5fb8bd5b1f495e55936f5a83832ab10eb2da4b6aa76ab6551fcf2"
@@ -7904,7 +7904,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 14680,
       "end": 14701,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "装备登录初始化",
       "original_sha256": "6f674cc8fdb4828a27eb227cee8819e7379062d5243809fc9490bc3a47d9e63e",
       "migrated_sha256": "6f674cc8fdb4828a27eb227cee8819e7379062d5243809fc9490bc3a47d9e63e"
@@ -7915,7 +7915,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 19567,
       "end": 19602,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "地宫与战斗资源契约",
       "original_sha256": "71d4fef3320384e77fc48694ee25d2b3a7e06382f2617ad39510c363eeceed70",
       "migrated_sha256": "71d4fef3320384e77fc48694ee25d2b3a7e06382f2617ad39510c363eeceed70"
@@ -7926,7 +7926,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 19968,
       "end": 19985,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "地宫与战斗资源契约",
       "original_sha256": "8ad524e973416d2a276511ff99e402eef84f63949d8e83a581e8c9735c44f0e9",
       "migrated_sha256": "8ad524e973416d2a276511ff99e402eef84f63949d8e83a581e8c9735c44f0e9"
@@ -7937,7 +7937,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 20393,
       "end": 20539,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "title": "验证范围",
       "original_sha256": "9e6e210c8ca119855d75c4f9a9ac26a107d3c7862d52cd21649d02c93e5d09be",
       "migrated_sha256": "9e6e210c8ca119855d75c4f9a9ac26a107d3c7862d52cd21649d02c93e5d09be"
@@ -7948,7 +7948,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 20641,
       "end": 20686,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "title": "验证范围",
       "original_sha256": "e7333c5bbc25a07c909049fa1726f7b9869ae23c132214709a69dc6c5a55ecbe",
       "migrated_sha256": "e7333c5bbc25a07c909049fa1726f7b9869ae23c132214709a69dc6c5a55ecbe"
@@ -7959,7 +7959,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 20737,
       "end": 20852,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "title": "验证范围",
       "original_sha256": "023d17b78ec13fb91257d861fe6e63e88aa8202d7fe157e07000ec367aa9c9c3",
       "migrated_sha256": "023d17b78ec13fb91257d861fe6e63e88aa8202d7fe157e07000ec367aa9c9c3"
@@ -7970,7 +7970,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 20852,
       "end": 20985,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "title": "主题归属",
       "original_sha256": "56269e498f261de3632f9b725478339c9ead44da6c3e0c76e3bdc4bbf1a9f295",
       "migrated_sha256": "929ece97960591ec7bda58646a4ff7c3c617f92ef797451d1e601d0180b5ceb6"
@@ -7981,7 +7981,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 21185,
       "end": 21283,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "集成发布验证",
       "original_sha256": "37a6dc98d7f50af68a0a497f0a485318f0f73c41f8e45ddbd98aa7224b860f37",
       "migrated_sha256": "693c9de2e06dac31e86e9c4d97f14750acc53f86a992a7a05c3e96fa84d3b671"
@@ -7992,7 +7992,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 21550,
       "end": 21646,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "集成发布验证 / 故事引导资源一致性集成与验收",
       "original_sha256": "21f2e5b1fcd931e9d11e40954985bbf9092b28475711d23b743c8b7e8074a876",
       "migrated_sha256": "21f2e5b1fcd931e9d11e40954985bbf9092b28475711d23b743c8b7e8074a876"
@@ -8003,7 +8003,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 23239,
       "end": 23265,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "社交集成验证",
       "original_sha256": "8c4ea3f517f6779c00d728db7a6884771f34ad97f73eb795f9f560492d007f0b",
       "migrated_sha256": "8c4ea3f517f6779c00d728db7a6884771f34ad97f73eb795f9f560492d007f0b"
@@ -8014,7 +8014,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 23473,
       "end": 23543,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "社交状态专项验证",
       "original_sha256": "49c7179e588e1ecdbbcc08b5a282cc48ede22cbdce01ba740b5dfd19a984295a",
       "migrated_sha256": "49c7179e588e1ecdbbcc08b5a282cc48ede22cbdce01ba740b5dfd19a984295a"
@@ -8025,7 +8025,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 24136,
       "end": 24149,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "title": "基础游戏状态验证",
       "original_sha256": "3a97172a9666dfd531c813353a66fb9e6e822e0f6ac99cc2eb73219c861182cc",
       "migrated_sha256": "3a97172a9666dfd531c813353a66fb9e6e822e0f6ac99cc2eb73219c861182cc"
@@ -8036,7 +8036,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 24262,
       "end": 24291,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "基础游戏状态验证",
       "original_sha256": "940ddea278fc12272c81efa8696be21afc083e4c4dae616bd79fed5acd3585ee",
       "migrated_sha256": "940ddea278fc12272c81efa8696be21afc083e4c4dae616bd79fed5acd3585ee"
@@ -8047,7 +8047,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 24382,
       "end": 24416,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/层级与版本归属.md",
       "title": "基础游戏状态验证",
       "original_sha256": "19fa9614f42acb9680ac46e0c5994818df1887b058006fa4c659557d019f13b1",
       "migrated_sha256": "19fa9614f42acb9680ac46e0c5994818df1887b058006fa4c659557d019f13b1"
@@ -8058,7 +8058,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 24866,
       "end": 24966,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "竞技、娱乐、师徒与交易验证范围",
       "original_sha256": "bed6f7cce612bda9e56e9cf42515e1e8478d0157fa6e3dababb20bd3ec2ffe26",
       "migrated_sha256": "5b9bb79aba582e7df01ad0f2d240af2b5b22a83c339e1e28e65aa00e0183df1c"
@@ -8069,7 +8069,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 25390,
       "end": 25445,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "基础玩法状态闭环",
       "original_sha256": "85b6d98511bb6d3c4c70fa9b62194ffd58cdef7c88de3e8b55fbef8d38a2e1f6",
       "migrated_sha256": "85b6d98511bb6d3c4c70fa9b62194ffd58cdef7c88de3e8b55fbef8d38a2e1f6"
@@ -8080,7 +8080,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 26080,
       "end": 26137,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "水柱接触伤害与同房复活验证",
       "original_sha256": "90e95496abf040c9af6054fcbb69814af4729aa29ad98330eb7cd4b36fc44d3c",
       "migrated_sha256": "90e95496abf040c9af6054fcbb69814af4729aa29ad98330eb7cd4b36fc44d3c"
@@ -8091,7 +8091,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 26570,
       "end": 26620,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "复活布局、固定减伤与排行榜验证",
       "original_sha256": "8fdd4b97d9d49d2b7ee80b1142ec398251c69f0b9065aa7d3e6e828759403398",
       "migrated_sha256": "8fdd4b97d9d49d2b7ee80b1142ec398251c69f0b9065aa7d3e6e828759403398"
@@ -8102,7 +8102,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 26937,
       "end": 26965,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "可选子弹 DIY 发布边界",
       "original_sha256": "8842f5da2c743ceecf42bb30331ee3bc8d21baa7365830d67eb2e4f0cba7cc84",
       "migrated_sha256": "8842f5da2c743ceecf42bb30331ee3bc8d21baa7365830d67eb2e4f0cba7cc84"
@@ -8113,7 +8113,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 27563,
       "end": 27623,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "角色成长与社交地宫一致性",
       "original_sha256": "23ef61bfb42d7025192a52bb4908d3200f23c1004a7478220021145b8108d4e6",
       "migrated_sha256": "23ef61bfb42d7025192a52bb4908d3200f23c1004a7478220021145b8108d4e6"
@@ -8124,7 +8124,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 28300,
       "end": 28428,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "天空竞技场发布验证",
       "original_sha256": "eae48fb6b8832e70ea2fb15915d5347c0c4b2eaf51958ed41451ae9002c47a97",
       "migrated_sha256": "eae48fb6b8832e70ea2fb15915d5347c0c4b2eaf51958ed41451ae9002c47a97"
@@ -8135,7 +8135,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 28580,
       "end": 28681,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "天空竞技场发布验证",
       "original_sha256": "208c577dfd0a02b96ecdc11bbccf10752f090c4d202bcf9845b1ae66ac28dc4b",
       "migrated_sha256": "294c4cf74d67fd577a121967dcfab95bbc670ac2bc781b6b9954ee4e87993507"
@@ -8146,7 +8146,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 29496,
       "end": 29600,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "天空竞技场发布验证",
       "original_sha256": "5befb824badbcde179d2c8214760a879c91bca31e9d93404b27e4fff573c8a60",
       "migrated_sha256": "5befb824badbcde179d2c8214760a879c91bca31e9d93404b27e4fff573c8a60"
@@ -8157,7 +8157,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 29817,
       "end": 29851,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/社交竞技与娱乐验收.md",
       "title": "准备房信息与库存验证",
       "original_sha256": "ec860136156fa9cf4662fa95544a8dcfeaea63413bf32547942bbac5bbc18597",
       "migrated_sha256": "ec860136156fa9cf4662fa95544a8dcfeaea63413bf32547942bbac5bbc18597"
@@ -8168,7 +8168,7 @@
       "source": "knowledge/authority/09-运行配置与验证.md",
       "start": 29983,
       "end": 30001,
-      "target": "knowledge/工程/验证状态.md",
+      "target": "knowledge/工程/验证状态/地宫与成长验收.md",
       "title": "准备房信息与库存验证",
       "original_sha256": "1f7de767f8d7c01d00eb803f37289efa2b12a66e1c876c8970c4c064963a5681",
       "migrated_sha256": "1f7de767f8d7c01d00eb803f37289efa2b12a66e1c876c8970c4c064963a5681"
