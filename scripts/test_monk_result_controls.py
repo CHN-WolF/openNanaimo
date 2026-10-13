@@ -18,7 +18,7 @@ class ResultControlChecks(unittest.TestCase):
         # Native drawing tails from CShootingGameRoom::Draw at 0x70F610.
         cases=(('monk_room_stage_name',0x438,r.TITLE_STRINGS,107,19,0xFFE088,
                 '506A136A6BE80D53D0FF8BC8E8B3E2CFFF',
-                ('龙飞峡谷','坎扎峡谷','塔坦卡峡谷','白杜马山')),
+                ('龙飞峡谷','坎泽峡谷','踏坦峡谷','白豹山')),
                ('monk_room_boss_name',0x53C,r.BOSS_STRINGS,362,38,0xFFFFFF,
                 '506A26686A010000E83850D0FF8BC8E8DEDFCFFF',
                 ('废铁巨人','提诺战机','死亡骑士','迷你比克')))

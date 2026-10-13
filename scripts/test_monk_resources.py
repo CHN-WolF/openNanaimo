@@ -145,6 +145,50 @@ class FormatTests(unittest.TestCase):
 
 
 class LocalizationTests(unittest.TestCase):
+    def test_current_catalog_pins_and_previous_receipts_remain_verifiable(self):
+        outputs = monk.localized_resources(monk.io.load(monk.LOCALIZATION))
+        for name in ('monk_resource_port.json', 'monk_challenge_resources.json'):
+            path = ROOT / 'manifest' / name
+            recipe = monk.io.load(path)
+            for group in (recipe, *recipe.get('stages', [])):
+                pins = {row['path']: row for row in group['files']}
+                for rel, raw in outputs.items():
+                    self.assertEqual((pins[rel]['output_size'], pins[rel]['output_sha256']),
+                                     (len(raw), monk.io.digest(raw)))
+            for sha, old in recipe['compatible_localizations'].items():
+                replacements = {row['path']: row for row in old['files']}
+                excluded = recipe.get('compatible_recipe_revisions', {}).get(sha, {}).get('excluded_files', [])
+                pins = [replacements.get(row['path'], row) for row in recipe['files']
+                        if row['path'] not in excluded]
+                manifest = dict(schema=monk.SCHEMA, runtime_accepted=False, recipe_sha256=sha,
+                                localization_sha256=old['localization_sha256'][0],
+                                preserve_cn=recipe['preserve_cn'],
+                                files=[dict(path=row['path'], size=row['output_size'],
+                                            sha256=row['output_sha256'], before_sha256=None,
+                                            transform=row['transform']) for row in pins])
+                manifest['id'] = monk.io.digest(monk.io.encoded(manifest))
+                with mock.patch.object(monk, 'RECIPE', path):
+                    monk.validate_manifest(manifest)
+                    manifest['files'][0]['sha256'] = '0' * 64
+                    del manifest['id']
+                    manifest['id'] = monk.io.digest(monk.io.encoded(manifest))
+                    with self.assertRaisesRegex(ValueError, 'resource differs'):
+                        monk.validate_manifest(manifest)
+
+    def test_map_names_match_game_localization(self):
+        local = monk.io.load(monk.LOCALIZATION)
+        stages = ['\u9f99\u98de\u5ce1\u8c37', '\u574e\u6cfd\u5ce1\u8c37',
+                  '\u8e0f\u5766\u5ce1\u8c37', '\u767d\u8c79\u5c71']
+        village = '\u666e\u62c9\u5854\u8bfa\u65af\u6751'
+        self.assertEqual(local['stage_names'], stages)
+        self.assertEqual(local['villages'][0], village)
+        for index, stage in enumerate(stages):
+            self.assertEqual(local['game_strings'][str(2504 + index)], stage)
+            self.assertIn(stage, local['quest_strings'][str(4000 + index)])
+            self.assertIn(stage, local['quest_strings'][str(6000 + 3 * index)])
+        for uid in ('4000', '6000', '6002'):
+            self.assertIn(village, local['quest_strings'][uid])
+
     def test_gbk_json_and_complete_dialogue(self):
         raw = monk.LOCALIZATION.read_text('utf-8')
         self.assertEqual(json.loads(raw.encode('gbk').decode('gbk')), json.loads(raw))

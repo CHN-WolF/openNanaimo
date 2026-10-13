@@ -50,10 +50,26 @@ def dialogue_pages(text):
             for i in range(0, len(lines), 3)]
 
 
-def legacy_payload(mark_return=False):
+def localization(legacy_names=False):
+    local = json.loads((ROOT / 'manifest/monk_localization.json').read_text('utf-8'))
+    if legacy_names:
+        # Reproduce released bytes only for exact old-patch migration.
+        names = {'\u574e\u6cfd\u5ce1\u8c37': '\u574e\u624e\u5ce1\u8c37',
+                 '\u8e0f\u5766\u5ce1\u8c37': '\u5854\u5766\u5361\u5ce1\u8c37',
+                 '\u767d\u8c79\u5c71': '\u767d\u675c\u9a6c\u5c71',
+                 '\u666e\u62c9\u5854\u8bfa\u65af\u6751': '\u68a7\u6850\u6751'}
+        for catalog in ('quest_strings', 'game_strings'):
+            for uid, text in local[catalog].items():
+                for current, old in names.items():
+                    text = text.replace(current, old)
+                local[catalog][uid] = text
+    return local
+
+
+def legacy_payload(mark_return=False, legacy_names=False):
     """Exact released confirmation-window encoding, accepted only for migration."""
     TEXT = BASE + 0xA00
-    local = json.loads((ROOT / 'manifest/monk_localization.json').read_text('utf-8'))
+    local = localization(legacy_names)
     data = bytearray(b'\xCC' * SPAN)
     def put(at, value, limit):
         if len(value) > limit: raise ValueError('monk dialogue region overflow')
@@ -174,11 +190,11 @@ def guide_pages(text):
 
 
 def payload(legacy_guide=False, legacy_lifetime=False, legacy_scene=False, legacy_gameplay=False,
-            legacy_portrait=False):
+            legacy_portrait=False, legacy_names=False):
     legacy_gameplay = legacy_gameplay or legacy_guide or legacy_lifetime or legacy_scene
     legacy_portrait = legacy_portrait or legacy_gameplay
     legacy_scene = legacy_scene or legacy_guide or legacy_lifetime
-    local = json.loads((ROOT / 'manifest/monk_localization.json').read_text('utf-8'))
+    local = localization(legacy_names)
     data = bytearray(b'\xCC' * SPAN)
     def put(at, value, limit):
         if len(value) > limit:
@@ -355,7 +371,7 @@ def payload(legacy_guide=False, legacy_lifetime=False, legacy_scene=False, legac
         # Native 0x7EC5C0 sweeps vtable+12 every frame, before drawing.
         # Only explicit close/entry marks +0x34 as 2; an open page is 1.
         put(CLOSED, bytes.fromhex('66837934020F94C00FB6C0C3'), 0x100)
-    old = legacy_payload(mark_return=not legacy_portrait)
+    old = legacy_payload(mark_return=not legacy_portrait, legacy_names=legacy_names)
     put(RETURN, old[RETURN-BASE:RETURN-BASE+0x100], 0x100)
     return bytes(data)
 
@@ -384,10 +400,10 @@ ROOM_NAME, ROOM_BOSS = EXT_BASE+0x1000, EXT_BASE+0x1080
 ROOM_NUMBER, BOSS_STRINGS = EXT_BASE+0x13A0, EXT_BASE+0x13C0
 
 
-def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False):
+def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False, legacy_names=False):
     legacy_room = legacy_room or legacy_portrait
     data = bytearray(b'\xCC' * EXT_SPAN)
-    local = json.loads((ROOT/'manifest/monk_localization.json').read_text('utf-8'))
+    local = localization(legacy_names)
     def put(at, raw, limit):
         if len(raw)>limit: raise ValueError(f'gameplay region overflow {at:x}: {len(raw)} > {limit}')
         data[at-EXT_BASE:at-EXT_BASE+len(raw)] = raw
@@ -505,14 +521,14 @@ RESULT_STATE, OUTCOME_TABLE, OUTCOME_TEXT = FOLLOW_BASE+0x900, FOLLOW_BASE+0xA00
 # State DWORDs: armed, pending row, episode, UID, returned, origin village/page.
 
 
-def followup_payload(legacy_portrait=False):
+def followup_payload(legacy_portrait=False, legacy_names=False):
     data=bytearray(b'\xCC'*FOLLOW_SPAN)
     def put(at, raw, limit):
         if len(raw)>limit: raise ValueError(f'followup region overflow {at:x}: {len(raw)} > {limit}')
         data[at-FOLLOW_BASE:at-FOLLOW_BASE+len(raw)]=raw
     def jump(c,at): c.emit(b'\xE9'+struct.pack('<i',at-c.base-len(c.data)-5))
     put(RESULT_STATE,b'\0'*64,64)
-    local=json.loads((ROOT/'manifest/monk_localization.json').read_text('utf-8'))
+    local=localization(legacy_names)
     cursor=OUTCOME_TEXT
     for village in range(4):
         for outcome in range(2):

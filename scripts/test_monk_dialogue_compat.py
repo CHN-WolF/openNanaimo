@@ -145,15 +145,15 @@ class DialogueChecks(unittest.TestCase):
         legacy=bytearray(raw)
         at=compat._va_offset(legacy,r.BASE,r.SPAN)
         legacy[at:at+r.SPAN]=r.legacy_payload()
-        self.assertEqual(hashlib.sha256(r.legacy_payload()).hexdigest(),
+        self.assertEqual(hashlib.sha256(r.legacy_payload(legacy_names=True)).hexdigest(),
                          '2f49189e78ac9d28723d60252759312369951bf50f78578aa390e0c9524664e0')
         self.assertEqual(changed,compat.patch_monk_dialogue(bytes(legacy))[0])
         legacy[at:at+r.SPAN]=r.payload(legacy_guide=True)
-        self.assertEqual(hashlib.sha256(r.payload(True)).hexdigest(),
+        self.assertEqual(hashlib.sha256(r.payload(True, legacy_names=True)).hexdigest(),
                          'e97bee081a8139f44ba1ea6d2b81f54d8a759f8a2f3a0b4d432e618821ec6640')
         self.assertEqual(changed,compat.patch_monk_dialogue(bytes(legacy))[0])
         legacy[at:at+r.SPAN]=r.payload(legacy_lifetime=True)
-        self.assertEqual(hashlib.sha256(r.payload(legacy_lifetime=True)).hexdigest(),
+        self.assertEqual(hashlib.sha256(r.payload(legacy_lifetime=True, legacy_names=True)).hexdigest(),
                          '95722048998a9f275f0d7298be065b37430c89af35ee1124c2ccbfd7adcf7181')
         self.assertEqual(changed,compat.patch_monk_dialogue(bytes(legacy))[0])
         for payload in (r.gameplay_payload(legacy_room=True),r.gameplay_payload(legacy_portrait=True)):
@@ -163,11 +163,34 @@ class DialogueChecks(unittest.TestCase):
             at=compat._va_offset(legacy,0x737DAD,5)
             legacy[at:at+5]=b'\xE8'+struct.pack('<i',r.READY_TITLE-0x737DAD-5)
             self.assertEqual(changed,compat.patch_monk_dialogue(bytes(legacy))[0])
+        old_names = bytearray(changed)
+        for va, build in ((r.BASE, r.payload), (r.EXT_BASE, r.gameplay_payload),
+                          (r.FOLLOW_BASE, r.followup_payload)):
+            previous = build(legacy_names=True)
+            at = compat._va_offset(old_names, va, len(previous))
+            old_names[at:at+len(previous)] = previous
+        self.assertNotEqual(bytes(old_names), changed)
+        self.assertEqual(changed, compat.patch_monk_dialogue(bytes(old_names))[0])
         for name,va,old,new in r.sites():
             at=compat._va_offset(raw,va,len(old)); self.assertEqual(changed[at:at+len(new)],new)
             bad=bytearray(raw); bad[at]^=1
             with self.subTest(site=name),self.assertRaises(compat.CompatibilityError):
                 compat.patch_monk_dialogue(bytes(bad))
+
+    def test_embedded_game_dialogue_uses_current_names(self):
+        local = r.localization()
+        data = r.payload()
+        followup = r.followup_payload()
+        for village in range(4):
+            pointer, count = struct.unpack_from('<2I', data, r.TABLE-r.BASE+village*32+24)
+            text = b''.join(data[pointer-r.BASE+i*51:pointer-r.BASE+(i+1)*51].rstrip(b'\0')
+                            for i in range(count*4)).decode('gbk')
+            self.assertIn(local['stage_names'][village], text)
+            self.assertIn(local['villages'][village], text)
+        pointer, count = struct.unpack_from('<2I', followup, r.OUTCOME_TABLE-r.FOLLOW_BASE+32+24)
+        text = b''.join(followup[pointer-r.FOLLOW_BASE+i*51:pointer-r.FOLLOW_BASE+(i+1)*51].rstrip(b'\0')
+                        for i in range(count*4)).decode('gbk')
+        self.assertIn(local['villages'][0], text)
 
     def test_ready_room_selects_challenge_resources_in_all_four_villages(self):
         self.m.mem_write(0x73AFE0,bytes.fromhex('8B442404898148E501008BC1C20400'))
@@ -427,7 +450,7 @@ class VisualChecks(unittest.TestCase):
                 sp=m.reg_read(x.UC_X86_REG_ESP);ptr=self.get(sp+12)
                 calls.append((self.get(sp+4),self.get(sp+8),bytes(m.mem_read(ptr,32)).split(b'\0')[0].decode('gbk')))
         self.m.hook_add(uc.UC_HOOK_CODE,record)
-        for ep,title in enumerate(('龙飞峡谷','坎扎峡谷','塔坦卡峡谷','白杜马山'),24):
+        for ep,title in enumerate(('龙飞峡谷','坎泽峡谷','踏坦峡谷','白豹山'),24):
             self.put(manager+0x1E530,0);self.put(manager+0x1E534,ep);self.put(manager+0x1E538,0)
             calls.clear();self.run_code(r.READY_TITLE);self.assertEqual(calls,[])
             self.m.reg_write(x.UC_X86_REG_ESP,self.stack)

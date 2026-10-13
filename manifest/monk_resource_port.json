@@ -127,8 +127,8 @@
       "path": ".openNanaimo-monk/monk_action._S1",
       "source_path": "manifest/monk_localization.json",
       "source_scope": "repository",
-      "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
-      "source_size": 5493,
+      "source_sha256": "aa6da987927216f203eaebc1014665e1695ecb4c046993c6201cf5675c9bf393",
+      "source_size": 5534,
       "transform": "localized-cn-placeholder"
     },
     {
@@ -137,28 +137,28 @@
       "path": ".openNanaimo-monk/monk_action.xml",
       "source_path": "manifest/monk_localization.json",
       "source_scope": "repository",
-      "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
-      "source_size": 5493,
+      "source_sha256": "aa6da987927216f203eaebc1014665e1695ecb4c046993c6201cf5675c9bf393",
+      "source_size": 5534,
       "transform": "localized-cn-placeholder"
     },
     {
-      "output_sha256": "bd09e0f7e9d254becd8e2f1e76955439780acbedcedbd4df060b8e22c3539ab6",
+      "output_sha256": "cb579c48271758ab772f0d9300d07fbff64f6f71edc3d3634afd0c759d2ad079",
       "output_size": 144,
       "path": ".openNanaimo-monk/monk_gs._D20",
       "source_path": "manifest/monk_localization.json",
       "source_scope": "repository",
-      "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
-      "source_size": 5493,
+      "source_sha256": "aa6da987927216f203eaebc1014665e1695ecb4c046993c6201cf5675c9bf393",
+      "source_size": 5534,
       "transform": "localized-cn-placeholder"
     },
     {
-      "output_sha256": "304985b9cf89f2611690069ad07b97127d53097f975f3f5be188f84757b8d22a",
+      "output_sha256": "1c5a57473d544f48bf91f70e509f737a4a184d6692f5551c3c5029ceb0c8624e",
       "output_size": 2368,
       "path": ".openNanaimo-monk/monk_qs._D31",
       "source_path": "manifest/monk_localization.json",
       "source_scope": "repository",
-      "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
-      "source_size": 5493,
+      "source_sha256": "aa6da987927216f203eaebc1014665e1695ecb4c046993c6201cf5675c9bf393",
+      "source_size": 5534,
       "transform": "localized-cn-placeholder"
     },
     {
@@ -4260,6 +4260,106 @@
         "effs/game/shootinggamebasic/fly_ef_smoke_00.im3",
         "effs/game/shootinggamebasic/fly_ef_smoke_0001.eff",
         "effs/game/shootinggamebasic/hu00_dg00_obj_oiltong_ef.eff"
+      ]
+    }
+  },
+  "compatible_localizations": {
+    "1945d74e5687f90234bb80c7fca1c73391265977690646ee055a23ccafe5d895": {
+      "files": [
+        {
+          "output_sha256": "c6351eb193e4901dd342a47f7ec991cf5911932e122a3a1b721ce9f9b4c91d38",
+          "output_size": 2480,
+          "path": ".openNanaimo-monk/monk_action._S1",
+          "source_path": "manifest/monk_localization.json",
+          "source_scope": "repository",
+          "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+          "source_size": 5493,
+          "transform": "localized-cn-placeholder"
+        },
+        {
+          "output_sha256": "4e34802a02b34911249e56e9e3cd0ae0cad4d21e1b0f5d6c89c48b7e62d24f44",
+          "output_size": 2479,
+          "path": ".openNanaimo-monk/monk_action.xml",
+          "source_path": "manifest/monk_localization.json",
+          "source_scope": "repository",
+          "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+          "source_size": 5493,
+          "transform": "localized-cn-placeholder"
+        },
+        {
+          "output_sha256": "bd09e0f7e9d254becd8e2f1e76955439780acbedcedbd4df060b8e22c3539ab6",
+          "output_size": 144,
+          "path": ".openNanaimo-monk/monk_gs._D20",
+          "source_path": "manifest/monk_localization.json",
+          "source_scope": "repository",
+          "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+          "source_size": 5493,
+          "transform": "localized-cn-placeholder"
+        },
+        {
+          "output_sha256": "304985b9cf89f2611690069ad07b97127d53097f975f3f5be188f84757b8d22a",
+          "output_size": 2368,
+          "path": ".openNanaimo-monk/monk_qs._D31",
+          "source_path": "manifest/monk_localization.json",
+          "source_scope": "repository",
+          "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+          "source_size": 5493,
+          "transform": "localized-cn-placeholder"
+        }
+      ],
+      "localization_sha256": [
+        "61071c053881300802170c2d8331df89f587f255c1cdfe914076ff04de136dca",
+        "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+        "fa73c1fc8c0c853cd646909ab214b3e5edc1909146f1ac70781e4c667525a5a6"
+      ]
+    },
+    "cff65959914a645201dc22a90e081e6c648ce2d3645f9e0d16783c16e1ab9a1c": {
+      "files": [
+        {
+          "output_sha256": "c6351eb193e4901dd342a47f7ec991cf5911932e122a3a1b721ce9f9b4c91d38",
+          "output_size": 2480,
+          "path": ".openNanaimo-monk/monk_action._S1",
+          "source_path": "manifest/monk_localization.json",
+          "source_scope": "repository",
+          "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+          "source_size": 5493,
+          "transform": "localized-cn-placeholder"
+        },
+        {
+          "output_sha256": "4e34802a02b34911249e56e9e3cd0ae0cad4d21e1b0f5d6c89c48b7e62d24f44",
+          "output_size": 2479,
+          "path": ".openNanaimo-monk/monk_action.xml",
+          "source_path": "manifest/monk_localization.json",
+          "source_scope": "repository",
+          "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+          "source_size": 5493,
+          "transform": "localized-cn-placeholder"
+        },
+        {
+          "output_sha256": "bd09e0f7e9d254becd8e2f1e76955439780acbedcedbd4df060b8e22c3539ab6",
+          "output_size": 144,
+          "path": ".openNanaimo-monk/monk_gs._D20",
+          "source_path": "manifest/monk_localization.json",
+          "source_scope": "repository",
+          "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+          "source_size": 5493,
+          "transform": "localized-cn-placeholder"
+        },
+        {
+          "output_sha256": "304985b9cf89f2611690069ad07b97127d53097f975f3f5be188f84757b8d22a",
+          "output_size": 2368,
+          "path": ".openNanaimo-monk/monk_qs._D31",
+          "source_path": "manifest/monk_localization.json",
+          "source_scope": "repository",
+          "source_sha256": "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+          "source_size": 5493,
+          "transform": "localized-cn-placeholder"
+        }
+      ],
+      "localization_sha256": [
+        "61071c053881300802170c2d8331df89f587f255c1cdfe914076ff04de136dca",
+        "7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e",
+        "fa73c1fc8c0c853cd646909ab214b3e5edc1909146f1ac70781e4c667525a5a6"
       ]
     }
   }

@@ -459,7 +459,9 @@ def _plan_stage(source, client, recipe, localization, *, check_pins=True):
                             source_size=node['size'], output_sha256=io.digest(raw), output_size=len(raw),
                             transform=transform))
     for rel, raw in localized_resources(localization).items():
-        if io.file_hash(io.safe(client, rel)) not in (None, io.digest(raw)):
+        previous = {row['output_sha256'] for old in recipe.get('compatible_localizations', {}).values()
+                    for row in old['files'] if row['path'] == rel}
+        if io.file_hash(io.safe(client, rel)) not in (None, io.digest(raw), *previous):
             raise ValueError('standalone localization conflict: ' + rel)
         data[rel] = raw
         records.append(dict(path=rel, source_path='manifest/monk_localization.json',
@@ -522,11 +524,17 @@ def validate_manifest(manifest):
         raise ValueError('manifest identity mismatch')
     recipe = io.load(RECIPE)
     legacy = recipe.get('compatible_recipe_revisions', {}).get(manifest.get('recipe_sha256'))
-    if manifest.get('recipe_sha256') != io.digest(RECIPE.read_bytes()) and legacy is None:
+    old_local = recipe.get('compatible_localizations', {}).get(manifest.get('recipe_sha256'))
+    if manifest.get('recipe_sha256') != io.digest(RECIPE.read_bytes()) and legacy is None and old_local is None:
         raise ValueError('unrecognized monk recipe/localization')
+    if old_local is not None:
+        if manifest.get('localization_sha256') not in old_local['localization_sha256']:
+            raise ValueError('unrecognized legacy monk localization')
+        replacements = {row['path']: row for row in old_local['files']}
+        recipe = dict(recipe, files=[replacements.get(row['path'], row) for row in recipe['files']])
     if legacy is not None:
         recipe = dict(recipe, files=[r for r in recipe['files'] if r['path'] not in legacy['excluded_files']])
-    if manifest.get('localization_sha256') != io.digest(LOCALIZATION.read_bytes()):
+    if old_local is None and manifest.get('localization_sha256') != io.digest(LOCALIZATION.read_bytes()):
         if manifest.get('localization_sha256') not in LOCALIZATION_METADATA_REVISIONS:
             raise ValueError('unrecognized monk recipe/localization')
         pins = {row['path']: row for row in recipe['files']}
@@ -549,7 +557,9 @@ def validate_manifest(manifest):
         pin = pinned.get(name)
         if pin is None or (row['sha256'], row['size'], row['transform']) != (pin['output_sha256'], pin['output_size'], pin['transform']):
             raise ValueError('resource differs from pinned recipe: ' + name)
-        if row['before_sha256'] not in (None, row['sha256']):
+        previous = {item['output_sha256'] for old in recipe.get('compatible_localizations', {}).values()
+                    for item in old['files'] if item['path'] == name}
+        if row['before_sha256'] not in (None, row['sha256'], *previous):
             raise ValueError('non-additive monk resource')
     for row in manifest['preserve_cn']:
         io.safe(ROOT, row['path'])

@@ -706,6 +706,19 @@ def patch_monk_dialogue(data: bytes) -> tuple[bytes, dict]:
         if va == monk_dialogue_compat.EXT_BASE:
             known += (monk_dialogue_compat.gameplay_payload(legacy_portrait=True),
                       monk_dialogue_compat.gameplay_payload(legacy_room=True))
+        if va == monk_dialogue_compat.BASE:
+            known += (monk_dialogue_compat.legacy_payload(legacy_names=True),
+                      monk_dialogue_compat.payload(legacy_names=True))
+            known += tuple(monk_dialogue_compat.payload(legacy_names=True, **{flag: True})
+                           for flag in ('legacy_guide', 'legacy_lifetime', 'legacy_scene',
+                                        'legacy_gameplay', 'legacy_portrait'))
+        if va == monk_dialogue_compat.FOLLOW_BASE:
+            known += tuple(monk_dialogue_compat.followup_payload(legacy_names=True, legacy_portrait=old)
+                           for old in (False, True))
+        if va == monk_dialogue_compat.EXT_BASE:
+            known += (monk_dialogue_compat.gameplay_payload(legacy_names=True),)
+            known += tuple(monk_dialogue_compat.gameplay_payload(legacy_names=True, **{flag: True})
+                           for flag in ('legacy_portrait', 'legacy_room'))
         if va == 0x737DAD:
             known += (b'\xE8'+struct.pack('<i',monk_dialogue_compat.READY_TITLE-va-5),)
         data, rows[name] = _migrate_site(data, va, new, known, name,

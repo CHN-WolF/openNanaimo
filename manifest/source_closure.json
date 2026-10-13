@@ -208,8 +208,8 @@
     },
     {
       "path": "managed-host/LauncherTools.Compatibility.cs",
-      "size": 17389,
-      "sha256": "AA321CC785BDB00FF364FF719393B8CAA29C037BE7C894A77F71A5E4B6BED582"
+      "size": 17806,
+      "sha256": "5362B49B11621F9AE20DB3602EF003DFFBC8F34DAC4FD874842A99A878853515"
     },
     {
       "path": "managed-host/LauncherTools.Inventory.cs",
@@ -308,8 +308,8 @@
     },
     {
       "path": "managed-host/Resources/client-compatibility.json",
-      "size": 553427,
-      "sha256": "2308CC7CD507D3FCEAD35AAC7D957D5C43189D1D582D9E2D4AD9EA0FC11E9A15"
+      "size": 737234,
+      "sha256": "B39EBC6568E9AAB6DDC369FFA9C8BA4325906E8ED96551600884FF82AC39E974"
     },
     {
       "path": "managed-host/ShopCurrencyPaginationChecks.cs",

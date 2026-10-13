@@ -101,8 +101,10 @@ internal static partial class LauncherTools
     {
         var contract=Recipe()["monk_challenge_resources"]!;
         var receipt=ReadJson(SafePath(root,".openNanaimo-monk-challenges.json"));
-        Require(S(receipt,"schema")=="openNanaimo.monk-challenges.v1"&&S(receipt,"recipe_sha256").Equals(S(contract,"sha256"),StringComparison.OrdinalIgnoreCase),"Challenge resource receipt differs");
+        var legacy=contract["compatible_localizations"]?[S(receipt,"recipe_sha256").ToLowerInvariant()];
+        Require(S(receipt,"schema")=="openNanaimo.monk-challenges.v1"&&(S(receipt,"recipe_sha256").Equals(S(contract,"sha256"),StringComparison.OrdinalIgnoreCase)||legacy is not null),"Challenge resource receipt differs");
         var rows=Objects(receipt,"files").ToArray();var pins=Objects(contract,"files").ToDictionary(r=>S(r,"path"),StringComparer.OrdinalIgnoreCase);
+        if(legacy is not null){Require(A(legacy,"localization_sha256").Any(x=>x!.GetValue<string>().Equals(S(receipt,"localization_sha256"),StringComparison.OrdinalIgnoreCase)),"Challenge localization receipt differs");foreach(var pin in Objects(legacy,"files"))pins[S(pin,"path")]=pin;}
         Require(rows.Length==pins.Count&&rows.Select(r=>S(r,"path")).Distinct(StringComparer.OrdinalIgnoreCase).Count()==pins.Count,"Challenge resource coverage differs");
         foreach(var row in rows){Require(pins.TryGetValue(S(row,"path"),out var pin)&&N(row,"size")==N(pin!,"output_size")&&S(row,"sha256").Equals(S(pin!,"output_sha256"),StringComparison.OrdinalIgnoreCase),"Challenge resource identity differs");CheckFile(root,S(row,"path"),N(row,"size"),S(row,"sha256"));}
     }

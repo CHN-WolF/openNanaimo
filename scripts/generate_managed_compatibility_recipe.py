@@ -31,6 +31,7 @@ def generate():
     challenge = json.loads(challenge_path.read_text('utf-8'))
     import hashlib
     challenge_contract = dict(sha256=hashlib.sha256(challenge_path.read_bytes()).hexdigest(), files=[{k:r[k] for k in ('path','output_size','output_sha256')} for r in challenge['files']])
+    challenge_contract['compatible_localizations'] = challenge.get('compatible_localizations', {})
     dialogue_path = ROOT/'manifest/monk_dialogue_resources.json'
     dialogue_contract = dict(sha256=hashlib.sha256(dialogue_path.read_bytes()).hexdigest(), recipe=json.loads(dialogue_path.read_text('utf-8')))
     return dict(schema=1,monk_dialogue_resources=dialogue_contract,monk_challenge_resources=challenge_contract,monk_village_entries=json.loads((ROOT/'manifest/monk_village_entries.json').read_text('utf-8')),sites=rows,route=p.ROUTE,minimap=dict(va=v.MINIMAP_VA,known=[v.MINIMAP_OLD.hex(),v.MINIMAP_NEW.hex(),v.MINIMAP_L8.hex()],legacy=v.MINIMAP_NEW.hex(),lumineos=v.MINIMAP_L8.hex()),aliases=[dict(source=a.as_posix(),target=b.as_posix(),role=c) for a,b,c in p.ALIAS_SPECS],retired=[dict(path=str(Path(folder)/name).replace('\\','/'),sha256=sha) for name,folder,_,_,_,sha in v.ARTWORK],placements=[dict(layer=layer,path=path,x=x,y=y) for layer,path,x,y in v.PLACEMENTS])
