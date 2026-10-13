@@ -2867,6 +2867,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 if (submittedId <= 6)
                 {
                     var beforeGuide = session.Character;
+                    var cardsBeforeGuide = submittedId == 6
+                        ? await _database.GetCharacterCardsAsync(session.Character.Id, token)
+                        : [];
                     var guideCompletion = await _database.CompleteStoryGuideAsync(
                         session.AccountId,
                         session.Character.Id,
@@ -2876,24 +2879,38 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         token);
                     if (!guideCompletion.Authorized)
                         return null;
-                    var rewardChanged = StoryGuideRewardChanged(beforeGuide, guideCompletion.Character);
+                    var cardsChanged = false;
+                    if (submittedId == 6 && guideCompletion.Success)
+                    {
+                        var cardsAfterGuide = await _database.GetCharacterCardsAsync(session.Character.Id, token);
+                        var quantities = cardsBeforeGuide.ToDictionary(card => card.CardCode, card => card.Quantity);
+                        cardsChanged = cardsAfterGuide.Any(card => quantities.GetValueOrDefault(card.CardCode) != card.Quantity);
+                    }
+                    var inventoryChanged = guideCompletion.Character is not null
+                        && guideCompletion.Character.Items.Any(item =>
+                            beforeGuide.Items.FirstOrDefault(owned => owned.ItemCode == item.ItemCode)?.Quantity != item.Quantity);
+                    var rewardChanged = StoryGuideRewardChanged(beforeGuide, guideCompletion.Character) || cardsChanged;
                     if (guideCompletion.Success && guideCompletion.Character is not null)
                     {
                         session.Character = guideCompletion.Character;
                         AccountStateChanged?.Invoke();
                     }
                     _log($"{channel}:{remote} story guide completion: guide={submittedId} type={submittedTaskType} state={submittedRuntimeState} result={(guideCompletion.Success ? "success" : "rejected")} rewardChanged={rewardChanged} rewardPending={guideCompletion.RewardPending}");
-                    return BuildNativeFrame(
+                    var guidePayload = BuildStoryGuideCompletionPayload(
+                        guideCompletion.Success, submittedId, guideCompletion.Character ?? session.Character,
+                        rewardChanged, submittedTaskType, session.NonCombatResourceSnapshot);
+                    guidePayload[2] = cardsChanged ? (byte)1 : (byte)0;
+                    var guideFrame = BuildNativeFrame(
                         frame,
                         0xC59A,
-                        BuildStoryGuideCompletionPayload(
-                            guideCompletion.Success,
-                            submittedId,
-                            guideCompletion.Character ?? session.Character,
-                            rewardChanged,
-                            submittedTaskType,
-                            session.NonCombatResourceSnapshot),
+                        guidePayload,
                         session);
+                    if (submittedId != 6 || !guideCompletion.Success || !inventoryChanged)
+                        return guideFrame;
+                    return CombineNativeFrames(guideFrame,
+                        BuildNativeFrame(frame, 0xC430, BuildGameInventoryPayload(session.Character), session),
+                        BuildNativeFrame(frame, 0xC379, BuildBoxInfoPayloadWithSkills(session.Character,
+                            await _database.GetCharacterSkillsAsync(session.Character.Id, token)), session));
                 }
 
                 if (!TryParseTaskCompletionRequest(payload, out var taskType, out var runtimeStateValue, out var questId))

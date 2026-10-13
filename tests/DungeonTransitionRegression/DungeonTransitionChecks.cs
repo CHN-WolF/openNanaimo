@@ -66,6 +66,33 @@ internal static class DungeonTransitionChecks
             && !NetworkAdapterService.IsAuthorizedNativeDungeonNextAction(Reset(2), 0xCF73), "invalid mode/length/opcode cannot authorize continuation");
         await RunScenario("next dungeon", mode: 2, dungeon: 0);
         await RunScenario("second next dungeon", mode: 2, dungeon: 1);
+        await RunScenario("low to middle difficulty", mode: 2, dungeon: 2, stage: 1);
+        await RunScenario("middle to high difficulty", mode: 2, dungeon: 2, stage: 1, difficulty: 1);
+        foreach (byte difficulty in new byte[] { 0, 1, 2 })
+            await RunScenario($"normal to super difficulty {difficulty}", mode: 1, dungeon: 2, real: 1, difficulty: difficulty);
+        foreach (byte difficulty in new byte[] { 0, 1, 2 })
+        {
+            var challengeResponse = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
+            challengeResponse[0x28] = 1; challengeResponse[0x2C] = difficulty; challengeResponse[0x2E] = 2;
+            Check(NetworkAdapterService.TryResolveNativeDungeonTransition(2, 0, difficulty,
+                Reset(1, 1), challengeResponse, out _, out _, out _), "super challenge preserves logical difficulty in its own selector domain");
+            challengeResponse[0x2C] = DungeonNavigationPolicy.EncodeDifficultySelector(difficulty, superBoss: false);
+            Check(!NetworkAdapterService.TryResolveNativeDungeonTransition(2, 0, difficulty,
+                Reset(1, 1), challengeResponse, out _, out _, out _), "normal selector cannot authorize a super challenge response");
+            var response = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
+            BinaryPrimitives.WriteUInt16LittleEndian(response.AsSpan(0x2C), difficulty);
+            Check(NetworkAdapterService.TryResolveNativeDungeonTransition(2, 1, difficulty,
+                Reset(2), response, out var dungeon, out var stage, out var nextDifficulty) == (difficulty < 2),
+                "next difficulty checks upper bound and normal selector domain");
+            if (difficulty < 2)
+            {
+                Check(dungeon == 0 && stage == 0 && nextDifficulty == difficulty + 1,
+                    "next difficulty returns first dungeon and logical increment");
+                BinaryPrimitives.WriteUInt16LittleEndian(response.AsSpan(0x2C), (ushort)(difficulty + 1));
+                Check(!NetworkAdapterService.TryResolveNativeDungeonTransition(2, 1, difficulty,
+                    Reset(2), response, out _, out _, out _), "incorrect response difficulty cannot authorize a reload");
+            }
+        }
         foreach (ushort opcode in new ushort[] { 0xCF73, 0xCF1D })
         {
             var leave = NativeDungeonClient.Frame(opcode, []);
@@ -79,7 +106,7 @@ internal static class DungeonTransitionChecks
         Check(NetworkAdapterService.IsNativeDungeonManualTownLeavePrecursor(false, true, false, true, 0xCF73), "death overrides stale continuation intent");
         var resetResponse = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
         var challenge = Reset(1, 1); challenge[9] = 2;
-        resetResponse[40] = 1; resetResponse[41] = 2; resetResponse[46] = 2;
+        resetResponse[40] = 1; resetResponse[41] = 2; resetResponse[44] = 1; resetResponse[46] = 2;
         Check(NetworkAdapterService.TryResolveNativeDungeonTransition(2, 0, 1, challenge, resetResponse,
             out var targetDungeon, out var targetStage, out var targetDifficulty)
             && targetDungeon == 2 && targetStage == 1 && targetDifficulty == 1,
@@ -98,7 +125,7 @@ internal static class DungeonTransitionChecks
         await RunScenario("town after next battle begins", mode: 2, startBattle: true);
         Console.WriteLine($"DUNGEON_TRANSITION_REGRESSION_PASS checks={checks}");
     }
-    private static async Task RunScenario(string name, ushort mode = 0, byte dungeon = 0, byte real = 0, bool death = false, bool startBattle = false, bool rearm = false, byte stage = 0, bool rejectFirst = false, bool skipRoster = false)
+    private static async Task RunScenario(string name, ushort mode = 0, byte dungeon = 0, byte real = 0, bool death = false, bool startBattle = false, bool rearm = false, byte stage = 0, bool rejectFirst = false, bool skipRoster = false, byte difficulty = 0)
     {
         string root = Path.Combine(Path.GetTempPath(), "nanaimo-next-dungeon-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
@@ -125,7 +152,7 @@ internal static class DungeonTransitionChecks
             snapshot.ApplyTo(state);
             await using var service = new NetworkAdapterService(db, Console.WriteLine, root)
             { NativeDungeonEnabled = true, NativeJournalDirectory = Path.Combine(root, "journal") };
-            worker = ServeWorker(listener, state, dungeon, rearm, token, death, stage, rejectFirst);
+            worker = ServeWorker(listener, state, dungeon, rearm, token, death, stage, rejectFirst, difficulty);
             var readyDelivered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             native = new NativeDungeonClient(async response =>
             {
@@ -139,6 +166,7 @@ internal static class DungeonTransitionChecks
             Set(session, "NativeForwarding", true);
             Set(session, "NativeDungeonSelectionValid", true); Set(session, "NativeDungeonDungeon", dungeon);
             Set(session, "NativeDungeonStage", stage);
+            Set(session, "NativeDungeonLogicalDifficulty", difficulty);
             async Task Send(byte[] frame) => Check(await (Task<bool>)Route.Invoke(service, [frame, Op(frame), "WorldAdapter", session, token])!, name + $": route {Op(frame):X4}");
             typeof(NetworkAdapterService).GetMethod("ArmNativeDungeonRevivalCycle", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(service, [session]);
             await Send(NativeDungeonClient.Frame(0xCF7F, []));
@@ -177,9 +205,11 @@ internal static class DungeonTransitionChecks
                 await Send(Reset(mode, real));
                 Check((bool)Get(session, "NativeDungeonNextTransitionAuthorized")!, name + ": CF8B authorizes continuation");
                 Check(Drain(session).Select(Op).SequenceEqual(rearm ? new ushort[] { 0xCF6D, 0xCF8C } : new ushort[] { 0xCF8C }), name + ": clear/reset order is preserved without unsolicited CF78");
-                var expectedDungeon = mode == 2 ? (byte)(dungeon + 1) : dungeon;
+                var nextDifficulty = mode == 2 && dungeon == 2 && stage == 1;
+                var expectedDungeon = nextDifficulty ? (byte)0 : mode == 2 ? (byte)(dungeon + 1) : dungeon;
                 Check((byte)Get(session, "NativeDungeonDungeon")! == expectedDungeon
-                    && (byte)Get(session, "NativeDungeonStage")! == (death ? stage : real), name + ": accepted target tuple retained");
+                    && (byte)Get(session, "NativeDungeonStage")! == (death ? stage : real)
+                    && (byte)Get(session, "NativeDungeonLogicalDifficulty")! == (nextDifficulty ? difficulty + 1 : difficulty), name + ": accepted target tuple retained");
                 await Send(Reset(mode, real));
                 Check(Drain(session).Count == 0, name + ": duplicate reset cannot rebuild twice");
                 if (death)
@@ -277,7 +307,7 @@ internal static class DungeonTransitionChecks
             Directory.Delete(root, recursive: true);
         }
     }
-    private static async Task ServeWorker(TcpListener listener, NativeDungeonState state, byte dungeon, bool rearm, CancellationToken token, bool death, byte stage, bool rejectFirst)
+    private static async Task ServeWorker(TcpListener listener, NativeDungeonState state, byte dungeon, bool rearm, CancellationToken token, bool death, byte stage, bool rejectFirst, byte difficulty)
     {
         using var peer = await listener.AcceptTcpClientAsync(token);
         var stream = peer.GetStream();
@@ -302,7 +332,9 @@ internal static class DungeonTransitionChecks
                 var reply = new byte[40];
                 reply[0x28 - 8] = death ? stage : frame[8];
                 reply[0x29 - 8] = frame[9];
-                reply[0x2E - 8] = rejectFirst ? (byte)99 : frame[10] == 2 ? (byte)(dungeon + 1) : dungeon;
+                var nextDifficulty = frame[10] == 2 && dungeon == 2 && stage == 1;
+                reply[0x2C - 8] = nextDifficulty ? difficulty : DungeonNavigationPolicy.EncodeDifficultySelector(difficulty, dungeon == 2 && (death ? stage : frame[8]) == 1);
+                reply[0x2E - 8] = rejectFirst ? (byte)99 : nextDifficulty ? (byte)0 : frame[10] == 2 ? (byte)(dungeon + 1) : dungeon;
                 rejectFirst = false;
                 await stream.WriteAsync(NativeDungeonClient.Frame(0xCF8C, reply), token);
             }

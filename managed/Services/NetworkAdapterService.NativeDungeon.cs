@@ -564,7 +564,9 @@ public sealed partial class NetworkAdapterService
             && currentStage == 0
             && (requestedRealStage == 1 || (lumineos && requestedRealStage == 0))
             && responseDungeon == currentDungeon
-            && responseRealStage == 1)
+            && responseRealStage == 1
+            && (lumineos || BinaryPrimitives.ReadUInt16LittleEndian(response.Slice(0x2C, 2))
+                == DungeonNavigationPolicy.EncodeDifficultySelector(currentLogicalDifficulty, superBoss: true)))
         {
             nextStage = 1;
             return true;
@@ -601,7 +603,10 @@ public sealed partial class NetworkAdapterService
             && requestedRealStage == 0
             && currentLogicalDifficulty < 2
             && responseDungeon == 0
-            && responseRealStage == 0)
+            && responseRealStage == 0
+            && BinaryPrimitives.ReadUInt16LittleEndian(response.Slice(0x2C, 2))
+                == DungeonNavigationPolicy.EncodeDifficultySelector(
+                    checked((byte)(currentLogicalDifficulty + 1)), superBoss: false))
         {
             nextDungeon = 0;
             nextStage = 0;

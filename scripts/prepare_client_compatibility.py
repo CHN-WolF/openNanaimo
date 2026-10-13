@@ -695,8 +695,11 @@ def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:
 def patch_monk_dialogue(data: bytes) -> tuple[bytes, dict]:
     rows = {}
     for name, va, old, new in monk_dialogue_compat.sites():
-        data, rows[name] = _patch_site(data, va, old, new, name,
-                                      'the village dialogue layout differs')
+        known = (old,)
+        if va == monk_dialogue_compat.BASE:
+            known += (monk_dialogue_compat.legacy_payload(),)
+        data, rows[name] = _migrate_site(data, va, new, known, name,
+                                        'the village dialogue layout differs')
     return data, _migration_report('patch_monk_dialogue', **rows)
 
 

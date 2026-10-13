@@ -1172,15 +1172,29 @@ shop_catalogs_send_boss_result(c,&boss_result,score_ctx.total,&boss_final_retire
                         unsigned reset_show=(unsigned char)buf[off+9];
                         unsigned reset_mode=(unsigned char)buf[off+0x0A] | ((unsigned char)buf[off+0x0B]<<8);
                         unsigned effective_real=reset_real;int authored_super=0;
-                        unsigned next_dungeon=current_dungeon;int advance_dungeon=0;
+                        unsigned next_dungeon=current_dungeon,next_difficulty=current_difficulty;int advance_dungeon=0,advance_difficulty=0;
+                        int next_difficulty_request=reset_mode==2u&&current_dungeon==2u&&current_stage_index==1u
+                            &&!(current_hd==0u&&current_stage==100u);
                         /* CF87 clears death_latched after publishing failure; the
                            frozen combat HP/injury state still identifies this result. */
                         int failed_result=injury_dead || combat_hp==0u;
                         int death_retry=failed_result && settlement_sent && reset_mode==1u
                             && (reset_real==current_stage_index || (current_stage_index==1u && reset_real==0u));
-                        if(!failed_result && reset_mode==2u&&current_dungeon<255u&&shop_catalogs_next_dungeon_exists(current_hd,current_stage,current_dungeon+1u,current_difficulty)){next_dungeon=current_dungeon+1u;effective_real=0u;reset_show=0u;advance_dungeon=1;}
+                        /* Super-Boss selectors are logical 0/1/2. The next normal
+                           middle/high selectors are 0/1: the numeric WORD stays
+                           equal, but dungeon/stage and logical difficulty change. */
+                        if(!failed_result&&next_difficulty_request&&reset_real==0u&&current_difficulty<2u
+                            &&shop_catalogs_next_dungeon_exists(current_hd,current_stage,0u,current_difficulty)){
+                            next_dungeon=0u;effective_real=0u;reset_show=0u;advance_dungeon=advance_difficulty=1;
+                        }
+                        if(!failed_result&&!next_difficulty_request&&reset_mode==2u&&current_dungeon<255u&&shop_catalogs_next_dungeon_exists(current_hd,current_stage,current_dungeon+1u,current_difficulty)){next_dungeon=current_dungeon+1u;effective_real=0u;reset_show=0u;advance_dungeon=1;}
                         if(!failed_result && reset_mode==1u && hp_sync_find_profile(current_stage,current_hd,current_dungeon,1u,current_difficulty,0u)!=0){authored_super=1;if(reset_real==0u)effective_real=1u;}
-                        if((!failed_result && (reset_mode==1u || reset_mode==2u)) || death_retry){
+                        /* Normal selectors 2/0/1 become Super-Boss 0/1/2.
+                           Same-stage retries and Lumineos retain their domain. */
+                        if(!failed_result&&reset_mode==1u&&current_dungeon==2u&&current_stage_index==0u&&effective_real==1u
+                            &&!(current_hd==0u&&current_stage==100u)&&current_difficulty<=2u)
+                            next_difficulty=(current_difficulty+1u)%3u;
+                        if((!failed_result && (reset_mode==1u || (reset_mode==2u&&(!next_difficulty_request||advance_difficulty)))) || death_retry){
                             if(death_retry){
                                 /* Rechallenge the failed tuple, never promote it to
                                    its authored Super-Boss or grant next-stage progress.
@@ -1197,15 +1211,16 @@ shop_catalogs_send_boss_result(c,&boss_result,score_ctx.total,&boss_final_retire
                                settlement for the next battle epoch; CF7F owns
                                the actual combat/Boss/ordinary-target reset. */
                             settlement_sent=0;
-                            current_stage_index=effective_real;if(advance_dungeon)current_dungeon=next_dungeon;
+                            current_stage_index=effective_real;current_difficulty=next_difficulty;if(advance_dungeon)current_dungeon=next_dungeon;
 #if TEAMPLAY_FEATURE_MAP_IDENTITY_GENERIC
+                            map_identity.difficulty=current_difficulty;
                             if(advance_dungeon){map_identity.dungeon=current_dungeon;map_identity.valid_mask|=MAP_IDENTITY_HAVE_DUNGEON;map_identity.source_mask|=MAP_IDENTITY_SOURCE_CF8B;map_identity.generation++;}
                             if(map_identity_apply_cf8b(&map_identity,effective_real))current_slot=map_identity.absolute_slot;else{printf("  [GS %d] MAP_ID CF8B rejected stage=%u -> next combat fail-closed\n",port,effective_real);fflush(0);}
 #endif
                             native_cf72_continue_room();
                             cf8b_post_reset_cf71_only=1;
                             if(dungeon_room_phase==ROOM_READY){int same_pending=post_reset_pending && post_reset_epoch==dungeon_room_epoch && post_reset_real==effective_real && post_reset_show==reset_show && post_reset_mode==reset_mode;if(!same_pending){int superseded=post_reset_pending;post_reset_pending=1;post_reset_seen_c587=0;post_reset_seen_cf70=0;post_reset_real=effective_real;post_reset_show=reset_show;post_reset_mode=reset_mode;post_reset_epoch=dungeon_room_epoch;printf("  [GS %d] LATE_REARM armed requested=%u effective=%u show=%u mode=%u authored_super=%d epoch=%u superseded=%d phase=READY\n",port,reset_real,effective_real,reset_show,reset_mode,authored_super,dungeon_room_epoch,superseded);fflush(0);}else{printf("  [GS %d] LATE_REARM duplicate request retains pending effective=%u show=%u mode=%u seen=%d/%d epoch=%u\n",port,effective_real,reset_show,reset_mode,post_reset_seen_c587,post_reset_seen_cf70,dungeon_room_epoch);fflush(0);}}
-                            printf("  [GS %d] GOT CF8B reset requested=%u effective=%u show=%u mode=%u authored_super=%d advance_dungeon=%d dungeon=%u -> CF8C difficulty=current\n",port,reset_real,effective_real,reset_show,reset_mode,authored_super,advance_dungeon,current_dungeon); fflush(0);
+                            printf("  [GS %d] GOT CF8B reset requested=%u effective=%u show=%u mode=%u authored_super=%d advance_dungeon=%d advance_difficulty=%d dungeon=%u -> CF8C difficulty=%u\n",port,reset_real,effective_real,reset_show,reset_mode,authored_super,advance_dungeon,advance_difficulty,current_dungeon,current_difficulty); fflush(0);
 #if TEAMPLAY_FEATURE_CF99_SUPER_REARM_CLEAR
                             /* CF6D is not a pure flag clear: it sends CFD1, whose
                                reply requests another CF70 alongside the CF8C

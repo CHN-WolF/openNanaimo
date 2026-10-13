@@ -1,6 +1,6 @@
 {
   "channel": "release",
-  "count": 376,
+  "count": 379,
   "entrypoints": [
     "adapter/nanaimo_adapter.c",
     "adapter/nanaimo_adapter_testports.c",
@@ -8,16 +8,16 @@
   ],
   "build_outputs": {
     "adapter/nanaimo_adapter.exe": {
-      "size": 23542784,
-      "sha256": "2A174FB24DCD14CDCC710ECDA6DB3DE41DAB384D4115DEED84C29DDD6DFEDA47"
+      "size": 25718784,
+      "sha256": "6049F549D4FECE80EB27771C2C6E62B95FB64F78C6EFFBFE6FEE944C12FAFBFF"
     },
     "adapter/nanaimo_adapter_testports.exe": {
-      "size": 23542784,
-      "sha256": "9BD2876A50B9EC331AEEAEE3B67653A3383CC22CCD9A08B6D0DD3C0ADDA78838"
+      "size": 25718784,
+      "sha256": "E83A932677716E1731DB9A5430C5C7BB8D629712718BBC3A75713CDF3630ECEB"
     },
     "adapter/nanaimo_gameplay_bridge.exe": {
-      "size": 23624192,
-      "sha256": "4183E47858FD9D6744D065AE4071F230ADC0A7E2713D4FC886A74FA5FF525EAE"
+      "size": 25799680,
+      "sha256": "C78CE0EA5DD02486A33FC7D0878082F13C242742F83A9F985D578C78D5195A3A"
     }
   },
   "files": [
@@ -48,8 +48,8 @@
     },
     {
       "path": "managed-host/ApartmentGuideLifecycleChecks.cs",
-      "size": 15717,
-      "sha256": "8A3979B7331BA5CB9C10F6456B92C3686E46CC7A3E8182EDA56753B404A66C2F"
+      "size": 15722,
+      "sha256": "72B248265D8D6605FEB9CCF6B14A6EBB4BC0AF48185C988AB16F580F1B7ED891"
     },
     {
       "path": "managed-host/ApartmentHousingChecks.cs",
@@ -128,8 +128,8 @@
     },
     {
       "path": "managed-host/DungeonRankingChecks.cs",
-      "size": 27710,
-      "sha256": "1A5D7C56FA5AF3B281A8BD3A7975C964FC47A37F8B080B229286B9855AC26DD0"
+      "size": 27832,
+      "sha256": "BF5899BB86FF0FD95066069DA3BBB56654950F63E56C93E2B43961B4C194FEE7"
     },
     {
       "path": "managed-host/DungeonRankingPersistenceChecks.cs",
@@ -150,6 +150,11 @@
       "path": "managed-host/EquipmentInitializationChecks.cs",
       "size": 7015,
       "sha256": "C73B99AD4D011488985CD5F7ACA20AECFE65CB9607DD2EE0E6B06BF0E99BD8C3"
+    },
+    {
+      "path": "managed-host/HasioRewardChecks.cs",
+      "size": 15506,
+      "sha256": "699A7185819D30D5977E4410C94785E4211B88DC644D20224198AD0C14FC15F7"
     },
     {
       "path": "managed-host/HealthRecoveryChecks.cs",
@@ -288,8 +293,8 @@
     },
     {
       "path": "managed-host/Program.cs",
-      "size": 15047,
-      "sha256": "7A7F2D29CC819EA8C5834496745C8BA460B67B3729CBCF96523E312D20A5EAC6"
+      "size": 15214,
+      "sha256": "305041ACB16EFC4F2E5A9A797ED25486D24C2ACCD39D1043AC54C154F190AA98"
     },
     {
       "path": "managed-host/PureNewPlayerChecks.cs",
@@ -303,8 +308,8 @@
     },
     {
       "path": "managed-host/Resources/client-compatibility.json",
-      "size": 351300,
-      "sha256": "3EA5CD18290F64A4CE6DB53FE2AC43DAB24B3DF1D3D91987C194B89F2F9CFDFC"
+      "size": 367904,
+      "sha256": "DB346A158A693E2FB8D1D5FD81E5049DA5A34C43D79C729B2B78CCB16057FC5D"
     },
     {
       "path": "managed-host/ShopCurrencyPaginationChecks.cs",
@@ -672,6 +677,11 @@
       "sha256": "BB5AD56F8C094383964376CB22FFE581A69CE79BE812609594B9223F21F519E2"
     },
     {
+      "path": "managed/Services/DatabaseService.HasioReward.cs",
+      "size": 2215,
+      "sha256": "7FD451AFDB4C32458CD057BBDE3F83A95D5A0B4C4B365AC64E1AD4BE03AA36B3"
+    },
+    {
       "path": "managed/Services/DatabaseService.Inventory.cs",
       "size": 33696,
       "sha256": "EE7B354AD2873428CDA05687A481142D0C91D0D318372A5DACB31D9509464E8F"
@@ -763,8 +773,8 @@
     },
     {
       "path": "managed/Services/DatabaseService.cs",
-      "size": 596904,
-      "sha256": "AA1CE4BF5CEAD21F0D4AC9569BFAFA6A95F7508A9343A9D5495DE97290C5158F"
+      "size": 598217,
+      "sha256": "19CCF76A62F3E5E7733EDF3F1D14E692A67AE5B8E34F899AF10AA81E215CE692"
     },
     {
       "path": "managed/Services/DungeonCombatCatalog.cs",
@@ -832,6 +842,11 @@
       "sha256": "C66876385489DA2E01B0341561D407F1963E28238E8325D5748681C2312342C5"
     },
     {
+      "path": "managed/Services/HasioRewardPolicy.cs",
+      "size": 3910,
+      "sha256": "11043E31FEE7B9E0D4C58AA06774AE6E1EA3AED478D5D94A0AF324F179ACE666"
+    },
+    {
       "path": "managed/Services/HealthRecoveryPolicy.cs",
       "size": 5081,
       "sha256": "EB43973C268DB96990CB6B213DCE732BBCDEA777678E56E3AF39A5A4C33DFBB8"
@@ -883,8 +898,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.ApartmentGuideLifecycle.cs",
-      "size": 2012,
-      "sha256": "6D4C3A533008F13F4920981BE4FB6A22A33AA8E8ED0BEB4D24642D9472AF9D23"
+      "size": 2017,
+      "sha256": "291A44FDA88B3A212DCB8D29711B4AB862B7B3ACAC4442397A945D83E4A3FE01"
     },
     {
       "path": "managed/Services/NetworkAdapterService.ApartmentHousing.cs",
@@ -1038,8 +1053,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.NativeDungeon.cs",
-      "size": 99204,
-      "sha256": "BBB1D168D0DBC935FA62ECD7935B326202D39C0870549BD6771F263CC0B7B7E5"
+      "size": 99648,
+      "sha256": "3FF8B3DB6EA24BE6F6B13717FBFAFE762E024861E046FCDF9CD2787EE8462EA8"
     },
     {
       "path": "managed/Services/NetworkAdapterService.NativeDungeonConsumables.cs",
@@ -1118,8 +1133,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.cs",
-      "size": 1008453,
-      "sha256": "8B28C766AADC924E0DEE762FF034741A8D554F3E1594B2A786FBFB850A1196DF"
+      "size": 1010011,
+      "sha256": "9429064A8B8261266594C3792A75A8F2047430A10D835B42EB9EC5A7A3D3B8AE"
     },
     {
       "path": "managed/Services/PasswordHasher.cs",
@@ -1218,8 +1233,8 @@
     },
     {
       "path": "release/components/adapter_core/teamplay_adapter.inc",
-      "size": 18279,
-      "sha256": "024952BCC8DF0B47ADB32EC4D320AA7621124F2D9A6A1A384714CFD5D20C5B32"
+      "size": 18954,
+      "sha256": "EC87D7D8FFA06AF98A1A5208482FF14A70839D0216FA25BC07516ED1EDEE837B"
     },
     {
       "path": "release/components/apartments/apartment_runtime.inc",
@@ -1483,8 +1498,8 @@
     },
     {
       "path": "release/components/game_session/gs_runtime.inc",
-      "size": 155508,
-      "sha256": "4D8ABF258FBBADDAF345574DEDB56CAF3A2B88B964A25D6D9D642867F6CF63F9"
+      "size": 157041,
+      "sha256": "E8944F2237A73A01370C7C7F22B4B9CE0CC3E28FF818D8221519946AEC83835E"
     },
     {
       "path": "release/components/game_session/managed_bridge.inc",

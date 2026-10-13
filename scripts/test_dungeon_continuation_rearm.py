@@ -29,7 +29,7 @@ static struct {unsigned mode;} power_ctx;
 static unsigned pet_crafting_pet_effective_hp_max(void){return 2000;}
 static unsigned pet_crafting_pet_effective_mp_max(void){return 800;}
 static void attack_mode_powerup_reset(void *ctx,unsigned mode,unsigned epoch){assert(epoch==7);power_ctx.mode=mode;}
-static unsigned response_stage,response_dungeon;
+static unsigned response_stage,response_dungeon,response_difficulty;
 static int shop_catalogs_next_dungeon_exists(unsigned a,unsigned b,unsigned d,unsigned e){return next_exists;}
 static int hp_sync_find_profile(unsigned a,unsigned b,unsigned c,unsigned d,unsigned e,unsigned f){return super;}
 static void native_cf72_continue_room(void){}
@@ -37,7 +37,7 @@ static void multiplayer_cf99_roster_begin_room_epoch(void){}
 static int multiplayer_cf99_surrender_room_pending(void){return pending;}
 static void multiplayer_broadcast_cf6d_super_rearm(void){ops[count++]=0xCF6D;pending=0;}
 static void teamplay_continuation_arm_room(unsigned real,unsigned show,unsigned diff,unsigned dungeon,unsigned mode){}
-static void multiplayer_broadcast_reset(unsigned real,unsigned show,unsigned diff,unsigned dungeon){ops[count++]=0xCF8C;assert(diff==2);response_stage=real;response_dungeon=dungeon;}
+static void multiplayer_broadcast_reset(unsigned real,unsigned show,unsigned diff,unsigned dungeon){ops[count++]=0xCF8C;assert(diff==current_difficulty);response_stage=real;response_dungeon=dungeon;response_difficulty=diff;}
 static void sleep(unsigned n){}
 static void reset(unsigned mode,int surrendered,int authored){
  memset(buf,0,sizeof(buf));buf[10]=mode;count=0;pending=surrendered;super=authored;
@@ -67,6 +67,20 @@ reset(1,0,1);assert(count==1&&ops[0]==0xCF8C&&response_stage==1&&response_dungeo
 /* Being dead without a completed result cannot authorize a free reset. */
 combat_hp=0;injury_dead=1;settlement_sent=0;
 reset(1,1,1);assert(count==0&&combat_hp==0&&pending);
+/* Super-Boss mode2 starts the next normal difficulty at dungeon0/stage0.
+   Its selector WORD is equal numerically, but belongs to the normal domain. */
+combat_hp=2000;injury_dead=0;current_dungeon=2;current_stage_index=1;current_difficulty=0;next_exists=1;
+reset(2,0,0);assert(count==1&&response_dungeon==0&&response_stage==0&&response_difficulty==0);
+current_dungeon=2;current_stage_index=1;current_difficulty=1;
+reset(2,0,0);assert(count==1&&response_dungeon==0&&response_stage==0&&response_difficulty==1);
+current_dungeon=2;current_stage_index=1;current_difficulty=2;
+reset(2,1,0);assert(count==0&&pending); /* highest difficulty never wraps */
+current_difficulty=1;next_exists=0;
+reset(2,1,0);assert(count==0&&pending&&current_dungeon==2); /* missing target */
+next_exists=1;combat_hp=0;injury_dead=1;settlement_sent=1;
+reset(2,1,0);assert(count==0&&pending&&current_dungeon==2); /* failure never advances */
+combat_hp=2000;injury_dead=0;current_stage=100;
+reset(2,0,0);assert(count==1&&response_dungeon==3&&response_stage==0); /* Lumineos remains independent */
 puts("CONTINUATION_REARM_PASS modes=1,2 short/CF99 normal/super invalid=0,3 no-unsolicited-clear");return 0;}
 '''
   with tempfile.TemporaryDirectory(prefix='nanaimo-continuation-rearm-') as temp:

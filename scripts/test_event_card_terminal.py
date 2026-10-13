@@ -135,7 +135,76 @@ int main(void){
 }
 """
 
+EP01_CHILD_MAIN = r"""
+int main(void){
+ static struct hp_sync_context hp;static struct crate_drop_policy_context crate;
+ struct stable_monster_hp_attack atk;struct stable_monster_hp_decision d;
+ unsigned player,difficulty,segment,i,row,epoch=2000u,subtype,code,seed=1u,rng;
+ unsigned bodies=0u,children=0u;stable_u64 coins;
+ const char*name="ep01_dg00_mb_36_1_00.mmo";
+ setup();
+ /* Force a winning 15% ticket so a leaked parent pool always fails. */
+ do{g_rng_state=seed++;}while(card_rand_bounded(10000u)>=1500u);seed--;
+ for(player=0u;player<2u;player++){
+  g_multi_current=player;multi_apply_profile(&g_multi_conn[player].profile);
+  for(difficulty=0u;difficulty<3u;difficulty++)for(segment=0u;segment<3u;segment++){
+   const struct hp_sync_profile_def*p;const struct card_cn_pool*pool;
+   hp_sync_init(&hp);hp.compat_echo_each_report=0;hp.fallback_enabled=0;hp.echo_on_missing_attack=0;
+   CHECK(hp_sync_select_resource_domain(&hp,0u,1u,0u,0u,difficulty));
+   CHECK(hp_sync_select_segment(&hp,segment));p=hp.profile;
+   pool=card_cn_lookup(p->hd_id,p->stage_id,p->dungeon_id,p->stage_index,name);
+   CHECK(pool&&card_cn_total_rate(pool)==15u);
+   crate_drop_policy_init(&crate,CRATE_DROP_MODE_SINGLE_VISUAL);
+   for(i=0u;i<p->target_count;i++){
+    const struct hp_sync_target_def*td=&hp_sync_target_defs[p->first_row+i];
+    if(card_cn_name_compare(hp_sync_resource_name(td->resource_index),name))continue;
+    CHECK(td->selector>=td->placement_selector_start);row=td->selector-td->placement_selector_start;
+    if(row>16u)continue; /* Deform stages 18/19 are not these small objects. */
+    CHECK(td->raw_hp==(row?30:5000)&&td->target_type==(row?0u:2u)&&td->reward_kind==0u);
+    card_system_reset_epoch(++epoch);g_rng_state=seed;rng=g_rng_state;coins=g_profile_coin_hans;
+    stable_monster_hp_zero_attack(&atk);atk.have_value=1u;atk.value=1;
+    stable_monster_hp_apply_report(&hp,&crate,1u,i,1u,epoch,&atk,1000u,&d);
+    CHECK(d.action==MONSTER_HP_ACTION_NONE&&d.hit.new_hp>0&&!g_card_claim_count);
+    atk.value=1000000;
+    stable_monster_hp_apply_report(&hp,&crate,1u,i,1u,epoch,&atk,1001u,&d);
+    CHECK(d.action==MONSTER_HP_ACTION_SEND_D00E&&d.reason==MONSTER_HP_REASON_STATIC_TERMINAL);
+    combat_economy_select_ordinary_terminal_reward(td,p,name,i,d.hit.old_hp,d.hit.new_hp,td->nominal_hp,&subtype,&code);
+    if(row){
+     CHECK(subtype!=30u&&g_card_claim_count==0u&&g_rng_state==rng);children++;
+     CHECK(g_profile_coin_hans==coins+combat_economy_coin_amount_for_hp(td->nominal_hp));
+     /* Card-only exclusion must preserve the existing coin path at higher HP. */
+     coins=g_profile_coin_hans;
+     combat_economy_select_ordinary_terminal_reward(td,p,"EP01_DG00_MB_36_1_00.MMO",i,1000u,0u,1000u,&subtype,&code);
+     CHECK(subtype==20u&&code==combat_economy_coin_amount_for_hp(1000u));
+     CHECK(g_profile_coin_hans==coins+code&&!g_card_claim_count&&g_rng_state==rng);
+     CHECK(!card_pickup_commit(60000u+i,13000026u));
+    }else{
+     CHECK(subtype==30u&&code==13000026u&&g_card_claim_count==1u);bodies++;
+     CHECK(card_pickup_commit(60000u+i,code)==1);
+     CHECK(card_pickup_commit(60000u+i,code)==2);
+    }
+    stable_monster_hp_apply_report(&hp,&crate,1u,i,1u,epoch,&atk,1002u,&d);
+    CHECK(d.action==MONSTER_HP_ACTION_NONE&&d.reason==MONSTER_HP_REASON_ALREADY_TERMINAL);
+    CHECK(g_card_claim_count==(row?0u:1u));
+   }
+  }
+ }
+ CHECK(bodies>0u&&children==bodies*16u);
+ card_system_reset_epoch(++epoch);CHECK(!card_pickup_commit(60000u,13000026u));
+ printf("EP01_SHARED_CARD_POOL_PASS bodies=%u children=%u players=2 difficulties=3 slots=9 parent_rate=15 child_rate=0\n",bodies,children);
+ return 0;
+}
+"""
+
 class EventCardTerminalTests(unittest.TestCase):
+ def test_ep01_small_objects_do_not_inherit_parent_card_pool(self):
+  with tempfile.TemporaryDirectory(prefix='nanaimo-shared-card-pool-') as temp:
+   p=Path(temp);(p/'check.c').write_text(PRELUDE+EP01_CHILD_MAIN,encoding='utf-8')
+   subprocess.run([str(ROOT/'tools/tcc/tcc.exe'),'-I',str(ROOT),'-I',str(ROOT/'adapter'),'-I',str(ROOT/'release'),str(p/'check.c'),'-o',str(p/'check.exe')],check=True)
+   result=subprocess.run([str(p/'check.exe')],cwd=p,capture_output=True)
+   self.assertEqual(result.returncode,0,(result.stdout+result.stderr).decode('utf-8',errors='replace')[-7000:])
+   self.assertIn(b'EP01_SHARED_CARD_POOL_PASS',result.stdout)
+   print(result.stdout.decode('utf-8',errors='replace').splitlines()[-1])
  def test_real_target_first_death_and_pickup(self):
   with tempfile.TemporaryDirectory(prefix='nanaimo-event-terminal-') as temp:
    p=Path(temp);(p/'check.c').write_text(PRELUDE+MAIN,encoding='utf-8')

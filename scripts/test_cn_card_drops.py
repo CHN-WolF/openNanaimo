@@ -319,6 +319,35 @@ int main(void){
   combat_economy_select_ordinary_terminal_reward(&td,&profile,"ep20_dg00_mb_182_02.mmo",123u,1u,0u,500u,&subtype,&code);
   assert(subtype==20u&&code==5u&&!g_card_claim_count);
  }
+ /* Shared MMO rows must not inherit the body's pool, even at capped bonuses.
+    Test both native inventory implementations with the production entrypoint. */
+ {struct hp_sync_profile_def profile={0u,1u,0u,0u,0u};
+  struct hp_sync_target_def child={0u,30u,0u,100u,100u};unsigned variant,row,calls;
+  const char*name="ep01_dg00_mb_36_1_00.mmo";
+  for(variant=0u;variant<4u;variant++){
+   g_bonus=variant==3u?0xFFFFFFFFu:27u;g_multiplier=variant==0u?100u:variant==1u?120u:200u;
+   card_system_reset_epoch(40000u+variant);g_next=0u;calls=g_calls;
+   for(row=1u;row<=16u;row++){
+    child.selector=100u+row;
+    combat_economy_select_ordinary_terminal_reward(&child,&profile,name,child.selector,1u,0u,1000u,&subtype,&code);
+    assert(subtype==20u&&code==10u&&!g_card_claim_count&&g_calls==calls);
+   }
+   child.selector=100u;child.raw_hp=5000u;
+   combat_economy_select_ordinary_terminal_reward(&child,&profile,name,child.selector,1u,0u,5000u,&subtype,&code);
+   assert(subtype==30u&&code==13000026u&&g_card_claim_count==1u);
+   child.raw_hp=30u;
+  }
+  child.selector=101u;assert(combat_economy_terminal_is_ep01_mb36_child(&child,name));
+  assert(combat_economy_terminal_is_ep01_mb36_child(&child,"EP01_DG00_MB_36_1_00.MMO"));
+  assert(!combat_economy_terminal_is_ep01_mb36_child(&child,"ep01_dg00_mb_36_1_01.mmo"));
+  assert(!combat_economy_terminal_is_ep01_mb36_child(&child,"ani_mon_m_03_01.mmo"));
+  child.selector=100u;assert(!combat_economy_terminal_is_ep01_mb36_child(&child,name));
+  for(row=17u;row<=20u;row++){child.selector=100u+row;assert(!combat_economy_terminal_is_ep01_mb36_child(&child,name));}
+  child.selector=99u;assert(!combat_economy_terminal_is_ep01_mb36_child(&child,name));
+  assert(!combat_economy_terminal_is_ep01_mb36_child(0,name));
+  assert(!combat_economy_terminal_is_ep01_mb36_child(&child,0));
+  g_bonus=0u;g_multiplier=100u;
+ }
  assert(!card_cn_boss_lookup(0u,0xFFFFFFFFu));assert(!card_cn_boss_lookup(0u,9u<<18));
  assert(!card_cn_boss_lookup(0u,23u<<25));assert(!boss_hp_sync_terminal_card(0));
  puts("CN_CARD_NATIVE_PARITY_PASS");return 0;

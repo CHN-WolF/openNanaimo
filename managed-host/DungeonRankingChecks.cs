@@ -223,7 +223,8 @@ internal static class DungeonRankingChecks
             BinaryPrimitives.WriteUInt16LittleEndian(challengeRequest.AsSpan(10, 2), 1);
             var challengeResponse = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
             BinaryPrimitives.WriteUInt16LittleEndian(challengeResponse.AsSpan(0x28, 2), 1);
-            BinaryPrimitives.WriteUInt16LittleEndian(challengeResponse.AsSpan(0x2C, 2), 2);
+            var superBossSelector = DungeonNavigationPolicy.EncodeDifficultySelector(0, superBoss: true);
+            BinaryPrimitives.WriteUInt16LittleEndian(challengeResponse.AsSpan(0x2C, 2), superBossSelector);
             BinaryPrimitives.WriteUInt16LittleEndian(challengeResponse.AsSpan(0x2E, 2), 2);
             Check(NetworkAdapterService.TryResolveNativeDungeonTransition(
                     2, 0, 0, challengeRequest, challengeResponse,

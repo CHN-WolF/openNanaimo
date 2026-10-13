@@ -8998,7 +8998,8 @@ public sealed partial class DatabaseService
         using var query = connection.CreateCommand();
         query.Transaction = transaction;
         query.CommandText = """
-            SELECT COALESCE((SELECT SUM(1 << GuideId) FROM CharacterStoryGuides WHERE CharacterId=$id),0),
+            SELECT COALESCE((SELECT SUM(1 << GuideId) FROM CharacterStoryGuides
+                            WHERE CharacterId=$id AND (GuideId<>6 OR RewardPending=0)),0),
                    EXISTS(SELECT 1 FROM CharacterStoryClaims WHERE CharacterId=$id AND QuestId=71000000),
                    (SELECT COUNT(*) FROM CharacterStoryClaims WHERE CharacterId=$id AND QuestId BETWEEN 71000000 AND 71000011)
             """;
@@ -9053,6 +9054,29 @@ public sealed partial class DatabaseService
             || (guideId == 4 && level < 3) || (guideId == 6 && medals < 12))
             return (true, false, false, null);
 
+        if (guideId == 6)
+        {
+            if (!alreadyDone || pending)
+            {
+                if (!HasioRewardPolicy.TryLoad(Path.GetDirectoryName(DatabasePath)!, out var reward)
+                    || !await GrantHasioRewardAsync(connection, transaction, characterId, reward, cancellationToken))
+                    return (true, false, true, null);
+                using var completeEpilogue = connection.CreateCommand();
+                completeEpilogue.Transaction = transaction;
+                completeEpilogue.CommandText = """
+                    INSERT INTO CharacterStoryGuides(CharacterId,GuideId,RewardPending,CompletedAt)
+                    VALUES($id,6,0,$now)
+                    ON CONFLICT(CharacterId,GuideId) DO UPDATE SET RewardPending=0,CompletedAt=excluded.CompletedAt
+                    """;
+                completeEpilogue.Parameters.AddWithValue("$id", characterId);
+                completeEpilogue.Parameters.AddWithValue("$now", DateTime.UtcNow.ToString("O"));
+                if (await completeEpilogue.ExecuteNonQueryAsync(cancellationToken) != 1)
+                    return (true, false, true, null);
+            }
+            await transaction.CommitAsync(cancellationToken);
+            return (true, true, false, await GetCharacterByIdAsync(characterId, cancellationToken));
+        }
+
         if (!alreadyDone)
         {
             // QS text 1025/1027 and retail guide previews at A31E00/A494E1.
@@ -9068,8 +9092,7 @@ public sealed partial class DatabaseService
             foreach (var itemCode in items)
                 if (!ShopCatalog.TryGet(itemCode, out _))
                     throw new InvalidDataException($"Missing story guide reward {itemCode}");
-            // The unverified Hasio gift-box definition stays an explicit debt.
-            pending = guideId == 6;
+            pending = false;
             // A full key counter keeps its reward pending; never silently clamp.
             if (guideId == 2 && keys > 245) pending = true;
             var now = DateTime.UtcNow.ToString("O");

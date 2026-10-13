@@ -31,6 +31,12 @@ static async Task RunAsync(string[] args)
     if (args.Contains("--quest-system-self-test"))
     {
         await QuestSystemChecks.RunAsync();
+        await HasioRewardChecks.RunAsync();
+        return;
+    }
+    if (args.Contains("--hasio-reward-self-test"))
+    {
+        await HasioRewardChecks.RunAsync();
         return;
     }
     if (args.Contains("--dungeon-quick-entry-self-test"))

@@ -62,7 +62,7 @@ internal static class ApartmentGuideLifecycleChecks
                 $"guide {guide} keeps effective resources inside HUD bounds");
             payload = NetworkAdapterService.BuildStoryGuideCompletionPayload(
                 false, guide, shopCharacter, true, kind, shopResources);
-            Check(payload[0] == (guide == 5 ? 3 : 1) && payload.Skip(1).All(x => x == 0),
+            Check(payload[0] == (guide is 5 or 6 ? 3 : 1) && payload.Skip(1).All(x => x == 0),
                 $"guide {guide} preserves its own rejection branch without resources");
             payload = NetworkAdapterService.BuildStoryGuideCompletionPayload(
                 true, guide, shopCharacter, false, kind, null);

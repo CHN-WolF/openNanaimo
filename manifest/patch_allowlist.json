@@ -6,7 +6,7 @@
   "official_baseline_verified": false,
   "binary_delta_implemented": false,
   "complete_playable_game": false,
-  "source_closure_count_observed": 376,
+  "source_closure_count_observed": 379,
   "default_layers": [
     "runtime",
     "source",
@@ -454,16 +454,16 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u5173\u5361\u4e0e\u623f\u95f4/\u52a0\u8f7d\u4e0e\u5f00\u6218.md",
       "layer": "knowledge",
-      "size": 11334,
-      "sha256": "76755506a430cac95b5622f8fedcd68d598d722be489e50bcf49a3726239df83",
+      "size": 11451,
+      "sha256": "a9e19b4295b2f6123414e9865e5114de7288883b1f2ce783c55f343033ab08c6",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u5173\u5361\u4e0e\u623f\u95f4/\u5feb\u901f\u5165\u623f\u4e0e\u5bf9\u7b49\u901a\u4fe1.md",
       "layer": "knowledge",
-      "size": 5452,
-      "sha256": "375d36b26fd8b570462bc07bb7d81cc4f7c0e1f5065aaec7b463ab7f0a1aa92b",
+      "size": 5595,
+      "sha256": "a801032b6a9a2a765158df52391ec2dbd15bd06aa5372933d05dc0eec199b015",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -502,16 +502,16 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u5173\u5361\u4e0e\u623f\u95f4/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 2785,
-      "sha256": "f0c34e89f1568e39b92d0fcff999804b8ecebf2c02f88c076971b7916ab6ce0c",
+      "size": 2803,
+      "sha256": "ba6f30f483c7bbb072417a928df0b2cd5f52129c96882c91a41b5a0a6ac85f56",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u5173\u5361\u4e0e\u623f\u95f4/\u7eed\u5173\u4e0e\u89c2\u6218.md",
       "layer": "knowledge",
-      "size": 13970,
-      "sha256": "01acc8d737ee499de90d0773d82c2f6d0ba46e3f891b0c02789c43180c9c1020",
+      "size": 16724,
+      "sha256": "666d7e6233272edd95d9a44a413e9c989c772c2937825bedb1021ef6617ec15c",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -598,8 +598,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u6389\u843d/\u5361\u6c60\u4e0e\u5956\u52b1\u8d44\u683c.md",
       "layer": "knowledge",
-      "size": 10520,
-      "sha256": "f52af8233e9106d162ab69f75ce72298af834087f31cb1d070457c5d96de17b6",
+      "size": 11736,
+      "sha256": "d5e3407f6b2f191cb77961fb3cec37a23a94d7c9f32c7c9501ed685b3ed32d2b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -630,8 +630,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u6389\u843d/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1602,
-      "sha256": "50be50ea0088aafb0d606a440495838ed6af8c7916a74f4f54b10376c17f7220",
+      "size": 1645,
+      "sha256": "94563345118c706b4bc589cf559c86d7fbf9f04178234331f76cc443f7b6418c",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -662,8 +662,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1724,
-      "sha256": "67596e52b7dff750a8c58c5b68ece0511e292dafe2d911fc772c478851b7a52c",
+      "size": 1742,
+      "sha256": "5cc704df2b7def565093544fb9ecd02e9f2fbcee53bf2c7d61de472be197ca83",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -790,16 +790,16 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u57ce\u9547/\u573a\u666f\u5207\u6362/\u6751\u5e84\u62d3\u6251\u4e0e\u517c\u5bb9\u8d44\u6e90.md",
       "layer": "knowledge",
-      "size": 12885,
-      "sha256": "d7c446218e63c040bb7227516f19cd144f221509c3e856fdc17844fdfd13d167",
+      "size": 14593,
+      "sha256": "a1ce9c8c871e9329b3eaa94dfd2b00144423f227389d479af2e0a414172ddfd2",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/\u57ce\u9547/\u573a\u666f\u5207\u6362/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 726,
-      "sha256": "b917ff5f3a13312221e1fad8c6e497023eef3af0ba865835ca581a721803c3ae",
+      "size": 756,
+      "sha256": "c4aa03d0125fced4e01fee5812e55f3eeda20364e1f3c05b9a70a76eca7d5e9d",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -1438,8 +1438,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u4efb\u52a1.md",
       "layer": "knowledge",
-      "size": 8446,
-      "sha256": "0c63a2e427b3a601f18c94769def766577b6594ee7c52903ea325db4d0ffd1a3",
+      "size": 12654,
+      "sha256": "52dbe0066914f6f54930ca684382ef7800cfbfa1b564a7a21f40ff29542a3e38",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -1486,8 +1486,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u65b0\u624b\u5f15\u5bfc/\u6545\u4e8b\u5f15\u5bfc\u4e0e\u63a8\u8350\u4eba.md",
       "layer": "knowledge",
-      "size": 7777,
-      "sha256": "ba9bbcdd3e13392db17c2824f4b4ccbb7fe2b3f7954e56194c5ed659bbf4466d",
+      "size": 7998,
+      "sha256": "1c0845b9b943d8485b1eea871e7b0a623810cf8bd5931b465268709f96ade7f3",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -1598,8 +1598,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 972,
-      "sha256": "4d10a43d663ea2a8985a650f69fd67bbc9acd6da0ee3dd4f240e2a284af15dc3",
+      "size": 1002,
+      "sha256": "28c63c6658ca877cd024b76dec99fea6dd0284659668d0c4ddeaa07a4b34a815",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2062,8 +2062,8 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u6784\u5efa\u53d1\u5e03.md",
       "layer": "knowledge",
-      "size": 13072,
-      "sha256": "b67932f6c0745e7718290daf66662c79624a64898f3913934eb86f75564eff96",
+      "size": 13739,
+      "sha256": "994cad13d59c8d716d3d6c5cfe3ba1e6b834268de67fffb295f7f12f52d90635",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2190,8 +2190,8 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u9a8c\u8bc1\u72b6\u6001.md",
       "layer": "knowledge",
-      "size": 22976,
-      "sha256": "a44abb8fe01c19462f59f038225d28cda96a962f9a751e1a8e8ca457ee6bb672",
+      "size": 29533,
+      "sha256": "4de1064654f6cbc2e34b324a547b6e1361008d9c9f5128465715fcea53ef8296",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2430,8 +2430,8 @@
     {
       "path": "knowledge/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 24948,
-      "sha256": "f2e5696bd2bae9e57bcc42ef3b94bc62d4ba8336760035ff2f2f680edbf12de6",
+      "size": 25247,
+      "sha256": "fb24438624d011f7decd67b42fda772ab337ddbb6f58ed2d1589344ae939a409",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2454,8 +2454,8 @@
     {
       "path": "managed-host/ApartmentGuideLifecycleChecks.cs",
       "layer": "source",
-      "size": 15717,
-      "sha256": "8a3979b7331ba5cb9c10f6456b92c3686e46cc7a3e8182eda56753b404a66c2f",
+      "size": 15722,
+      "sha256": "72b248265d8d6605feb9ccf6b14a6ebb4bc0af48185c988ab16f580f1b7ed891",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2582,8 +2582,8 @@
     {
       "path": "managed-host/DungeonRankingChecks.cs",
       "layer": "source",
-      "size": 27710,
-      "sha256": "1a5d7c56fa5af3b281a8bd3a7975c964fc47a37f8b080b229286b9855ac26dd0",
+      "size": 27832,
+      "sha256": "bf5899bb86ff0fd95066069da3bbb56654950f63e56c93e2b43961b4c194fee7",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2616,6 +2616,14 @@
       "layer": "source",
       "size": 7015,
       "sha256": "c73b99ad4d011488985cd5f7aca20aecfe65cb9607dd2ee0e6b06bf0e99bd8c3",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "managed-host/HasioRewardChecks.cs",
+      "layer": "source",
+      "size": 15506,
+      "sha256": "699a7185819d30d5977e4410c94785e4211b88dc644d20224198ad0c14fc15f7",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2838,8 +2846,8 @@
     {
       "path": "managed-host/Program.cs",
       "layer": "source",
-      "size": 15047,
-      "sha256": "7a7f2d29cc819ea8c5834496745c8ba460b67b3729cbcf96523e312d20a5eac6",
+      "size": 15214,
+      "sha256": "305041acb16efc4f2e5a9a797ed25486d24c2accd39d1043ac54c154f190aa98",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2862,8 +2870,8 @@
     {
       "path": "managed-host/Resources/client-compatibility.json",
       "layer": "source",
-      "size": 351300,
-      "sha256": "3ea5cd18290f64a4ce6db53fe2ac43dab24b3df1d3d91987c194b89f2f9cfdfc",
+      "size": 367904,
+      "sha256": "db346a158a693e2fb8d1d5fd81e5049da5a34c43d79c729b2b78ccb16057fc5d",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3452,6 +3460,14 @@
       "approval": "required_per_file"
     },
     {
+      "path": "managed/Services/DatabaseService.HasioReward.cs",
+      "layer": "source",
+      "size": 2215,
+      "sha256": "7fd451afdb4c32458cd057bbde3f83a95d5a0b4c4b365ac64e1ad4be03aa36b3",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "managed/Services/DatabaseService.Inventory.cs",
       "layer": "source",
       "size": 33696,
@@ -3598,8 +3614,8 @@
     {
       "path": "managed/Services/DatabaseService.cs",
       "layer": "source",
-      "size": 596904,
-      "sha256": "aa1ce4bf5cead21f0d4ac9569bfafa6a95f7508a9343a9d5495de97290c5158f",
+      "size": 598217,
+      "sha256": "19ccf76a62f3e5e7733edf3f1d14e692a67ae5b8e34f899af10aa81e215ce692",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3708,6 +3724,14 @@
       "approval": "required_per_file"
     },
     {
+      "path": "managed/Services/HasioRewardPolicy.cs",
+      "layer": "source",
+      "size": 3910,
+      "sha256": "11043e31fee7b9e0d4c58aa06774ae6e1ea3aed478d5d94a0af324f179ace666",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "managed/Services/HealthRecoveryPolicy.cs",
       "layer": "source",
       "size": 5081,
@@ -3790,8 +3814,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.ApartmentGuideLifecycle.cs",
       "layer": "source",
-      "size": 2012,
-      "sha256": "6d4c3a533008f13f4920981be4fb6a22a33aa8e8ed0beb4d24642d9472af9d23",
+      "size": 2017,
+      "sha256": "291a44fda88b3a212dcb8d29711b4ab862b7b3acac4442397a945d83e4a3fe01",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4038,8 +4062,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.NativeDungeon.cs",
       "layer": "source",
-      "size": 99204,
-      "sha256": "bbb1d168d0dbc935fa62ecd7935b326202d39c0870549bd6771f263cc0b7b7e5",
+      "size": 99648,
+      "sha256": "3ff8b3db6ea24be6f6b13717fbfafe762e024861e046fcdf9cd2787ee8462ea8",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4166,8 +4190,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.cs",
       "layer": "source",
-      "size": 1008453,
-      "sha256": "8b28c766aadc924e0dee762ff034741a8d554f3e1594b2a786fbfb850a1196df",
+      "size": 1010011,
+      "sha256": "9429064a8b8261266594c3792a75a8f2047430a10d835b42eb9ec5a7a3d3b8ae",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4398,8 +4422,8 @@
     {
       "path": "manifest/source_closure.json",
       "layer": "source",
-      "size": 68708,
-      "sha256": "83e29add0f7ffff42f4e19424b95b6d5b5476a9b644d896ec48fa2fc2aa8d8d7",
+      "size": 69228,
+      "sha256": "c2db1e8d2020b77b9f12a908c16de9c9747336ccdef1e590fdee7539e2c036f1",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4422,8 +4446,8 @@
     {
       "path": "release/components/adapter_core/teamplay_adapter.inc",
       "layer": "source",
-      "size": 18279,
-      "sha256": "024952bcc8df0b47adb32ec4d320aa7621124f2d9a6a1a384714cfd5d20c5b32",
+      "size": 18954,
+      "sha256": "ec87d7d8ffa06af98a1a5208482ff14a70839d0216fa25bc07516ed1edee837b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4870,8 +4894,8 @@
     {
       "path": "release/components/game_session/gs_runtime.inc",
       "layer": "source",
-      "size": 155508,
-      "sha256": "4d8abf258fbbaddaf345574dedb56caf3a2b88b964a25d6d9d642867f6cf63f9",
+      "size": 157041,
+      "sha256": "e8944f2237a73a01370c7c7f22b4b9ce0cc3e28ff818d8221519946aec83835e",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5734,8 +5758,8 @@
     {
       "path": "scripts/monk_dialogue_compat.py",
       "layer": "source",
-      "size": 7256,
-      "sha256": "3942227882bf2f293a536183a3085a77c07d26a03d390ceb200d7dfc0954d150",
+      "size": 15011,
+      "sha256": "c218e1c70c00e8560b8d653d304f1995ee0fe3dd6ac2cccbaa8ddb8dd6df39fe",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5790,8 +5814,8 @@
     {
       "path": "scripts/prepare_client_compatibility.py",
       "layer": "source",
-      "size": 77367,
-      "sha256": "49733ccb55236d20321007e09d5b523576aac67e7155aa448a8103376d244932",
+      "size": 77502,
+      "sha256": "b49990613181d394c4f243e4c4730c6f9da0d6505040a0461ba81fe54b56aa7e",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6158,8 +6182,8 @@
     {
       "path": "scripts/test_dungeon_continuation_rearm.py",
       "layer": "source",
-      "size": 8846,
-      "sha256": "71c0886f59e0edfe53ccf3a9571c858cbbec5ddc2ef325de5fe4c57d6b823505",
+      "size": 9991,
+      "sha256": "792cbb640c8b38fd95b793a640f38d006dd5c2133fa3e2d4c5c2084da326d5a7",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6374,8 +6398,8 @@
     {
       "path": "scripts/test_monk_dialogue_compat.py",
       "layer": "source",
-      "size": 10747,
-      "sha256": "f302a49955fc92aa0e42c91dace015431041af9533751a89015a8b71e1f90108",
+      "size": 17243,
+      "sha256": "21274eec0bf5c051cfe8b2e22d9b584fcaf986604f2022ffb317c5ec67cc5b00",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },

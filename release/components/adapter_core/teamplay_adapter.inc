@@ -11,7 +11,7 @@ static int terminal_item_drop_is_authored(const struct hp_sync_target_def*td,
     while(lo<hi){unsigned mid=lo+(hi-lo)/2u;if(terminal_item_drop_rows[mid]<row)lo=mid+1u;else hi=mid;}
     return lo<TERMINAL_ITEM_DROP_ROW_COUNT&&terminal_item_drop_rows[lo]==row;
 }
-#define CARD_DROP_BUILD_TAG 2026100701u
+#define CARD_DROP_BUILD_TAG 2026101301u
 /* Authored rate groups replace the fixed ordinary/SP gates. Card eligibility
  * remains independent of the Hans amount calculation; a card replaces this terminal's
  * Hans visual, and a miss falls through to the existing coin economy. */
@@ -38,6 +38,16 @@ static int combat_economy_terminal_is_ep02_c_arrow(const struct hp_sync_target_d
     row=(unsigned)td->selector-(unsigned)td->placement_selector_start;
     return (row>=25u&&row<=36u)||(male&&row==23u)||(female&&row==24u);
 }
+/* This MMO embeds sixteen destructible small objects beside its row0 body.
+ * Only their card eligibility differs: keep HP, score, cleanup and Hans intact.
+ * Rows18/19 are separate deform stages, not members of this exclusion. */
+static int combat_economy_terminal_is_ep01_mb36_child(const struct hp_sync_target_def*td,const char*resource){
+    unsigned row;
+    if(!td||!resource||td->selector<td->placement_selector_start)return 0;
+    if(card_cn_name_compare(resource,"ep01_dg00_mb_36_1_00.mmo")!=0)return 0;
+    row=(unsigned)td->selector-(unsigned)td->placement_selector_start;
+    return row>=1u&&row<=16u;
+}
 static void combat_economy_select_ordinary_terminal_reward(const struct hp_sync_target_def*td,const struct hp_sync_profile_def*profile,const char*resource,unsigned selector,
         unsigned old_hp,unsigned new_hp,unsigned monster_hp,unsigned*subtype,unsigned*code){
     unsigned basis_points=0u,hans=0u;int eligible,card_won=0;int ci=flight_items_coin_index();const struct card_cn_pool*pool=0;*subtype=0u;*code=0u;
@@ -55,7 +65,7 @@ static void combat_economy_select_ordinary_terminal_reward(const struct hp_sync_
         printf("  [ECONOMY] terminal-arrow-no-drop selector=%u resource=%s row=%u\n",selector,resource,(unsigned)td->selector-(unsigned)td->placement_selector_start);fflush(0);
         return;
     }
-    eligible=(td&&td->reward_kind==0u&&td->raw_hp>0u&&td->target_type!=4u&&old_hp>0u&&new_hp==0u&&!card_terminal_policy_card_denied_name(resource));
+    eligible=(td&&td->reward_kind==0u&&td->raw_hp>0u&&td->target_type!=4u&&old_hp>0u&&new_hp==0u&&!card_terminal_policy_card_denied_name(resource)&&!combat_economy_terminal_is_ep01_mb36_child(td,resource));
     /* Exact resource tuple, never album/name-only or episode-wide fallback.
        Positive-HP event boxes use their authored event-card pool here, only
        after the same first-terminal HP gate. Missing pools, type4 controllers,

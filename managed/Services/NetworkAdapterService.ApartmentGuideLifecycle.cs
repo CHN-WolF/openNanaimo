@@ -24,7 +24,7 @@ public sealed partial class NetworkAdapterService
     {
         var payload = BuildTaskCompletionResultPayload(success, guideId, character,
             rewardChanged, 0, completionKindOverride: completionKind,
-            failureResult: guideId == 5 ? (byte)3 : (byte)1);
+            failureResult: guideId is 5 or 6 ? (byte)3 : (byte)1);
         if (!success)
             return payload;
         // 4D56A0 consumes C59A full-frame +20/+22 BEFORE dispatching to the
