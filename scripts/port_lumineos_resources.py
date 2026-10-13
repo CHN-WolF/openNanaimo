@@ -286,6 +286,12 @@ def verify(client, manifest=None):
                                       and row['sha256'].lower() == monk_entry_base
                                       and actual == monk_entry_sha256
                                       and path.stat().st_size == monk_entry_size)
+        if row['path'] == 'Village_map_image/Village_map_image.pack' and (client / '.openNanaimo-monk-dialogue.json').is_file():
+            import prepare_monk_dialogue as dialogue
+            recipe = load(dialogue.RECIPE)
+            if row['sha256'] == recipe['parent_pack_sha256']:
+                dialogue.verify(client,recipe)
+                allowed_monk_entry_overlay = True
         if (actual != row['sha256'] or path.stat().st_size != row['size']) and not allowed_monk_entry_overlay:
             raise ValueError('installed resource mismatch: ' + row['path'])
     for row in manifest['preserve_l7_combat']:

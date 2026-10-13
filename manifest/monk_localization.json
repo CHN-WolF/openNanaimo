@@ -2,7 +2,7 @@
   "schema": "openNanaimo.monk-localization.v1",
   "encoding": "GBK",
   "runtime_accepted": false,
-  "status": "待验收；独立文本与动作资源为入口占位，关卡25至27为后续占位。",
+  "status": "四村出口中文对白与四关名称已集成；客户端完整游玩待验收。",
   "npc_name": "修道僧",
   "villages": ["梧桐村", "桃园村", "萨恩村", "金誉村", "拉米诺斯村"],
   "stage_names": ["龙飞峡谷", "坎扎峡谷", "塔坦卡峡谷", "白杜马山"],

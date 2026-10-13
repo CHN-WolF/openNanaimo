@@ -21,6 +21,10 @@ public static class MonkChallengePolicy
 
     public static bool IsPlayableTuple(byte hd, byte ep, byte dg, byte st)
         => TryGetChallengeIndex(hd, ep, dg, st, out _);
+
+    public static bool IsVillageEntry(byte episode, byte village, byte page)
+        => IsReservedEpisode(episode) && village == episode - FirstEpisode
+            && page == (village switch { 0 => 27, 1 => 26, 2 => 12, 3 => 6, _ => -1 });
 }
 
 public enum MonkChallengeCommitStatus

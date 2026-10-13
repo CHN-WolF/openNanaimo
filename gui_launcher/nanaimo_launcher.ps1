@@ -704,6 +704,7 @@ function Ensure-ClientCompatibility($selectedPet=$null) {
     if($LauncherSessionCache.compatibilityReport.session_inputs-and(Read-ProjectileSettings (Join-Path $Root 'nanaimo_projectile.ini')).enabled-ne1-and$LauncherSessionCache.compatibilityFingerprint-eq$fingerprint){return $LauncherSessionCache.compatibilityReport}
     if($LauncherProgress){$LauncherProgress.Stage='准备并校验共享客户端兼容资源'}
     $arguments=@('--tools','compatibility','--source-root',$Root,'--output-root',$ClientCompatibilityOverlay,'--character-creation','--furniture','--native-state','--dungeon-state','--inventory-gift-display','--land-purchase','--apartment-exterior','--apartment-recommendation','--dungeon7','--overwrite','--apply')
+    if(Test-Path -LiteralPath (Join-Path $Root '.openNanaimo-monk-dialogue.json')){$arguments+='--monk-dialogue'}
     $output=@(& $ClientCompatibilityTool @arguments 2>&1)
     if($LASTEXITCODE-ne0){throw ("Client compatibility preparation refused:`r`n"+($output-join"`r`n"))}
     if(-not(Test-Path -LiteralPath $ClientCompatibilityReport -PathType Leaf)){throw 'Client compatibility report was not generated.'}

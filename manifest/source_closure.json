@@ -8,16 +8,16 @@
   ],
   "build_outputs": {
     "adapter/nanaimo_adapter.exe": {
-      "size": 25718272,
-      "sha256": "0692BA09984C24B23234CC63723A7F3CC9052834404B055ACB50B1C776ABE791"
+      "size": 23542784,
+      "sha256": "2A174FB24DCD14CDCC710ECDA6DB3DE41DAB384D4115DEED84C29DDD6DFEDA47"
     },
     "adapter/nanaimo_adapter_testports.exe": {
-      "size": 25718272,
-      "sha256": "E850A6E7340F8F18F4FD38335C7A75007172BF21617DA1A478EEB510412FAD0C"
+      "size": 23542784,
+      "sha256": "9BD2876A50B9EC331AEEAEE3B67653A3383CC22CCD9A08B6D0DD3C0ADDA78838"
     },
     "adapter/nanaimo_gameplay_bridge.exe": {
-      "size": 25799168,
-      "sha256": "69835BFE4A28AF7CFD80A20EB843515D7EB69F3DC08E0D25229CD8FCDF39ED67"
+      "size": 23624192,
+      "sha256": "4183E47858FD9D6744D065AE4071F230ADC0A7E2713D4FC886A74FA5FF525EAE"
     }
   },
   "files": [
@@ -203,8 +203,8 @@
     },
     {
       "path": "managed-host/LauncherTools.Compatibility.cs",
-      "size": 15237,
-      "sha256": "0F814E9540FE936F9CE3145CAD7A4651A782090151F4E632AC724CC1F43AC636"
+      "size": 17263,
+      "sha256": "6C3C555AA61AEA833EF042A4A3974224EC9FC060858BAFDBF4BD2E2F494571B6"
     },
     {
       "path": "managed-host/LauncherTools.Inventory.cs",
@@ -303,8 +303,8 @@
     },
     {
       "path": "managed-host/Resources/client-compatibility.json",
-      "size": 314433,
-      "sha256": "33538CF5003005787F1FF77BEF9C3A178B663A68E9D64AC4F39212FE4FD69D4A"
+      "size": 351300,
+      "sha256": "3EA5CD18290F64A4CE6DB53FE2AC43DAB24B3DF1D3D91987C194B89F2F9CFDFC"
     },
     {
       "path": "managed-host/ShopCurrencyPaginationChecks.cs",
@@ -858,8 +858,8 @@
     },
     {
       "path": "managed/Services/MonkChallengePolicy.cs",
-      "size": 1340,
-      "sha256": "9393268E3896A75E0D1C6747BC6D09F67C86C1A9AC7571E9A967B9FAA99CB27E"
+      "size": 1585,
+      "sha256": "D807CE33436AC7DBFBB2A79A2F648553F8EC17AA789957D99992B675AE96C6FC"
     },
     {
       "path": "managed/Services/NativeDungeonClient.cs",
@@ -1038,8 +1038,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.NativeDungeon.cs",
-      "size": 98515,
-      "sha256": "D2B5317E2985A237907D60B56EF20329CC1BED9D9BA312A21AFAEC1981BD1F48"
+      "size": 99204,
+      "sha256": "BBB1D168D0DBC935FA62ECD7935B326202D39C0870549BD6771F263CC0B7B7E5"
     },
     {
       "path": "managed/Services/NetworkAdapterService.NativeDungeonConsumables.cs",

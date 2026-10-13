@@ -1,0 +1,102 @@
+{
+  "entries": [
+    {
+      "episode": 24,
+      "page": 27,
+      "position": [
+        293,
+        157
+      ],
+      "village": 0
+    },
+    {
+      "episode": 25,
+      "page": 26,
+      "position": [
+        282,
+        425
+      ],
+      "village": 1
+    },
+    {
+      "episode": 26,
+      "page": 12,
+      "position": [
+        127,
+        416
+      ],
+      "village": 2
+    },
+    {
+      "episode": 27,
+      "page": 6,
+      "position": [
+        186,
+        255
+      ],
+      "village": 3
+    }
+  ],
+  "entry_binding": "village-dialogue-bound",
+  "files": [
+    {
+      "path": "Village_map_image/Village_map_image.pack",
+      "sha256": "e26786b339e2cfd1419033db4db5960c298591cfecbc894eae73e324227a35d9",
+      "size": 17030197
+    },
+    {
+      "path": "effs/village/openNanaimo_monk01.eff",
+      "sha256": "8e7f2b47a677866db3792d5a406b5cdaec805e7189d1fcf73da41c9b42449719",
+      "size": 1688
+    },
+    {
+      "path": "effs/village/openNanaimo_monk01.im3",
+      "sha256": "ada8693fa911bf02f437f6a1285d23b26471bd516460e2758f2d87dbc1de5825",
+      "size": 71672
+    },
+    {
+      "path": "effs/village/openNanaimo_monk02.eff",
+      "sha256": "07f9b19cbf0dac67726de2d9dc383d63f9b6087c9998a61e2fa86ac2bd5d07d3",
+      "size": 1688
+    },
+    {
+      "path": "effs/village/openNanaimo_monk02.im3",
+      "sha256": "6a09a4987006a2ea5807aebbf6983992727b556aafb00ce6a896044692858d43",
+      "size": 71672
+    },
+    {
+      "path": "effs/village/openNanaimo_monk03.eff",
+      "sha256": "622c087a664501fce9a8005e11b69154a2060beb5d3cdf868e19ee085201c94a",
+      "size": 1688
+    },
+    {
+      "path": "effs/village/openNanaimo_monk03.im3",
+      "sha256": "c79bfcda7df840f3718012cb539de5617945899f9dc3e7170f3fa28e5178ce82",
+      "size": 71672
+    },
+    {
+      "path": "effs/village/openNanaimo_monk04.eff",
+      "sha256": "04c60e6db611bc7f875d7c700a3080f37da8a6317073a3e1e83321fae943e938",
+      "size": 1688
+    },
+    {
+      "path": "effs/village/openNanaimo_monk04.im3",
+      "sha256": "b58c51afaac892d8426fe81b69b20f18d5200128b72422827f1b6f02b1b9ded5",
+      "size": 71672
+    },
+    {
+      "path": "effs/village/openNanaimo_monk_name.im3",
+      "sha256": "8a478138a363aad08142c71563cd15d8dc78f3cd451cee4bbc131dce5ede6074",
+      "size": 1418
+    },
+    {
+      "path": "effs/village/openNanaimo_monk_shadow.im3",
+      "sha256": "4d01cbcfde625af5a6498e102d818b3bc2eef988254a08e012de149d3d7bcd1a",
+      "size": 1342
+    }
+  ],
+  "localization_sha256": "61071c053881300802170c2d8331df89f587f255c1cdfe914076ff04de136dca",
+  "parent_pack_sha256": "7dc3ace5d8837ddccdc47073cba8c174bcf1a5866f1a983fb38b1e1eb5d1ee42",
+  "runtime_acceptance": false,
+  "schema": "openNanaimo.monk-dialogue.v1"
+}

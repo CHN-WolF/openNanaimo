@@ -27,6 +27,7 @@ try:
     from . import level200_compat
     from . import player_trade_compat
     from . import monk_village_compat
+    from . import monk_dialogue_compat
 except ImportError:
     import apartment_exterior_panel as exterior_panel
     import dungeon7_visuals
@@ -40,6 +41,7 @@ except ImportError:
     import level200_compat
     import player_trade_compat
     import monk_village_compat
+    import monk_dialogue_compat
 from pathlib import Path
 
 ROUTE = [8, 7, 6, 11, 16, 17, 18, 19, 14, 9, 4, 3, 2, 1, 0, 5, 10, 15, 20, 21, 22, 23, 24]
@@ -690,6 +692,14 @@ def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:
         player_trade=_migration_report('patch_player_trade', **player_trade))
 
 
+def patch_monk_dialogue(data: bytes) -> tuple[bytes, dict]:
+    rows = {}
+    for name, va, old, new in monk_dialogue_compat.sites():
+        data, rows[name] = _patch_site(data, va, old, new, name,
+                                      'the village dialogue layout differs')
+    return data, _migration_report('patch_monk_dialogue', **rows)
+
+
 def _gift_preview_patch_bytes() -> tuple[bytes, bytes]:
     # thiscall with no stack arguments. EBX is callee-saved; leave ECX intact
     # for the original cleanup and preserve its return EAX and output flags.
@@ -953,6 +963,11 @@ def _collect_outputs(source_root: Path, furniture: bool, dungeon7: bool, revival
         if dungeon_state:
             data, row = patch_dungeon_state_controls(data)
             operations.append(row)
+            if (source_root / '.openNanaimo-monk-dialogue.json').is_file():
+                import prepare_monk_dialogue as dialogue
+                dialogue.verify(source_root)
+                data, row = patch_monk_dialogue(data)
+                operations.append(row)
         if inventory_gift_display:
             data, row = patch_inventory_gift_display(data)
             operations.append(row)
@@ -1282,6 +1297,12 @@ def _verify_data(source_root: Path, files: dict[Path, bytes] | None,
             target_data = read(target_rel)
             checks.append(_check('alias_' + target_rel.name, source_data == target_data,
                                  f'{role}; source={sha256(source_data)} target={sha256(target_data)}'))
+    if dungeon_state and (source_root / '.openNanaimo-monk-dialogue.json').is_file():
+        executable = read(Path('game.exe'))
+        for name,va,_,target in monk_dialogue_compat.sites():
+            at = _va_offset(executable,va,len(target))
+            checks.append(_check(name,executable[at:at+len(target)]==target,
+                                 'exact village dialogue compatibility window'))
     return {'all_pass': all(row['ok'] for row in checks), 'checks': checks}
 
 

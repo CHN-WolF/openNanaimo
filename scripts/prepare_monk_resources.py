@@ -28,7 +28,8 @@ MARKER = '.openNanaimo-monk-resources.json'
 EXTENSIONS = {'.sstg', '.smmo', '.sm2', '.mmo', '.pon', '.bmo', '.eff',
               '.crs', '.im3', '.wav', '.ogg'}
 CN_KEY = bytes.fromhex('0123456789abcdef123456789abcdef0')
-LOCALIZATION_METADATA_REVISIONS = frozenset({'fa73c1fc8c0c853cd646909ab214b3e5edc1909146f1ac70781e4c667525a5a6'})
+LOCALIZATION_METADATA_REVISIONS = frozenset({'fa73c1fc8c0c853cd646909ab214b3e5edc1909146f1ac70781e4c667525a5a6',
+                                           '7fe26091586c8467c42b6c8a7b4371c022d1f780784a2801aafbd65ad1b6734e'})
 
 
 def codec_module():

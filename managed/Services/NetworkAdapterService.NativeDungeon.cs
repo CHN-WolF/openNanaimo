@@ -171,15 +171,9 @@ public sealed partial class NetworkAdapterService
             if (frame.Length > selectionOffset + 1
                 && MonkChallengePolicy.IsReservedEpisode(frame[selectionOffset + 1]))
             {
-                var valid = opcode == 0xCF6C
-                    ? TryParseNativeDungeonSelectionFrame(frame, out var hd, out var ep,
-                        out var dg, out var st, out var diff)
-                        && IsMonkPrototypeSelectionAllowed(hd, ep, dg, st, diff, session.PartyId)
-                    : frame.Length == 16
-                        && DungeonNavigationPolicy.TryParseQuickEntry(frame.AsSpan(8), out var selected)
-                        && IsMonkPrototypeSelectionAllowed(selected.HdIndex, selected.Episode,
-                            selected.Dungeon, 0, selected.WireDifficulty, session.PartyId);
-                if (!valid || !TryParseNativeDungeonSelectionFrame(frame, out var selectedHd, out var selectedEp, out var selectedDg, out var selectedSt, out _)
+                if (!TryParseMonkVillageSelection(frame, session.PartyId, session.TownId,
+                        session.TownPage, out var selectedHd, out var selectedEp,
+                        out var selectedDg, out var selectedSt)
                     || !DungeonCombatCatalog.HasStage(selectedHd, selectedEp, selectedDg, selectedSt))
                     return true;
             }
@@ -466,6 +460,31 @@ public sealed partial class NetworkAdapterService
         byte hd, byte episode, byte dungeon, byte stage, byte difficulty, long partyId)
         => MonkChallengePolicy.IsPlayableTuple(hd, episode, dungeon, stage)
             && difficulty < DungeonDifficultyCount && partyId == 0;
+
+    internal static bool TryParseMonkVillageSelection(ReadOnlySpan<byte> frame,
+        long partyId, byte village, byte page, out byte hd, out byte episode,
+        out byte dungeon, out byte stage)
+    {
+        hd = episode = dungeon = stage = 0;
+        if (frame.Length < 8 || BinaryPrimitives.ReadUInt16LittleEndian(frame.Slice(4, 2)) != frame.Length)
+            return false;
+        var opcode = BinaryPrimitives.ReadUInt16LittleEndian(frame.Slice(6, 2));
+        byte difficulty;
+        if (opcode == 0xCF6C)
+        {
+            if (!TryParseNativeDungeonSelectionFrame(frame, out hd, out episode,
+                    out dungeon, out stage, out difficulty)) return false;
+        }
+        else if (opcode == 0xCF77 && frame.Length == 16
+                 && DungeonNavigationPolicy.TryParseQuickEntry(frame.Slice(8), out var selection))
+        {
+            hd = selection.HdIndex; episode = selection.Episode;
+            dungeon = selection.Dungeon; difficulty = selection.WireDifficulty;
+        }
+        else return false;
+        return IsMonkPrototypeSelectionAllowed(hd, episode, dungeon, stage, difficulty, partyId)
+            && MonkChallengePolicy.IsVillageEntry(episode, village, page);
+    }
 
     internal static byte ExtractPackedDungeonReadyRoomRank(
         byte packedRatings,

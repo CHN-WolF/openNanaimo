@@ -58,6 +58,27 @@ internal static class IntegrationChecks
         Require(!NetworkAdapterService.TryResolveNativeDungeonTransition(0, 0, 0,
             request, response, out _, out _, out _, 0, 24), "challenge response stage bound");
         Require(!DungeonTitleProgression.TryGetGrade(0, 24, 0, 0, out _), "challenge title isolation");
+        var pages = new byte[] { 27, 26, 12, 6 };
+        foreach (var opcode in new ushort[] { 0xCF6C, 0xCF77 })
+        {
+            var entry = new byte[opcode == 0xCF6C ? 52 : 16];
+            BinaryPrimitives.WriteUInt16LittleEndian(entry.AsSpan(4), (ushort)entry.Length);
+            BinaryPrimitives.WriteUInt16LittleEndian(entry.AsSpan(6), opcode);
+            if (opcode == 0xCF77) BinaryPrimitives.WriteUInt16LittleEndian(entry.AsSpan(8), 100);
+            var offset = opcode == 0xCF6C ? 34 : 10;
+            for (byte village = 0; village < 4; village++)
+            {
+                entry[offset + 1] = (byte)(24 + village);
+                Require(NetworkAdapterService.TryParseMonkVillageSelection(entry, 0, village, pages[village],
+                    out _, out var episode, out _, out _) && episode == 24 + village, "village dialogue entry");
+                Require(!NetworkAdapterService.TryParseMonkVillageSelection(entry, 0, 4, pages[village],
+                    out _, out _, out _, out _), "village origin ownership");
+                Require(!NetworkAdapterService.TryParseMonkVillageSelection(entry, 0, village, 0,
+                    out _, out _, out _, out _), "village exit page ownership");
+                Require(!NetworkAdapterService.TryParseMonkVillageSelection(entry, 1, village, pages[village],
+                    out _, out _, out _, out _), "village solo ownership");
+            }
+        }
         Console.WriteLine("MONK_INTEGRATION_CHECKS_PASS");
     }
 }

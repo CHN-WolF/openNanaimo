@@ -14,6 +14,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    'scripts/generate_managed_compatibility_recipe.py',
+    'scripts/monk_dialogue_compat.py',
+    'scripts/prepare_monk_dialogue.py',
+    'scripts/test_monk_dialogue_compat.py',
+    'scripts/test_monk_dialogue_resources.py',
+    'manifest/monk_dialogue_resources.json',
     'scripts/prepare_monk_resources.py',
     'scripts/prepare_monk_entry.py',
     'scripts/prepare_monk_visible_resources.py',
@@ -289,20 +295,20 @@ def main() -> None:
         'description': 'Korean flight-shooting game Nanaimo adapter and launcher',
         'runtime_acceptance': False,
         'monk_challenge_prototype': {
-            'implementation_status': 'native-action-entry-unverified',
+            'implementation_status': 'four-village-dialogue-entry',
             'runtime_acceptance': False,
             'playable_selections': [[0, episode, 0, 0] for episode in range(24, 28)],
             'active_village_episodes': [24, 25, 26, 27],
             'reserved_village_episodes': [],
-            'entry_binding': 'native-action-bound-unverified',
-            'scene_preview_tool': 'scripts/prepare_monk_entry.py',
-            'scene_preview_status': 'scene-preview-unbound',
+            'entry_binding': 'village-dialogue-bound',
+            'dialogue_resource_manifest': 'manifest/monk_dialogue_resources.json',
+            'scene_status': 'four-village-dialogue-scenes',
             'party_policy': 'solo',
             'progress_policy': 'independent-four-bit-ledger',
             'localization_manifest': 'manifest/monk_localization.json',
             'resource_manifest': 'manifest/monk_challenge_resources.json',
             'combat_manifest': 'manifest/monk_challenge_combat.json',
-            'village_entry_manifest': 'manifest/monk_village_entries.json',
+            'village_entry_manifest': 'manifest/monk_dialogue_resources.json',
         },
         'validation_scope': 'Exact project/runtime contract, deterministic native rebuild and isolated feature checks; client compatibility uses exact sites and resource structure',
         'client_policy': {
