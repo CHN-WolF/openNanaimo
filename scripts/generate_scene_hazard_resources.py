@@ -50,7 +50,7 @@ def derive(client_root: Path):
                     struct.unpack_from("<i", row, 20)[0] != basis or
                     struct.unpack_from("<i", row, 408)[0] != association):
                 raise ValueError(f"Resource target shape mismatch: {name} {ordinal}")
-            if not 0 <= damage <= 65535:
+            if not 0 <= damage <= (0x7fffffff if raw_hp == 0 and kind == 4 else 65535):
                 raise ValueError(f"Invalid contact attack: {name} {ordinal}")
             parent_selector = start + association if association >= 0 else selector
             if 0 <= parent_selector < p[10]:

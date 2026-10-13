@@ -50,7 +50,7 @@ def mmo_model(b,root,kr):
    events.append(es)
   for off,n in SCALARS:scal(off,n)
   for off in (66,130,194):string(off)
-  event(258,0);event(264,8)
+  event(258,8);event(264,8)
   for off,n in [(272,2),(274,2),(276,4)]:scal(off,n)
   for off in (280,344):string(off)
   scal(408,4);string(412)

@@ -173,7 +173,7 @@ def parse_resource(raw, rel, root, *, kr):
     return [], dict(terminal_asset=True)
 
 
-def closure(source, stage):
+def closure(source, stage, reference_overrides=None):
     index = ResourceIndex(source)
     queue = deque([stage])
     nodes, edges = {}, []
@@ -186,6 +186,7 @@ def closure(source, stage):
         nodes[rel] = dict(size=len(raw), sha256=io.digest(raw), model=model)
         for name in sorted(set(refs)):
             if reference(name):
+                name = (reference_overrides or {}).get(name, name)
                 target = index.locate(name)
                 edges.append(dict(source=rel, reference=name, target=target))
                 queue.append(target)
@@ -231,7 +232,7 @@ def name_fields(raw, rel):
         while r.p < len(plain):
             for _, size in c.SCALARS: r.read(size)
             for _ in range(3): field(64, key)
-            for inner in (0, 8):
+            for inner in (8, 8):
                 for _ in range(r.u8()):
                     offset = r.p
                     r.read(72)
@@ -391,14 +392,14 @@ def stage_summary(index, model):
     return dict(identity=list(model['identity']), endframe=model['endframe'], slots=slots, bosses=bosses)
 
 
-def plan(source, client, recipe, localization, *, check_pins=True):
+def _plan_stage(source, client, recipe, localization, *, check_pins=True):
     c = codec_module()
     source, client = map(io.clean_root, (source, client))
     for pin in recipe.get('source_inputs', []):
         checked(io.safe(source, pin['path']), pin['sha256'], pin['size'])
     stage = recipe['stage']
     checked(io.safe(source, stage['source_path']), stage['source_sha256'], stage['source_size'])
-    index, nodes, edges = closure(source, stage['source_path'])
+    index, nodes, edges = closure(source, stage['source_path'], recipe.get('reference_overrides'))
     if check_pins:
         expected = {r['source_path']: (r['source_sha256'], r['source_size'])
                     for r in recipe['files'] if r.get('source_scope', 'client') == 'client'}
@@ -416,6 +417,7 @@ def plan(source, client, recipe, localization, *, check_pins=True):
         basename = Path(old).name.lower()
         if basename in renames: raise ValueError('ambiguous rename')
         renames[basename] = Path(new).name
+    renames.update(recipe.get('reference_overrides', {}))
     targets = {rel: recipe['renames'].get(rel, rel) for rel in nodes}
     targets[stage['source_path']] = stage['path']
     data, records, preserved = {}, [], {}
@@ -490,6 +492,26 @@ def plan(source, client, recipe, localization, *, check_pins=True):
     return data, sorted(records, key=lambda r: r['path']), preserved_rows, dict(summary=summary, edges=edges)
 
 
+def plan(source, client, recipe, localization, *, check_pins=True):
+    if 'stages' not in recipe:
+        return _plan_stage(source, client, recipe, localization, check_pins=check_pins)
+    data, pins, preserved, summaries, edges = {}, {}, {}, [], []
+    for stage_recipe in recipe['stages']:
+        payload, rows, retained, report = _plan_stage(source, client, stage_recipe, localization, check_pins=check_pins)
+        for path, raw in payload.items():
+            if path in data and data[path] != raw:
+                raise ValueError('stage resource collision: ' + path)
+            data[path] = raw
+        for row in rows: pins[row['path']] = row
+        for row in retained: preserved[row['path']] = row
+        summaries.append(report['summary']); edges.extend(report['edges'])
+    rows = sorted(pins.values(), key=lambda r: r['path'])
+    retained = sorted(preserved.values(), key=lambda r: r['path'])
+    if check_pins and (rows != recipe['files'] or retained != recipe['preserve_cn']):
+        raise ValueError('expanded resource recipe coverage differs')
+    return data, rows, retained, dict(summary=dict(stages=summaries, counts=dict(outputs=len(rows), stages=len(summaries))), edges=edges)
+
+
 def validate_manifest(manifest):
     if manifest.get('schema') != SCHEMA or manifest.get('runtime_accepted') is not False:
         raise ValueError('unsupported monk manifest')
@@ -497,9 +519,12 @@ def validate_manifest(manifest):
     identifier = identity.pop('id', None)
     if io.digest(io.encoded(identity)) != identifier:
         raise ValueError('manifest identity mismatch')
-    if manifest.get('recipe_sha256') != io.digest(RECIPE.read_bytes()):
-        raise ValueError('unrecognized monk recipe/localization')
     recipe = io.load(RECIPE)
+    legacy = recipe.get('compatible_recipe_revisions', {}).get(manifest.get('recipe_sha256'))
+    if manifest.get('recipe_sha256') != io.digest(RECIPE.read_bytes()) and legacy is None:
+        raise ValueError('unrecognized monk recipe/localization')
+    if legacy is not None:
+        recipe = dict(recipe, files=[r for r in recipe['files'] if r['path'] not in legacy['excluded_files']])
     if manifest.get('localization_sha256') != io.digest(LOCALIZATION.read_bytes()):
         if manifest.get('localization_sha256') not in LOCALIZATION_METADATA_REVISIONS:
             raise ValueError('unrecognized monk recipe/localization')
@@ -542,7 +567,7 @@ def build(source, client, output):
     data, _, preserved, report = plan(source, client, recipe, localization)
     manifest = dict(schema=SCHEMA, recipe_sha256=io.digest(RECIPE.read_bytes()),
                     localization_sha256=io.digest(LOCALIZATION.read_bytes()), runtime_accepted=False,
-                    entry_binding='placeholder-unbound', files=[], preserve_cn=preserved,
+                    entry_binding='native-village-actions' if 'stages' in recipe else 'native-village-action', files=[], preserve_cn=preserved,
                     dependency_report=report)
     for pin in recipe['files']:
         name = pin['path']
@@ -555,7 +580,7 @@ def build(source, client, output):
     io.atomic(io.safe(output, 'manifest.json'), io.encoded(manifest))
     io.atomic(io.safe(output, 'dependency-report.json'), io.encoded(report))
     return dict(bundle=str(output), payload=str(output / 'payload'), id=manifest['id'],
-                **report['summary']['counts'], runtime_accepted=False, entry_binding='placeholder-unbound')
+                **report['summary']['counts'], runtime_accepted=False, entry_binding=manifest['entry_binding'])
 
 
 def verify(client, manifest=None):
@@ -567,7 +592,7 @@ def verify(client, manifest=None):
     for row in manifest['preserve_cn']:
         checked(io.safe(client, row['path']), row['sha256'], row['size'])
     return dict(id=manifest['id'], verified=len(manifest['files']), preserved_cn=len(manifest['preserve_cn']),
-                runtime_accepted=False, entry_binding='placeholder-unbound')
+                runtime_accepted=False, entry_binding=manifest['entry_binding'])
 
 
 def _rollback(client, receipt):

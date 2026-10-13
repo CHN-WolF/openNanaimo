@@ -75,8 +75,17 @@ internal static partial class LauncherTools
                 &&File.Exists(SafePath(root,S(row,"path")))
                 &&new FileInfo(SafePath(root,S(row,"path"))).Length==N(entry,"pack_size")
                 &&Hash(File.ReadAllBytes(SafePath(root,S(row,"path")))).Equals(S(entry,"pack_after_sha256"),StringComparison.OrdinalIgnoreCase);
-            if(entryLayer)CheckFile(root,S(entry,"visual_resource"),N(entry,"visual_resource_size"),S(entry,"visual_resource_sha256"));
+            if(entryLayer){CheckFile(root,S(entry,"visual_resource"),N(entry,"visual_resource_size"),S(entry,"visual_resource_sha256"));VerifyChallenges(root);}
             else CheckFile(root,S(row,"path"),row["size"] is null?null:N(row,"size"),S(row,"sha256"));}}return Obj(new{status="LUMINEOS_RESOURCES_PASS"});
+    }
+    static void VerifyChallenges(string root)
+    {
+        var contract=Recipe()["monk_challenge_resources"]!;
+        var receipt=ReadJson(SafePath(root,".openNanaimo-monk-challenges.json"));
+        Require(S(receipt,"schema")=="openNanaimo.monk-challenges.v1"&&S(receipt,"recipe_sha256").Equals(S(contract,"sha256"),StringComparison.OrdinalIgnoreCase),"Challenge resource receipt differs");
+        var rows=Objects(receipt,"files").ToArray();var pins=Objects(contract,"files").ToDictionary(r=>S(r,"path"),StringComparer.OrdinalIgnoreCase);
+        Require(rows.Length==pins.Count&&rows.Select(r=>S(r,"path")).Distinct(StringComparer.OrdinalIgnoreCase).Count()==pins.Count,"Challenge resource coverage differs");
+        foreach(var row in rows){Require(pins.TryGetValue(S(row,"path"),out var pin)&&N(row,"size")==N(pin!,"output_size")&&S(row,"sha256").Equals(S(pin!,"output_sha256"),StringComparison.OrdinalIgnoreCase),"Challenge resource identity differs");CheckFile(root,S(row,"path"),N(row,"size"),S(row,"sha256"));}
     }
     static void VerifyResources(string[] args)
     {

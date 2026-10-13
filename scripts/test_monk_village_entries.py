@@ -16,7 +16,15 @@ def fixture():
     grid = entry.scene_preview.VillageScene(raw).grid_start
     for cell in range(1800):
         struct.pack_into('<h', raw, grid + cell * 36 + 14, 0)
-    return pack([(50000 + page, bytes(raw)) for page in range(25)] + [(99999, b'preserved')])
+    import prepare_client_compatibility as compatibility
+    result = bytearray(pack([(50000 + page, bytes(raw)) for page in range(25)] + [(99999, b'preserved')]))
+    parsed = entry.FifthVillagePack(result)
+    for a, b in list(zip(compatibility.ROUTE, compatibility.ROUTE[1:])) + [(12, 11)]:
+        for source, target in ((a, b), (b, a)):
+            exits, arrivals = compatibility._strips(compatibility._side(source, target))
+            for x, y in exits: struct.pack_into('<h', result, parsed.offset(source, x, y, 10), target)
+            for x, y in arrivals: struct.pack_into('<h', result, parsed.offset(source, x, y, 11), target)
+    return bytes(result)
 
 
 class EntryTests(unittest.TestCase):
@@ -29,9 +37,10 @@ class EntryTests(unittest.TestCase):
         self.assertEqual(len(set(cells)), 80)
 
     def test_only_action_words_and_four_markers_change(self):
-        before = fixture()
+        import prepare_client_compatibility as compatibility
+        before = compatibility.patch_village_pack(fixture())[0]
         after, manifest = entry.derive(before)
-        self.assertEqual(len(manifest['changes']), 28)
+        self.assertEqual(len(manifest['changes']), 80)
         a, b = entry.FifthVillagePack(before), entry.FifthVillagePack(after)
         old = dict(entry.scene_preview.scenes.records(before))
         new = dict(entry.scene_preview.scenes.records(after))
@@ -50,7 +59,7 @@ class EntryTests(unittest.TestCase):
             self.assertEqual(x.layers[2], y.layers[2][:-1])
             self.assertEqual(x.textures, y.textures[:-1])
             self.assertEqual(struct.unpack('<I3f', y.layers[2][-1])[1:], tuple(r['placement']))
-        self.assertEqual(entry.verify(after)['cells'], 28)
+        self.assertEqual(entry.verify(after)['cells'], 80)
         self.assertEqual(entry.derive(after)[0], after)
 
     def test_installed_noncanonical_directory_is_idempotent(self):

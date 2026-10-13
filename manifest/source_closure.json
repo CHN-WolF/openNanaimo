@@ -8,16 +8,16 @@
   ],
   "build_outputs": {
     "adapter/nanaimo_adapter.exe": {
-      "size": 23542784,
-      "sha256": "2A174FB24DCD14CDCC710ECDA6DB3DE41DAB384D4115DEED84C29DDD6DFEDA47"
+      "size": 25718272,
+      "sha256": "0692BA09984C24B23234CC63723A7F3CC9052834404B055ACB50B1C776ABE791"
     },
     "adapter/nanaimo_adapter_testports.exe": {
-      "size": 23542784,
-      "sha256": "9BD2876A50B9EC331AEEAEE3B67653A3383CC22CCD9A08B6D0DD3C0ADDA78838"
+      "size": 25718272,
+      "sha256": "E850A6E7340F8F18F4FD38335C7A75007172BF21617DA1A478EEB510412FAD0C"
     },
     "adapter/nanaimo_gameplay_bridge.exe": {
-      "size": 23624192,
-      "sha256": "4183E47858FD9D6744D065AE4071F230ADC0A7E2713D4FC886A74FA5FF525EAE"
+      "size": 25799168,
+      "sha256": "69835BFE4A28AF7CFD80A20EB843515D7EB69F3DC08E0D25229CD8FCDF39ED67"
     }
   },
   "files": [
@@ -203,8 +203,8 @@
     },
     {
       "path": "managed-host/LauncherTools.Compatibility.cs",
-      "size": 14172,
-      "sha256": "C61DBE0805249E5751C05978D3811A10E00EA2B799BF82522A35F29F9A46A158"
+      "size": 15237,
+      "sha256": "0F814E9540FE936F9CE3145CAD7A4651A782090151F4E632AC724CC1F43AC636"
     },
     {
       "path": "managed-host/LauncherTools.Inventory.cs",
@@ -233,8 +233,8 @@
     },
     {
       "path": "managed-host/LauncherTools.Village.cs",
-      "size": 8624,
-      "sha256": "777705A471A2BCCC28CACD83DE43F9DDDAD2B2A9D74AE2CB7296A8B9F5D4BC92"
+      "size": 8664,
+      "sha256": "B30829E693CF38E98D7FBF7E92FFC4D3CD5271BAEC68C5A65884222436FCEAEC"
     },
     {
       "path": "managed-host/LiveDungeonExperienceChecks.cs",
@@ -303,8 +303,8 @@
     },
     {
       "path": "managed-host/Resources/client-compatibility.json",
-      "size": 69753,
-      "sha256": "2A8CBF79A4B5E6E3D3BE43972BC7A685C1761FECE066F5F28929DD18E7311B94"
+      "size": 314433,
+      "sha256": "33538CF5003005787F1FF77BEF9C3A178B663A68E9D64AC4F39212FE4FD69D4A"
     },
     {
       "path": "managed-host/ShopCurrencyPaginationChecks.cs",
@@ -1228,8 +1228,8 @@
     },
     {
       "path": "release/components/boss/component_data.inc",
-      "size": 752165,
-      "sha256": "7331A5CAF75EB3ECA47B95D995D8B2EF499FD410119F4F635A5A6C639109AD8C"
+      "size": 824706,
+      "sha256": "E99C9B381FD9B120A14606537FE09567F8FA2F245340A9B1CA03CF8D69D9CBB7"
     },
     {
       "path": "release/components/boss/protocol_adapter.inc",
@@ -1393,8 +1393,8 @@
     },
     {
       "path": "release/components/combat_economy/combat_score_resource_data.inc",
-      "size": 1999425,
-      "sha256": "3CDA95C1E5F601C05E5C63C36AB204E0AA01BB77C54C15716739ADFB036BF176"
+      "size": 2059464,
+      "sha256": "5EC6BFF424956930BCD1B2168EF2A0F68B41814AEB5C610A7BA4BC5342C4C530"
     },
     {
       "path": "release/components/combat_economy/incoming_pon_attack_data.inc",
@@ -1703,13 +1703,13 @@
     },
     {
       "path": "release/components/stage_damage/boss_contact_catalog.inc",
-      "size": 931086,
-      "sha256": "A07578B3BF312021C0DC7ED69D46A10D2E293BDC95181E4340EA3D4C7F7504C5"
+      "size": 1027785,
+      "sha256": "E9555E3FF653844E698D26D0343A1938B1407DACE88442E20BA5E21B0F177DC7"
     },
     {
       "path": "release/components/stage_damage/boss_contact_registry.json",
-      "size": 192211,
-      "sha256": "727C7A5264AB201B60AFA5CCD98DB170AA9F6AEE6C3C6BAECCE4DFF732C7038D"
+      "size": 201449,
+      "sha256": "64CBD7DDA26C779F456B89BAF678C1B819BCF19B45ECE24075A46C94707A52DF"
     },
     {
       "path": "release/components/stage_damage/damage_runtime.inc",
@@ -1718,23 +1718,23 @@
     },
     {
       "path": "release/components/stage_damage/monster_contact_catalog.inc",
-      "size": 1324727,
-      "sha256": "61C9681B16D63F3F37D9C61302A7D4D6E98F53FF3127BDF91C3B0D5476F823B5"
+      "size": 1377731,
+      "sha256": "16F5B7984BE5E788EFA9D51AA2E2911A46AF2DDB9A1AA525007C26EB76A4F9E4"
     },
     {
       "path": "release/components/stage_damage/scene_hazard_catalog.inc",
-      "size": 92889,
-      "sha256": "E3551DD399FE032B8DE37111675FC661CCD5136884DC30F62EF65F2C0C12D94D"
+      "size": 93301,
+      "sha256": "4E48B42643751AB048CB70BD92F852FC7835FF8DD0532BB45779F355E7472A9F"
     },
     {
       "path": "release/components/stage_damage/scene_hazard_registry.json",
-      "size": 80377,
-      "sha256": "8B04724067DC8DEF02414A9037117343DF52CECC8A61273B5B2C6C079882D340"
+      "size": 81349,
+      "sha256": "C4E2FAF3E59848E33B798FE3859F064EA415EE898236A1A5FAA7681A8EE26837"
     },
     {
       "path": "release/components/stage_damage/stage_damage_catalog.inc",
-      "size": 986560,
-      "sha256": "80F3B16A27155EC582AA7D1BBCA98E2C835716FFD05219CD1BD5EBC9C53AB7B0"
+      "size": 1013497,
+      "sha256": "69A3AD2F356517A345C39D11FD6D5C036AF4601155F9478673D29491D06F0BB7"
     },
     {
       "path": "release/components/storage/sqlite_state.inc",
@@ -1758,13 +1758,13 @@
     },
     {
       "path": "release/components/target_resources/preloaded_target_catalog.inc",
-      "size": 1161915,
-      "sha256": "83C839CB5364DCB2DCE8DD461100228B0FC901FF2469E569B9697B0F5DB0E8E9"
+      "size": 1226186,
+      "sha256": "C9C5267A6E9A4816244725EB39B17E5FA9A9E2A93DA62AFBBCB31E298FF1A1C8"
     },
     {
       "path": "release/components/target_resources/preloaded_target_catalog.json",
-      "size": 4172391,
-      "sha256": "692AF7CBC4ED57F2EA75969376AFC26D87174B53A71386AEAF2C7D4007B311E4"
+      "size": 4403920,
+      "sha256": "DAE216BED35C38B7D292CFE50793BDF429F4C151B020F0FB0FFEF093DABAF2D5"
     },
     {
       "path": "release/components/targets/attack_candidates.inc",
@@ -1783,8 +1783,8 @@
     },
     {
       "path": "release/components/targets/hp_resource_global_data.inc",
-      "size": 26140022,
-      "sha256": "2F9320E1030D12F086E661085334E526B970F64DF1C883C658735636FCC75BB3"
+      "size": 27053681,
+      "sha256": "2EC5445639F07C22F938FD12A49EE10215CCA3F70AA385B2F0454E43DD7C9EE2"
     },
     {
       "path": "release/components/targets/runtime_crate_alias_policy.inc",
@@ -1878,18 +1878,18 @@
     },
     {
       "path": "scripts/generate_scene_hazard_catalog.py",
-      "size": 14403,
-      "sha256": "86079F6BD950F17B1E606A0CB4962EF3A480F27478D875579B9B38A18B33CA84"
+      "size": 14413,
+      "sha256": "78F8A1B2BE01E10B24D97A78C40EF45D5628A9DDD3D4597AA41763CEF309FBA4"
     },
     {
       "path": "scripts/generate_scene_hazard_resources.py",
-      "size": 5837,
-      "sha256": "F77BF1A40F257FE17BDC6A079A922733DFCEDEA7AC5A66A4F026B906C63F67FB"
+      "size": 5884,
+      "sha256": "D0DE618494CA48FCEB7582BC2962CE7F407317430A08B48FC0A302B4F52D1051"
     },
     {
       "path": "scripts/lumineos_codec.py",
       "size": 7933,
-      "sha256": "D354E65871AA33C029698BCC0B72A42955579F9DE690EC53FC2E15134305C3A3"
+      "sha256": "D4FFA0BD0C0331D7DDB6499845404C907C0E01589420485977EEA80C7AD0CE87"
     },
     {
       "path": "scripts/normalize_combat_score_resources.py",

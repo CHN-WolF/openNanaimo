@@ -12,6 +12,7 @@ import generate_monk_combat as gen
 
 ROOT = gen.ROOT
 CLIENT = Path(os.environ.get('NANAIMO_MONK_CLIENT', ROOT/'build/monk-prototype/payload'))
+BASELINE = Path(os.environ.get('NANAIMO_MONK_SOURCE', ROOT))
 
 
 def encode_dcc(sections):
@@ -127,7 +128,9 @@ class MonkCombatGenerationTests(unittest.TestCase):
         cls.temp = tempfile.TemporaryDirectory(dir=ROOT/'build', prefix='monk-combat-test-')
         cls.addClassCleanup(cls.temp.cleanup)
         cls.output = Path(cls.temp.name)/'first'
-        cls.report = gen.generate(CLIENT, cls.output)
+        cls.baseline = Path(cls.temp.name)/'baseline'
+        gen.prepare_baseline(BASELINE, cls.baseline)
+        cls.report = gen.generate(CLIENT, cls.output, cls.baseline)
         cls.hp = (cls.output/gen.tables.DATA).read_text('utf8')
         cls.profiles = gen.tables.numeric_rows(cls.hp, 'hp_sync_profiles')
         cls.targets = gen.tables.numeric_rows(cls.hp, 'hp_sync_target_defs')
@@ -135,7 +138,7 @@ class MonkCombatGenerationTests(unittest.TestCase):
 
     def test_repeat_generation_and_additive_source_are_byte_identical(self):
         expected = {p: (self.output/p).read_bytes() for p in self.report['outputs']}
-        again = gen.generate(CLIENT, self.output)
+        again = gen.generate(CLIENT, self.output, self.baseline)
         self.assertEqual(again, self.report)
         for path, data in expected.items():
             self.assertEqual((self.output/path).read_bytes(), data, path)
@@ -152,11 +155,11 @@ class MonkCombatGenerationTests(unittest.TestCase):
                   (gen.tables.TERMINAL_ITEMS, ('terminal_item_drop_rows',)),
                   (gen.BOSS_CONTACT, ('boss_contact_rows',)), (gen.MONSTER_CONTACT, ('monster_contact_rows',))]
         for path, names in arrays:
-            before, after = gen.clean((ROOT/path).read_text('utf8')), gen.clean((self.output/path).read_text('utf8'))
+            before, after = gen.clean((self.baseline/path).read_text('utf8')), gen.clean((self.output/path).read_text('utf8'))
             for name in names:
                 self.assertEqual(gen.tables.array(before, name)[1], gen.tables.array(after, name)[1], name)
         original = [[row for row in section if tuple(row[:4]) != gen.SCOPE]
-                    for section in gen.read_dcc((ROOT/gen.tables.CATALOG).read_bytes())]
+                    for section in gen.read_dcc((self.baseline/gen.tables.CATALOG).read_bytes())]
         generated = gen.read_dcc((self.output/gen.tables.CATALOG).read_bytes())
         for before, after in zip(original, generated):
             self.assertEqual(before, [r for r in after if tuple(r[:4]) != gen.SCOPE])
@@ -177,7 +180,7 @@ class MonkCombatGenerationTests(unittest.TestCase):
         self.assertEqual(ranges[-1][1], len(self.targets))
 
     def test_preloads_are_separate_and_legacy_catalog_is_unchanged(self):
-        old = json.loads((ROOT/gen.PRELOAD).read_text('utf8'))
+        old = json.loads((self.baseline/gen.PRELOAD).read_text('utf8'))
         old_profile_rows = {s['profile_row'] for s in old['scopes']
                             if not (s['hd'] == 0 and 24 <= s['episode'] <= 27)}
         old = dict(old,
@@ -237,6 +240,8 @@ class MonkCombatGenerationTests(unittest.TestCase):
         old_score = (ROOT/gen.SCORE).read_text('utf8')
         new_score = (self.output/gen.SCORE).read_text('utf8')
         old_values = re.findall(r'(\d+)u', gen.tables.array(old_score, 'combat_score_target_scores')[1])
+        baseline_count = len(gen.tables.numeric_rows((self.baseline/gen.tables.DATA).read_text('utf8'), 'hp_sync_target_defs'))
+        old_values = old_values[:baseline_count]
         new_values = re.findall(r'(\d+)u', gen.tables.array(new_score, 'combat_score_target_scores')[1])
         self.assertEqual(new_values[:len(old_values)], old_values)
         self.assertEqual(len(new_values), len(self.targets))
@@ -248,7 +253,7 @@ class MonkCombatGenerationTests(unittest.TestCase):
         keys = [(s[0], s[5], s[1], s[2], s[3]) for s in scopes]
         self.assertEqual(keys, sorted(set(keys)))
         self.assertEqual([s[3] for s in scopes if s[5] == 24], [0, 1, 2])
-        old = json.loads((ROOT/gen.HAZARD).read_text('utf8'))
+        old = json.loads((self.baseline/gen.HAZARD).read_text('utf8'))
         new = json.loads((self.output/gen.HAZARD).read_text('utf8'))
         names = {p['resource'] for p in old['policies']}
         self.assertEqual([p for p in new['policies'] if p['resource'] in names], old['policies'])

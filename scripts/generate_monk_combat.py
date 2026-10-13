@@ -144,7 +144,8 @@ class Resources(tables.Resources):
 
 def checked_row(mem):
     raw, attack, score, _ = struct.unpack_from('<4i', mem, 8)
-    if raw < 0 or not 0 <= attack <= 65535 or score < 0:
+    limit = 0x7fffffff if raw == 0 and mem[4] == 4 else 65535
+    if raw < 0 or not 0 <= attack <= limit or score < 0:
         raise ValueError('Unsupported MMO numeric fields')
     return raw, attack
 
@@ -173,7 +174,7 @@ def merge_preloads(previous, resources, model, profiles):
                 result['rows'].append([profile[9], selector, mem[4], raw, raw * profile[7] // 100,
                                        tables.i32(mem, 20), mem[26], ri, attack, tables.i32(mem, 408), start])
                 selector += 1
-        result['scopes'].append(dict(hd=0, episode=24, dungeon=0, stage=0, slot=slot,
+        result['scopes'].append(dict(hd=0, episode=SCOPE[1], dungeon=0, stage=0, slot=slot,
                                      profile_row=profile[9], static_count=profile[10], preload_count=selector-profile[10]))
     result['rows'].sort(key=lambda r: (r[0], r[1]))
     result['scopes'].sort(key=lambda s: (s['hd'], s['episode'], s['dungeon'], s['stage'], s['slot']))
@@ -238,7 +239,7 @@ def merge_hazards(previous, resources, profiles, targets, resource_rows, attacks
             policy = policies[name]
             if (policy['sha256'], policy['mmo_record_count']) != (digest, count):
                 raise ValueError('Conflicting scene contact identity')
-            scope = dict(hd=0, episode=24, dungeon=0, stage=0, difficulty_mask=7)
+            scope = dict(hd=0, episode=SCOPE[1], dungeon=0, stage=0, difficulty_mask=7)
             if scope not in policy['scopes']:
                 policy['scopes'].append(scope)
             entry = dict(row=selector-start, basis=basis, association=association, damage=attack)
@@ -259,7 +260,7 @@ def generate(client, output, source_root=ROOT):
     stage = codec.sstg(resources.read(STAGE))
     if tuple(stage['identity']) != SCOPE or len(stage['slots']) != 9:
         raise ValueError('First-challenge SSTG identity')
-    if any(len(pool) != 61 for pool in stage['extra']):
+    if SCOPE[1] == 24 and any(len(pool) != 61 for pool in stage['extra']):
         raise ValueError('First-challenge requires 61 independent preload resources per slot')
     monsters = {uid: (kind, name) for uid, kind, name in stage['monsters']}
     if len(monsters) != len(stage['monsters']) or any(not 0 <= uid <= 65535 for uid in monsters):
@@ -269,11 +270,11 @@ def generate(client, output, source_root=ROOT):
         raise ValueError('First-challenge requires one Boss')
     boss_uid, boss_name = bosses[0]
     modes = resources.boss_names(boss_name)
-    if len(modes) != 1 or len(modes[0]) != 1:
+    if SCOPE[1] == 24 and (len(modes) != 1 or len(modes[0]) != 1):
         raise ValueError('Unreviewed first-challenge Boss structure')
     boss_rows = resources.mmo(modes[0][0])[0]
     shape = [(m[4], tables.i32(m, 8), tables.i32(m, 408)) for m, _ in boss_rows]
-    if shape != [(4, 0, 24)] * 24 + [(3, 80000, -1)]:
+    if SCOPE[1] == 24 and shape != [(4, 0, 24)] * 24 + [(3, 80000, -1)]:
         raise ValueError('First-challenge Boss component shape differs')
     hp = clean((source_root/tables.DATA).read_text('utf8'))
     boss = clean((source_root/tables.BOSS).read_text('utf8'))
@@ -310,7 +311,7 @@ def generate(client, output, source_root=ROOT):
         if percent != 100:
             raise ValueError('First-challenge HP percent differs')
         placements = resources.placements(smmo)
-        if len(placements) != 299 or any(p[2] not in monsters for p in placements):
+        if (SCOPE[1] == 24 and len(placements) != 299) or any(p[2] not in monsters for p in placements):
             raise ValueError('First-challenge placement table differs')
         scheduled = {p[2] for p in placements}
         key = lambda uid: struct.pack('<5BH', *SCOPE, slot, uid)
@@ -344,9 +345,9 @@ def generate(client, output, source_root=ROOT):
                 if mem[26] == 5 and mem[24] != 5 and raw > 0 and scaled > 0 and mem[4] != 4:
                     terminal_rows.append(old_target_count + len(new_targets) - 1)
                 selector += 1
-        if selector != 629:
+        if SCOPE[1] == 24 and selector != 629:
             raise ValueError('First-challenge ordinary row count differs')
-        new_profiles.append((24, 0, 0, 0, slot//3, slot%3, slot, percent, 0, start, selector))
+        new_profiles.append((SCOPE[1], 0, 0, 0, slot//3, slot%3, slot, percent, 0, start, selector))
         first_mode, total_hp, total_score = len(bm)+len(new_bm), 0, 0
         for mode, children in enumerate(modes):
             first_component, mode_hp, component_count = len(bc)+len(new_bc), 0, 0
@@ -368,7 +369,8 @@ def generate(client, output, source_root=ROOT):
         summary.append(dict(stage=0, slot=slot, smmo=smmo, percent=percent, placements=len(placements),
                             targets=selector, positive_hp=sum(t[0] > 0 for t in new_targets[-selector:]),
                             preload_resources=len(stage['extra'][slot]), boss_modes=len(modes),
-                            boss_children=list(map(len, modes)), boss_components=component_count,
+                            boss_children=list(map(len, modes)),
+                            boss_components=sum(row[2] for row in new_bm[first_mode-len(bm):]),
                             boss_hp=total_hp, boss_score=total_score,
                             boss_effects=resources.bmo_effects[boss_name]))
     pons = resources.projectiles([name for kind, name in monsters.values() if kind in (0, 3)] +
@@ -388,7 +390,7 @@ def generate(client, output, source_root=ROOT):
             at = len(values) + len(new_values)
             new_values.extend(attack_values)
             new_dr.append('    {' + f'{owner}u,{len(attack_values)}u,{at}u,{int(ambiguous)}u,"{name}"' + '},')
-        new_ds.append('    {' + f'0u,0u,0u,{difficulty}u,0u,24u,{len(grouped)}u,{first}u,"{stage["slots"][difficulty*3][0]}"' + '},')
+        new_ds.append('    {' + f'0u,0u,0u,{difficulty}u,0u,{SCOPE[1]}u,{len(grouped)}u,{first}u,"{stage["slots"][difficulty*3][0]}"' + '},')
     hp = append(hp, 'hp_sync_profiles', [tables.hp_profile_row(p) for p in new_profiles], r'^[ \t]*\{0,1,')
     hp = append(hp, 'hp_sync_target_defs', [tables.row(t) for t in new_targets])
     hp = append(hp, 'hp_sync_resources', [f'    {{"{n}","{h}",{c}u}},' for n, h, c in resource_rows[old_resource_count:]])
@@ -461,7 +463,7 @@ def generate(client, output, source_root=ROOT):
                   score_policy='floor(MMO Score / 10); existing DCC7 scores retained',
                   bmo_schema='BMO2 flag0, 308-byte mode header, 208-byte child; complete boundary checked',
                   stages=summary, dcc_added=list(map(len, added)), terminal_item_rows_added=len(terminal_rows),
-                  preload_rows_added=sum(s['preload_count'] for s in preloaded['scopes'] if s['episode'] == 24),
+                  preload_rows_added=sum(s['preload_count'] for s in preloaded['scopes'] if s['episode'] == SCOPE[1]),
                   pon_resources=len(pons), inputs=resources.inputs,
                   outputs={p.as_posix(): dict(size=len(b), sha256=tables.sha(b)) for p, b in outputs.items()})
     for summary_row, scope in zip(summary, [s for s in preloaded['scopes']
@@ -471,17 +473,86 @@ def generate(client, output, source_root=ROOT):
     return report
 
 
+def prepare_baseline(source_root, baseline):
+    baseline = Path(baseline).resolve()
+    if baseline.exists() or not baseline.is_relative_to(ROOT/'build'):
+        raise ValueError('choose a fresh build baseline')
+    paths = [tables.DATA, tables.BOSS, tables.DAMAGE, tables.TERMINAL_ITEMS,
+             tables.CATALOG, PRELOAD, contact.REGISTRY, BOSS_CONTACT, MONSTER_CONTACT, HAZARD]
+    for path in paths:
+        data = (Path(source_root) / path).read_bytes()
+        if path.suffix == '.inc':
+            text = data.decode('utf8')
+            text = re.sub(r'/\* MONK(?: EP\d+)? GENERATED APPEND \*/.*?/\* END MONK(?: EP\d+)? GENERATED APPEND \*/\n', '', text, flags=re.S)
+            data = text.encode()
+        destination = baseline / path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(data)
+    def challenge(scope):
+        return scope[0] == 0 and 24 <= scope[1] <= 27
+    sections = [[r for r in rows if not challenge(r[:4])]
+                for rows in read_dcc((baseline/tables.CATALOG).read_bytes())]
+    (baseline/tables.CATALOG).write_bytes(b'DCC7' + b''.join(
+        struct.pack('<I', len(rows)) + b''.join(rows) for rows in sections))
+    preloaded = json.loads((baseline/PRELOAD).read_text('utf8'))
+    retained = [s for s in preloaded['scopes'] if not challenge((s['hd'], s['episode']))]
+    profile_rows = {s['profile_row'] for s in retained}
+    preloaded['scopes'] = retained
+    preloaded['rows'] = [r for r in preloaded['rows'] if r[0] in profile_rows]
+    (baseline/PRELOAD).write_text(json.dumps(preloaded), encoding='utf8')
+    contacts = json.loads((baseline/contact.REGISTRY).read_text('utf8'))
+    contacts['scopes'] = [s for s in contacts['scopes'] if not challenge(s['key'])]
+    (baseline/contact.REGISTRY).write_text(json.dumps(contacts), encoding='utf8')
+    # Rebuild the challenge-only hazard ownership from current resources.
+    hazards = json.loads((baseline/HAZARD).read_text('utf8'))
+    kept = []
+    for policy in hazards['policies']:
+        owned = [s for s in policy['scopes'] if s['hd'] == 0 and 24 <= s['episode'] <= 27]
+        if owned and len(owned) != len(policy['scopes']):
+            raise ValueError('mixed challenge hazard ownership')
+        if not owned: kept.append(policy)
+    hazards['policies'] = kept
+    (baseline/HAZARD).write_text(json.dumps(hazards), encoding='utf8')
+
+
+def generate_all(client, output, source_root=ROOT):
+    """Generate all four scopes in order, preserving the shared catalog baseline."""
+    global SCOPE, STAGE, TAG, END
+    output = Path(output).resolve()
+    if output.exists() or not output.is_relative_to(ROOT/'build'):
+        raise ValueError('choose a fresh build output')
+    baseline = output/'baseline'
+    prepare_baseline(source_root, baseline)
+    saved = SCOPE, STAGE, TAG, END
+    reports, current = [], baseline
+    try:
+        for episode in range(24, 28):
+            SCOPE = (0, episode, 0, 0)
+            STAGE = f'flying/hd0_ep{episode}_dg00_st00.sstg'
+            TAG, END = ((saved[2], saved[3]) if episode == 24 else
+                        (f'/* MONK EP{episode} GENERATED APPEND */', f'/* END MONK EP{episode} GENERATED APPEND */'))
+            destination = output / f'episode-{episode}'
+            reports.append(generate(client, destination, current))
+            current = destination
+    finally:
+        SCOPE, STAGE, TAG, END = saved
+    return dict(schema=2, active_episodes=list(range(24, 28)), runtime_accepted=False,
+                challenges=reports, outputs=reports[-1]['outputs'])
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--client', required=True, type=Path)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--source-root', type=Path, default=ROOT)
     parser.add_argument('--manifest', type=Path)
+    parser.add_argument('--all-challenges', action='store_true')
     args = parser.parse_args()
-    report = generate(args.client, args.output, args.source_root)
+    report = (generate_all if args.all_challenges else generate)(args.client, args.output, args.source_root)
     if args.manifest:
-        if args.manifest.resolve() != ROOT/'manifest/monk_combat.json':
-            raise ValueError('Manifest destination must be manifest/monk_combat.json')
+        expected = ROOT/'manifest'/('monk_challenge_combat.json' if args.all_challenges else 'monk_combat.json')
+        if args.manifest.resolve() != expected:
+            raise ValueError('Manifest destination differs from challenge scope')
         args.manifest.write_text(json.dumps(report, indent=2)+'\n', encoding='utf8', newline='\n')
     print(json.dumps({k: v for k, v in report.items() if k not in ('inputs', 'stages')}, indent=2))
 

@@ -52,7 +52,7 @@ class FormatTests(unittest.TestCase):
         event0 = name(old, 64) + bytes([9]) * 8
         event8 = bytes([10]) * 8 + name(old, 64)
         body = scalars + codec.xor(name(old, 64)) * 3
-        body += b'\x01' + codec.xor(event0) + b'\x01' + codec.xor(event8)
+        body += b'\x01' + codec.xor(event8) + b'\x01' + codec.xor(event8)
         body += bytes([11]) * 8 + codec.xor(name(old, 64)) * 2
         body += bytes([12]) * 4 + codec.xor(name(old, 64))
         for _ in range(3): body += bytes([13]) * 4 + codec.xor(name(old, 64))

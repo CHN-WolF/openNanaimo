@@ -357,11 +357,13 @@ def patch_village_pack(data: bytes) -> tuple[bytes, dict]:
                 put(18, x, y, 13, 166, 'dungeon7 action166 region')
         put(18, 25, 6, 14, 169, 'dungeon7 return marker')
 
+    for x in range(22, 28):
+        for y in range(14):
+            put(19, x, y, 7, 0, 'open challenge north corridor')
+
     pages = ROUTE[6:]
     neighbors = {page: {} for page in pages}
     for source, target in zip(ROUTE, ROUTE[1:]):
-        if native_layout and (source, target) == (19, 14):
-            continue  # No L9: close both sides of the formerly planned link.
         if source in neighbors:
             neighbors[source][_side(source, target)] = target
         if target in neighbors:
@@ -668,7 +670,8 @@ def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:
     for name, va, old, new in social_gameplay_patch_sites():
         data, gameplay[name] = _migrate_site(data, va, new,
             (old,) + entertainment_result_compat.legacy_encodings(va)
-                + arena_result_compat.legacy_encodings(va), 'patch_' + name,
+                + arena_result_compat.legacy_encodings(va)
+                + monk_village_compat.legacy_encodings(va), 'patch_' + name,
             'the social gameplay compatibility site differs')
     data, result_entry = dungeon_result_compat.patch(data, _patch_site, _migrate_site)
     data, power = restore_native_power(data)
@@ -1236,17 +1239,13 @@ def _verify_village_bytes(data: bytes):
     checks.append(_check('dungeon7_no_generated_scene_artwork', scene_ok, 'pre-art entry behavior'))
     route_ok = True
     for source, target in zip(ROUTE[6:-1], ROUTE[7:]):
-        if native_layout and (source, target) == (19, 14):
-            continue
         for page, other in ((source, target), (target, source)):
             exits, markers = _strips(_side(page, other))
             route_ok = route_ok and all(pack.field(page, x, y, 7) == 0 and
                                         pack.field(page, x, y, 10) == other for x, y in exits)
             route_ok = route_ok and all(pack.field(page, x, y, 7) == 0 and
                                         pack.field(page, x, y, 11) == other for x, y in markers)
-    checks.append(_check('p03_route_chain', route_ok, 'native layout excludes the unimplemented L9 link' if native_layout else '16 bidirectional links after page17/page18'))
-    if native_layout:
-        checks.append(_check('native_l8_boundary', all(pack.field(19, x, y, 10) == -1 and pack.field(19, x, y, 7) == 1 for x, y in _strips('N')[0]), 'page19 north closed; no L9'))
+    checks.append(_check('p03_route_chain', route_ok, 'bidirectional fifth-village challenge route'))
     return checks
 
 

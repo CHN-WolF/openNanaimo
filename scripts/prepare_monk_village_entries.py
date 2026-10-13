@@ -1,9 +1,7 @@
-"""Install the fifth-village challenge entrance and four foreground positions.
+"""Install four fifth-village challenge entrances and their connected roads.
 
-The client already maps action 168..171 to native entry indexes 8..11 and
-the existing resource selector resolves those indexes to episode 24..27.
-The transaction updates VIL action WORDs and four foreground entry markers.
-It preserves the executable, combat catalogs, target ledgers and account data.
+Actions 168..171 select entries 8..11 and resource episodes 24..27.
+The transaction owns route cells, action WORDs and foreground markers.
 """
 from __future__ import annotations
 
@@ -23,18 +21,17 @@ except ImportError:
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = 'openNanaimo.monk-village-entry.v1'
+SCHEMA = 'openNanaimo.monk-village-entry.v2'
 PACK_REL = 'Village_map_image/Village_map_image.pack'
-MARKER = '.openNanaimo-monk-village-entry.json'
-ACTIVE_EPISODES = (24,)
+MARKER = '.openNanaimo-monk-village-challenges.json'
+ACTIVE_EPISODES = (24, 25, 26, 27)
 
 
 def action_value(entry):
     return entry['action'] if entry['episode'] in ACTIVE_EPISODES else -1
 VISUAL_RESOURCE = 'effs/village/village_inout_01.eff'
 
-# The selected cells are existing walkable empty space.  Do not move a road,
-# destination field, arrival marker, or collision boundary.
+# Entry cells are walkable space with independent route and arrival metadata.
 ENTRIES = (
     dict(page=9, action=168, entry_index=8, episode=24,
          cells=tuple((x, y) for x in range(44, 48) for y in range(14, 21)),
@@ -46,8 +43,8 @@ ENTRIES = (
          cells=tuple((x, y) for x in range(22, 28) for y in range(3, 5)),
          placement=[400.0, 64.0, 0.0]),
     dict(page=12, action=171, entry_index=11, episode=27,
-         cells=tuple((x, y) for x in range(22, 28) for y in range(2, 4)),
-         placement=[400.0, 48.0, 0.0]),
+         cells=tuple((x, y) for x in range(36, 40) for y in range(18, 21)),
+         placement=[600.0, 304.0, 0.0]),
 )
 
 
@@ -187,9 +184,14 @@ def validate_entry_cells(pack: FifthVillagePack, data: bytes) -> None:
 
 
 def derive(data: bytes) -> tuple[bytes, dict]:
-    pack = FifthVillagePack(data)
-    validate_entry_cells(pack, data)
-    output = bytearray(data)
+    try:
+        from . import prepare_client_compatibility as compatibility
+    except ImportError:
+        import prepare_client_compatibility as compatibility
+    routed, route_report = compatibility.patch_village_pack(data)
+    pack = FifthVillagePack(routed)
+    validate_entry_cells(pack, routed)
+    output = bytearray(routed)
     changes = []
     for entry in ENTRIES:
         for x, y in entry['cells']:
@@ -205,6 +207,11 @@ def derive(data: bytes) -> tuple[bytes, dict]:
     visual_changes = []
     updates = {50000 + entry['page']: _scene_with_visual(FifthVillagePack(result).record(entry['page']), entry['placement'])
                for entry in ENTRIES}
+    scene = scene_preview.VillageScene(updates[50012])
+    old_marker = struct.pack('<3f', 400.0, 48.0, 0.0)
+    visual_ids = {uid for uid, name in scene.textures if name.split(b'\0', 1)[0].replace(b'\\', b'/').lower() == VISUAL_RESOURCE.encode('ascii')}
+    scene.layers[2] = [row for row in scene.layers[2] if not (struct.unpack_from('<I', row)[0] in visual_ids and row[4:] == old_marker)]
+    updates[50012] = scene.raw[:scene.grid_start + 64800] + b''.join(struct.pack('<i', uid) + name for uid, name in scene.textures) + struct.pack('<i', -1) + b''.join(struct.pack('<I', len(rows)) + b''.join(rows) for rows in scene.layers) + scene.tail
     result = _replace_records(result, updates)
     for entry in ENTRIES:
         visual_changes.append(dict(page=entry['page'], resource=VISUAL_RESOURCE, placement=entry['placement']))
@@ -221,24 +228,57 @@ def derive(data: bytes) -> tuple[bytes, dict]:
         unchanged_file_size=len(data) == len(result),
         entry_chain=dict(action_range=[160, 182], setter_va='0xA74450',
                          resource_loader_va='0x66EC30',
-                         selector_rule='entry8 -> local hd0/ep24/dg0/st0; entries9..11 reserved'),
+                         selector_rule='entries8..11 -> local hd0/ep24..27/dg0/st0'),
         entries=[_row(entry) for entry in ENTRIES],
         active_episodes=list(ACTIVE_EPISODES),
         changes=changes,
+        roads=route_report,
         visual_resource=VISUAL_RESOURCE,
         visual_changes=visual_changes,
         combat_boundary=dict(
-            combat_catalog='manifest/monk_combat.json',
-            resource_identity=[0, 24, 0, 0],
-            kind_hp_ledgers='preserved; no target KIND/HP/reward rows are rewritten by this transaction'),
+            combat_catalog='manifest/monk_challenge_combat.json',
+            resource_identities=[[0, episode, 0, 0] for episode in ACTIVE_EPISODES],
+            kind_hp_ledgers='independent target KIND/HP/reward ledgers'),
     )
     manifest['id'] = digest(encoded(manifest))
     return result, manifest
 
 
+def connected_entries(data: bytes):
+    """Resolve cell-level reachability through matching cross-page arrival markers."""
+    from collections import deque
+    pack = FifthVillagePack(data)
+    arrivals = {}
+    for page in pack.pages:
+        for x in range(50):
+            for y in range(36):
+                source = pack.field(page, x, y, 11)
+                if source >= 0 and pack.field(page, x, y, 7) == 0:
+                    arrivals.setdefault((page, source), []).append((page, x, y))
+    seen = {(12, 25, 18)}
+    queue = deque(seen)
+    while queue:
+        page, x, y = queue.popleft()
+        target = pack.field(page, x, y, 10)
+        if target >= 0:
+            neighbors = arrivals.get((target, page), [])
+        else:
+            neighbors = [(page, x+dx, y+dy) for dx, dy in ((1,0),(-1,0),(0,1),(0,-1))
+                         if 0 <= x+dx < 50 and 0 <= y+dy < 36]
+        for cell in neighbors:
+            if cell not in seen and pack.field(*cell, 7) == 0:
+                seen.add(cell); queue.append(cell)
+    result = {entry['episode']: sum((entry['page'], x, y) in seen for x, y in entry['cells'])
+              for entry in ENTRIES}
+    require(all(count == len(entry['cells']) for entry, count in zip(ENTRIES, result.values())),
+            'challenge entrance is disconnected from village center')
+    return result
+
+
 def verify(data: bytes, manifest: dict | None = None, client_root: Path | None = None) -> dict:
     pack = FifthVillagePack(data)
     validate_entry_cells(pack, data)
+    reachable = connected_entries(data)
     rows = []
     for entry in ENTRIES:
         scene = scene_preview.VillageScene(pack.record(entry['page']))
@@ -269,7 +309,7 @@ def verify(data: bytes, manifest: dict | None = None, client_root: Path | None =
             require(resource.is_file() and resource.stat().st_size == manifest['visual_resource_size']
                     and digest(resource.read_bytes()) == manifest['visual_resource_sha256'],
                     'entry visual resource differs')
-    return dict(schema=SCHEMA, verified=len(rows), cells=sum(row['cells'] for row in rows), entries=rows,
+    return dict(schema=SCHEMA, reachable=reachable, verified=len(rows), cells=sum(row['cells'] for row in rows), entries=rows,
                 size=len(data), sha256=digest(data), runtime_accepted=False)
 
 

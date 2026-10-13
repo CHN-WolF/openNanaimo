@@ -1,32 +1,37 @@
 {
-  "schema": "openNanaimo.monk-village-entry.v1",
-  "runtime_accepted": false,
-  "status": "native-action-bound-unverified",
-  "pack_path": "Village_map_image/Village_map_image.pack",
-  "pack_size": 17029421,
-  "pack_before_sha256": "7DC3ACE5D8837DDCCDC47073CBA8C174BCF1A5866F1A983FB38B1E1EB5D1EE42",
-  "pack_after_sha256": "23120B8087006D0F6E11F73ABA9B7C41009FBF6DD8C28951A48A209895AE712C",
-  "file_size_unchanged": false,
-  "entry_chain": {
-    "action_range": [
-      160,
-      182
+  "active_episodes": [
+    24,
+    25,
+    26,
+    27
+  ],
+  "changed_action_words": 80,
+  "changed_field": {
+    "field": 13,
+    "preserved_combat_catalog": true,
+    "preserved_fields": [
+      7,
+      10,
+      11,
+      14
     ],
-    "setter_va": "0xA74450",
-    "resource_loader_va": "0x66EC30",
-    "selector_rule": "entry_index 8..11 -> episode 24..27",
-    "selection_call_va": "0x72F265",
-    "selection_code_va": "0x6E33C0",
-    "selection_code_size": 64,
-    "selection_rule": "hd0/chapter100/entry8 -> local selection hd0/ep24/dg0/st0",
-    "selection_recipe": "scripts/monk_village_compat.py"
+    "scope": "entrance cells",
+    "word_after": "action value",
+    "word_before": -1
   },
   "entries": [
     {
-      "page": 9,
       "action": 168,
+      "active": true,
       "entry_index": 8,
       "episode": 24,
+      "installed_action": 168,
+      "page": 9,
+      "placement": [
+        720.0,
+        280.0,
+        0.0
+      ],
       "region": {
         "x": [
           44,
@@ -36,20 +41,20 @@
           14,
           20
         ]
-      },
-      "placement": [
-        720.0,
-        280.0,
-        0.0
-      ],
-      "active": true,
-      "installed_action": 168
+      }
     },
     {
-      "page": 10,
       "action": 169,
+      "active": true,
       "entry_index": 9,
       "episode": 25,
+      "installed_action": 169,
+      "page": 10,
+      "placement": [
+        720.0,
+        280.0,
+        0.0
+      ],
       "region": {
         "x": [
           44,
@@ -59,20 +64,20 @@
           14,
           20
         ]
-      },
-      "placement": [
-        720.0,
-        280.0,
-        0.0
-      ],
-      "active": false,
-      "installed_action": -1
+      }
     },
     {
-      "page": 11,
       "action": 170,
+      "active": true,
       "entry_index": 10,
       "episode": 26,
+      "installed_action": 170,
+      "page": 11,
+      "placement": [
+        400.0,
+        64.0,
+        0.0
+      ],
       "region": {
         "x": [
           22,
@@ -82,61 +87,90 @@
           3,
           4
         ]
-      },
-      "placement": [
-        400.0,
-        64.0,
-        0.0
-      ],
-      "active": false,
-      "installed_action": -1
+      }
     },
     {
-      "page": 12,
       "action": 171,
+      "active": true,
       "entry_index": 11,
       "episode": 27,
-      "region": {
-        "x": [
-          22,
-          27
-        ],
-        "y": [
-          2,
-          3
-        ]
-      },
+      "installed_action": 171,
+      "page": 12,
       "placement": [
-        400.0,
-        48.0,
+        600.0,
+        304.0,
         0.0
       ],
-      "active": false,
-      "installed_action": -1
+      "region": {
+        "x": [
+          36,
+          39
+        ],
+        "y": [
+          18,
+          20
+        ]
+      }
     }
   ],
-  "changed_field": {
-    "field": 13,
-    "word_before": -1,
-    "word_after": "action value",
-    "preserved_fields": [
-      7,
-      10,
-      11,
-      14
+  "entry_chain": {
+    "action_range": [
+      160,
+      182
     ],
-    "preserved_combat_catalog": true
+    "resource_loader_va": "0x66EC30",
+    "selection_call_va": "0x72F265",
+    "selection_code_size": 64,
+    "selection_code_va": "0x6E33C0",
+    "selection_recipe": "scripts/monk_village_compat.py",
+    "selection_rule": "hd0/chapter100/entries8..11 -> local hd0/ep24..27/dg0/st0",
+    "selector_rule": "entry_index 8..11 -> episode 24..27",
+    "setter_va": "0xA74450"
   },
+  "file_size_unchanged": false,
+  "pack_after_sha256": "835565D6F4C24D1C336C7861EBD1D7346F5C200B7E7A24ABE9DC97B332CE8F10",
+  "pack_before_sha256": "7DC3ACE5D8837DDCCDC47073CBA8C174BCF1A5866F1A983FB38B1E1EB5D1EE42",
+  "pack_path": "Village_map_image/Village_map_image.pack",
+  "pack_size": 17029421,
+  "reserved_episodes": [],
+  "route": {
+    "bidirectional_links": [
+      [
+        19,
+        14
+      ],
+      [
+        14,
+        9
+      ]
+    ],
+    "center": [
+      12,
+      25,
+      18
+    ],
+    "corridor": {
+      "page": 19,
+      "x": [
+        22,
+        27
+      ],
+      "y": [
+        0,
+        13
+      ]
+    },
+    "reachable_cells": {
+      "24": 28,
+      "25": 28,
+      "26": 12,
+      "27": 12
+    }
+  },
+  "runtime_accepted": false,
+  "schema": "openNanaimo.monk-village-entry.v2",
+  "status": "native-action-bound-unverified",
   "visual_resource": "effs/village/village_inout_01.eff",
-  "visual_resource_size": 5220,
   "visual_resource_sha256": "A8580FF91CAEAC74F9C49EA94CE8CE2FD7739DEE3B44C838ACF8999D1EF35DEC",
-  "active_episodes": [
-    24
-  ],
-  "reserved_episodes": [
-    25,
-    26,
-    27
-  ],
-  "changed_action_words": 28
+  "visual_resource_size": 5220
 }

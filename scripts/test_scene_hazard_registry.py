@@ -31,10 +31,10 @@ class SceneHazardRegistryTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn(
-            "SCENE_HAZARD_CATALOG_PASS scopes=288 type4=44441 "
-            "association_candidates=31788 exact_associated=29916 "
-            "broken_association=1887 standalone=12653 hazards=4923 "
-            "unclassified=9602 policies=172 negative_samples=5",
+            "SCENE_HAZARD_CATALOG_PASS scopes=300 type4=46877 "
+            "association_candidates=33063 exact_associated=30825 "
+            "broken_association=2253 standalone=13814 hazards=4986 "
+            "unclassified=11066 policies=176 negative_samples=5",
             result.stdout,
         )
 
@@ -70,7 +70,7 @@ class SceneHazardRegistryTests(unittest.TestCase):
         registry = json.loads(REGISTRY.read_text(encoding="ascii"))
         self.assertEqual(registry["schema"], 2)
         policies = {p["resource"]: p for p in registry["policies"]}
-        self.assertEqual(len(policies), 172)
+        self.assertEqual(len(policies), 176)
         spear = policies["obj_ep01_st11_obj03.mmo"]
         self.assertEqual(spear["expected_selected_rows"], 9)
         self.assertEqual(spear["rows"], [dict(row=0, basis=0, association=-1, damage=300)])

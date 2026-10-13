@@ -99,13 +99,13 @@ def audit(registry):
         index, resource = resource_by_name[name]
         if resource[1] != policy["sha256"] or resource[2] != policy["mmo_record_count"]:
             raise ValueError(f"Hazard resource identity drift: {name}")
-        if not 1 <= int(policy["damage"]) <= 65535:
+        if not 1 <= int(policy["damage"]) <= 0x7fffffff:
             raise ValueError(f"Invalid hazard damage: {name}")
         row_ids = set()
         for row in policy.get("rows", []):
             if (row["row"] in row_ids or not 0 <= row["row"] < policy["mmo_record_count"]
                     or not -1 <= row["association"] < policy["mmo_record_count"]
-                    or not 1 <= row["damage"] <= 65535):
+                    or not 1 <= row["damage"] <= 0x7fffffff):
                 raise ValueError(f"Invalid or duplicate hazard row: {name} {row}")
             row_ids.add(row["row"])
         if not row_ids:

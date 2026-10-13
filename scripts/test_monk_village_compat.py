@@ -42,7 +42,7 @@ class SelectionTests(unittest.TestCase):
                 put(manager+0x1e538, 99);put(manager+0x1e540, 0)
                 put(manager+0x1e548, 100);put(manager+0x1e54c, index)
                 m.emu_start(recipe.CODE_VA, end, count=100)
-                eligible = hd == 0 and index == 8
+                eligible = hd == 0 and 8 <= index <= 11
                 expected = (hd, index+16 if eligible else 100, 0 if eligible else index, 0)
                 actual = tuple(get(manager+x) for x in (0x1e530,0x1e548,0x1e54c,0x1e540))
                 self.assertEqual(actual, expected)
