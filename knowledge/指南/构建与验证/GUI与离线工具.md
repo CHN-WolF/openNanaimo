@@ -8,7 +8,9 @@
 <a id="8-gui-自测与-validate"></a>
 
 <!-- FUSION BEGIN df-14-013 -->
-## 8. GUI 自测与离线校验
+<a id="8-gui-自测与离线校验"></a>
+
+## GUI 自测与离线校验
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -STA -File gui_launcher/nanaimo_launcher.ps1 -SelfTestLaunchModes

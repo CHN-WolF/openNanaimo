@@ -5,7 +5,7 @@
 <!-- FUSION BEGIN df-02-005 -->
 ## 随仓库默认奖池
 
-两种卡片使用流程的已审核默认奖池位于`release/components/cards/event-card-rewards.json`。页1～4包括按期限区分的首领宠物、整套战士衣物、三颗战士宝石、整套战士装饰、面包加饮料，以及直接200 Hans奖励。文件登记在`manifest/open_release_manifest.json`及导出候选清单中，但**不自动安装**；启动适配器前须复制到活动数据库旁。
+两种卡片使用流程的已审核默认奖池位于`release/components/cards/event-card-rewards.json`。页1～4包括按期限区分的BOSS宠物、整套战士衣物、三颗战士宝石、整套战士装饰、面包加饮料，以及直接200 Hans奖励。文件登记在`manifest/open_release_manifest.json`及导出候选清单中，但**不自动安装**；启动适配器前须复制到活动数据库旁。
 
 ```powershell
 Copy-Item -LiteralPath 'release/components/cards/event-card-rewards.json' -Destination '<install-root>/adapter_data/event-card-rewards.json'
