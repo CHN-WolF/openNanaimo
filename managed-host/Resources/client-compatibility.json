@@ -1,5 +1,147 @@
 {
   "schema": 1,
+  "monk_village_entries": {
+    "schema": "openNanaimo.monk-village-entry.v1",
+    "runtime_accepted": false,
+    "status": "native-action-bound-unverified",
+    "pack_path": "Village_map_image/Village_map_image.pack",
+    "pack_size": 17029421,
+    "pack_before_sha256": "7DC3ACE5D8837DDCCDC47073CBA8C174BCF1A5866F1A983FB38B1E1EB5D1EE42",
+    "pack_after_sha256": "23120B8087006D0F6E11F73ABA9B7C41009FBF6DD8C28951A48A209895AE712C",
+    "file_size_unchanged": false,
+    "entry_chain": {
+      "action_range": [
+        160,
+        182
+      ],
+      "setter_va": "0xA74450",
+      "resource_loader_va": "0x66EC30",
+      "selector_rule": "entry_index 8..11 -> episode 24..27",
+      "selection_call_va": "0x72F265",
+      "selection_code_va": "0x6E33C0",
+      "selection_code_size": 64,
+      "selection_rule": "hd0/chapter100/entry8 -> local selection hd0/ep24/dg0/st0",
+      "selection_recipe": "scripts/monk_village_compat.py"
+    },
+    "entries": [
+      {
+        "page": 9,
+        "action": 168,
+        "entry_index": 8,
+        "episode": 24,
+        "region": {
+          "x": [
+            44,
+            47
+          ],
+          "y": [
+            14,
+            20
+          ]
+        },
+        "placement": [
+          720.0,
+          280.0,
+          0.0
+        ],
+        "active": true,
+        "installed_action": 168
+      },
+      {
+        "page": 10,
+        "action": 169,
+        "entry_index": 9,
+        "episode": 25,
+        "region": {
+          "x": [
+            44,
+            47
+          ],
+          "y": [
+            14,
+            20
+          ]
+        },
+        "placement": [
+          720.0,
+          280.0,
+          0.0
+        ],
+        "active": false,
+        "installed_action": -1
+      },
+      {
+        "page": 11,
+        "action": 170,
+        "entry_index": 10,
+        "episode": 26,
+        "region": {
+          "x": [
+            22,
+            27
+          ],
+          "y": [
+            3,
+            4
+          ]
+        },
+        "placement": [
+          400.0,
+          64.0,
+          0.0
+        ],
+        "active": false,
+        "installed_action": -1
+      },
+      {
+        "page": 12,
+        "action": 171,
+        "entry_index": 11,
+        "episode": 27,
+        "region": {
+          "x": [
+            22,
+            27
+          ],
+          "y": [
+            2,
+            3
+          ]
+        },
+        "placement": [
+          400.0,
+          48.0,
+          0.0
+        ],
+        "active": false,
+        "installed_action": -1
+      }
+    ],
+    "changed_field": {
+      "field": 13,
+      "word_before": -1,
+      "word_after": "action value",
+      "preserved_fields": [
+        7,
+        10,
+        11,
+        14
+      ],
+      "preserved_combat_catalog": true
+    },
+    "visual_resource": "effs/village/village_inout_01.eff",
+    "visual_resource_size": 5220,
+    "visual_resource_sha256": "A8580FF91CAEAC74F9C49EA94CE8CE2FD7739DEE3B44C838ACF8999D1EF35DEC",
+    "active_episodes": [
+      24
+    ],
+    "reserved_episodes": [
+      25,
+      26,
+      27
+    ],
+    "changed_action_words": 28
+  },
   "sites": [
     {
       "group": "character-creation",
@@ -396,6 +538,26 @@
         "e89080d3ff9c60e83423f8ff80780301752d83780801722783780804772183b8f010000004740983b8f010000006750f8b0dc02fd70085c97405e801ca0600619dc3cccccccccccccccccccccccccccc"
       ],
       "operation": "patch_arena_terminal_cleanup_code",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
+      "va": 7222208,
+      "target": "9c528bc18b54240c899138e5010083b930e501000075218b914ce5010083ea0883fa00771383c218899148e50100c7814ce50100000000005a9dc20400cccccc",
+      "known": [
+        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      ],
+      "operation": "patch_monk_native_selection_code",
+      "known_hashes": []
+    },
+    {
+      "group": "dungeon-state",
+      "va": 7533157,
+      "target": "e85641fbff",
+      "known": [
+        "e8419acdff"
+      ],
+      "operation": "patch_monk_native_selection_call",
       "known_hashes": []
     },
     {

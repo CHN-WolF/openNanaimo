@@ -146,7 +146,8 @@ def verify_links(root: Path, report: Report) -> None:
     paths = set()
     for directory in (root / "knowledge", root / "docs"):
         if directory.exists():
-            paths.update(directory.rglob("*.md"))
+            paths.update(p for p in directory.rglob("*.md")
+                         if not p.is_relative_to(root / "knowledge" / "evidence"))
     for name in ("README.md", "README.MD"):
         if (root / name).is_file():
             paths.add(root / name)

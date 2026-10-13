@@ -69,7 +69,14 @@ internal static partial class LauncherTools
     static void CheckFile(string root,string relative,long? size,string hash){var path=SafePath(root,relative);Require(File.Exists(path)&&(!size.HasValue||new FileInfo(path).Length==size)&&Hash(File.ReadAllBytes(path)).Equals(hash,StringComparison.OrdinalIgnoreCase),"Installed resource mismatch: "+relative);}
     static JsonObject VerifyLumineos(string root)
     {
-        var path=SafePath(root,"openNanaimo-l7-l8-resources.json");var text=File.ReadAllText(path,Encoding.UTF8);var doc=JsonNode.Parse(text)!.AsObject();Require(S(doc,"schema")=="openNanaimo.l7-visual-l8-resources.v1"&&A(doc,"files").Count>0,"Invalid L7/L8 receipt");var regex=new Regex("(?m)^[ \\t]+\"id\": \"([0-9a-f]{64})\",\\r?\\n");Require(regex.Matches(text).Count==1&&Hash(Encoding.UTF8.GetBytes(regex.Replace(text,"",1))).Equals(S(doc,"id"),StringComparison.OrdinalIgnoreCase),"L7/L8 receipt digest mismatch");foreach(var group in new[]{"files","preserve_l7_combat"}){var seen=new HashSet<string>(StringComparer.OrdinalIgnoreCase);foreach(var row in Objects(doc,group)){Require(seen.Add(S(row,"path")),"Duplicate resource entry");CheckFile(root,S(row,"path"),row["size"] is null?null:N(row,"size"),S(row,"sha256"));}}return Obj(new{status="LUMINEOS_RESOURCES_PASS"});
+        var path=SafePath(root,"openNanaimo-l7-l8-resources.json");var text=File.ReadAllText(path,Encoding.UTF8);var doc=JsonNode.Parse(text)!.AsObject();Require(S(doc,"schema")=="openNanaimo.l7-visual-l8-resources.v1"&&A(doc,"files").Count>0,"Invalid L7/L8 receipt");var regex=new Regex("(?m)^[ \\t]+\"id\": \"([0-9a-f]{64})\",\\r?\\n");Require(regex.Matches(text).Count==1&&Hash(Encoding.UTF8.GetBytes(regex.Replace(text,"",1))).Equals(S(doc,"id"),StringComparison.OrdinalIgnoreCase),"L7/L8 receipt digest mismatch");foreach(var group in new[]{"files","preserve_l7_combat"}){var seen=new HashSet<string>(StringComparer.OrdinalIgnoreCase);foreach(var row in Objects(doc,group)){Require(seen.Add(S(row,"path")),"Duplicate resource entry");var entry=Recipe()["monk_village_entries"]!;
+            var entryLayer=group=="files"&&S(row,"path")==S(entry,"pack_path")
+                &&S(row,"sha256").Equals(S(entry,"pack_before_sha256"),StringComparison.OrdinalIgnoreCase)
+                &&File.Exists(SafePath(root,S(row,"path")))
+                &&new FileInfo(SafePath(root,S(row,"path"))).Length==N(entry,"pack_size")
+                &&Hash(File.ReadAllBytes(SafePath(root,S(row,"path")))).Equals(S(entry,"pack_after_sha256"),StringComparison.OrdinalIgnoreCase);
+            if(entryLayer)CheckFile(root,S(entry,"visual_resource"),N(entry,"visual_resource_size"),S(entry,"visual_resource_sha256"));
+            else CheckFile(root,S(row,"path"),row["size"] is null?null:N(row,"size"),S(row,"sha256"));}}return Obj(new{status="LUMINEOS_RESOURCES_PASS"});
     }
     static void VerifyResources(string[] args)
     {

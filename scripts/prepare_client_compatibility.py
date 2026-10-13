@@ -26,6 +26,7 @@ try:
     from . import dungeon_experience_compat
     from . import level200_compat
     from . import player_trade_compat
+    from . import monk_village_compat
 except ImportError:
     import apartment_exterior_panel as exterior_panel
     import dungeon7_visuals
@@ -38,6 +39,7 @@ except ImportError:
     import dungeon_experience_compat
     import level200_compat
     import player_trade_compat
+    import monk_village_compat
 from pathlib import Path
 
 ROUTE = [8, 7, 6, 11, 16, 17, 18, 19, 14, 9, 4, 3, 2, 1, 0, 5, 10, 15, 20, 21, 22, 23, 24]
@@ -644,7 +646,7 @@ def social_gameplay_patch_sites():
          b'\xE9' + struct.pack('<i', base - 0x0040B37A - 5)),
         ('dungeon_result_data_gate', 0x0066CD71, bytes.fromhex('741a'), bytes.fromhex('eb1a')),
         ('dungeon_party_result_data_gate', 0x0066CD45, bytes.fromhex('741a'), bytes.fromhex('eb1a')),
-    ] + entertainment_mode_compat.patch_sites() + entertainment_result_compat.patch_sites() + entertainment_room_compat.patch_sites() + arena_result_compat.patch_sites()
+    ] + entertainment_mode_compat.patch_sites() + entertainment_result_compat.patch_sites() + entertainment_room_compat.patch_sites() + arena_result_compat.patch_sites() + list(monk_village_compat.sites())
 
 
 def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:

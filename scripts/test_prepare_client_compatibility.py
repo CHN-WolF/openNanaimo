@@ -89,7 +89,8 @@ def synthetic_pe(furniture=compat.FURNITURE_OLD,
         (0x2C0000, 0x10000, 0x1D9400), # terminal MMO effect state guard
         (0x230000, 0x10000, 0x1E9400), # entertainment result level controller
     ]
-    data = bytearray(0x1F9400)
+    sections.append((0x320000, 0x10000, 0x1F9400))
+    data = bytearray(0x209400)
     data[:2] = b'MZ'
     struct.pack_into('<I', data, 0x3C, 0x80)
     data[0x80:0x84] = b'PE\0\0'

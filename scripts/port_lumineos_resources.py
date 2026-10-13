@@ -269,9 +269,24 @@ def verify(client, manifest=None):
     if manifest is None:
         manifest = load(safe(client, MARKER))
     validate_manifest(manifest)
+    monk_entry_sha256 = None
+    monk_entry_size = None
+    monk_entry_base = None
+    monk_entry_manifest = ROOT / 'manifest/monk_village_entries.json'
+    if monk_entry_manifest.is_file():
+        monk_entry = load(monk_entry_manifest)
+        monk_entry_sha256 = monk_entry.get('pack_after_sha256', '').lower()
+        monk_entry_size = monk_entry.get('pack_size')
+        monk_entry_base = monk_entry.get('pack_before_sha256', '').lower()
     for row in manifest['files']:
         path = safe(client, row['path'])
-        if file_hash(path) != row['sha256'] or path.stat().st_size != row['size']:
+        actual = file_hash(path)
+        allowed_monk_entry_overlay = (row['path'] == 'Village_map_image/Village_map_image.pack'
+                                      and monk_entry_sha256
+                                      and row['sha256'].lower() == monk_entry_base
+                                      and actual == monk_entry_sha256
+                                      and path.stat().st_size == monk_entry_size)
+        if (actual != row['sha256'] or path.stat().st_size != row['size']) and not allowed_monk_entry_overlay:
             raise ValueError('installed resource mismatch: ' + row['path'])
     for row in manifest['preserve_l7_combat']:
         if file_hash(safe(client, row['path'])) != row['sha256']:

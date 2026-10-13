@@ -208,6 +208,8 @@ def verify(root: Path, *, strict: bool = False) -> FusionReport:
             report.chars += len(original)
         actual = defaultdict(list)
         for path in sorted((root / 'knowledge').rglob('*.md')):
+            if path.is_relative_to(root / 'knowledge/evidence'):
+                continue
             text = path.read_text('utf-8')
             for match in MARKER.finditer(text):
                 actual[match[1]].append((path.relative_to(root).as_posix(), match[2]))

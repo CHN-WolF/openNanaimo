@@ -11,6 +11,12 @@ from verify_document_fusion import digest, verify
 
 
 class DocumentFusionTests(unittest.TestCase):
+    def test_archived_copy_keeps_its_original_markers(self):
+        archive = self.root / 'knowledge/evidence/validation/archive.md'
+        archive.parent.mkdir(parents=True)
+        archive.write_text(self.block() + '\n[Archived target](retired.md)', encoding='utf-8')
+        self.assertTrue(verify(self.root).ok)
+
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)

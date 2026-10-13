@@ -358,6 +358,20 @@ class BundleTests(unittest.TestCase):
             for ref in refs:
                 if monk.reference(ref): self.assertIn(index.locate(ref), paths, (row['path'], ref))
 
+    def test_localization_metadata_revision_requires_identical_payloads(self):
+        import copy
+        old = copy.deepcopy(self.manifest)
+        old['localization_sha256'] = next(iter(monk.LOCALIZATION_METADATA_REVISIONS))
+        old.pop('id'); old['id'] = monk.io.digest(monk.io.encoded(old))
+        monk.validate_manifest(old)
+        with mock.patch.object(monk, 'localized_resources', return_value={'unlisted.bin': b'changed'}):
+            with self.assertRaisesRegex(ValueError, 'localized resource bytes'):
+                monk.validate_manifest(old)
+        old['localization_sha256'] = '0' * 64
+        old.pop('id'); old['id'] = monk.io.digest(monk.io.encoded(old))
+        with self.assertRaisesRegex(ValueError, 'unrecognized monk'):
+            monk.validate_manifest(old)
+
     def test_first_stage_actual_nine_slots_preload_and_boss(self):
         model = codec.sstg((self.payload / 'flying/hd0_ep24_dg00_st00.sstg').read_bytes())
         self.assertEqual(model['identity'], (0, 24, 0, 0))

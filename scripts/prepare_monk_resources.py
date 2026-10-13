@@ -28,6 +28,7 @@ MARKER = '.openNanaimo-monk-resources.json'
 EXTENSIONS = {'.sstg', '.smmo', '.sm2', '.mmo', '.pon', '.bmo', '.eff',
               '.crs', '.im3', '.wav', '.ogg'}
 CN_KEY = bytes.fromhex('0123456789abcdef123456789abcdef0')
+LOCALIZATION_METADATA_REVISIONS = frozenset({'fa73c1fc8c0c853cd646909ab214b3e5edc1909146f1ac70781e4c667525a5a6'})
 
 
 def codec_module():
@@ -496,9 +497,17 @@ def validate_manifest(manifest):
     identifier = identity.pop('id', None)
     if io.digest(io.encoded(identity)) != identifier:
         raise ValueError('manifest identity mismatch')
-    if manifest.get('recipe_sha256') != io.digest(RECIPE.read_bytes()) or manifest.get('localization_sha256') != io.digest(LOCALIZATION.read_bytes()):
+    if manifest.get('recipe_sha256') != io.digest(RECIPE.read_bytes()):
         raise ValueError('unrecognized monk recipe/localization')
     recipe = io.load(RECIPE)
+    if manifest.get('localization_sha256') != io.digest(LOCALIZATION.read_bytes()):
+        if manifest.get('localization_sha256') not in LOCALIZATION_METADATA_REVISIONS:
+            raise ValueError('unrecognized monk recipe/localization')
+        pins = {row['path']: row for row in recipe['files']}
+        for name, data in localized_resources(io.load(LOCALIZATION)).items():
+            pin = pins.get(name)
+            if pin is None or (io.digest(data), len(data)) != (pin['output_sha256'], pin['output_size']):
+                raise ValueError('localized resource bytes differ from pinned recipe')
     if manifest['preserve_cn'] != recipe['preserve_cn']:
         raise ValueError('CN preservation recipe coverage mismatch')
     pinned = {row['path']: row for row in recipe['files']}
