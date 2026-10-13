@@ -18,6 +18,8 @@ REPOSITORY_FILES = [
     'scripts/monk_dialogue_compat.py',
     'scripts/prepare_monk_dialogue.py',
     'scripts/test_monk_dialogue_compat.py',
+    'scripts/test_monk_result_controls.py',
+    'scripts/test_monk_portrait.py',
     'scripts/test_monk_dialogue_resources.py',
     'manifest/monk_dialogue_resources.json',
     'scripts/prepare_monk_resources.py',

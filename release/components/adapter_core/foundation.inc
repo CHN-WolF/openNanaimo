@@ -249,7 +249,7 @@ static void multiplayer_mark_room(int active);
 static void multiplayer_store_stage(unsigned real_stage,unsigned show_stage,unsigned slot,unsigned difficulty,unsigned dungeon);
 static void multiplayer_broadcast_ready(unsigned ready);
 static void multiplayer_broadcast_start(unsigned real_stage,unsigned show_stage,unsigned slot);
-static void multiplayer_broadcast_reset(unsigned real_stage,unsigned show_stage,unsigned difficulty,unsigned dungeon);
+static void multiplayer_broadcast_reset(unsigned real_stage,unsigned show_stage,unsigned difficulty,unsigned dungeon,unsigned client_difficulty);
 static void multiplayer_broadcast_raw(unsigned type,const unsigned char*raw,int len);
 static void multiplayer_send_roster_current(void);
 static void multiplayer_send_peer_list_current(void);

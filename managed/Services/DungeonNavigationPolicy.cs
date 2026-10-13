@@ -107,6 +107,8 @@ internal static class DungeonNavigationPolicy
 
     internal static byte EncodeDifficultySelector(byte logicalDifficulty, bool superBoss)
     {
+        // Existing persistence indexes are not an ordered client difficulty.
+        // Client 0/1/2 corresponds to stored 1/2/0; never advance by this index.
         if (logicalDifficulty >= DifficultyCount)
             throw new ArgumentOutOfRangeException(nameof(logicalDifficulty));
         if (superBoss)

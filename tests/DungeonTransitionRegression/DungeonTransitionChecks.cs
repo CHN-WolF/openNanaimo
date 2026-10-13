@@ -66,28 +66,30 @@ internal static class DungeonTransitionChecks
             && !NetworkAdapterService.IsAuthorizedNativeDungeonNextAction(Reset(2), 0xCF73), "invalid mode/length/opcode cannot authorize continuation");
         await RunScenario("next dungeon", mode: 2, dungeon: 0);
         await RunScenario("second next dungeon", mode: 2, dungeon: 1);
-        await RunScenario("low to middle difficulty", mode: 2, dungeon: 2, stage: 1);
-        await RunScenario("middle to high difficulty", mode: 2, dungeon: 2, stage: 1, difficulty: 1);
+        await RunScenario("client difficulty 0 to 1", mode: 2, dungeon: 2, stage: 1, difficulty: 1);
+        await RunScenario("client difficulty 1 to 2 (reported loading)", mode: 2, dungeon: 2, stage: 1, difficulty: 2);
         foreach (byte difficulty in new byte[] { 0, 1, 2 })
             await RunScenario($"normal to super difficulty {difficulty}", mode: 1, dungeon: 2, real: 1, difficulty: difficulty);
         foreach (byte difficulty in new byte[] { 0, 1, 2 })
+            await RunScenario($"settlement food and pet to super {difficulty}", mode: 1, dungeon: 2, real: 1, difficulty: difficulty, inventory: true);
+        foreach (byte difficulty in new byte[] { 0, 1, 2 })
         {
             var challengeResponse = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
-            challengeResponse[0x28] = 1; challengeResponse[0x2C] = difficulty; challengeResponse[0x2E] = 2;
+            challengeResponse[0x28] = 1; challengeResponse[0x2C] = DungeonNavigationPolicy.EncodeDifficultySelector(difficulty, superBoss: false); challengeResponse[0x2E] = 2;
             Check(NetworkAdapterService.TryResolveNativeDungeonTransition(2, 0, difficulty,
-                Reset(1, 1), challengeResponse, out _, out _, out _), "super challenge preserves logical difficulty in its own selector domain");
-            challengeResponse[0x2C] = DungeonNavigationPolicy.EncodeDifficultySelector(difficulty, superBoss: false);
+                Reset(1, 1), challengeResponse, out _, out _, out _), "super challenge keeps the client difficulty unchanged");
+            challengeResponse[0x2C] = difficulty;
             Check(!NetworkAdapterService.TryResolveNativeDungeonTransition(2, 0, difficulty,
-                Reset(1, 1), challengeResponse, out _, out _, out _), "normal selector cannot authorize a super challenge response");
+                Reset(1, 1), challengeResponse, out _, out _, out _), "resource selector cannot replace the client difficulty");
             var response = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
             BinaryPrimitives.WriteUInt16LittleEndian(response.AsSpan(0x2C), difficulty);
             Check(NetworkAdapterService.TryResolveNativeDungeonTransition(2, 1, difficulty,
-                Reset(2), response, out var dungeon, out var stage, out var nextDifficulty) == (difficulty < 2),
+                Reset(2), response, out var dungeon, out var stage, out var nextDifficulty) == (difficulty != 0),
                 "next difficulty checks upper bound and normal selector domain");
-            if (difficulty < 2)
+            if (difficulty != 0)
             {
-                Check(dungeon == 0 && stage == 0 && nextDifficulty == difficulty + 1,
-                    "next difficulty returns first dungeon and logical increment");
+                Check(dungeon == 0 && stage == 0 && nextDifficulty == (difficulty + 1) % 3,
+                    "next difficulty returns first dungeon and rotated persistence index");
                 BinaryPrimitives.WriteUInt16LittleEndian(response.AsSpan(0x2C), (ushort)(difficulty + 1));
                 Check(!NetworkAdapterService.TryResolveNativeDungeonTransition(2, 1, difficulty,
                     Reset(2), response, out _, out _, out _), "incorrect response difficulty cannot authorize a reload");
@@ -106,7 +108,7 @@ internal static class DungeonTransitionChecks
         Check(NetworkAdapterService.IsNativeDungeonManualTownLeavePrecursor(false, true, false, true, 0xCF73), "death overrides stale continuation intent");
         var resetResponse = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
         var challenge = Reset(1, 1); challenge[9] = 2;
-        resetResponse[40] = 1; resetResponse[41] = 2; resetResponse[44] = 1; resetResponse[46] = 2;
+        resetResponse[40] = 1; resetResponse[41] = 2; resetResponse[44] = 0; resetResponse[46] = 2;
         Check(NetworkAdapterService.TryResolveNativeDungeonTransition(2, 0, 1, challenge, resetResponse,
             out var targetDungeon, out var targetStage, out var targetDifficulty)
             && targetDungeon == 2 && targetStage == 1 && targetDifficulty == 1,
@@ -125,7 +127,7 @@ internal static class DungeonTransitionChecks
         await RunScenario("town after next battle begins", mode: 2, startBattle: true);
         Console.WriteLine($"DUNGEON_TRANSITION_REGRESSION_PASS checks={checks}");
     }
-    private static async Task RunScenario(string name, ushort mode = 0, byte dungeon = 0, byte real = 0, bool death = false, bool startBattle = false, bool rearm = false, byte stage = 0, bool rejectFirst = false, bool skipRoster = false, byte difficulty = 0)
+    private static async Task RunScenario(string name, ushort mode = 0, byte dungeon = 0, byte real = 0, bool death = false, bool startBattle = false, bool rearm = false, byte stage = 0, bool rejectFirst = false, bool skipRoster = false, byte difficulty = 0, bool inventory = false)
     {
         string root = Path.Combine(Path.GetTempPath(), "nanaimo-next-dungeon-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
@@ -143,12 +145,18 @@ internal static class DungeonTransitionChecks
             await db.InitializeAsync(token);
             var account = await db.OpenLocalAccountAsync("transition-test", token);
             await db.CreateLocalCharacterAsync(account, "Transition", 1, token);
+            if (inventory)
+            {
+                await db.GrantInventoryItemToAccountAsync(account, 14000001, 2, token);
+                await db.GrantInventoryItemToAccountAsync(account, 15000001, 1, token);
+            }
             var character = (await db.GetCharacterAsync(account, token))!;
             var deathResources = HealthRecoveryPolicy.ResolveDungeonDeathReturn(character, 45);
             session = Activator.CreateInstance(SessionType, nonPublic: true)!;
             Check(await db.BeginWorldSessionAsync(account, character.Id, (string)Get(session, "SessionId")!, 1, "127.0.0.1", token), name + ": isolated online identity");
             var state = NativeDungeonState.Create(character, [], []);
             var snapshot = new BattleResourceSnapshot(death ? (ushort)0 : (ushort)123, 45, 2) { MaximumHp = 1000, MaximumMp = 500, Epoch = 1 };
+            ushort expectedHp = 123, expectedMp = 45;
             snapshot.ApplyTo(state);
             await using var service = new NetworkAdapterService(db, Console.WriteLine, root)
             { NativeDungeonEnabled = true, NativeJournalDirectory = Path.Combine(root, "journal") };
@@ -177,6 +185,39 @@ internal static class DungeonTransitionChecks
             BinaryPrimitives.WriteUInt16LittleEndian(settlement.AsSpan(8), 45);
             await Send(settlement);
             Check((bool)Get(session, "NativeDungeonSettlementAwaitingAction")!, name + ": settlement waits for input");
+            if (inventory)
+            {
+                var inventoryRoute = typeof(NetworkAdapterService).GetMethod("HandleNativeFrameAsync", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                async Task<byte[]> Inventory(ushort opcode, byte[] payload) =>
+                    (await (Task<byte[]?>)inventoryRoute.Invoke(service, [NativeDungeonClient.Frame(opcode, payload), opcode,
+                        "WorldAdapter", "127.0.0.1", "127.0.0.1", session, token])!)!;
+                var items = await Inventory(0xC42F, []);
+                var row = Enumerable.Range(0, BinaryPrimitives.ReadUInt16LittleEndian(items.AsSpan(10)))
+                    .First(i => BinaryPrimitives.ReadUInt32LittleEndian(items.AsSpan(12 + i * 8)) == 14000001);
+                var food = new byte[8]; BinaryPrimitives.WriteUInt32LittleEndian(food, 14000001);
+                items.AsSpan(16 + row * 8, 2).CopyTo(food.AsSpan(4));
+                var foodFrames = Split(await Inventory(0xC43D, food));
+                Check(foodFrames.Select(Op).SequenceEqual(new ushort[] { 0xC43E, 0xCF94 }),
+                    name + ": food queue contains only inventory acknowledgement and dungeon recovery");
+                var healed = (BattleResourceSnapshot)Get(session, "NativeBattleResources")!;
+                expectedHp = healed.CurrentHp; expectedMp = healed.CurrentMp;
+                Check(expectedHp > 123 && healed.SettlementFrozen,
+                    name + ": food heals without unfreezing the completed battle");
+                Check(((NativeDungeonState)Get(session, "NativeCheckpoint")!).Get(20) == expectedHp,
+                    name + ": food import reaches worker before challenge");
+                var selected = (OpenNanaimo.Adapter.Models.CharacterRecord)Get(session, "Character")!;
+                var equipment = new byte[136]; selected.Appearance.CopyTo(equipment, 96);
+                BinaryPrimitives.WriteUInt32LittleEndian(equipment.AsSpan(88), 15000001);
+                BinaryPrimitives.WriteUInt32LittleEndian(equipment.AsSpan(124), 15000001);
+                var equipmentFrames = Split(await Inventory(0xC47D, equipment));
+                Check(equipmentFrames.Select(Op).SequenceEqual(new ushort[] { 0xC47E, 0xC379, 0xC3CC, 0xC44C, 0xC430 })
+                    && ((NativeDungeonState)Get(session, "NativeCheckpoint")!).Get(68) == 15000001,
+                    name + ": settlement pet change imports without town actor or ready-room rebuild");
+                Check((bool)Get(session, "NativeDungeonSettlementAwaitingAction")!
+                    && !(bool)Get(session, "NativeDungeonNextTransitionAuthorized")!,
+                    name + ": inventory changes retain the unconsumed settlement action");
+                Drain(session);
+            }
             // A dead character's CF1D is an explicit return action. Exercise
             // the unsolicited-disconnect gate only for a successful result.
             if (!death)
@@ -209,7 +250,7 @@ internal static class DungeonTransitionChecks
                 var expectedDungeon = nextDifficulty ? (byte)0 : mode == 2 ? (byte)(dungeon + 1) : dungeon;
                 Check((byte)Get(session, "NativeDungeonDungeon")! == expectedDungeon
                     && (byte)Get(session, "NativeDungeonStage")! == (death ? stage : real)
-                    && (byte)Get(session, "NativeDungeonLogicalDifficulty")! == (nextDifficulty ? difficulty + 1 : difficulty), name + ": accepted target tuple retained");
+                    && (byte)Get(session, "NativeDungeonLogicalDifficulty")! == (nextDifficulty ? (difficulty + 1) % 3 : difficulty), name + ": accepted target tuple retained");
                 await Send(Reset(mode, real));
                 Check(Drain(session).Count == 0, name + ": duplicate reset cannot rebuild twice");
                 if (death)
@@ -246,7 +287,8 @@ internal static class DungeonTransitionChecks
                 Check(death
                     ? Get(session, "NativeBattleResources") is BattleResourceSnapshot { AttackMode: 0 } carried
                         && carried.CurrentHp == deathResources.CurrentHp && carried.CurrentMp == deathResources.CurrentMp
-                    : Get(session, "NativeBattleResources") is BattleResourceSnapshot { CurrentHp: 123, CurrentMp: 45, AttackMode: 2 },
+                    : Get(session, "NativeBattleResources") is BattleResourceSnapshot { AttackMode: 2 } inventoryCarry
+                        && inventoryCarry.CurrentHp == expectedHp && inventoryCarry.CurrentMp == expectedMp,
                     name + ": retained worker keeps HP/MP/P carry");
                 if (skipRoster)
                 {
@@ -319,7 +361,12 @@ internal static class DungeonTransitionChecks
             int length = BinaryPrimitives.ReadUInt16LittleEndian(header.AsSpan(4));
             var frame = new byte[length]; header.CopyTo(frame, 0);
             await stream.ReadExactlyAsync(frame.AsMemory(8), token);
-            if (Op(frame) == 0xF101)
+            if (Op(frame) == 0xF100)
+            {
+                state = new NativeDungeonState(frame[8..]);
+                await stream.WriteAsync(NativeDungeonClient.Frame(0xF102, state.Bytes), token);
+            }
+            else if (Op(frame) == 0xF101)
                 await stream.WriteAsync(NativeDungeonClient.Frame(0xF102, state.Bytes), token);
             else if (Op(frame) == 0xCF8B)
             {
@@ -333,7 +380,7 @@ internal static class DungeonTransitionChecks
                 reply[0x28 - 8] = death ? stage : frame[8];
                 reply[0x29 - 8] = frame[9];
                 var nextDifficulty = frame[10] == 2 && dungeon == 2 && stage == 1;
-                reply[0x2C - 8] = nextDifficulty ? difficulty : DungeonNavigationPolicy.EncodeDifficultySelector(difficulty, dungeon == 2 && (death ? stage : frame[8]) == 1);
+                reply[0x2C - 8] = nextDifficulty ? difficulty : DungeonNavigationPolicy.EncodeDifficultySelector(difficulty, superBoss: false);
                 reply[0x2E - 8] = rejectFirst ? (byte)99 : nextDifficulty ? (byte)0 : frame[10] == 2 ? (byte)(dungeon + 1) : dungeon;
                 rejectFirst = false;
                 await stream.WriteAsync(NativeDungeonClient.Frame(0xCF8C, reply), token);
@@ -363,5 +410,16 @@ internal static class DungeonTransitionChecks
             }
             // No worker CF74: that frame is the adapter routing regression.
         }
+    }
+
+    private static List<byte[]> Split(byte[] bytes)
+    {
+        var frames = new List<byte[]>();
+        for (var offset = 0; offset < bytes.Length;)
+        {
+            var length = BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(offset + 4));
+            frames.Add(bytes.AsSpan(offset, length).ToArray()); offset += length;
+        }
+        return frames;
     }
 }

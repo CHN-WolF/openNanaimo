@@ -28,10 +28,13 @@ SPRITE = 'openNanaimo_monk01.im3'
 SHADOW = 'openNanaimo_monk_shadow.im3'
 LABEL = 'openNanaimo_monk_name.im3'
 MONK_NAME_FONT_SIZE = 13
-# Keep the monk in the foreground decoration layer so village railings do not
-# paint over the actor sprite.  This remains a visual-only placement change.
-MONK_LAYER = 2
+# Native 0x9DCA40 inserts layer 1 by world Y, shared with town actors.
+# Foreground layer 2 bypasses player/NPC depth ordering.
+MONK_LAYER = 1
 MONK_ENGLISH_GAP = 2
+MONK_ENGLISH_FONT_SIZE = 9
+MONK_NAME_STROKE = 1
+MONK_OUTLINE_COLOR = (90, 24, 0, 255)
 SOURCE_ROW = ('62', '\uc218\ub3c4\uc2b9', '1', '0', '27', '10', 'NPC_62.im3',
               'effs\\village\\vill01_npc_monk.eff', '-', '-', '-', '-',
               '293', '157', '48', '96', '4000')
@@ -109,8 +112,7 @@ class VillageScene:
                   for rows in self.layers]
         if placements:
             require(all(row in (expected,) for _, row in placements), 'conflicting monk scene placement')
-        # The foreground layer is required here because the village railings
-        # are drawn after the actor layer and otherwise cover the monk.
+        # Dynamic actors and decorations share the layer-1 Y ordering.
         layers[MONK_LAYER].append(expected)
         output = bytearray(self.raw[:self.grid_start + 50 * 36 * 36])
         for uid, raw in textures:
@@ -214,15 +216,19 @@ def name_image(font, text, template_raw):
                 image.putpixel((x + i, y), (red, green, blue, alpha))
             x += length
         cursor = end
-    # Grow the label instead of clipping larger Chinese glyphs into the old frame.
-    english = image.crop((0, 14, width, height))
+    # Authored MONK occupies x=9..30 / y=12..18. Row 11 still contains
+    # the Korean heading outline: do not include or horizontally rescale it.
+    # Keep the installed English 22x8 box; only stretch seven rows to eight.
+    english = image.crop((9, 12, 31, 19))
+    require(english.getbbox() is not None, 'source English monk label is empty')
+    english = english.resize((22, 8), Image.Resampling.NEAREST)
     face = ImageFont.truetype(str(font), MONK_NAME_FONT_SIZE)
     draw = ImageDraw.Draw(image)
-    box = draw.textbbox((0, 0), text, font=face, stroke_width=1)
+    box = draw.textbbox((0, 0), text, font=face, stroke_width=MONK_NAME_STROKE)
     text_width, text_height = box[2] - box[0], box[3] - box[1]
     require(0 < text_width <= 128 and 0 < text_height <= 32, 'monk name exceeds label bounds')
-    width = max(width, text_width + 4)
-    # Keep an integer translation for the original 39-pixel English line.
+    width = max(english.width + 4, text_width + 4)
+    # Keep an integer translation for the 22-pixel English line.
     width += (width - english.width) % 2
     top_height = max(14, text_height) + MONK_ENGLISH_GAP
     height = top_height + english.height
@@ -231,7 +237,7 @@ def name_image(font, text, template_raw):
     draw = ImageDraw.Draw(image)
     draw.text(((width - text_width) // 2 - box[0],
                0 - box[1]), text, font=face, fill=(255, 255, 255, 255),
-              stroke_width=1, stroke_fill=(90, 24, 0, 255))
+              stroke_width=MONK_NAME_STROKE, stroke_fill=MONK_OUTLINE_COLOR)
     body = bytearray()
     for y in range(height):
         runs, x, previous = [], 0, 0

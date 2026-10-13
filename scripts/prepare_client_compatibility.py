@@ -697,7 +697,17 @@ def patch_monk_dialogue(data: bytes) -> tuple[bytes, dict]:
     for name, va, old, new in monk_dialogue_compat.sites():
         known = (old,)
         if va == monk_dialogue_compat.BASE:
-            known += (monk_dialogue_compat.legacy_payload(),)
+            known += (monk_dialogue_compat.legacy_payload(), monk_dialogue_compat.payload(legacy_guide=True),
+                      monk_dialogue_compat.payload(legacy_lifetime=True), monk_dialogue_compat.payload(legacy_scene=True),
+                      monk_dialogue_compat.payload(legacy_gameplay=True),
+                      monk_dialogue_compat.payload(legacy_portrait=True))
+        if va == monk_dialogue_compat.FOLLOW_BASE:
+            known += (monk_dialogue_compat.followup_payload(legacy_portrait=True),)
+        if va == monk_dialogue_compat.EXT_BASE:
+            known += (monk_dialogue_compat.gameplay_payload(legacy_portrait=True),
+                      monk_dialogue_compat.gameplay_payload(legacy_room=True))
+        if va == 0x737DAD:
+            known += (b'\xE8'+struct.pack('<i',monk_dialogue_compat.READY_TITLE-va-5),)
         data, rows[name] = _migrate_site(data, va, new, known, name,
                                         'the village dialogue layout differs')
     return data, _migration_report('patch_monk_dialogue', **rows)

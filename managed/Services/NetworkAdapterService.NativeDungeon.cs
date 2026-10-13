@@ -566,7 +566,7 @@ public sealed partial class NetworkAdapterService
             && responseDungeon == currentDungeon
             && responseRealStage == 1
             && (lumineos || BinaryPrimitives.ReadUInt16LittleEndian(response.Slice(0x2C, 2))
-                == DungeonNavigationPolicy.EncodeDifficultySelector(currentLogicalDifficulty, superBoss: true)))
+                == DungeonNavigationPolicy.EncodeDifficultySelector(currentLogicalDifficulty, superBoss: false)))
         {
             nextStage = 1;
             return true;
@@ -601,16 +601,18 @@ public sealed partial class NetworkAdapterService
             && currentDungeon == 2
             && currentStage == 1
             && requestedRealStage == 0
-            && currentLogicalDifficulty < 2
+            && DungeonNavigationPolicy.EncodeDifficultySelector(currentLogicalDifficulty, superBoss: false) < 2
             && responseDungeon == 0
             && responseRealStage == 0
             && BinaryPrimitives.ReadUInt16LittleEndian(response.Slice(0x2C, 2))
-                == DungeonNavigationPolicy.EncodeDifficultySelector(
-                    checked((byte)(currentLogicalDifficulty + 1)), superBoss: false))
+                == DungeonNavigationPolicy.EncodeDifficultySelector(currentLogicalDifficulty, superBoss: false) + 1)
         {
             nextDungeon = 0;
             nextStage = 0;
-            nextLogicalDifficulty = checked((byte)(currentLogicalDifficulty + 1));
+            // Persistence indexes are rotated; only the client application
+            // selector is ordered. Its 0/1/2 progression maps to indexes 1/2/0.
+            nextLogicalDifficulty = DungeonNavigationPolicy.DecodeLogicalDifficulty(0, 0,
+                checked((ushort)(DungeonNavigationPolicy.EncodeDifficultySelector(currentLogicalDifficulty, superBoss: false) + 1)));
             return true;
         }
         return false;
@@ -1141,7 +1143,7 @@ public sealed partial class NetworkAdapterService
             CancelNativePartyContinuation(session, continuationPeers);
             session.NativeDungeonNextTransitionAuthorized = false;
             session.NativeDungeonSettlementAwaitingAction = true;
-            _log($"NativeDungeon death settlement retry rejected: character={session.Character.Id}; result action remains available");
+            _log($"NativeDungeon settlement transition rejected: character={session.Character.Id} tuple={session.NativeDungeonHdIndex}/{session.NativeDungeonEpisode}/{session.NativeDungeonDungeon}/{session.NativeDungeonStage}/{session.NativeDungeonLogicalDifficulty} mode={BinaryPrimitives.ReadUInt16LittleEndian(frame!.AsSpan(10))} deathRetry={deathRetryTransition}; result action remains available");
         }
         if (acceptedDungeonTransition && deathRetryTransition)
         {

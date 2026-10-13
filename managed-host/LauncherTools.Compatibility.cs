@@ -78,9 +78,11 @@ internal static partial class LauncherTools
                 &&new FileInfo(SafePath(root,S(row,"path"))).Length==N(entry,"pack_size")
                 &&Hash(File.ReadAllBytes(SafePath(root,S(row,"path")))).Equals(S(entry,"pack_after_sha256"),StringComparison.OrdinalIgnoreCase);
             var dialogue=Recipe()["monk_dialogue_resources"]!["recipe"]!;
-            var dialoguePack=Objects(dialogue,"files").Single(r=>S(r,"path")=="Village_map_image/Village_map_image.pack");
-            var dialogueLayer=group=="files"&&S(row,"path")==S(dialoguePack,"path")
-                &&S(row,"sha256").Equals(S(dialogue,"parent_pack_sha256"),StringComparison.OrdinalIgnoreCase)
+            var parentHash=dialogue["parent_files"]?[S(row,"path")]?.GetValue<string>()
+                ??(S(row,"path")=="Village_map_image/Village_map_image.pack"?S(dialogue,"parent_pack_sha256"):null);
+            var dialogueLayer=group=="files"&&parentHash is not null
+                &&Objects(dialogue,"files").Any(r=>S(r,"path")==S(row,"path"))
+                &&S(row,"sha256").Equals(parentHash,StringComparison.OrdinalIgnoreCase)
                 &&File.Exists(SafePath(root,".openNanaimo-monk-dialogue.json"));
             if(dialogueLayer){VerifyMonkDialogue(root);VerifyChallenges(root);}
             else if(entryLayer){CheckFile(root,S(entry,"visual_resource"),N(entry,"visual_resource_size"),S(entry,"visual_resource_sha256"));VerifyChallenges(root);}

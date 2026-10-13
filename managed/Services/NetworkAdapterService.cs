@@ -3115,7 +3115,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 await RefreshInventoryCharacterAsync(session, token);
                 return BuildNativeFrame(frame, 0xC430, BuildGameInventoryPayload(session.Character), session);
 
-            case 0xC43D: // Town food: C43E result, then C43F completion.
+            case 0xC43D: // Inventory food: C43E result; C43F is town-only.
             {
                 if (!session.OnlineTracked || session.Character is null)
                     return null;
@@ -3154,9 +3154,11 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 // the current ready-room profile consumer.
                 if (HasAuxiliaryInventoryContext(session))
                     return acknowledgement;
-                var foodCompletion = CombineNativeFrames(acknowledgement, BuildNativeFrame(frame, 0xC43F, recoveryPayload, session));
-                return session.DungeonRoomId != 0 || session.NativeDungeon is not null
-                    ? CombineNativeFrames(foodCompletion, foodResourceFrames) : foodCompletion;
+                // C43F belongs to the town dispatcher. In dungeon/result pages
+                // it stays at the receive-queue head, blocking CF94 and CF8C.
+                if (session.DungeonRoomId != 0 || session.NativeDungeon is not null)
+                    return CombineNativeFrames(acknowledgement, foodResourceFrames);
+                return CombineNativeFrames(acknowledgement, BuildNativeFrame(frame, 0xC43F, recoveryPayload, session));
             }
 
             case 0xC433: // REQ_DEL_GAMEITEM -> ANS_DEL_GAMEITEM

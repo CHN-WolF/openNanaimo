@@ -9,9 +9,12 @@ UPDATE, DIALOGUE, PAGE, RETURN = BASE, BASE + 0x300, BASE + 0x600, BASE + 0x700
 READY = BASE + 0x200
 VTABLE, ORIGIN, TABLE, TEXT = BASE + 0x800, BASE + 0x840, BASE + 0x900, BASE + 0x1000
 HIT, HOVER, DRAW, DESTROY = BASE + 0xA00, BASE + 0xB00, BASE + 0xC00, BASE + 0xD00
+CLOSED = BASE + 0xE00
 GUIDE, WINDOW_SIZE, PAGE_SIZE = 0x200, 0x400, 204
 PROFILE = 0xD869D4
-ENTRIES = ((0, 27, 293, 157), (1, 26, 282, 425), (2, 12, 127, 416), (3, 6, 186, 255))
+LEGACY_ENTRIES = ((0, 27, 293, 157), (1, 26, 282, 425), (2, 12, 127, 416), (3, 6, 186, 255))
+CLICK_ENTRIES = (*LEGACY_ENTRIES[:2], (2, 12, 223, 416), LEGACY_ENTRIES[3])
+ENTRIES = ((0, 27, 293, 189), LEGACY_ENTRIES[1], (2, 12, 223, 376), LEGACY_ENTRIES[3])
 
 
 class Code:
@@ -47,7 +50,7 @@ def dialogue_pages(text):
             for i in range(0, len(lines), 3)]
 
 
-def legacy_payload():
+def legacy_payload(mark_return=False):
     """Exact released confirmation-window encoding, accepted only for migration."""
     TEXT = BASE + 0xA00
     local = json.loads((ROOT / 'manifest/monk_localization.json').read_text('utf-8'))
@@ -59,7 +62,7 @@ def legacy_payload():
                            0x402D51, 0x417BFC, 0x41AE92, 0x4066F9), 32)
     put(ORIGIN, b'\0' * 32, 32)
     cursor = TEXT
-    for index, (village, page, x, y) in enumerate(ENTRIES):
+    for index, (village, page, x, y) in enumerate(LEGACY_ENTRIES):
         pages = dialogue_pages(local['quest_strings'][str(6000+index*3)])
         put(TABLE+index*32, struct.pack('<8I', village, page, x-24, y-48, x+24, y+48, cursor, len(pages)), 32)
         raw = b''.join(pages); put(cursor, raw, BASE+SPAN-cursor); cursor += len(raw)
@@ -145,6 +148,8 @@ def legacy_payload():
     c.emit('3B05'); c.u32(ORIGIN+8); c.branch('0F85','clear')
     c.emit('A1'); c.u32(ORIGIN+12); c.emit('8945E4')
     c.emit('A1'); c.u32(ORIGIN+16); c.emit('8945E8')
+    if mark_return:
+        c.call(MARK_RETURN)
     c.label('clear'); c.emit('C705'); c.u32(ORIGIN); c.u32(0)
     c.label('native'); c.emit('619DDB45E48B8554F8FFFF')
     c.emit(b'\xE9'+struct.pack('<i',0x53CE19-RETURN-len(c.data)-5))
@@ -168,7 +173,11 @@ def guide_pages(text):
             for i in range(0, len(lines), 4)]
 
 
-def payload():
+def payload(legacy_guide=False, legacy_lifetime=False, legacy_scene=False, legacy_gameplay=False,
+            legacy_portrait=False):
+    legacy_gameplay = legacy_gameplay or legacy_guide or legacy_lifetime or legacy_scene
+    legacy_portrait = legacy_portrait or legacy_gameplay
+    legacy_scene = legacy_scene or legacy_guide or legacy_lifetime
     local = json.loads((ROOT / 'manifest/monk_localization.json').read_text('utf-8'))
     data = bytearray(b'\xCC' * SPAN)
     def put(at, value, limit):
@@ -176,11 +185,12 @@ def payload():
             raise ValueError('monk dialogue region overflow')
         data[at-BASE:at-BASE+len(value)] = value
     # Own the window lifetime; the embedded native guide owns only its UI assets.
-    put(VTABLE, struct.pack('<8I', DESTROY, 0x403247, DIALOGUE, DRAW+0x80,
+    close_test = DRAW+0x80 if legacy_guide or legacy_lifetime else CLOSED
+    put(VTABLE, struct.pack('<8I', DESTROY, 0x403247, DIALOGUE, close_test,
                            DRAW, 0x41B50E, 0x41AE92, DRAW+0x80), 32)
     put(ORIGIN, b'\0' * 32, 32)
     cursor = TEXT
-    for index, (village, page, x, y) in enumerate(ENTRIES):
+    for index, (village, page, x, y) in enumerate(LEGACY_ENTRIES if legacy_guide else CLICK_ENTRIES if legacy_scene else ENTRIES):
         pages = guide_pages(local['quest_strings'][str(6000+index*3)])
         put(TABLE+index*32, struct.pack('<8I', village, page, x-24, y-48,
                                       x+24, y+48, cursor, len(pages)), 32)
@@ -209,12 +219,23 @@ def payload():
     c = Code(UPDATE)
     c.emit('5356578BF1'); c.call(0x52A3E0); c.emit('508BCE'); c.call(HIT)
     c.emit('85C0'); c.branch('0F84', 'done')
-    c.emit('8BD86A00'); c.call(0x40ED77); c.emit('8BC8'); c.call(0x415ED3)
-    c.emit('85C0'); c.branch('0F84', 'done')
-    c.emit('8B8E34030000'); c.call(0x4043D6); c.call(0xB4CA30)
-    c.emit('A3'); c.u32(ORIGIN+12)
-    c.emit('8B8E34030000'); c.call(0x417184); c.call(0xB4CA30)
-    c.emit('A3'); c.u32(ORIGIN+16)
+    if legacy_guide:
+        c.emit('8BD86A00'); c.call(0x40ED77); c.emit('8BC8'); c.call(0x415ED3)
+        c.emit('85C0'); c.branch('0F84', 'done')
+    else:
+        # Native mouse snapshot: +0x21C current left, +0x22C previous left.
+        # Open on the press edge, before the native village consumes input.
+        c.emit('8BD8'); c.call(0x40ED77)
+        c.emit('80B81C02000080'); c.branch('0F85', 'done')
+        c.emit('80B82C02000080'); c.branch('0F84', 'done')
+    if legacy_gameplay:
+        c.emit('8B8E34030000'); c.call(0x4043D6); c.call(0xB4CA30)
+        c.emit('A3'); c.u32(ORIGIN+12)
+        c.emit('8B8E34030000'); c.call(0x417184); c.call(0xB4CA30)
+        c.emit('A3'); c.u32(ORIGIN+16)
+    else:
+        c.emit('8BCE'); c.call(CAPTURE_ORIGIN)
+        c.emit('85C0'); c.branch('0F84', 'done')
     c.emit('8B03A3'); c.u32(ORIGIN+4)
     c.emit('8B4304A3'); c.u32(ORIGIN+8)
     c.emit('68'); c.u32(WINDOW_SIZE); c.call(0xB479CC)
@@ -223,9 +244,13 @@ def payload():
     c.emit('6A098BCF'); c.call(0x41759E)
     c.emit('C707'); c.u32(VTABLE)
     c.emit('895F44C747480000000066C747340100')
+    if not legacy_gameplay:
+        c.emit('C7474C00000000')
     c.emit('FFB6340300008D8F00020000'); c.call(0x4163BF)
-    # No unrelated NPC portrait: native tutorial frame/next/end buttons only.
+    # Initialize the frame without looking up an unrelated CN NPC name.
     c.emit('6A006A008D8F00020000'); c.call(0xA12CC0)
+    if not legacy_portrait:
+        c.emit('8B138D8F00020000'); c.call(INIT_PORTRAIT)
     c.emit('C78700020000'); c.emit('\u4fee\u9053'.encode('gbk'))
     c.emit('C78704020000'); c.emit(('\u50e7'.encode('gbk') + b'\0\0'))
     c.emit('8BCF'); c.call(PAGE)
@@ -260,6 +285,10 @@ def payload():
     c.emit('5356578BF1')
     c.call(0x40ED77); c.emit('8BC8'); c.call(0x407DCE)
     c.emit('85C0'); c.branch('0F85', 'close')
+    if not legacy_portrait:
+        # The authored entrance animation starts transparent; advance it once/frame.
+        c.emit('8B8EF402000085C9'); c.branch('0F84', 'frame')
+        c.emit('8B01FF5010'); c.label('frame')
     c.emit('8B8EFC0200008B01FF5010')
     c.emit('8BBE0403000083BE6403000000'); c.branch('0F84', 'button')
     c.emit('8BBE08030000')
@@ -277,6 +306,8 @@ def payload():
     c.emit('8B7E44FF46488B46483B471C'); c.branch('0F83', 'enter')
     c.emit('8BCE'); c.call(PAGE); c.branch('E9', 'waiting')
     c.label('enter')
+    if not legacy_gameplay:
+        c.emit('837E4C00'); c.branch('0F85', 'close')
     c.emit('8B0D'); c.u32(PROFILE); c.call(0x411379)
     c.emit('3B07'); c.branch('0F85', 'close')
     c.emit('6AFF8B0D'); c.u32(PROFILE); c.call(0x41DE8A)
@@ -294,13 +325,23 @@ def payload():
 
     # The ordinary village update can reset the cursor, so set it afterward.
     c = Code(HOVER)
-    c.emit('568BF1'); c.call(0x527C80); c.emit('508BCE'); c.call(HIT)
+    c.emit('568BF1'); c.call(0x527C80); c.emit('508BCE')
+    if not legacy_portrait:
+        c.call(OPEN_RESULT); c.emit('8BCE')
+    c.call(HIT)
     c.emit('85C0'); c.branch('0F84', 'done')
-    c.emit('6A058B8E34030000'); c.call(0x402770)
+    c.emit('6A05' if legacy_guide else '6A01')
+    c.emit('8B8E34030000'); c.call(0x402770)
     c.label('done'); c.emit('585EC3')
     put(HOVER, c.finish(), 0x100)
 
     c = Code(DRAW)
+    if not legacy_portrait:
+        c.emit('C3')  # entry and outcome guides both draw in their final UI pass
+    elif not legacy_gameplay:
+        c.emit('83794C007501C3')  # outcome guide draws in native result window pass
+    elif not legacy_scene:
+        c.emit('C3')  # only the late village UI pass renders this owned guide
     c.emit('81C100020000')
     c.emit(b'\xE9'+struct.pack('<i',0xA13630-DRAW-len(c.data)-5))
     put(DRAW, c.finish(), 0x80)
@@ -310,12 +351,16 @@ def payload():
     c.emit('8BCE5E')
     c.emit(b'\xE9'+struct.pack('<i',0x4D7830-DESTROY-len(c.data)-5))
     put(DESTROY, c.finish(), 0x100)
-    old = legacy_payload()
+    if not legacy_guide and not legacy_lifetime:
+        # Native 0x7EC5C0 sweeps vtable+12 every frame, before drawing.
+        # Only explicit close/entry marks +0x34 as 2; an open page is 1.
+        put(CLOSED, bytes.fromhex('66837934020F94C00FB6C0C3'), 0x100)
+    old = legacy_payload(mark_return=not legacy_portrait)
     put(RETURN, old[RETURN-BASE:RETURN-BASE+0x100], 0x100)
     return bytes(data)
 
 
-def sites():
+def dialogue_sites():
     return (('monk_dialogue_controller',BASE,b'\xCC'*SPAN,payload()),
             ('monk_village_update',0x527CCD,bytes.fromhex('E8F821EFFF'),
              b'\xE8'+struct.pack('<i',UPDATE-0x527CCD-5)),
@@ -325,3 +370,286 @@ def sites():
              b'\xE9'+struct.pack('<i',RETURN-0x53CE10-5)+b'\x90'*4),
             ('monk_hover_update',0x52A751,bytes.fromhex('E88B54EEFF'),
              b'\xE8'+struct.pack('<i',HOVER-0x52A751-5)))
+
+
+# Isolated gameplay UI extension. No shared manager identity is rewritten.
+EXT_BASE, EXT_SPAN = 0x6E5800, 0x1600
+IS_CHALLENGE, VILLAGE_GATE, HD_GATE = EXT_BASE, EXT_BASE+0x80, EXT_BASE+0x100
+LATE_DRAW = EXT_BASE+0x400
+RESULT_TITLE, DRAW_TITLE = EXT_BASE+0x600, EXT_BASE+0x700
+READY_TITLE, TITLE_STRINGS = EXT_BASE+0x800, EXT_BASE+0x1320
+RESULT_RETRY_INPUT, RESULT_RETRY_DRAW = EXT_BASE+0x980, EXT_BASE+0xA00
+ROOM_TITLE = EXT_BASE+0xF00
+ROOM_NAME, ROOM_BOSS = EXT_BASE+0x1000, EXT_BASE+0x1080
+ROOM_NUMBER, BOSS_STRINGS = EXT_BASE+0x13A0, EXT_BASE+0x13C0
+
+
+def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False):
+    legacy_room = legacy_room or legacy_portrait
+    data = bytearray(b'\xCC' * EXT_SPAN)
+    local = json.loads((ROOT/'manifest/monk_localization.json').read_text('utf-8'))
+    def put(at, raw, limit):
+        if len(raw)>limit: raise ValueError(f'gameplay region overflow {at:x}: {len(raw)} > {limit}')
+        data[at-EXT_BASE:at-EXT_BASE+len(raw)] = raw
+    def jump(c, target):
+        c.emit(b'\xE9'+struct.pack('<i',target-c.base-len(c.data)-5))
+    c=Code(IS_CHALLENGE)
+    c.emit('5152'); c.call(0x419BBE); c.emit('83B830E5010000'); c.branch('0F85','no')
+    c.emit('8B9034E5010083EA1883FA03'); c.branch('0F87','no')
+    c.emit('83B838E5010000'); c.branch('0F85','no')
+    if not legacy_portrait:
+        c.emit('83B840E5010000'); c.branch('0F85','no')
+    c.emit('B801000000'); c.branch('E9','done')
+    c.label('no'); c.emit('33C0'); c.label('done'); c.emit('5A59C3');put(IS_CHALLENGE,c.finish(),0x80)
+    for at,native,fake in ((VILLAGE_GATE,0x411379,4),(HD_GATE,0x403D2D,1)):
+        c=Code(at); c.emit('51'); c.call(IS_CHALLENGE); c.emit('59');c.emit('85C0');c.branch('0F84','native')
+        c.emit('B8');c.u32(fake);c.emit('C3');c.label('native');jump(c,native);put(at,c.finish(),0x80)
+    for village in range(4):
+        put(TITLE_STRINGS+village*32,local['game_strings'][str(2504+village)].encode('gbk')+b'\0',32)
+    # Native windows are drawn before village chat/HUD. Draw only our owned
+    # guide after those panels, then the original final cursor pass.
+    c=Code(LATE_DRAW);c.emit('53568BD9');c.call(0x406F82);c.emit('8B008B7008')
+    c.label('loop');c.emit('85F6');c.branch('0F84','done');c.emit('813E');c.u32(VTABLE);c.branch('0F85','next')
+    c.emit('66837E3401');c.branch('0F85','next');c.emit('8D8E00020000');c.call(0xA13630)
+    c.label('next');c.emit('8B7618');c.branch('E9','loop')
+    c.label('done');c.emit('8BCB5E5B');jump(c,0x41CB16);put(LATE_DRAW,c.finish(),0x100)
+    # Scoped result header replacement. Keep tuple identity and all controllers.
+    c=Code(RESULT_TITLE);c.emit('9C60');c.call(IS_CHALLENGE);c.emit('85C0');c.branch('0F84','native')
+    c.emit('6A456A1F');c.call(DRAW_TITLE);c.emit('83C408619D');jump(c,0x764E22)
+    c.label('native');c.emit('619D');c.call(0x419BBE);jump(c,0x764C9B);put(RESULT_TITLE,c.finish(),0x100)
+    c=Code(DRAW_TITLE);c.emit('558BEC53');c.call(0x419BBE);c.emit('8B8034E5010083E818C1E00505');c.u32(TITLE_STRINGS);c.emit('8BD8')
+    # Native 13-argument text method; same ABI as 0x764Fxx callsites.
+    c.emit('6A006A006A006A006A006A006A016A006A0068FFFFFF0053FF750CFF7508')
+    c.call(0x414A6F);c.emit('8BC8');c.call(0x40DA1C);c.emit('5B8BE55DC3');put(DRAW_TITLE,c.finish(),0x100)
+    c=Code(READY_TITLE)
+    if legacy_room:
+        c.emit('9C60');c.call(IS_CHALLENGE);c.emit('85C0');c.branch('0F84','done')
+        c.emit('6A28682C010000');c.call(DRAW_TITLE);c.emit('83C408')
+        c.label('done');c.emit('619D');c.call(0x411379);c.emit('C3')
+    else:
+        jump(c,0x411379)
+    put(READY_TITLE,c.finish(),0x80)
+    if not legacy_portrait:
+        # Keep the native availability gates and retry/exit, without any sequel.
+        for at,original,native,retry in (
+            (RESULT_RETRY_INPUT,'8B4DEC83792000',0x762F7B,0x763C69),
+            (RESULT_RETRY_DRAW,'8B856CFFFFFF',0x765240,0x7653A7)):
+            c=Code(at);c.emit('9C60');c.call(IS_CHALLENGE)
+            c.emit('85C0');c.branch('0F84','native')
+            c.emit('619D');jump(c,retry)
+            c.label('native');c.emit('619D');c.emit(original);jump(c,native)
+            put(at,c.finish(),0x80)
+        # Bitmap labels already supply dungeon/stage; keep native number positions.
+        c=Code(ROOM_TITLE);c.emit('9C60');c.call(IS_CHALLENGE)
+        c.emit('85C0');c.branch('0F84','native')
+        if legacy_room:
+            c.emit('6A0B687C010000');c.call(DRAW_TITLE);c.emit('83C408')
+        else:
+            for xpos,color in ((380,0xFFE088),(458,0x0FFFB3)):
+                c.emit('6A006A006A006A006A006A006A016A006A0068');c.u32(color)
+                c.emit('68');c.u32(ROOM_NUMBER);c.emit('6A0B68');c.u32(xpos)
+                c.call(0x414A6F);c.emit('8BC8');c.call(0x40DA1C)
+        c.emit('619D');jump(c,0x70FA0B)
+        c.label('native');c.emit('619D6A006A006A00');jump(c,0x70F76F)
+        put(ROOM_TITLE,c.finish(),0x100)
+    if not legacy_room:
+        put(ROOM_NUMBER,b'01\0',0x20)
+        for village in range(4):
+            put(BOSS_STRINGS+village*32,local['game_strings'][str(2500+village)].encode('gbk')+b'\0',32)
+        # Substitute only the native text pointer. Preserve controller records,
+        # all other registers and the flags produced by the original ADD.
+        for at,original,strings,native in (
+            (ROOM_NAME,'8B45940538040000',TITLE_STRINGS,0x70F758),
+            (ROOM_BOSS,'8B4594053C050000',BOSS_STRINGS,0x70FA2A)):
+            c=Code(at);c.emit(original);c.emit('9C60');c.call(IS_CHALLENGE)
+            c.emit('85C0');c.branch('0F84','native');c.call(0x419BBE)
+            c.emit('8B8034E5010083E818C1E00505');c.u32(strings)
+            c.emit('8944241C')
+            c.label('native');c.emit('619D');jump(c,native);put(at,c.finish(),0x80)
+    return bytes(data)
+
+
+def sites():
+    result=list(dialogue_sites())
+    result.append(('monk_gameplay_ui',EXT_BASE,b'\xCC'*EXT_SPAN,gameplay_payload()))
+    for name,at,native,target in (
+        ('monk_ready_update_guard',0x737C49,0x411379,VILLAGE_GATE),
+        ('monk_ready_map_guard',0x737DBE,0x403D2D,HD_GATE),
+        ('monk_ready_icons_guard',0x737DED,0x403D2D,HD_GATE),
+        ('monk_late_guide_draw',0x5278F1,0x41CB16,LATE_DRAW),
+        ('monk_result_named_header',0x764C96,0x419BBE,RESULT_TITLE),
+        ('monk_ready_named_header',0x737DAD,0x411379,0x411379)):
+        opcode = b'\xE9' if target == RESULT_TITLE else b'\xE8'
+        result.append((name,at,b'\xE8'+struct.pack('<i',native-at-5),opcode+struct.pack('<i',target-at-5)))
+    result.extend(followup_sites())
+    for name,at,original,target in (
+        ('monk_room_named_header',0x70F769,'6A006A006A00',ROOM_TITLE),
+        ('monk_room_stage_name',0x70F750,'8B45940538040000',ROOM_NAME),
+        ('monk_room_boss_name',0x70FA22,'8B4594053C050000',ROOM_BOSS),
+        ('monk_result_retry_only_input',0x762F74,'8B4DEC83792000',RESULT_RETRY_INPUT),
+        ('monk_result_retry_only_draw',0x76523A,'8B856CFFFFFF',RESULT_RETRY_DRAW)):
+        old=bytes.fromhex(original)
+        result.append((name,at,old,b'\xE9'+struct.pack('<i',target-at-5)+b'\x90'*(len(old)-5)))
+    return tuple(result)
+
+
+# The reserved int3 range 0x73893C..0x73AFA0 contains the compatibility
+# code and its writable state.
+FOLLOW_BASE, FOLLOW_SPAN = 0x738A00, 0x2000
+CAPTURE_ORIGIN, ARM_RESULT = FOLLOW_BASE, FOLLOW_BASE+0x180
+CAPTURE_RESULT, OPEN_RESULT = FOLLOW_BASE+0x240, FOLLOW_BASE+0x380
+PUMP_RESULT = FOLLOW_BASE+0x580
+MARK_RETURN = PUMP_RESULT
+INIT_PORTRAIT, PORTRAIT_PATHS = FOLLOW_BASE+0x680, FOLLOW_BASE+0x800
+RESULT_STATE, OUTCOME_TABLE, OUTCOME_TEXT = FOLLOW_BASE+0x900, FOLLOW_BASE+0xA00, FOLLOW_BASE+0xC00
+# State DWORDs: armed, pending row, episode, UID, returned, origin village/page.
+
+
+def followup_payload(legacy_portrait=False):
+    data=bytearray(b'\xCC'*FOLLOW_SPAN)
+    def put(at, raw, limit):
+        if len(raw)>limit: raise ValueError(f'followup region overflow {at:x}: {len(raw)} > {limit}')
+        data[at-FOLLOW_BASE:at-FOLLOW_BASE+len(raw)]=raw
+    def jump(c,at): c.emit(b'\xE9'+struct.pack('<i',at-c.base-len(c.data)-5))
+    put(RESULT_STATE,b'\0'*64,64)
+    local=json.loads((ROOT/'manifest/monk_localization.json').read_text('utf-8'))
+    cursor=OUTCOME_TEXT
+    for village in range(4):
+        for outcome in range(2):
+            # Existing translated success/failure text, without entry invitation.
+            text=local['quest_strings'][str(6001+3*village+outcome)]
+            lines=[]
+            for paragraph in text.split('^&'):
+                line=''
+                for ch in paragraph:
+                    if len((line+ch).encode('gbk'))>48: lines.append(line);line=''
+                    line+=ch
+                if line: lines.append(line)
+            pages=[b''.join(x.encode('gbk').ljust(51,b'\0') for x in (lines[i:i+4]+['']*4)[:4]) for i in range(0,len(lines),4)]
+            raw=b''.join(pages)
+            at=OUTCOME_TABLE+32*(village*2+outcome)
+            put(at,struct.pack('<8I',village,ENTRIES[village][1],0,0,0,0,cursor,len(pages)),32)
+            put(cursor,raw,FOLLOW_BASE+FOLLOW_SPAN-cursor);cursor+=len(raw)
+
+    # Village+0x3B0 is assigned only by MakeChar(isMy) at 0x535530.
+    # The old +0x334 is the mouse object. Both actor getters return world floats.
+    c=Code(CAPTURE_ORIGIN);c.emit('5356578BF18BBEB003000085FF');c.branch('0F84','no')
+    c.emit('8BCF');c.call(0x41B5D1);c.emit('8BD86AFF8B0D');c.u32(PROFILE);c.call(0x40B744)
+    c.emit('3BC3');c.branch('0F85','no')
+    c.emit('8BCF');c.call(0x4043D6);c.call(0xB4CA30);c.emit('50')
+    c.emit('8BCF');c.call(0x417184);c.call(0xB4CA30);c.emit('508BFC')
+    # Reject an absent/blocked map sample rather than freeze a cursor or guessed point.
+    c.emit('8B0D');c.u32(0xD732C4);c.emit('85C9');c.branch('0F84','blocked')
+    c.emit('6A01FF37FF7704');c.call(0x4157CB);c.emit('85C0');c.branch('0F85','blocked')
+    c.emit('8B4704A3');c.u32(ORIGIN+12);c.emit('8B07A3');c.u32(ORIGIN+16)
+    c.emit('83C408B801000000');c.branch('E9','done')
+    c.label('blocked');c.emit('83C408')
+    c.label('no');c.emit('33C0');c.label('done');c.emit('5F5E5BC3');put(CAPTURE_ORIGIN,c.finish(),0x180)
+
+    # Actual CF80 dispatcher entry; only a new battle arms the next own result.
+    c=Code(ARM_RESULT);c.emit('9C60C705');c.u32(RESULT_STATE);c.u32(0)
+    c.emit('C705');c.u32(RESULT_STATE+4);c.u32(0)
+    if not legacy_portrait:
+        c.emit('C705');c.u32(RESULT_STATE+16);c.u32(0)
+    c.call(IS_CHALLENGE);c.emit('85C0');c.branch('0F84','done')
+    c.emit('833D');c.u32(ORIGIN);c.emit('01');c.branch('0F85','done')
+    c.call(0x419BBE);c.emit('8B8034E50100A3');c.u32(RESULT_STATE+8)
+    if not legacy_portrait:
+        c.emit('83E8183B05');c.u32(ORIGIN+4);c.branch('0F85','done')
+    c.emit('6AFF8B0D');c.u32(PROFILE);c.call(0x40B744);c.emit('A3');c.u32(RESULT_STATE+12)
+    if not legacy_portrait:
+        for source,target in ((ORIGIN+4,RESULT_STATE+20),(ORIGIN+8,RESULT_STATE+24)):
+            c.emit('A1');c.u32(source);c.emit('A3');c.u32(target)
+    c.emit('C705');c.u32(RESULT_STATE);c.u32(1)
+    c.label('done');c.emit('619D');jump(c,0x419BBE);put(ARM_RESULT,c.finish(),0xC0)
+
+    # CF88 row+0 is UID; BYTE+0xA4 is wire rating (0 F, 1..5 D..S).
+    # Duplicate/foreign/stale rows are still passed to the native result handler.
+    c=Code(CAPTURE_RESULT);c.emit('9C608B742428833D');c.u32(RESULT_STATE);c.emit('01');c.branch('0F85','done')
+    c.call(IS_CHALLENGE);c.emit('85C0');c.branch('0F84','done')
+    c.call(0x419BBE);c.emit('8B8034E501003B05');c.u32(RESULT_STATE+8);c.branch('0F85','done')
+    c.emit('8B063B05');c.u32(RESULT_STATE+12);c.branch('0F85','done')
+    c.emit('6AFF8B0D');c.u32(PROFILE);c.call(0x40B744);c.emit('3B06');c.branch('0F85','done')
+    c.emit('0FB686A400000083F805');c.branch('0F87','done')
+    c.emit('85C00F94C10FB6C98B15');c.u32(RESULT_STATE+8)
+    c.emit('83EA18D1E201CAC1E20581C2');c.u32(OUTCOME_TABLE)
+    c.emit('8915');c.u32(RESULT_STATE+4);c.emit('C705');c.u32(RESULT_STATE);c.u32(0)
+    c.label('done');c.emit('619D');jump(c,0x407ACC);put(CAPTURE_RESULT,c.finish(),0x140)
+
+    # CF88 only records. A matching return authorizes the later village tick.
+    c=Code(OPEN_RESULT);c.emit('5356578BF18B1D');c.u32(RESULT_STATE+4);c.emit('85DB');c.branch('0F84','no')
+    if legacy_portrait:
+        c.emit('837E3C01');c.branch('0F85','no');c.call(IS_CHALLENGE);c.emit('85C0');c.branch('0F84','no')
+        c.call(0x419BBE);c.emit('8B8034E501003B05');c.u32(RESULT_STATE+8);c.branch('0F85','no')
+    else:
+        c.emit('833D');c.u32(RESULT_STATE+16);c.emit('01');c.branch('0F85','no')
+        c.emit('8B0D');c.u32(PROFILE);c.call(0x411379)
+        c.emit('3B05');c.u32(RESULT_STATE+20);c.branch('0F85','discard')
+        c.emit('6AFF8B0D');c.u32(PROFILE);c.call(0x41DE8A)
+        c.emit('3B05');c.u32(RESULT_STATE+24);c.branch('0F85','discard')
+        c.emit('6AFF8B0D');c.u32(PROFILE);c.call(0x40B744)
+        c.emit('3B05');c.u32(RESULT_STATE+12);c.branch('0F85','discard')
+        c.emit('8B8EB003000085C9');c.branch('0F84','no');c.call(0x41B5D1)
+        c.emit('3B05');c.u32(RESULT_STATE+12);c.branch('0F85','discard')
+        c.emit('83BE3403000000');c.branch('0F84','no')
+    c.call(0x406F82);c.emit('8BC8');c.call(0x7EBC20);c.emit('85C0');c.branch('0F84','no')
+    c.emit('68');c.u32(WINDOW_SIZE);c.call(0xB479CC);c.emit('83C40485C0');c.branch('0F84','no')
+    c.emit('8BC8');c.call(0x4064FB);c.emit('8BF86A098BCF');c.call(0x41759E)
+    c.emit('C707');c.u32(VTABLE);c.emit('895F44C7474800000000C7474C0100000066C747340100')
+    c.emit('FF764C' if legacy_portrait else 'FFB634030000')
+    c.emit('8D8F00020000');c.call(0x4163BF)
+    c.emit('6A006A008D8F00020000');c.call(0xA12CC0)
+    if not legacy_portrait:
+        c.emit('8B138D8F00020000');c.call(INIT_PORTRAIT)
+    c.emit('C78700020000');c.emit('修道'.encode('gbk'));c.emit('C78704020000');c.emit('僧'.encode('gbk')+b'\0\0')
+    c.emit('8BCF');c.call(PAGE);c.emit('57');c.call(0x406F82);c.emit('8BC8');c.call(0x410299)
+    c.emit('C705');c.u32(RESULT_STATE+4);c.u32(0)
+    if not legacy_portrait:
+        c.emit('C705');c.u32(RESULT_STATE+16);c.u32(0)
+    for target in (0x418B83,0x419B0A):c.call(0x40ED77);c.emit('8BC8');c.call(target)
+    c.emit('B801000000');c.branch('E9','done')
+    if not legacy_portrait:
+        c.label('discard')
+        for at in (RESULT_STATE,RESULT_STATE+4,RESULT_STATE+16):
+            c.emit('C705');c.u32(at);c.u32(0)
+    c.label('no');c.emit('33C0');c.label('done');c.emit('5F5E5BC3')
+    put(OPEN_RESULT,c.finish(),0x200)
+    if legacy_portrait:
+        c=Code(PUMP_RESULT);c.emit('9C608B4DEC');c.call(OPEN_RESULT);c.emit('85C0');c.branch('0F84','native')
+        c.emit('619D');jump(c,0x763FEA)
+        c.label('native');c.emit('619D8B55EC837A3C01');jump(c,0x762F10);put(PUMP_RESULT,c.finish(),0x100)
+    else:
+        c=Code(MARK_RETURN)
+        for at in (RESULT_STATE,RESULT_STATE+16):
+            c.emit('C705');c.u32(at);c.u32(0)
+        c.emit('833D');c.u32(RESULT_STATE+4);c.emit('00');c.branch('0F84','done')
+        for source,target in ((ORIGIN+4,RESULT_STATE+20),(ORIGIN+8,RESULT_STATE+24)):
+            c.emit('A1');c.u32(source);c.emit('3B05');c.u32(target);c.branch('0F85','discard')
+        c.emit('6AFF8B0D');c.u32(PROFILE);c.call(0x40B744)
+        c.emit('3B05');c.u32(RESULT_STATE+12);c.branch('0F85','discard')
+        c.emit('C705');c.u32(RESULT_STATE+16);c.u32(1);c.branch('E9','done')
+        c.label('discard');c.emit('C705');c.u32(RESULT_STATE+4);c.u32(0)
+        c.label('done');c.emit('C3');put(MARK_RETURN,c.finish(),0x100)
+    if not legacy_portrait:
+        # Native guide owns +0xF4: A13630 draws it; A12790 releases it.
+        # Reuse the original effect ABI without A12EC0's CN name-table lookup.
+        c=Code(INIT_PORTRAIT);c.emit('56578BF183FA03');c.branch('0F87','done')
+        c.emit('C1E20681C2');c.u32(PORTRAIT_PATHS);c.emit('8BFA')
+        c.emit('6844010000');c.call(0xB479CC);c.emit('83C40485C0');c.branch('0F84','done')
+        c.emit('8BC8');c.call(0x41BE00);c.emit('8986F4000000')
+        c.emit('6A00FFB630010000FFB62C0100006A00578BC8');c.call(0x404232)
+        c.label('done');c.emit('5F5EC3');put(INIT_PORTRAIT,c.finish(),0x180)
+        for village in range(4):
+            put(PORTRAIT_PATHS+village*64, f'interface\\NPC_{62+village}_0.eff'.encode('ascii')+b'\0',64)
+    return bytes(data)
+
+
+def followup_sites():
+    out=[('monk_gameplay_followup',FOLLOW_BASE,b'\xCC'*FOLLOW_SPAN,followup_payload())]
+    for name,at,native,target in [('monk_result_arm',0x6F749D,0x419BBE,ARM_RESULT),
+                                  ('monk_result_capture',0x6FA2CF,0x407ACC,CAPTURE_RESULT)]:
+        out.append((name,at,b'\xE8'+struct.pack('<i',native-at-5),b'\xE8'+struct.pack('<i',target-at-5)))
+    out.append(('monk_result_dialogue_pump',0x762F09,
+                b'\xE9'+struct.pack('<i',PUMP_RESULT-0x762F09-5)+b'\x90'*2,
+                bytes.fromhex('8B55EC837A3C01')))
+    return tuple(out)

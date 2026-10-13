@@ -17,6 +17,49 @@ SCHEMA = 'openNanaimo.monk-dialogue.v1'
 RECIPE = ROOT / 'manifest/monk_dialogue_resources.json'
 MARKER = '.openNanaimo-monk-dialogue.json'
 PACK = scene.PACK
+# Native particles draw at placement + XY track - half the frame size
+# (0xAB5FB0 -> 0xAC1BC0). Monk ground is frame y=93:
+# -17 (body track) - 50 (half-height) + 93 = 26, also its shadow centre.
+# CVillageChar already sorts on its ground Y (0x4FCCC0 bottom edge).
+MONK_FOOT_Y_OFFSET = 26
+
+
+def foot_origin_effect(raw):
+    # Rebase only three owned EFF2 Y tracks. Input must match the original
+    # monk layout or its exact rebased state; repeated conversion cannot drift.
+    model = resources.codec_module().eff2(raw)
+    require(len(raw) == 1688 and model['duration'] == 60 and len(model['rows']) == 3,
+            'monk foot effect layout differs')
+    r = resources.codec_module().Reader(raw)
+    r.read(20)
+    offsets, values = [], []
+    names = ((scene.SHADOW, 'qz_village_npc_shadow_black.im3'),
+             tuple(f'{prefix}{i:02d}{suffix}' for i in range(1, 5)
+                   for prefix, suffix in (('openNanaimo_monk', '.im3'), ('vill', '_npc_monk.im3'))),
+             (scene.LABEL, 'vill_npc_monkname.im3'))
+    for row in range(3):
+        require((r.u32(), r.u32()) == (5, 6), 'monk foot effect kind differs')
+        require(r.fixed(260).decode('ascii') in names[row], 'monk foot effect resource differs')
+        for track in range(12):
+            require(r.u32() == 1, 'monk foot effect track count differs')
+            at = r.p
+            value, velocity, start, end = struct.unpack('<ffII', r.read(16))
+            if track == 1:
+                require(velocity == 0 and (start, end) == (0, 60),
+                        'monk foot effect Y motion differs')
+                offsets.append(at)
+                values.append(value)
+        r.read(48)
+    r.end()
+    original = (26., -17., 37.)
+    rebased = tuple(y - MONK_FOOT_Y_OFFSET for y in original)
+    require(tuple(values) in (original, rebased), 'monk foot effect Y baseline differs')
+    if tuple(values) == rebased:
+        return raw
+    result = bytearray(raw)
+    for at, value in zip(offsets, rebased):
+        struct.pack_into('<f', result, at, value)
+    return bytes(result)
 
 
 def scene_bytes(value):
@@ -42,12 +85,17 @@ def derive_pack(raw, check=True):
         if not matches:
             require(len(value.textures) < 63, 'no scene texture capacity')
             value.textures.append((uid, name.replace(b'/',b'\\').ljust(260,b'\0')))
-        expected = struct.pack('<I3f',uid,float(x),float(y),0.)
+        expected = struct.pack('<I3f',uid,float(x),float(y + MONK_FOOT_Y_OFFSET),0.)
+        centered = struct.pack('<I3f',uid,float(x),float(y),0.)
+        old_x, old_y = dialogue.LEGACY_ENTRIES[index][2:]
+        previous = struct.pack('<I3f',uid,float(old_x),float(old_y),0.)
+        _, _, click_x, click_y = dialogue.CLICK_ENTRIES[index]
+        clicked = struct.pack('<I3f',uid,float(click_x),float(click_y),0.)
         for layer in value.layers:
-            require(all(row == expected for row in layer if struct.unpack_from('<I',row)[0] == uid),
+            require(all(row in (expected, centered, previous, clicked) for row in layer if struct.unpack_from('<I',row)[0] == uid),
                        'monk placement conflict')
             layer[:] = [row for row in layer if struct.unpack_from('<I',row)[0] != uid]
-        value.layers[2].append(expected)
+        value.layers[scene.MONK_LAYER].append(expected)
         updates[key] = scene_bytes(value)
     # Retire only the four owned fifth-village action cells and exact markers.
     for entry in fifth.ENTRIES:
@@ -71,7 +119,7 @@ def derive_pack(raw, check=True):
     return output
 
 
-def build(source, client, output):
+def build(source, client, output, font=None):
     source,client,output = map(io.clean_root,(source,client,output))
     require(not output.exists() and not output.is_relative_to(source)
                and not source.is_relative_to(output) and not client.is_relative_to(output)
@@ -90,20 +138,45 @@ def build(source, client, output):
         target = f'effs/village/openNanaimo_monk{index:02d}.eff'
         files[target],count = resources.rewrite_names(raw,target,names)
         require(count==3,'monk effect conversion coverage differs')
+        files[target] = foot_origin_effect(files[target])
         files[f'effs/village/openNanaimo_monk{index:02d}.im3'] = io.safe(source,f'effs/village/vill{index:02d}_npc_monk.im3').read_bytes()
     for rel in ('effs/village/'+scene.SHADOW,'effs/village/'+scene.LABEL):
         files[rel] = io.safe(client,rel).read_bytes()
+    if font is not None:
+        image, files['effs/village/'+scene.LABEL] = scene.name_image(
+            font, io.load(resources.LOCALIZATION)['npc_name'],
+            io.safe(source,'effs/village/vill_npc_monkname.im3').read_bytes())
+    for index in range(4):
+        base = 'images/interface_images/shootingsky_inter_image/'
+        for source_name, target_name in (
+            (f'dg_intro_Hurdle_{index+1:02d}.im3', f'dg_intro_hd0_ep{25+index:02d}.im3'),
+            (f'ssky_hurdle_{index:02d}_preview.im3', f'ssky_hd0_ep{24+index:02d}_preview.im3'),
+            (f'ssky_mappreview_Hurdle_{index:02d}.im3', f'ssky_mappreview_hd0_ep{24+index:02d}_dg00_st00.im3')):
+            raw = io.safe(source, base+source_name).read_bytes()
+            header = struct.unpack_from('<9I', raw)
+            require(header[0:2] == (0,2) and header[7] == 8, 'challenge UI image layout differs')
+            require(header[2] + 8 == len(raw), 'challenge UI image size differs')
+            files[base+target_name] = raw
+    files.update(portrait_files(source))
     recipe = dict(schema=SCHEMA,runtime_acceptance=False,entry_binding='village-dialogue-bound',
                   parent_pack_sha256=parent_row['sha256'],
+                  parent_files={row['path']:row['sha256'] for row in parent['files'] if row['path'] in files},
                   localization_sha256=io.digest(resources.LOCALIZATION.read_bytes()),
-                  entries=[dict(village=village,page=page,position=[x,y],episode=24+i)
+                  entries=[dict(village=village,page=page,position=[x,y],
+                                sort_position=[x,y + MONK_FOOT_Y_OFFSET],episode=24+i)
                            for i,(village,page,x,y) in enumerate(dialogue.ENTRIES)],
                   files=[dict(path=rel,size=len(raw),sha256=io.digest(raw)) for rel,raw in sorted(files.items())])
     manifest = dict(recipe,files=[dict(row,before_sha256=io.file_hash(io.safe(client,row['path'])))
                                  for row in recipe['files']])
     manifest['recipe_sha256'] = io.digest(io.encoded(recipe))
+    if io.safe(client,MARKER).is_file():
+        manifest['previous_marker_sha256'] = io.file_hash(io.safe(client,MARKER))
     manifest['id'] = io.digest(io.encoded(manifest))
     output.mkdir(parents=True)
+    if font is not None:
+        image.save(output/'monk-name-preview.png')
+    if io.safe(client,MARKER).is_file():
+        io.atomic(io.safe(output/'before',MARKER),io.safe(client,MARKER).read_bytes())
     for rel,raw in files.items():
         io.atomic(io.safe(output/'payload',rel),raw)
         original=io.safe(client,rel)
@@ -111,6 +184,28 @@ def build(source, client, output):
     io.atomic(output/'manifest.json',io.encoded(manifest))
     io.atomic(output/'recipe.json',io.encoded(recipe))
     return dict(bundle=str(output),files=len(files),runtime_acceptance=False)
+
+
+def portrait_files(source):
+    files = {}
+    for npc in range(62, 66):
+        effect = f'effs/interface/NPC_{npc}_0.eff'
+        raw = io.safe(source, effect).read_bytes()
+        model = resources.codec_module().eff2(raw)
+        expected = [f'NPC_{npc}.im3', f'NPC_{npc}.im3', f'NPC_{npc}_b.im3']
+        require(model['duration'] == 60 and model['refs'] == expected
+                and all(row[:2] == (5, 6) for row in model['rows']),
+                'monk portrait effect dependency differs')
+        files[effect] = raw
+        for name in dict.fromkeys(expected):
+            rel = 'effs/interface/' + name
+            image = io.safe(source, rel).read_bytes()
+            header = struct.unpack_from('<9I', image)
+            require(header[:2] == (0, 2) and header[2]+8 == len(image)
+                    and header[3:9] == (230, 300, 230, 300, 8 if name.endswith('_b.im3') else 10, 0),
+                    'monk portrait image layout differs')
+            files[rel] = image
+    return files
 
 
 def validate_manifest(marker,recipe):
@@ -139,7 +234,13 @@ def apply(bundle, client):
     validate_manifest(manifest,recipe)
     with io.client_lock(client):
         io.assert_not_running(client,allow_adapter=True)
-        if io.safe(client,MARKER).exists(): return verify(client)
+        if io.safe(client,MARKER).exists():
+            if io.file_hash(io.safe(client,MARKER)) == io.digest(io.encoded(manifest)):
+                return verify(client)
+            require(io.file_hash(io.safe(client,MARKER)) == manifest.get('previous_marker_sha256'),
+                    'different monk dialogue baseline marker')
+        else:
+            require(manifest.get('previous_marker_sha256') is None, 'missing monk dialogue baseline marker')
         payload={row['path']:io.safe(bundle/'payload',row['path']).read_bytes() for row in manifest['files']}
         for row in manifest['files']:
             raw=payload[row['path']]
@@ -189,7 +290,7 @@ def rollback(client,receipt):
                    and journal['status']=='installed','receipt ownership differs')
         marker=io.load(io.safe(client,MARKER)); validate_manifest(marker,io.load(RECIPE))
         expected={row['path']:row for row in marker['files']}
-        expected[MARKER]=dict(before_sha256=None,sha256=io.digest(io.encoded(marker)))
+        expected[MARKER]=dict(before_sha256=marker.get('previous_marker_sha256'),sha256=io.digest(io.encoded(marker)))
         require(len(journal['files'])==len(expected)
                 and {row['path'] for row in journal['files']}==set(expected),'rollback coverage differs')
         for row in journal['files']:
@@ -203,7 +304,7 @@ def rollback(client,receipt):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__); commands=p.add_subparsers(dest='command',required=True)
-    q=commands.add_parser('build'); q.add_argument('--source',type=Path,required=True); q.add_argument('--client',type=Path,required=True); q.add_argument('--output',type=Path,required=True)
+    q=commands.add_parser('build'); q.add_argument('--source',type=Path,required=True); q.add_argument('--client',type=Path,required=True); q.add_argument('--output',type=Path,required=True); q.add_argument('--font',type=Path)
     q=commands.add_parser('apply'); q.add_argument('--bundle',type=Path,required=True); q.add_argument('--client',type=Path,required=True)
     q=commands.add_parser('verify'); q.add_argument('--client',type=Path,required=True)
     q=commands.add_parser('rollback'); q.add_argument('--client',type=Path,required=True); q.add_argument('--receipt',required=True)

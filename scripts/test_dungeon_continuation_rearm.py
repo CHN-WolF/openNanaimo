@@ -37,7 +37,7 @@ static void multiplayer_cf99_roster_begin_room_epoch(void){}
 static int multiplayer_cf99_surrender_room_pending(void){return pending;}
 static void multiplayer_broadcast_cf6d_super_rearm(void){ops[count++]=0xCF6D;pending=0;}
 static void teamplay_continuation_arm_room(unsigned real,unsigned show,unsigned diff,unsigned dungeon,unsigned mode){}
-static void multiplayer_broadcast_reset(unsigned real,unsigned show,unsigned diff,unsigned dungeon){ops[count++]=0xCF8C;assert(diff==current_difficulty);response_stage=real;response_dungeon=dungeon;response_difficulty=diff;}
+static void multiplayer_broadcast_reset(unsigned real,unsigned show,unsigned diff,unsigned dungeon,unsigned client_diff){ops[count++]=0xCF8C;assert(diff==current_difficulty);response_stage=real;response_dungeon=dungeon;response_difficulty=client_diff;}
 static void sleep(unsigned n){}
 static void reset(unsigned mode,int surrendered,int authored){
  memset(buf,0,sizeof(buf));buf[10]=mode;count=0;pending=surrendered;super=authored;
@@ -68,12 +68,12 @@ reset(1,0,1);assert(count==1&&ops[0]==0xCF8C&&response_stage==1&&response_dungeo
 combat_hp=0;injury_dead=1;settlement_sent=0;
 reset(1,1,1);assert(count==0&&combat_hp==0&&pending);
 /* Super-Boss mode2 starts the next normal difficulty at dungeon0/stage0.
-   Its selector WORD is equal numerically, but belongs to the normal domain. */
-combat_hp=2000;injury_dead=0;current_dungeon=2;current_stage_index=1;current_difficulty=0;next_exists=1;
-reset(2,0,0);assert(count==1&&response_dungeon==0&&response_stage==0&&response_difficulty==0);
-current_dungeon=2;current_stage_index=1;current_difficulty=1;
+   CF8C carries the new client difficulty, never the source resource slot. */
+combat_hp=2000;injury_dead=0;current_dungeon=2;current_stage_index=1;current_difficulty=1;next_exists=1;
 reset(2,0,0);assert(count==1&&response_dungeon==0&&response_stage==0&&response_difficulty==1);
 current_dungeon=2;current_stage_index=1;current_difficulty=2;
+reset(2,0,0);assert(count==1&&response_dungeon==0&&response_stage==0&&response_difficulty==2);
+current_dungeon=2;current_stage_index=1;current_difficulty=0;
 reset(2,1,0);assert(count==0&&pending); /* highest difficulty never wraps */
 current_difficulty=1;next_exists=0;
 reset(2,1,0);assert(count==0&&pending&&current_dungeon==2); /* missing target */

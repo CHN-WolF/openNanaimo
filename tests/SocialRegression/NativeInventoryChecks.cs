@@ -97,7 +97,7 @@ internal static partial class Program
             var eat = new byte[8]; BinaryPrimitives.WriteUInt32LittleEndian(eat, food);
             BinaryPrimitives.WriteUInt16LittleEndian(eat.AsSpan(4), handle);
             var eaten = (await Dispatch(fixture, session, 0xC43D, eat))!;
-            Check(SplitInventoryFrames(eaten).Select(f => f.Op).SequenceEqual(new ushort[] { 0xC43E, 0xC43F, 0xCF72 }),
+            Check(SplitInventoryFrames(eaten).Select(f => f.Op).SequenceEqual(new ushort[] { 0xC43E, 0xCF72 }),
                 "ready room food completes its consume and recovery exchange");
             Check(state.Items[food] == 2 && (await fixture.Database.GetCharacterByIdAsync(owner.Id))!.Items.Single(i => i.ItemCode == food).Quantity == 2,
                 "food debit agrees in storage and the retained worker");

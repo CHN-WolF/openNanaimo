@@ -55,9 +55,9 @@ class SceneTests(unittest.TestCase):
         self.assertEqual(a.raw[:a.grid_start + 64800], b.raw[:b.grid_start + 64800])
         self.assertEqual(a.tail, b.tail)
         self.assertEqual(a.layers[0], b.layers[0])
-        self.assertEqual(a.layers[1], b.layers[1])
-        self.assertEqual(a.layers[2], b.layers[2][:-1])
-        self.assertEqual(struct.unpack('<I3f', b.layers[2][-1])[1:], (293., 157., 0.))
+        self.assertEqual(a.layers[1], b.layers[1][:-1])
+        self.assertEqual(a.layers[2], b.layers[2])
+        self.assertEqual(struct.unpack('<I3f', b.layers[1][-1])[1:], (293., 157., 0.))
         self.assertEqual(entry.derive_pack(changed), changed)
 
     def test_foreground_monk_moves_to_actor_layer_once(self):
@@ -66,7 +66,7 @@ class SceneTests(unittest.TestCase):
         for old_layers in ([[], [tree], [placement]], [[], [tree, placement], [placement]]):
             raw = scene(textures=[(0, 'tree.eff'), (1, 'effs/village/' + entry.EFFECT)], layers=old_layers)
             changed = entry.VillageScene(raw).derive()
-            self.assertEqual(entry.VillageScene(changed).layers, [[], [tree], [placement]])
+            self.assertEqual(entry.VillageScene(changed).layers, [[], [tree, placement], []])
             self.assertEqual(entry.VillageScene(changed).derive(), changed)
 
     def test_noncanonical_pack_directory_order_preserved_when_idempotent(self):
@@ -178,7 +178,7 @@ class LocalCandidateTests(unittest.TestCase):
         self.assertFalse(manifest['runtime_accepted'])
         self.assertFalse(manifest['entry']['interactive'])
         self.assertEqual(manifest['entry']['status'], 'scene-preview-unbound')
-        self.assertEqual(manifest['entry']['layer'], 2)
+        self.assertEqual(manifest['entry']['layer'], entry.MONK_LAYER)
         self.assertEqual(manifest['entry']['name_font_size'], 13)
         self.assertEqual(len(manifest['files']), 7)
         for row in manifest['files']:
@@ -193,21 +193,37 @@ class LocalCandidateTests(unittest.TestCase):
     @unittest.skipUnless(FONT.exists(), 'local user-owned font')
     def test_generated_chinese_name_image_native_header(self):
         template = struct.pack('<9I2f', 0, 2, 120, 39, 19, 39, 19, 8, 0, 19.5, 9.5)
-        template += b''.join(struct.pack('<Hh', 2, 0) for _ in range(14))
-        template += b''.join(struct.pack('<HhHHH', 5, 1, 19, 1, 0xFFE0) for _ in range(5))
+        template += b''.join(struct.pack('<Hh', 2, 0) for _ in range(12))
+        template += b''.join(struct.pack('<HhHH', 26, 1, 9, 22) + struct.pack('<22H', *([0xFFE0]*22)) for _ in range(7))
         text = ''.join(map(chr, (0x4FEE, 0x9053, 0x50E7)))
         image, raw = entry.name_image(FONT, text, template)
         self.assertEqual(entry.MONK_NAME_FONT_SIZE, 13)
-        self.assertEqual(image.size, (45, 21))
-        self.assertEqual(struct.unpack_from('<2f', raw, 36), (22.5, 10.5))
-        self.assertEqual(struct.unpack_from('<9I', raw), (0, 2, len(raw) - 8, 45, 21, 45, 21, 8, 0))
-        self.assertEqual(sum(image.getpixel((x, 14))[3] != 0 for x in range(45)), 0)
-        self.assertEqual(sum(image.getpixel((x, 15))[3] != 0 for x in range(45)), 0)
-        for y in range(16, 21):
-            self.assertEqual(image.getpixel((22, y)), (255, 255, 0, 255))
-            self.assertEqual(sum(image.getpixel((x, y))[3] != 0 for x in range(45)), 1)
-        top = image.crop((0, 0, 45, 14))
-        self.assertEqual(top.getbbox(), (2, 0, 42, 14))
+        width,height=image.size
+        self.assertGreater(height,19)
+        self.assertEqual(struct.unpack_from('<2f', raw, 36), (width/2,height/2))
+        self.assertEqual(struct.unpack_from('<9I', raw), (0, 2, len(raw) - 8, width,height,width,height,8,0))
+        self.assertEqual(entry.MONK_NAME_STROKE,1)
+        self.assertEqual(entry.MONK_OUTLINE_COLOR,(90,24,0,255))
+        self.assertIn(entry.MONK_OUTLINE_COLOR,image.getdata())
+        self.assertNotIn((24,16,8,255),image.getdata())
+        self.assertEqual(entry.MONK_ENGLISH_FONT_SIZE,9)
+        occupied=[any(image.getpixel((x,y))[3] for x in range(width)) for y in range(height)]
+        gap=next(y for y in range(height) if not occupied[y])
+        self.assertEqual(occupied[gap:gap+entry.MONK_ENGLISH_GAP],[False]*2)
+        self.assertTrue(all(occupied[gap+entry.MONK_ENGLISH_GAP:]))
+        # Original bitmap English is scaled to the existing 22x8 display box.
+        self.assertEqual(sum(image.getpixel((x,height-2))[3]!=0 for x in range(width)),22)
+        self.assertEqual(image.getpixel((width//2,height-2)),(255,255,0,255))
+        from unittest.mock import patch
+        with patch.object(entry,'MONK_OUTLINE_COLOR',(112,64,32,255)):
+            before,_=entry.name_image(FONT,text,template)
+        self.assertEqual(before.size,image.size)
+        self.assertEqual(before.getchannel('A').tobytes(),image.getchannel('A').tobytes())
+        self.assertEqual(before.crop((0,height-8,width,height)).tobytes(),
+                         image.crop((0,height-8,width,height)).tobytes())
+        self.assertEqual([p==(255,255,255,255) for p in before.getdata()],
+                         [p==(255,255,255,255) for p in image.getdata()])
+        self.assertNotEqual(before.tobytes(),image.tobytes())
 
 
 if __name__ == '__main__':

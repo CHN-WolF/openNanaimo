@@ -286,10 +286,11 @@ def verify(client, manifest=None):
                                       and row['sha256'].lower() == monk_entry_base
                                       and actual == monk_entry_sha256
                                       and path.stat().st_size == monk_entry_size)
-        if row['path'] == 'Village_map_image/Village_map_image.pack' and (client / '.openNanaimo-monk-dialogue.json').is_file():
+        if (client / '.openNanaimo-monk-dialogue.json').is_file():
             import prepare_monk_dialogue as dialogue
             recipe = load(dialogue.RECIPE)
-            if row['sha256'] == recipe['parent_pack_sha256']:
+            parents = recipe.get('parent_files', {'Village_map_image/Village_map_image.pack':recipe['parent_pack_sha256']})
+            if row['sha256'] == parents.get(row['path']) and any(r['path']==row['path'] for r in recipe['files']):
                 dialogue.verify(client,recipe)
                 allowed_monk_entry_overlay = True
         if (actual != row['sha256'] or path.stat().st_size != row['size']) and not allowed_monk_entry_overlay:

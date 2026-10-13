@@ -76,3 +76,5 @@ __pycache__/
 
 # Local adapter profile database and native state
 /adapter-data/
+/game.db
+/game.db-*

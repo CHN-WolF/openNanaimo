@@ -234,7 +234,8 @@ public sealed partial class NetworkAdapterService
     {
         var selection = GetNativePartyContinuationSelection(pending.Source);
         if (selection == pending.Selection) return true;
-        if (selection.HdIndex != pending.Selection.HdIndex || selection.Episode != pending.Selection.Episode)
+        if (selection.HdIndex != pending.Selection.HdIndex || selection.Episode != pending.Selection.Episode
+            || selection.Difficulty >= DungeonDifficultyCount)
             return false;
         Span<byte> response = stackalloc byte[48];
         response.Clear();
@@ -242,6 +243,10 @@ public sealed partial class NetworkAdapterService
         BinaryPrimitives.WriteUInt16LittleEndian(response.Slice(6, 2), 0xCF8C);
         response[0x28] = selection.Stage;
         response[0x2E] = selection.Dungeon;
+        // The owner may commit before its peer consumes CF8C. Reconstruct the
+        // same client difficulty, not zero or the internal Super-Boss selector.
+        BinaryPrimitives.WriteUInt16LittleEndian(response.Slice(0x2C, 2),
+            DungeonNavigationPolicy.EncodeDifficultySelector(selection.Difficulty, superBoss: false));
         return TryResolveNativeDungeonTransition(pending.Selection.Dungeon, pending.Selection.Stage,
                 pending.Selection.Difficulty, pending.Request, response, out var dungeon, out var stage, out var difficulty,
                 pending.Selection.HdIndex, pending.Selection.Episode)

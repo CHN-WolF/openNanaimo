@@ -115,8 +115,8 @@ internal static partial class Program
                     scene + " recovery does not rebuild quickbar protection arrays");
             }
             if (opcode == 0xC43D)
-                Check(frames.Single(row => row.Op == 0xC43F).Bytes.AsSpan(8).IndexOfAnyExcept((byte)0) < 0,
-                    scene + " inventory completion does not duplicate actor recovery");
+                Check(frames.All(row => row.Op != 0xC43F),
+                    scene + " no town C43F can block dungeon recovery or continuation");
         }
         Check(CoupleNoticesFor(source, f.Third).Length == 0 && Character(f.Third).CurrentHp == 100, scene + " ordinary teammate untouched");
         var repeated = await Dispatch(f, source, opcode, request);

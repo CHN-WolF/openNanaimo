@@ -228,6 +228,7 @@ internal static partial class Program
                 var request = NativeDungeonClient.Frame(0xCF8B, new byte[] { (byte)(round == 3 ? 1 : 0), 0, (byte)(round == 3 ? 1 : 2), 0 });
                 var response = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
                 response[0x2E] = Math.Min(round, (byte)2); response[0x28] = (byte)(round == 3 ? 1 : 0);
+                response[0x2C] = 2;
                 var before = (long)Get(member, "NativeSettlementCycle")!;
                 Check(Call<Array>(service, "ArmNativePartyContinuation", owner, request).Length == 1, "room continuation arms member");
                 var preclear = NativeDungeonClient.Frame(0xCF6D, new byte[36]); Put16(preclear, 8, 10);
@@ -256,6 +257,49 @@ internal static partial class Program
                     "each continued member battle commits one fresh award");
                 Set(member, "NativeBattleResources", ((BattleResourceSnapshot)Get(member, "NativeBattleResources")!) with { SettlementFrozen = true });
             }
+            foreach (byte logical in new byte[] { 0, 1, 2 })
+            foreach (var ownerFirst in new[] { false, true })
+            foreach (byte mode in new byte[] { 1, 2 })
+            {
+                if (mode == 2 && logical == 0) continue;
+                foreach (var session in new[] { owner, member })
+                {
+                    Set(session, "NativeDungeonDungeon", (byte)2);
+                    Set(session, "NativeDungeonStage", mode == 1 ? (byte)0 : (byte)1);
+                    Set(session, "NativeDungeonLogicalDifficulty", logical);
+                    Set(session, "NativeDungeonSettlementAwaitingAction", true);
+                }
+                byte targetStage = mode == 1 ? (byte)1 : (byte)0;
+                byte targetDungeon = mode == 1 ? (byte)2 : (byte)0;
+                byte targetLogical = mode == 1 ? logical : (byte)((logical + 1) % 3);
+                var request = NativeDungeonClient.Frame(0xCF8B, [targetStage, 0, mode, 0]);
+                var response = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
+                response[0x28] = targetStage; response[0x2E] = targetDungeon;
+                response[0x2C] = DungeonNavigationPolicy.EncodeDifficultySelector(targetLogical, superBoss: false);
+                var before = (long)Get(member, "NativeSettlementCycle")!;
+                Check(Call<Array>(service, "ArmNativePartyContinuation", owner, request).Length == 1,
+                    $"difficulty {logical} mode {mode} ownerFirst={ownerFirst} arms peer");
+                if (ownerFirst)
+                {
+                    Set(owner, "NativeDungeonDungeon", targetDungeon);
+                    Set(owner, "NativeDungeonStage", targetStage);
+                    Set(owner, "NativeDungeonLogicalDifficulty", targetLogical);
+                }
+                Call<object?>(service, "ObserveNativePartyContinuation", member, response);
+                Check((long)Get(member, "NativeSettlementCycle")! == before + 1
+                    && (byte)Get(member, "NativeDungeonDungeon")! == targetDungeon
+                    && (byte)Get(member, "NativeDungeonStage")! == targetStage
+                    && (byte)Get(member, "NativeDungeonLogicalDifficulty")! == targetLogical,
+                    $"difficulty {logical} mode {mode} ownerFirst={ownerFirst} preserves peer authorization");
+                Call<object?>(service, "ObserveNativePartyContinuation", member, response);
+                Check((long)Get(member, "NativeSettlementCycle")! == before + 1, "difficulty peer duplicate is idempotent");
+            }
+            foreach (var session in new[] { owner, member })
+            {
+                Set(session, "NativeDungeonDungeon", (byte)2);
+                Set(session, "NativeDungeonStage", (byte)1);
+                Set(session, "NativeDungeonLogicalDifficulty", (byte)0);
+            }
             Set(owner, "NativeDungeonSettlementAwaitingAction", true);
             Set(member, "NativeDungeonSettlementAwaitingAction", true);
             Set(member, "NativeDungeonDeathLatched", true);
@@ -263,7 +307,7 @@ internal static partial class Program
                 with { CurrentHp = 0, CurrentMp = 37, SettlementFrozen = true });
             var deathRetry = NativeDungeonClient.Frame(0xCF8B, [1, 0, 1, 0]);
             var deathReset = NativeDungeonClient.Frame(0xCF8C, new byte[40]);
-            deathReset[0x28] = 1; deathReset[0x2E] = 2;
+            deathReset[0x28] = 1; deathReset[0x2E] = 2; deathReset[0x2C] = 2;
             Check(Call<Array>(service, "ArmNativePartyContinuation", owner, deathRetry).Length == 1,
                 "death retry arms the defeated teammate once");
             Call<object?>(service, "ObserveNativePartyContinuation", member, deathReset);

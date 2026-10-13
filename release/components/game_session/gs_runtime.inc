@@ -1180,10 +1180,10 @@ shop_catalogs_send_boss_result(c,&boss_result,score_ctx.total,&boss_final_retire
                         int failed_result=injury_dead || combat_hp==0u;
                         int death_retry=failed_result && settlement_sent && reset_mode==1u
                             && (reset_real==current_stage_index || (current_stage_index==1u && reset_real==0u));
-                        /* Super-Boss selectors are logical 0/1/2. The next normal
-                           middle/high selectors are 0/1: the numeric WORD stays
-                           equal, but dungeon/stage and logical difficulty change. */
-                        if(!failed_result&&next_difficulty_request&&reset_real==0u&&current_difficulty<2u
+                        /* The client orders application selectors 0 -> 1 -> 2.
+                           Super-Boss resource/persistence indexes are rotated
+                           1 -> 2 -> 0, so index 2 is not the final difficulty. */
+                        if(!failed_result&&next_difficulty_request&&reset_real==0u&&current_difficulty>0u&&current_difficulty<=2u
                             &&shop_catalogs_next_dungeon_exists(current_hd,current_stage,0u,current_difficulty)){
                             next_dungeon=0u;effective_real=0u;reset_show=0u;advance_dungeon=advance_difficulty=1;
                         }
@@ -1233,7 +1233,14 @@ shop_catalogs_send_boss_result(c,&boss_result,score_ctx.total,&boss_final_retire
                             }
 #endif
                             teamplay_continuation_arm_room(effective_real,reset_show,current_difficulty,current_dungeon,reset_mode);
-                            sleep(0); multiplayer_broadcast_reset(effective_real,reset_show,current_difficulty,current_dungeon);
+                            /* CF8C writes the client application difficulty and
+                               its change-dialog flag, not the SMMO selector.
+                               Preserve the source client value on a challenge. */
+                            {unsigned client_difficulty=current_difficulty;
+                             if(current_dungeon==2u&&effective_real==1u&&current_difficulty<=2u
+                                 &&!(current_hd==0u&&current_stage==100u))
+                                 client_difficulty=(current_difficulty+2u)%3u;
+                             sleep(0); multiplayer_broadcast_reset(effective_real,reset_show,current_difficulty,current_dungeon,client_difficulty);}
                         } else {
                             printf("  [GS %d] GOT CF8B reset unsupported mode=%u -> no response\n",port,reset_mode); fflush(0);
                         }

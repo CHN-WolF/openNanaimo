@@ -5,7 +5,11 @@
       "page": 27,
       "position": [
         293,
-        157
+        189
+      ],
+      "sort_position": [
+        293,
+        215
       ],
       "village": 0
     },
@@ -16,14 +20,22 @@
         282,
         425
       ],
+      "sort_position": [
+        282,
+        451
+      ],
       "village": 1
     },
     {
       "episode": 26,
       "page": 12,
       "position": [
-        127,
-        416
+        223,
+        376
+      ],
+      "sort_position": [
+        223,
+        402
       ],
       "village": 2
     },
@@ -34,6 +46,10 @@
         186,
         255
       ],
+      "sort_position": [
+        186,
+        281
+      ],
       "village": 3
     }
   ],
@@ -41,12 +57,72 @@
   "files": [
     {
       "path": "Village_map_image/Village_map_image.pack",
-      "sha256": "e26786b339e2cfd1419033db4db5960c298591cfecbc894eae73e324227a35d9",
+      "sha256": "c9a59784cefab3b5fe1a070ff12e9f68ad7c7b59222f067bacba424e24a5b9d9",
       "size": 17030197
     },
     {
+      "path": "effs/interface/NPC_62.im3",
+      "sha256": "5ad451515bce05c4f6a48a3b68b01d7858ecd9fc97a8af6a5f7abfabb62737df",
+      "size": 69312
+    },
+    {
+      "path": "effs/interface/NPC_62_0.eff",
+      "sha256": "6fef2fc635936ad93058769f0ac5c54a77a42a616d93d35449e18c6eb58d8c61",
+      "size": 2024
+    },
+    {
+      "path": "effs/interface/NPC_62_b.im3",
+      "sha256": "ef21951961589753da071adec1db294e2c900550e340ab62b6c0e2965be7f8d5",
+      "size": 65948
+    },
+    {
+      "path": "effs/interface/NPC_63.im3",
+      "sha256": "910dbbd99b630a8d799179fab0a9f9e1b7d3f22b09bd0a29f30767ae4d4ee28b",
+      "size": 69312
+    },
+    {
+      "path": "effs/interface/NPC_63_0.eff",
+      "sha256": "d5e1037f67f48f7f591db3b58f8f3ff6d9cef008ca0315686e9930e7d8304a2b",
+      "size": 2024
+    },
+    {
+      "path": "effs/interface/NPC_63_b.im3",
+      "sha256": "fb26676cc0ff2233213e8334980843c5034c2dbe2fdafed32eac5e618eae64c2",
+      "size": 65948
+    },
+    {
+      "path": "effs/interface/NPC_64.im3",
+      "sha256": "1230399f97e2bdecda7cff15f1f1320587da9af3db7311f3f78a0792c49bd53d",
+      "size": 69312
+    },
+    {
+      "path": "effs/interface/NPC_64_0.eff",
+      "sha256": "49612519548c1ecc7d0012c60e336e854e00a5e4b1f73f6e252d069d93bf8ca1",
+      "size": 2024
+    },
+    {
+      "path": "effs/interface/NPC_64_b.im3",
+      "sha256": "d81d54bd4b9549d5e37349ef4e2802379b1b8193ec48254c0567e06497507167",
+      "size": 65948
+    },
+    {
+      "path": "effs/interface/NPC_65.im3",
+      "sha256": "efd53a5c026492a054b6276cbe04eb0910ab2f5958e56e7442a71af2a873cac9",
+      "size": 69312
+    },
+    {
+      "path": "effs/interface/NPC_65_0.eff",
+      "sha256": "7b6d34efd4e6d92712641de7bb7f49612c10e25ef92042fe13e49a1bc1e34c68",
+      "size": 2024
+    },
+    {
+      "path": "effs/interface/NPC_65_b.im3",
+      "sha256": "d8f1962f901022d91a0cc0c7c248f4ae13013f58b5f92a11fecead0ac5ab4c3b",
+      "size": 65948
+    },
+    {
       "path": "effs/village/openNanaimo_monk01.eff",
-      "sha256": "8e7f2b47a677866db3792d5a406b5cdaec805e7189d1fcf73da41c9b42449719",
+      "sha256": "6d6957f894bcac49761aa960e220a28eb967606b57d81294cdebbaf8c7174a07",
       "size": 1688
     },
     {
@@ -56,7 +132,7 @@
     },
     {
       "path": "effs/village/openNanaimo_monk02.eff",
-      "sha256": "07f9b19cbf0dac67726de2d9dc383d63f9b6087c9998a61e2fa86ac2bd5d07d3",
+      "sha256": "de094390ba9231b3a94b7df23adc2f21a2ae04f1e766dcb39e67c215df05e63c",
       "size": 1688
     },
     {
@@ -66,7 +142,7 @@
     },
     {
       "path": "effs/village/openNanaimo_monk03.eff",
-      "sha256": "622c087a664501fce9a8005e11b69154a2060beb5d3cdf868e19ee085201c94a",
+      "sha256": "58b4b0c778b76052bfdf3d1c49e451ec0a6049b8d7bbce4a29fd78f558a81858",
       "size": 1688
     },
     {
@@ -76,7 +152,7 @@
     },
     {
       "path": "effs/village/openNanaimo_monk04.eff",
-      "sha256": "04c60e6db611bc7f875d7c700a3080f37da8a6317073a3e1e83321fae943e938",
+      "sha256": "79448bf10c9eec475c86dbbf20ac5d8e137b64cf154cea25ee7603b91e5c69c1",
       "size": 1688
     },
     {
@@ -86,16 +162,83 @@
     },
     {
       "path": "effs/village/openNanaimo_monk_name.im3",
-      "sha256": "8a478138a363aad08142c71563cd15d8dc78f3cd451cee4bbc131dce5ede6074",
-      "size": 1418
+      "sha256": "853e9b864fc52aa548065a584b8a556f72becc0bbec2e4d603510dc5000dbdfc",
+      "size": 1574
     },
     {
       "path": "effs/village/openNanaimo_monk_shadow.im3",
       "sha256": "4d01cbcfde625af5a6498e102d818b3bc2eef988254a08e012de149d3d7bcd1a",
       "size": 1342
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/dg_intro_hd0_ep25.im3",
+      "sha256": "cf5aae8bf45777c43b79c858efedf47cde64f6efcbc6afc14523cdd71955b256",
+      "size": 964844
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/dg_intro_hd0_ep26.im3",
+      "sha256": "3b7c1261722e817611091f7c0fc7f37cd5d4090e42f1e855872cc24be81be963",
+      "size": 964844
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/dg_intro_hd0_ep27.im3",
+      "sha256": "ed1a6b6153a09598854f47077e92d9af5d7083bf8edd8ec1e066f59f4d6fc76b",
+      "size": 964844
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/dg_intro_hd0_ep28.im3",
+      "sha256": "5bd7679f8bcae83e84080855db1abd2f444fde32e577472e2572875e43a023c2",
+      "size": 964844
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/ssky_hd0_ep24_preview.im3",
+      "sha256": "bb099a5251bdb56e77534a768b0d1677d614f1e5949213fd32b011b0f9f2b0f5",
+      "size": 60076
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/ssky_hd0_ep25_preview.im3",
+      "sha256": "5af3325b390a9494e9c63ffc37cdebdc85c4e7e2936ec605d01ba5bafa39a51c",
+      "size": 60076
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/ssky_hd0_ep26_preview.im3",
+      "sha256": "29cb2657aaae71d91df852976c1da6b80d5612eabdfbb5048dda2067fb829491",
+      "size": 60076
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/ssky_hd0_ep27_preview.im3",
+      "sha256": "8df58e8f26833910e506d57d31345af6469aa65a9eeb75a61c85f97b28d758a7",
+      "size": 60076
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/ssky_mappreview_hd0_ep24_dg00_st00.im3",
+      "sha256": "8db1f0fae10b1b81675dab2cc401dd8a2d5c78253c8ae1eb08435c32c7cab7dd",
+      "size": 42768
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/ssky_mappreview_hd0_ep25_dg00_st00.im3",
+      "sha256": "7302293457cebd8c10412810b079243bd80d1de4b21941561600ba00d829243a",
+      "size": 42768
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/ssky_mappreview_hd0_ep26_dg00_st00.im3",
+      "sha256": "163e541c2cf6c5161589390f35d7d63162dd8421a7745cc23bef7b1f22eabd63",
+      "size": 42768
+    },
+    {
+      "path": "images/interface_images/shootingsky_inter_image/ssky_mappreview_hd0_ep27_dg00_st00.im3",
+      "sha256": "8db1f0fae10b1b81675dab2cc401dd8a2d5c78253c8ae1eb08435c32c7cab7dd",
+      "size": 42768
     }
   ],
   "localization_sha256": "61071c053881300802170c2d8331df89f587f255c1cdfe914076ff04de136dca",
+  "parent_files": {
+    "Village_map_image/Village_map_image.pack": "7dc3ace5d8837ddccdc47073cba8c174bcf1a5866f1a983fb38b1e1eb5d1ee42",
+    "effs/village/openNanaimo_monk01.eff": "8e7f2b47a677866db3792d5a406b5cdaec805e7189d1fcf73da41c9b42449719",
+    "effs/village/openNanaimo_monk01.im3": "ada8693fa911bf02f437f6a1285d23b26471bd516460e2758f2d87dbc1de5825",
+    "effs/village/openNanaimo_monk_name.im3": "8a478138a363aad08142c71563cd15d8dc78f3cd451cee4bbc131dce5ede6074",
+    "effs/village/openNanaimo_monk_shadow.im3": "4d01cbcfde625af5a6498e102d818b3bc2eef988254a08e012de149d3d7bcd1a"
+  },
   "parent_pack_sha256": "7dc3ace5d8837ddccdc47073cba8c174bcf1a5866f1a983fb38b1e1eb5d1ee42",
   "runtime_acceptance": false,
   "schema": "openNanaimo.monk-dialogue.v1"
