@@ -2,9 +2,13 @@
 
 使用 C# 兼容工具时须在应用前独立保存每个待改源文件的大小与 SHA-256：C# 报告不含 `before_sha256` 与 `backup`，Python 报告直接提供这些字段；两类报告的字段差异见[两类工具报告的差异](../../工程/客户端兼容/自动兼容清单.md#两类工具报告的差异)。通用预检、应用与恢复步骤见[统一安装与恢复](统一安装与恢复.md#df-12-011)。
 
+## 作用与范围
+
+维护`boss_terminal_effect_guard`位点（VA `0x006CD78F`的13字节比较／分支窗口）在`--dungeon-state`下的精确修改、资源依赖、安装与恢复约定；退场动画、对象状态推进与资源播放的业务规则归[BOSS](../../业务/地宫/BOSS/组件与零生命附件.md#kb-06-021)。
+
 ## BOSS终局退场效果
 
-`boss_terminal_effect_guard`随`--dungeon-state`应用，保护已完成退场动画的对象不再重复创建死亡效果。业务规则归[BOSS](../../业务/地宫/BOSS/组件与零生命附件.md#kb-06-021)，本节维护修改、资源依赖、安装和恢复约定。
+`boss_terminal_effect_guard`随`--dungeon-state`应用，保护已完成退场动画的对象不再重复创建死亡效果。
 
 | 位点 | 精确原值 | 当前目标值 |
 |---|---|---|
@@ -12,7 +16,15 @@
 
 文件长度不变，实际只更新VA `0x006CD797`的一字节；接受完整原窗口或完整目标窗口，比较指令、分支位移及其它未知字节不匹配时拒绝。首次退场、对象状态推进和资源播放入口保持原有调用约定。运行中的旧客户端退出后，由启动器重新派生客户端副本。
 
-资源依赖使用目标客户端现有资源目录，包含一村地宫3的`ani_mon_um_03_02_L.mmo`、`ani_mon_um_03_02_M.mmo`、`ep03_st03_e_gate.mmo`、`ep03_st03_e_gate_00_L.mmo`、`ep03_st03_e_gate_00_M.mmo`、`ep03_st03_e_gate_mon_23_L.mmo`、`ep03_st03_e_gate_mon_23_M.mmo`及其已登记的`fly_mon_m_burst.wav`、`fly_mon_mb_burst.wav`音频资源。补丁沿用这些资源的现有身份，不需要另行导入资源包。
+资源依赖使用目标客户端现有资源目录，补丁沿用这些资源的现有身份，不需要另行导入资源包：
+
+| 资源 | 用途 |
+|---|---|
+| `ani_mon_um_03_02_L.mmo`、`ani_mon_um_03_02_M.mmo` | 一村地宫3-1的三喷火部件（资源元组`hd0/ep2/dg0/st0`） |
+| `ep03_st03_e_gate.mmo` | child0门框本体，仅ordinal0、type4、原始HP0 |
+| `ep03_st03_e_gate_00_L.mmo`、`ep03_st03_e_gate_00_M.mmo` | child1门体，两个正HP type3发射部件及两个零HP附件 |
+| `ep03_st03_e_gate_mon_23_L.mmo`、`ep03_st03_e_gate_mon_23_M.mmo` | child2召唤怪，三个正HP type2召唤怪 |
+| `fly_mon_m_burst.wav`、`fly_mon_mb_burst.wav` | 零HP type4附件与正HP本体各自绑定的叠加爆破音效 |
 
 安装步骤：
 

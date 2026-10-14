@@ -53,10 +53,10 @@ ep>=16 的 CF8C 分支使用显式副本设置器；父级普通查找与BOSS查
 
 - 请求构造器0x708760 写入CF8B/12；模式1发送器0x6EA920 写入实际/显示BYTE+8/+9和模式WORD+0xA=1，并通过0x40A821发送。响应分派器0x6EBAC0 的case53132是0x6FBD28..0x6FBF61。现有的应用程序+7/CF99门控条件保持有效；提供的失败遵循正常的重新加载分支。
 - 正常分支CF8C的0x6FBE66..0x6FBF5C部分通过0x4013A7 ->0x708D40（manager+0x1E540）分别写入实际阶段、难度和关卡。
-- 在0x6FBEEA处，0x418499 ->0x6772B0读取资源episode+0x1E534；在0x6FBEEF处进行比较，16与0x6FBEF2处跳转至0x6FBF22，当关卡>=16时执行。
-- 只有关卡<16时，在0x6FBEFA/+0x6FBF11处读取WORD+0x2E，并调用0x408CAB ->0x708D20（resource dungeon+0x1E538）和0x41B8B0 ->0x708DA0（wire dungeon+0x1E54C）。
-- 因此，关卡22重置忽略了响应关卡字段。
-- A55-case隔离的本地-x86执行仅使用一个单例419BBE钩子，并执行实际获取/比较/设置操作；它保留了字段0/1/6/255/65535和关卡0/15/16..23/100的边界。
+- 在0x6FBEEA处，0x418499 ->0x6772B0读取资源episode+0x1E534；在0x6FBEEF处进行比较，16与0x6FBEF2处跳转至0x6FBF22，当资源episode（ep）>=16时执行。
+- 只有资源episode（ep）<16时，在0x6FBEFA/+0x6FBF11处读取WORD+0x2E，并调用0x408CAB ->0x708D20（resource dungeon+0x1E538）和0x41B8B0 ->0x708DA0（wire dungeon+0x1E54C）。
+- 因此，资源episode（ep）22的重置忽略了响应中的副本（dungeon）字段。
+- A55-case隔离的本地-x86执行仅使用一个单例419BBE钩子，并执行实际获取/比较/设置操作；它保留了字段0/1/6/255/65535和资源episode（ep）0/15/16..23/100的边界。
 - 这不是完整的客户端运行。
 
 - 0x66EC30 将资源获取器格式化为 `hd%d_ep%02d_dg%02d_st%02d.sstg`；0x41F2D5 ->0x69BAD0 在 `flying/` 下打开，测试流的 `is_open` 通过 0x40763F ->0x43E0E0 ->0x40752C ->0x4414B0 (filebuf+0x4C 非零)，并在成功分支内进行解析。
