@@ -31,6 +31,12 @@ DEPENDENCIES = {
 # Topic subdirectories are allowed only by this explicit reviewed path list.
 # Exact path/hash review and the existing private/asset rejection still apply.
 KNOWLEDGE_TOPIC_DIRECTORIES = {
+    'knowledge/业务/DIY',
+    'knowledge/业务/DIY/子弹',
+    'knowledge/业务/DIY/NPC',
+    'knowledge/业务/DIY/地宫',
+    'knowledge/工程/子弹DIY兼容',
+    'knowledge/指南/客户端二进制补丁/修道僧四村对白安装',
     'knowledge/业务/住宅/家具',
     'knowledge/业务/住宅/房屋归属',
     'knowledge/业务/卡片/兑换',
@@ -75,7 +81,6 @@ KNOWLEDGE_TOPIC_DIRECTORIES = {
     'knowledge/工程/地宫资源兼容',
     'knowledge/工程/客户端兼容',
     'knowledge/工程/构建发布',
-    'knowledge/工程/知识审查',
     'knowledge/工程/资源安装',
     'knowledge/工程/验证状态',
     'knowledge/指南/客户端二进制补丁',

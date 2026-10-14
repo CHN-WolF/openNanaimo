@@ -151,6 +151,12 @@ class ExportPatchTests(unittest.TestCase):
             "knowledge/工程/历史验证/既有记录.md": "# 既有记录\n",
             "knowledge/指南/文件清单与导出工具.md": "# 导出指南\n",
             "knowledge/指南/level200/README.md": "# 桥接操作\n",
+            "knowledge/业务/DIY/索引.md": "# DIY专题\n",
+            "knowledge/业务/DIY/子弹/索引.md": "# 子弹DIY\n",
+            "knowledge/业务/DIY/NPC/索引.md": "# NPC DIY\n",
+            "knowledge/业务/DIY/地宫/索引.md": "# 地宫DIY\n",
+            "knowledge/工程/子弹DIY兼容/配置生命周期.md": "# 子弹配置\n",
+            "knowledge/指南/客户端二进制补丁/修道僧四村对白安装/安装与恢复.md": "# 四村安装\n",
         }
         for name, text in expected.items():
             self.add(name, "knowledge", text.encode("utf-8"))
@@ -176,6 +182,11 @@ class ExportPatchTests(unittest.TestCase):
                      "knowledge/指南/规则.json",
                      "knowledge/基础/子目录/规则.md",
                      "knowledge/工程/其他目录/规则.md",
+                     "knowledge/工程/知识审查/过程稿.md",
+                     "knowledge/业务/DIY/未知专题/规则.md",
+                     "knowledge/业务/DIY/NPC/额外目录/规则.md",
+                     "knowledge/工程/子弹DIY兼容/额外目录/规则.md",
+                     "knowledge/指南/客户端二进制补丁/修道僧四村对白安装/资源.png",
                      "knowledge/业务/宠物/外观.png",
                      "knowledge/历史验证/记录.md"):
             with self.subTest(path=name), self.assertRaises(patch.ExportError):

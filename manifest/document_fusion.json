@@ -819,7 +819,7 @@
       "start": 107,
       "end": 341,
       "source_sha256": "72171daba47a11854aae18c0ff964625069f04b26255a4627e2a8ad466810ae9",
-      "target": "knowledge/工程/子弹DIY兼容.md",
+      "target": "knowledge/工程/子弹DIY兼容/配置生命周期.md",
       "initial_target": "knowledge/指南/子弹DIY与篮球试玩.md",
       "initial_sha256": "72171daba47a11854aae18c0ff964625069f04b26255a4627e2a8ad466810ae9",
       "content_sha256": "72171daba47a11854aae18c0ff964625069f04b26255a4627e2a8ad466810ae9"
@@ -830,7 +830,7 @@
       "start": 341,
       "end": 677,
       "source_sha256": "19985e1014a84b361334a970595aa8f9c9d0e556da225e9e6e827c4d6c91e4b0",
-      "target": "knowledge/工程/子弹DIY兼容.md",
+      "target": "knowledge/工程/子弹DIY兼容/篮球资源.md",
       "initial_target": "knowledge/指南/子弹DIY与篮球试玩.md",
       "initial_sha256": "19985e1014a84b361334a970595aa8f9c9d0e556da225e9e6e827c4d6c91e4b0",
       "content_sha256": "19985e1014a84b361334a970595aa8f9c9d0e556da225e9e6e827c4d6c91e4b0"
@@ -1134,7 +1134,7 @@
       "start": 40759,
       "end": 44009,
       "source_sha256": "f0c6f422e13b033edeea1989c5ba9532657b17d2ec83dea8db5944ee08ce40cc",
-      "target": "knowledge/工程/子弹DIY兼容.md",
+      "target": "knowledge/工程/子弹DIY兼容/位点与安装.md",
       "initial_target": "knowledge/指南/完整适配器与客户端兼容说明.md",
       "initial_sha256": "f0c6f422e13b033edeea1989c5ba9532657b17d2ec83dea8db5944ee08ce40cc",
       "content_sha256": "f0c6f422e13b033edeea1989c5ba9532657b17d2ec83dea8db5944ee08ce40cc"

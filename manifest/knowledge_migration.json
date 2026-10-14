@@ -4065,7 +4065,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 52873,
       "end": 53086,
-      "target": "knowledge/业务/库存/消耗品/食物与通用使用.md",
+      "target": "knowledge/业务/库存/消耗品/通用物品与券类使用.md",
       "title": "游戏道具使用与结算",
       "original_sha256": "643b1aba553dd1329bf3f9b12b8054a8298f31995452e28e00ece3f8b9b7aa0b",
       "migrated_sha256": "72da110d5a4dc5c94743e94f1933e6b0daab8c8b416d455d94a552835e565186"
@@ -4098,7 +4098,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 48288,
       "end": 48694,
-      "target": "knowledge/业务/库存/消耗品/食物与通用使用.md",
+      "target": "knowledge/业务/库存/消耗品/通用物品与券类使用.md",
       "title": "背包、宠物、商店和快捷栏",
       "original_sha256": "7a881f0145444630ad00d8173a7cab29f45bb3766babb55cb3d05ff764a070d8",
       "migrated_sha256": "7a881f0145444630ad00d8173a7cab29f45bb3766babb55cb3d05ff764a070d8"
@@ -4131,7 +4131,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 54396,
       "end": 55700,
-      "target": "knowledge/业务/库存/消耗品/食物与通用使用.md",
+      "target": "knowledge/业务/库存/消耗品/通用物品与券类使用.md",
       "title": "卡牌合成、密钥和学习行门控条件 / 整页组合的独立册页元组",
       "original_sha256": "22a7b9bd0a54c126081684b9da738e8f014d787abec72a7f8c5c00f5711a24ab",
       "migrated_sha256": "1a64466274887100ef686d85c897fc312dec2179a0848cea5f152d3e64d66e7d"
@@ -4164,7 +4164,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 59271,
       "end": 59371,
-      "target": "knowledge/业务/库存/消耗品/食物与通用使用.md",
+      "target": "knowledge/业务/库存/消耗品/通用物品与券类使用.md",
       "title": "卡牌合成、密钥和学习行门控条件 / 整页组合的独立册页元组",
       "original_sha256": "ea043099e704c691d5b522b66dba27801a22e07330b1d1542f7952d98139fba5",
       "migrated_sha256": "ce8a549d8de6b2ce95d979c0e690fdca9862194f99570179faba593f24882c20"
@@ -4340,7 +4340,7 @@
       "source": "knowledge/authority/03-角色资料与背包.md",
       "start": 56111,
       "end": 56488,
-      "target": "knowledge/业务/库存/物品实例/搬运丢弃与刷新.md",
+      "target": "knowledge/业务/库存/物品实例/新增提示与奖励同步.md",
       "title": "库存新增提示与奖励实例同步",
       "original_sha256": "61cbda17601fe7986164d3eb04779f93f294dd6d3326c67a39c9449ccf3768e4",
       "migrated_sha256": "151f1846380700803c214f39f2358018e76fcaef3ed2f3167c18e5336d4480f2"
@@ -4450,7 +4450,7 @@
       "source": "knowledge/authority/08-静态地址与调用链.md",
       "start": 131151,
       "end": 131344,
-      "target": "knowledge/业务/库存/物品实例/搬运丢弃与刷新.md",
+      "target": "knowledge/业务/库存/物品实例/新增提示与奖励同步.md",
       "title": "库存提示、SP完成与首领血条",
       "original_sha256": "36a57c157e7f82388dcd5c44a783249863c3cb85d957215a2ef9e3e550dbdbb5",
       "migrated_sha256": "36a57c157e7f82388dcd5c44a783249863c3cb85d957215a2ef9e3e550dbdbb5"
