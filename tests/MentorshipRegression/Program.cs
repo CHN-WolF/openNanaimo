@@ -38,6 +38,19 @@ internal static partial class Program
     private static async Task Main(string[] args)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        if (args.Contains("--mentorship-boundaries-only"))
+        {
+            await CheckGraduationProjectionAsync();
+            await CheckAdvertisementApplicationsAsync();
+            Console.WriteLine($"MENTORSHIP_BOUNDARIES_PASS checks={_checks}");
+            return;
+        }
+        if (args.Contains("--advertisement-boundaries-only"))
+        {
+            await CheckAdvertisementApplicationsAsync();
+            Console.WriteLine($"ADVERTISEMENT_BOUNDARIES_PASS checks={_checks}");
+            return;
+        }
         if (args.Contains("--ready-room-only"))
         {
             await CheckReadyRoomInventoryAsync();
@@ -73,6 +86,8 @@ internal static partial class Program
                         Console.WriteLine($"COURSE_RESOURCE {quest.QuestId} {objective.ObjectiveId} {objective.Name} {episode}/{dungeonBit}/{pet}");
             return;
         }
+        await CheckGraduationProjectionAsync();
+        await CheckAdvertisementApplicationsAsync();
         await CheckNativeMentorshipAsync();
         await CheckEntertainmentLobbyAsync();
         await CheckProductionMentorshipAsync();

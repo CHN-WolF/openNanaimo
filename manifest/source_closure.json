@@ -1088,8 +1088,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.NativeMentorship.cs",
-      "size": 10430,
-      "sha256": "C1F9585DE3E86E6475987E4327E3B110A95438C37A8E42C8B6E1FCF9679622F6"
+      "size": 12374,
+      "sha256": "9C0B089643EF013E2E319ED065A3DF5008C94EB058B44B8E2C78E99F08609651"
     },
     {
       "path": "managed/Services/NetworkAdapterService.NativePartyContinuation.cs",

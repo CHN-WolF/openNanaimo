@@ -3,6 +3,27 @@
     try{return [BitConverter]::ToString($hash.ComputeHash([Text.Encoding]::UTF8.GetBytes($Text))).Replace('-','').ToLowerInvariant()}
     finally{$hash.Dispose()}
 }
+function Assert-LumineosInstalledOverlay([string]$SourceRoot){
+    # Use normal launch's embedded recipes, not a receipt-only waiver.
+    $tool=Join-Path (Split-Path -Parent $PSScriptRoot) 'adapter_runtime/Nanaimo.Adapter.exe'
+    if(-not(Test-Path -LiteralPath $tool -PathType Leaf)){throw 'L7/L8 overlay verifier is missing.'}
+    try{$result=& $tool --tools verify-resources --kind lumineos --client-root $SourceRoot 2>&1}
+    catch{throw ('L7/L8 source overlay verification failed: '+$_.Exception.Message)}
+    if($LASTEXITCODE-ne0){throw ('L7/L8 source overlay verification failed: '+($result -join ' '))}
+}
+function Assert-LumineosResourcePair([string]$SourceRoot,[string]$WorkRoot,[object]$Row){
+    $relative=[string]$Row.path
+    if([string]::IsNullOrWhiteSpace($relative)-or$relative.Contains('\')-or$relative.Contains(':')-or$relative.StartsWith('/')-or$relative-match'(^|/)(\.|\.\.|)(/|$)'-or[string]$Row.sha256-notmatch'^[0-9a-f]{64}$'){
+        throw 'Unsafe L7/L8 manifest entry.'
+    }
+    foreach($root in @($SourceRoot,$WorkRoot)){
+        $path=Join-Path $root $relative
+        Assert-ChildPath $root $path
+        if(-not(Test-Path -LiteralPath $path -PathType Leaf)-or(Get-Sha256 $path)-ne[string]$Row.sha256){
+            throw ('L7/L8 resource version mismatch; rebuild copied client before launch: '+$path)
+        }
+    }
+}
 # Called under the existing social slot lock, before launching any client.
 # Resources are usually directory links; a copied fallback must have exactly
 # the same overlay, otherwise fail closed instead of running mixed versions.
@@ -46,6 +67,8 @@ function Sync-LumineosResourceIdentity([string]$SourceRoot,[string]$WorkRoot,[st
     }
     # A shared ep22 image may occur in both the overlay and preservation list.
     # Both digests are checked below; duplicate entries within either list fail.
+    $overlay=$null
+    $overlayMarkers=@()
     foreach($row in @($manifest.files)+@($manifest.preserve_l7_combat)){
         $relative=[string]$row.path
         if([string]::IsNullOrWhiteSpace($relative)-or$relative.Contains('\')-or$relative.Contains(':')-or$relative.StartsWith('/')-or$relative-match'(^|/)(\.|\.\.|)(/|$)'-or[string]$row.sha256-notmatch'^[0-9a-f]{64}$'){
@@ -55,13 +78,42 @@ function Sync-LumineosResourceIdentity([string]$SourceRoot,[string]$WorkRoot,[st
         $prepared=Join-Path $WorkRoot $relative
         Assert-ChildPath $SourceRoot $original
         Assert-ChildPath $WorkRoot $prepared
-        foreach($path in @($original,$prepared)){
-            if(-not(Test-Path -LiteralPath $path -PathType Leaf)-or(Get-Sha256 $path)-ne[string]$row.sha256){
-                throw "L7/L8 resource version mismatch; rebuild copied client before launch: $path"
+        $expected=$row
+        if((Get-OptionalFileHash $original)-ne[string]$row.sha256-and(Test-Path -LiteralPath (Join-Path $SourceRoot '.openNanaimo-monk-dialogue.json') -PathType Leaf)){
+            if($null-eq$overlay){
+                $overlay=@{}
+                foreach($markerName in @('.openNanaimo-monk-dialogue.json','.openNanaimo-monk-challenges.json')){
+                    $markerSource=Join-Path $SourceRoot $markerName
+                    $markerTarget=Join-Path $WorkRoot $markerName
+                    Assert-ChildPath $CacheRoot $markerTarget
+                    foreach($markerPath in @($markerSource,$markerTarget)){
+                        Assert-NoReparseAncestors (Split-Path -Parent $markerPath)
+                        if(Test-ReparsePoint $markerPath){throw ('L7/L8 overlay receipt cannot be a reparse point: '+$markerPath)}
+                        if((Test-Path -LiteralPath $markerPath)-and-not(Test-Path -LiteralPath $markerPath -PathType Leaf)){throw ('L7/L8 overlay receipt is not a file: '+$markerPath)}
+                    }
+                    $bytes=[IO.File]::ReadAllBytes($markerSource)
+                    $receipt=[Text.Encoding]::UTF8.GetString($bytes)|ConvertFrom-Json
+                    $overlayMarkers+=@{Source=$markerSource;Target=$markerTarget;Bytes=$bytes;Hash=(Get-Sha256 $markerSource)}
+                    foreach($resource in @($receipt.files)){
+                        if($overlay.ContainsKey([string]$resource.path)-and$overlay[[string]$resource.path].sha256-ne$resource.sha256){throw 'Conflicting L7/L8 overlay resources.'}
+                        $overlay[[string]$resource.path]=$resource
+                    }
+                }
+                Assert-LumineosInstalledOverlay $SourceRoot
+                # Includes root-level copied catalogs, not only linked village images.
+                foreach($resource in $overlay.Values){Assert-LumineosResourcePair $SourceRoot $WorkRoot $resource}
             }
+            if($overlay.ContainsKey($relative)){$expected=$overlay[$relative]}
         }
+        Assert-LumineosResourcePair $SourceRoot $WorkRoot $expected
     }
     if((Get-Sha256 $source)-ne$sourceHash){throw 'L7/L8 resource identity changed during preparation.'}
+    foreach($marker in $overlayMarkers){
+        if((Get-Sha256 $marker.Source)-ne$marker.Hash){throw 'L7/L8 overlay receipt changed during preparation.'}
+    }
+    foreach($marker in $overlayMarkers){
+        if((Get-OptionalFileHash $marker.Target)-ne$marker.Hash){Write-AtomicSocialMetadata $marker.Target $null $marker.Bytes}
+    }
     if((Get-OptionalFileHash $target)-ne$sourceHash){
         Write-AtomicSocialMetadata $target $null ([IO.File]::ReadAllBytes($source))
     }

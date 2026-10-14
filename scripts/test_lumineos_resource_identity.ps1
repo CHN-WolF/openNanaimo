@@ -96,6 +96,45 @@ try{
     Write-FixtureManifest $sourceMarker $m
     [IO.File]::Delete((Join-Path $work 'scene.im3'))
     Reject {Sync-LumineosResourceIdentity $source $work $cache}
+    # A valid layered install keeps the original L7/L8 receipt. Exercise both
+    # the real verifier's refusal and the slot comparison after authorization.
+    [IO.File]::WriteAllText((Join-Path $work 'scene.im3'),'second')
+    foreach($dir in @($source,$work)){
+        [IO.File]::WriteAllText((Join-Path $dir 'scene.im3'),'dialogue')
+        [IO.File]::WriteAllText((Join-Path $dir 'QS._D31'),'catalog')
+        [IO.File]::WriteAllText((Join-Path $dir 'challenge.im3'),'combat')
+    }
+    $dialogueName='.openNanaimo-monk-dialogue.json'
+    $challengeName='.openNanaimo-monk-challenges.json'
+    $dialogueRows=@('scene.im3','QS._D31')|ForEach-Object {
+        [ordered]@{path=$_;sha256=(Get-Sha256 (Join-Path $source $_)).ToLowerInvariant()}
+    }
+    $challengeRows=@([ordered]@{path='challenge.im3';sha256=(Get-Sha256 (Join-Path $source 'challenge.im3')).ToLowerInvariant()})
+    [IO.File]::WriteAllText((Join-Path $source $dialogueName),(@{files=@($dialogueRows)}|ConvertTo-Json -Depth 5))
+    [IO.File]::WriteAllText((Join-Path $source $challengeName),(@{files=$challengeRows}|ConvertTo-Json -Depth 5))
+    $old=Get-Sha256 $targetMarker
+    Reject {Sync-LumineosResourceIdentity $source $work $cache} 'L7/L8 source overlay verification failed:*'
+    Check ((Get-Sha256 $targetMarker)-eq$old) 'Unregistered overlay cannot update identity'
+    $script:overlayChecks=0
+    function Assert-LumineosInstalledOverlay([string]$SourceRoot){$script:overlayChecks++}
+    Sync-LumineosResourceIdentity $source $work $cache
+    Check ($script:overlayChecks-eq1) 'Overlay is authorized once per preparation'
+    Check ((Get-Sha256 $targetMarker)-eq(Get-Sha256 $sourceMarker)) 'Layer preserves exact parent receipt'
+    Check ((Get-Sha256 (Join-Path $work $dialogueName))-eq(Get-Sha256 (Join-Path $source $dialogueName))) 'Verified dialogue receipt synchronized'
+    Check ((Get-Sha256 (Join-Path $work $challengeName))-eq(Get-Sha256 (Join-Path $source $challengeName))) 'Verified challenge receipt synchronized'
+    foreach($relative in @('scene.im3','QS._D31','challenge.im3')){
+        $path=Join-Path $work $relative
+        $saved=[IO.File]::ReadAllBytes($path)
+        [IO.File]::WriteAllText($path,'stale copy')
+        Reject {Sync-LumineosResourceIdentity $source $work $cache} 'L7/L8 resource version mismatch;*'
+        Check ((Get-Sha256 $targetMarker)-eq$old) 'Stale dependency does not update identity'
+        [IO.File]::WriteAllBytes($path,$saved)
+    }
+    $linkedReceipt=Join-Path $work $dialogueName
+    [IO.File]::Delete($linkedReceipt)
+    New-Item -ItemType Junction -Path $linkedReceipt -Target $root|Out-Null
+    try{Reject {Sync-LumineosResourceIdentity $source $work $cache} 'L7/L8 overlay receipt cannot be a reparse point:*'}
+    finally{[IO.Directory]::Delete($linkedReceipt)}
     Write-Host "LUMINEOS_SOCIAL_IDENTITY_PASS checks=$checks"
 }finally{
     $resolved=[IO.Path]::GetFullPath($root)

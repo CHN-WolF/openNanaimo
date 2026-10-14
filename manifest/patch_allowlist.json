@@ -78,8 +78,8 @@
     {
       "path": "gui_launcher/inventory_admin_gui.ps1",
       "layer": "runtime",
-      "size": 42631,
-      "sha256": "c49cf8158f86a2a9ecda31546c457f322bc442f6a0c3d8959b037b02161a2188",
+      "size": 43065,
+      "sha256": "9682383fd561b22a5a377241d260601070d9413056272e79d6f59aee8f3d27d4",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -118,8 +118,8 @@
     {
       "path": "gui_launcher/lumineos_resource_identity.ps1",
       "layer": "runtime",
-      "size": 3907,
-      "sha256": "6573e9a691137aabb29c28b0b2cc6a2f2a4476ea6ead3613e1f9adb1591827ac",
+      "size": 7475,
+      "sha256": "deef0e91d7f7e6c8a5836f4c11b88cb89dbc1d0c7d6ef823c37c7d5ffac37e3e",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -502,8 +502,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u5361\u7247/\u5361\u518c/\u6570\u91cf\u4e0e\u5e93\u5b58\u8fc1\u79fb.md",
       "layer": "knowledge",
-      "size": 5938,
-      "sha256": "9df468d438ca96dff98e405418a25dc2ffa03dff0482e4cf4f5a1282b33f2430",
+      "size": 6657,
+      "sha256": "10be69eefda1bfbc5796c2560ca65cea2c976fc1742653317d4db385dcc7fac1",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -1582,8 +1582,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u793e\u4ea4/\u5e08\u5f92/\u5173\u7cfb\u8bfe\u7a0b\u4e0e\u6bd5\u4e1a.md",
       "layer": "knowledge",
-      "size": 4071,
-      "sha256": "495b3548aff8e386a49fb236b8b31f7cc237b7b424c6f090fbb0ab8fee196e95",
+      "size": 4507,
+      "sha256": "319388a1c7667a3a9ce9a1f2176500b0893136c2aa5208832c61214e82f10e31",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -1598,16 +1598,16 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u793e\u4ea4/\u5e08\u5f92/\u7533\u8bf7\u8d44\u6599\u4e0e\u89e3\u9664\u534f\u8bae.md",
       "layer": "knowledge",
-      "size": 2219,
-      "sha256": "907d9659e05fd684f7516fddff94c88be2a1c30d6db5eb02f83bac40a65cbe17",
+      "size": 3701,
+      "sha256": "9ea1fa84634e935ae15d183654a153e649cee728b04ae7d659936f1c1a816730",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/\u793e\u4ea4/\u5e08\u5f92/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 636,
-      "sha256": "7f68dc0c54f477d4f87704f6eea7d0d1a9a4dbab26f5170c98f5d128469e00b2",
+      "size": 669,
+      "sha256": "d8e34d3470de27709ac3d2834cbe15b6c41391f773dd972aa45d2b7f226db1e4",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2406,8 +2406,8 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u542f\u52a8\u8fd0\u884c/\u793e\u4ea4\u69fd\u4f4d\u4e0e\u591a\u5f00.md",
       "layer": "knowledge",
-      "size": 5440,
-      "sha256": "ed40e15cba195ece25e24e7b27d90d5b71e2abc2912056a5b6542c5ae1d04dec",
+      "size": 6108,
+      "sha256": "32a45b6d8fbd6449e24c327ed0357b819db26282fe70a55c401126401da90c2d",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2862,8 +2862,8 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u9a8c\u8bc1\u72b6\u6001/\u5c42\u7ea7\u4e0e\u7248\u672c\u5f52\u5c5e.md",
       "layer": "knowledge",
-      "size": 11098,
-      "sha256": "1a095371b69720dbd48fdc9c8d560855c0a0eb2a07c59bbdb4961e81ae9282dd",
+      "size": 11400,
+      "sha256": "55ebeeb42b24040fed9a5e60357ff63e5ddf3b6c3e07c6a5fead537925f60eb8",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2878,8 +2878,8 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u9a8c\u8bc1\u72b6\u6001/\u793e\u4ea4\u7ade\u6280\u4e0e\u5a31\u4e50\u9a8c\u6536.md",
       "layer": "knowledge",
-      "size": 7857,
-      "sha256": "457f54dfb99bfdffc5b4309d46c3255fee8a406a95fa9f350ca27c909a618bab",
+      "size": 9758,
+      "sha256": "fcd50c7836b934b3fe2d3a4b90f73f0938290ecbcdc8d595fa8c95453b547a29",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3006,8 +3006,8 @@
     {
       "path": "knowledge/\u6307\u5357/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01/\u4fee\u9053\u50e7\u56db\u6751\u5bf9\u767d\u5b89\u88c5/\u5b89\u88c5\u4e0e\u6062\u590d.md",
       "layer": "knowledge",
-      "size": 3887,
-      "sha256": "3c88a9d8309b6d349701e3dd1b65e81308a3b1d43f6362c9ea213caa210b0381",
+      "size": 6010,
+      "sha256": "f6587136db02ff82cd0218b4ca3ddc1b7c274217a1c10219f0d70e8811dd712b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4926,8 +4926,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.NativeMentorship.cs",
       "layer": "source",
-      "size": 10430,
-      "sha256": "c1f9585de3e86e6475987e4327e3b110a95438c37a8e42c8b6e1fcf9679622f6",
+      "size": 12374,
+      "sha256": "9c0b089643ef013e2e319ed065a3df5008c94eb058b44b8e2c78e99f08609651",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5239,7 +5239,7 @@
       "path": "manifest/source_closure.json",
       "layer": "source",
       "size": 69569,
-      "sha256": "f3e905668a7cc269685bb73d9970afe218a17076410295714e6f11544ba3d2d1",
+      "sha256": "ad1b8e88008b28a9aed41054ecd6f772b747793251ea136dc40cb809219d9ed6",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6694,8 +6694,8 @@
     {
       "path": "scripts/refresh_manifest.py",
       "layer": "source",
-      "size": 18366,
-      "sha256": "1d6065134d259ee90d8d6891f8f579933c4b0466b99caf0f3b8722d39b6bf72a",
+      "size": 18481,
+      "sha256": "5818490e3c65e43bd113a550668b7f29c1eed736f11999f2f6daf241a9839091",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7214,8 +7214,8 @@
     {
       "path": "scripts/test_lumineos_resource_identity.ps1",
       "layer": "source",
-      "size": 7263,
-      "sha256": "dfee0e5482fd207f9814e87cf8c4c112d278c849e8bdd55d558e117f025441a9",
+      "size": 10062,
+      "sha256": "1c5dc27253eacbc781b7b161590109d6f1692a4cdebb0dea612fc83723309ad5",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },

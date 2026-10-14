@@ -29,19 +29,43 @@ public sealed partial class NetworkAdapterService
     {
         if (payload.Length != 24 || session.Character is not { } character
             || !TryGetMentorshipPresence(session.SessionId, out _) || !session.TownSceneActive
-            || session.NativeDungeon is not null) return null;
+            || session.NativeDungeon is not null || session.DungeonRoomId > 0) return null;
         if (opcode == 0xC576)
         {
             if (payload[1] > 1 || payload[0] != 1 - payload[1]) return null;
-            MentorProtocol.TryReadPeerName(payload.AsSpan(8), out var requestedName);
+            var hasPeerName = MentorProtocol.TryReadPeerName(payload.AsSpan(8), out var requestedName);
+            if (!hasPeerName && payload.Skip(8).Any(value => value != 0)) return null;
             var uid = BinaryPrimitives.ReadUInt32LittleEndian(payload.AsSpan(4));
-            var target = _activeWorldSessions.Values.FirstOrDefault(p => p.CharacterId != character.Id
+            var candidates = _activeWorldSessions.Values.Where(p => p.CharacterId != character.Id
                 && p.ChannelId == session.ChannelId && TryGetMentorshipPresence(p.SessionId, out _)
-                && p.Session.Character is { } peer
-                && (uid == uint.MaxValue ? string.Equals(peer.Name, requestedName, StringComparison.OrdinalIgnoreCase)
-                    : GetSceneEntityId(peer) == uid)
-                && p.Session.TownSceneActive && p.Session.NativeDungeon is null);
-            if (target?.Session.Character is not { } targetCharacter) return null;
+                && p.Session.Character is not null && p.Session.TownSceneActive
+                && p.Session.NativeDungeon is null && p.Session.DungeonRoomId == 0).ToArray();
+            WorldPresence? target = null;
+            if (uid is > 0 and <= 0x0FFF)
+            {
+                // Scene actions carry a real 12-bit entity ID. A supplied name must agree.
+                var matching = candidates.Where(p => GetSceneEntityId(p.Session.Character!) == uid
+                    && (!hasPeerName || string.Equals(p.CharacterName, requestedName, StringComparison.OrdinalIgnoreCase))).ToArray();
+                if (matching.Length == 1) target = matching[0];
+            }
+            else if (hasPeerName)
+            {
+                // C57E advertisements carry names rather than scene IDs. Resolve
+                // non-scene identities in C576 advertisement requests by name.
+                // Only a currently eligible, session-owned advertisement authorizes this route.
+                var advertisements = await _database.GetMentorshipAdvertisingCharactersAsync(
+                    CreateMentorshipActor(session), MentorshipRules, token);
+                var advertisedIds = advertisements.Where(p => string.Equals(p.Name, requestedName,
+                    StringComparison.OrdinalIgnoreCase)).Select(p => p.Id).ToHashSet();
+                var named = candidates.Where(p => advertisedIds.Contains(p.CharacterId)
+                    && string.Equals(p.CharacterName, requestedName, StringComparison.OrdinalIgnoreCase)).ToArray();
+                if (named.Length == 1) target = named[0];
+            }
+            if (target?.Session.Character is not { } targetCharacter)
+            {
+                _log($"Mentorship request target unavailable: session={session.SessionId} uid=0x{uid:X8} named={hasPeerName}");
+                return null;
+            }
             var direction = payload[1] == 1 ? MentorshipDirection.TeacherInvitation : MentorshipDirection.StudentApplication;
             var result = await RequestMentorshipAsync(session.SessionId, target.CharacterId, direction, token);
             if (!result.Success || result.Request is not { } request)
@@ -148,6 +172,10 @@ public sealed partial class NetworkAdapterService
         payload[244] = (byte)Math.Clamp(character.Level, 1, byte.MaxValue);
         payload[245] = CharacterTitleState.GetGrade(character);
         BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(248), qualification.CanAdvertise ? 0u : 1u);
+        // C579 -> 0x8B0340 consumes BYTE frame+260 independently of the row count.
+        // Count the full persisted history, not the ten displayed relationship rows.
+        var profile = await _database.GetMentorshipProfileAsync(character.Id, token);
+        payload[252] = (byte)Math.Min(byte.MaxValue, profile.Graduates);
         BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(256), (uint)count);
         WriteFixedGbk(payload.AsSpan(264, 16), character.Name);
         return payload;

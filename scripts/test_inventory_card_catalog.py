@@ -97,4 +97,83 @@ try{
             self.assertEqual(result.returncode,0,(result.stdout+result.stderr).decode('utf-8',errors='replace'))
             self.assertIn(b'GUI_SP_EVENT_GRANT_SAVE_RELOAD_REMOVE_PASS',result.stdout)
 
+    @unittest.skipUnless(os.name=='nt', 'WinForms requires Windows')
+    def test_selected_sp_card_not_stale_current_row(self):
+        with fixtures.CardPreservationTests().fixture() as (root,db):
+            data=root/'gui_launcher/data';data.mkdir(parents=True)
+            for path in catalog.DATA.glob('inventory_*.json'):
+                shutil.copy2(path,data/path.name)
+            script=root/'selected-card-test.ps1'
+            script.write_text(r'''param([string]$Repository,[string]$Fixture)
+$ErrorActionPreference='Stop'
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+. (Join-Path $Repository 'gui_launcher/inventory_admin_gui.ps1')
+$form=New-Object Windows.Forms.Form
+$form.ShowInTaskbar=$false;$form.Opacity=0;$form.Size='1150,950'
+$tabs=New-Object Windows.Forms.TabControl;$tabs.Dock='Fill';$form.Controls.Add($tabs)
+function Select-WithoutMovingCurrent($Grid,[uint32]$Current,[uint32]$Selected){
+    $old=@($Grid.Rows|Where-Object{[uint32]$_.Cells['ID'].Value-eq$Current})[0]
+    $target=@($Grid.Rows|Where-Object{[uint32]$_.Cells['ID'].Value-eq$Selected})[0]
+    $Grid.CurrentCell=$old.Cells[0];$Grid.ClearSelection();$target.Selected=$true
+    if([uint32]$Grid.CurrentRow.Cells['ID'].Value-ne$Current-or[uint32]$Grid.SelectedRows[0].Cells['ID'].Value-ne$Selected){throw 'selection mismatch precondition missing'}
+}
+function Require-Count($Rows,[uint32]$Code,[int]$Count){
+    $row=@($Rows|Where-Object{$_.code-eq$Code})
+    if(($Count-eq0-and$row.Count-ne0)-or($Count-gt0-and($row.Count-ne1-or$row[0].count-ne$Count))){throw "wrong count for $Code expected=$Count actual=$($row|ConvertTo-Json -Compress)"}
+}
+try{
+    $ctx=Initialize-InventoryAdmin $tabs $Fixture '416C706861'
+    [void]$form.Show();$tab=$ctx.CardAddAllButton.Parent;$tabs.SelectedTab=$tab
+    [Windows.Forms.Application]::DoEvents()
+    $available=@($tab.Controls|Where-Object{$_ -is [Windows.Forms.DataGridView]-and$_.Left-eq555})[0]
+    $owned=@($tab.Controls|Where-Object{$_ -is [Windows.Forms.DataGridView]-and$_.Left-eq15})[0]
+    $search=@($tab.Controls|Where-Object{$_ -is [Windows.Forms.TextBox]-and$_.Left-eq555})[0]
+    $qty=@($tab.Controls|Where-Object{$_ -is [Windows.Forms.NumericUpDown]})[0]
+    $add=@($tab.Controls|Where-Object{$_ -is [Windows.Forms.Button]-and$_.Top-eq275})[0]
+    $remove=@($tab.Controls|Where-Object{$_ -is [Windows.Forms.Button]-and$_.Top-eq325})[0]
+    $qty.Value=5
+    foreach($filter in @('','SP')){
+        $search.Text=$filter
+        [Windows.Forms.Application]::DoEvents()
+        $available.Sort($available.Columns[0],[ComponentModel.ListSortDirection]::Ascending)
+        foreach($offset in @(0,10)){
+            Select-WithoutMovingCurrent $available (12000002+$offset) (12000010+$offset)
+            $add.PerformClick()
+            Require-Count $ctx.Cards (12000002+$offset) 0
+            Require-Count $ctx.Cards (12000010+$offset) $(if($filter){10}else{5})
+        }
+    }
+    # A retained focus row without a selected row must never grant a card.
+    $available.ClearSelection();$add.PerformClick()
+    Require-Count $ctx.Cards 12000010 10;Require-Count $ctx.Cards 12000020 10
+    # Empty filters must also leave the inventory unchanged.
+    $search.Text='no-such-card';[Windows.Forms.Application]::DoEvents();$add.PerformClick()
+    Require-Count $ctx.Cards 12000010 10;Require-Count $ctx.Cards 12000020 10
+    [void](Save-InventoryAdminState $ctx $ctx.NameHex $ctx.Shop $ctx.Profile)
+    $snap=Read-InventoryAdminSnapshot $Fixture $ctx.Backend $ctx.SelectedProfile
+    foreach($code in @(12000010,12000020)){Require-Count $snap.cards $code 10}
+    foreach($code in @(12000002,12000012)){Require-Count $snap.cards $code 0}
+    # Deletion uses the same selected identity, not the old focus row.
+    Select-WithoutMovingCurrent $owned 12000010 12000020
+    $remove.PerformClick()
+    Require-Count $ctx.Cards 12000010 10;Require-Count $ctx.Cards 12000020 5
+    $owned.ClearSelection();$remove.PerformClick()
+    Require-Count $ctx.Cards 12000010 10;Require-Count $ctx.Cards 12000020 5
+    # Ordinary focus-and-selection input still grants the exact filtered card.
+    $search.Text='12000010';[Windows.Forms.Application]::DoEvents()
+    $available.CurrentCell=$available.Rows[0].Cells[0];$available.Rows[0].Selected=$true
+    $add.PerformClick()
+    Require-Count $ctx.Cards 12000010 15;Require-Count $ctx.Cards 12000020 5
+    [void](Save-InventoryAdminState $ctx $ctx.NameHex $ctx.Shop $ctx.Profile)
+    $snap=Read-InventoryAdminSnapshot $Fixture $ctx.Backend $ctx.SelectedProfile
+    Require-Count $snap.cards 12000010 15;Require-Count $snap.cards 12000020 5
+    Write-Output 'GUI_SELECTED_SP_CARD_GRANT_SAVE_RELOAD_REMOVE_PASS'
+}finally{$form.Dispose()}
+''',encoding='utf-8-sig')
+            result=subprocess.run(['powershell','-NoProfile','-STA','-ExecutionPolicy','Bypass','-File',str(script),str(ROOT),str(root)],capture_output=True,timeout=120,creationflags=0x08000000)
+            self.assertEqual(result.returncode,0,(result.stdout+result.stderr).decode('utf-8',errors='replace'))
+            self.assertIn(b'GUI_SELECTED_SP_CARD_GRANT_SAVE_RELOAD_REMOVE_PASS',result.stdout)
+            self.assertEqual(fixtures.CardPreservationTests().read(db,'SELECT CardCode,Quantity FROM CharacterCards WHERE CharacterId=22'),[(12000001,7)])
+
 if __name__=='__main__':unittest.main()
