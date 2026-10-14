@@ -7,6 +7,8 @@ internal readonly record struct ApartmentLandPrice(long DailyHans, long Recommen
 
 internal static class ApartmentLandPrices
 {
+    internal static ReadOnlySpan<ushort> FifthVillagePages => [6, 7, 8, 11, 16, 17, 18, 19];
+
     // MT._D18, MINIROOMTRADE: town, page, daily Hans, recommendation points.
     // A purchase uses fourteen days of Hans; pages without a price cannot be purchased.
     private static readonly IReadOnlyDictionary<(byte Town, ushort Page), ApartmentLandPrice> Prices
@@ -90,6 +92,15 @@ internal static class ApartmentLandPrices
         [(3, 25)] = new(300, 30),
         [(3, 27)] = new(300, 30),
         [(3, 28)] = new(300, 30),
+        // Local policy: twice the pre-expansion global maxima (1000 Hans, 300 points).
+        [(4, 6)] = new(2000, 600),
+        [(4, 7)] = new(2000, 600),
+        [(4, 8)] = new(2000, 600),
+        [(4, 11)] = new(2000, 600),
+        [(4, 16)] = new(2000, 600),
+        [(4, 17)] = new(2000, 600),
+        [(4, 18)] = new(2000, 600),
+        [(4, 19)] = new(2000, 600),
     };
 
     internal static bool TryGet(byte town, ushort page, out ApartmentLandPrice price)

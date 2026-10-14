@@ -35,6 +35,17 @@ internal static partial class LauncherTools
         var source=Path.GetFullPath(Option(args,"--source-root"));var output=Path.GetFullPath(Option(args,"--output-root"));Require(Directory.Exists(source)&&!source.Equals(output,StringComparison.OrdinalIgnoreCase),"Source and output roots must differ");bool apply=Has(args,"--apply"),dry=Has(args,"--dry-run"),overwrite=Has(args,"--overwrite");var recipe=Recipe();var operations=new JsonArray();var files=new Dictionary<string,byte[]?>();var originals=new Dictionary<string,byte[]?>();
         var selected=Objects(recipe,"sites").Where(s=>Has(args,"--"+S(s,"group"))||S(s,"group")=="native-state"&&Has(args,"--revival-display")).ToArray();Require(selected.Length>0||Has(args,"--dungeon7"),"No compatibility operation selected");var exePath=SafePath(source,"game.exe");var originalExe=File.ReadAllBytes(exePath);var exe=originalExe.ToArray();foreach(var site in selected)PatchSite(exe,site,operations);
         if(Has(args,"--monk-dialogue")){VerifyMonkDialogue(source);VerifyChallenges(source);}
+        if(Has(args,"--land-purchase"))
+        {
+            const string name = "MT._D18";
+            var before = File.ReadAllBytes(SafePath(source, name));
+            var after = PatchFifthVillageLand(before);
+            Require(Same(after, PatchFifthVillageLand(after)), "Generated land catalog is not stable");
+            files[name] = after;
+            originals[name] = before;
+            operations.Add(Obj(new { operation = "fifth_village_land", changed = !Same(before, after),
+                input_sha256 = Hash(before), output_sha256 = Hash(after), runtime_acceptance = false }));
+        }
         if(Has(args,"--dungeon7"))
         {
             var minimap=recipe["minimap"]!;bool l8=File.Exists(SafePath(source,"openNanaimo-l7-l8-resources.json"));if(l8)VerifyLumineos(source);

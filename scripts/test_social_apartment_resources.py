@@ -93,6 +93,25 @@ class SocialApartmentResourceTests(unittest.TestCase):
         self.assert_assets(second)
         self.assert_source_preserved()
 
+    def test_reuse_refreshes_land_catalog_with_backup_for_each_slot(self):
+        source = self.source / "MT._D18"
+        source.write_bytes(b"old-land-prices")
+        _, first = self.prepare(1)
+        _, second = self.prepare(2)
+        old_hash = sha256(first / "MT._D18")
+        private = first / "keep-private.dat"
+        private.write_bytes(b"keep")
+        source.write_bytes(b"fifth-village-2000-600")
+        for slot, work in ((1, first), (2, second)):
+            result, same = self.prepare(slot)
+            self.assertTrue(result["Reused"])
+            self.assertEqual(same, work)
+            self.assertEqual((work / "MT._D18").read_bytes(), source.read_bytes())
+        self.assertEqual((self.cache / "land-catalog-backups" / old_hash / "MT._D18").read_bytes(), b"old-land-prices")
+        self.assertEqual(private.read_bytes(), b"keep")
+        self.prepare(1)
+        self.assertEqual(source.read_bytes(), b"fifth-village-2000-600")
+
     def test_reuse_fills_missing_assets_without_touching_local_files(self):
         original, work = self.prepare()
         for relative in APARTMENT_ASSETS:

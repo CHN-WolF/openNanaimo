@@ -24,7 +24,8 @@ internal static class ApartmentLandPriceChecks
             (2, [1,2,4,8,10,13,16,20,25,26,27], 500, 7000, 100),
             (2, [6,22], 300, 4200, 30),
             (2, [7,11,12,14,17,19,23,24,28], 400, 5600, 50),
-            (3, [1,3,4,6,7,8,9,10,12,14,18,19,20,21,22,23,24,25,27,28], 300, 4200, 30)
+            (3, [1,3,4,6,7,8,9,10,12,14,18,19,20,21,22,23,24,25,27,28], 300, 4200, 30),
+            (4, [6,7,8,11,16,17,18,19], 2000, 28000, 600)
         ];
         try
         {
@@ -40,7 +41,8 @@ internal static class ApartmentLandPriceChecks
                         && price.DailyHans == row.Daily && price.PurchaseHans == row.Hans
                         && price.RecommendationPoints == row.Points, $"town {row.Town} page {page} price");
                 }
-            Check(addresses.Count == 78, "seventy-eight priced pages");
+            Check(addresses.Count(a => a.Item1 < 4) == 78, "seventy-eight original priced pages");
+            Check(addresses.Count == 86, "eighty-six priced pages including fifth village");
             for (byte town = 0; town <= 4; town++)
                 Check(Enumerable.Range(0, 256).All(page => ApartmentLandPrices.TryGet(town, (ushort)page, out _)
                     == addresses.Contains((town, (ushort)page))), $"town {town} unpriced pages fail closed");
@@ -80,7 +82,7 @@ internal static class ApartmentLandPriceChecks
                 await Fund(row.Hans - 1, row.Points - 1);
                 Check(await Buy() == 30 && await Balances(row.Hans - 1, row.Points - 1), "points insufficiency takes precedence");
                 await Fund(row.Hans, row.Points);
-                Check(await db.PurchaseApartmentHouseAsync(account, actor.Id, session, 4, 6, 0) == 40
+                Check(await db.PurchaseApartmentHouseAsync(account, actor.Id, session, 4, 5, 0) == 40
                     && await Balances(row.Hans, row.Points), "unpriced town-four slot cannot be purchased");
                 await Sql("CREATE TRIGGER RejectPriceInsert BEFORE INSERT ON CharacterApartmentHouses BEGIN SELECT RAISE(ABORT, 'price test rollback'); END;");
                 var aborted = false;

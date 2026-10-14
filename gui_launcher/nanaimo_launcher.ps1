@@ -710,6 +710,7 @@ function Ensure-ClientCompatibility($selectedPet=$null) {
     if(-not(Test-Path -LiteralPath $ClientCompatibilityReport -PathType Leaf)){throw 'Client compatibility report was not generated.'}
     $report=Get-Content -LiteralPath $ClientCompatibilityReport -Raw -Encoding UTF8|ConvertFrom-Json
     if(-not$report.verification.all_pass){throw 'Client compatibility post-apply verification failed.'}
+    if(-not @($report.operations|Where-Object{$_.operation-eq'fifth_village_land'}).Count){throw 'Fifth-village land requires the matching adapter resource installer; old runtime refused.'}
     foreach($required in @('level200_town_title_mask','level200_town_level_shift','level200_town_level_mask','level200_entry_code','level200_entry_hook')){if(-not @($report.operations|Where-Object{$_.operation-eq$required}).Count){throw 'Level200 requires a matching newly built adapter compatibility recipe; old runtime refused.'}}
     & (Join-Path $Root 'gui_launcher\level200_client_check.ps1') -Client $Client | Out-Host
     $projectileSettings=Read-ProjectileSettings (Join-Path $Root 'nanaimo_projectile.ini')

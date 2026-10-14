@@ -6,7 +6,7 @@
   "official_baseline_verified": false,
   "binary_delta_implemented": false,
   "complete_playable_game": false,
-  "source_closure_count_observed": 379,
+  "source_closure_count_observed": 381,
   "default_layers": [
     "runtime",
     "source",
@@ -126,8 +126,8 @@
     {
       "path": "gui_launcher/nanaimo_launcher.ps1",
       "layer": "runtime",
-      "size": 156967,
-      "sha256": "266d1663a05ec10b4e8af49a6ae39854d439a0121f8be409d322effe6c2458d6",
+      "size": 157157,
+      "sha256": "19d55dca62a38a723f02df56e5462208c0c0b211e782b7021b0743733edd50c6",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -150,8 +150,8 @@
     {
       "path": "gui_launcher/start_social_client.ps1",
       "layer": "runtime",
-      "size": 58487,
-      "sha256": "8d608a0884e2799857010109d453bdd773e7ad35885c56c02c347f2fef8ae170",
+      "size": 58894,
+      "sha256": "68cf7010d48f70df4835f05ff5d3cf80b1e56e03c3ac3b7e5ee52fb34b0d929b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -390,16 +390,16 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u4f4f\u5b85/\u623f\u5c4b\u5f52\u5c5e/\u63a8\u8350\u8d2d\u623f\u4e0e\u79df\u671f.md",
       "layer": "knowledge",
-      "size": 7445,
-      "sha256": "d2525d85d7ead158ba1d344321eb8653e39b5c8bbb90dfee0f71ee1ccffd18f0",
+      "size": 9748,
+      "sha256": "eff318aa6a36acb5017679114dcec8d7a251eb1e49d64b78331af660b8c65871",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/\u4f4f\u5b85/\u623f\u5c4b\u5f52\u5c5e/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 510,
-      "sha256": "43b1b01e5e845d38049fb7fbb9e26707eaa952e1e4155878ea38845a4ed4fda3",
+      "size": 528,
+      "sha256": "fb7ed3d3b311b9b207579f182b844e2154d91b270f0003235e48c5870e3cde23",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2878,8 +2878,8 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u9a8c\u8bc1\u72b6\u6001/\u793e\u4ea4\u7ade\u6280\u4e0e\u5a31\u4e50\u9a8c\u6536.md",
       "layer": "knowledge",
-      "size": 5239,
-      "sha256": "15e33887b8ed6627de7941661a493da2ed2d79b44600d2f825b5707de037741e",
+      "size": 7857,
+      "sha256": "457f54dfb99bfdffc5b4309d46c3255fee8a406a95fa9f350ca27c909a618bab",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3270,8 +3270,8 @@
     {
       "path": "managed-host/ApartmentHousingChecks.cs",
       "layer": "source",
-      "size": 38441,
-      "sha256": "cc645acf997e51ba9d71e7ddb6e92a08d95d8793e9a69581ab0c18175106418f",
+      "size": 41367,
+      "sha256": "1fe67ba7cc3569147c0e34c7dc2aa2c2309752fae1eb43512decbe9a6e4111c9",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3286,8 +3286,8 @@
     {
       "path": "managed-host/ApartmentLandPriceChecks.cs",
       "layer": "source",
-      "size": 7267,
-      "sha256": "7f6d62a181225d6f6b5495a1f8e409fbe17401c1ed5fdc278efc8772d39c9810",
+      "size": 7446,
+      "sha256": "fc6b27b33a9c9102909fcc5f70bbd255b03e0d88499de27da1f7199160d8080f",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3428,6 +3428,14 @@
       "approval": "required_per_file"
     },
     {
+      "path": "managed-host/FifthVillageLandChecks.cs",
+      "layer": "source",
+      "size": 4707,
+      "sha256": "455b72577b9b989a96fd1df0123ef83d57af422a07f7816935eb9c28bdf135a0",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "managed-host/HasioRewardChecks.cs",
       "layer": "source",
       "size": 15506,
@@ -3518,8 +3526,8 @@
     {
       "path": "managed-host/LauncherTools.Compatibility.cs",
       "layer": "source",
-      "size": 17806,
-      "sha256": "5362b49b11621f9ae20db3602ef003dffbc8f34dac4fd874842a99a878853515",
+      "size": 18427,
+      "sha256": "d70cbfb5104ca928ba00868558597a0a8539703bff4829b57b50b7c7a4e506c4",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3544,6 +3552,14 @@
       "layer": "source",
       "size": 24783,
       "sha256": "158730cd028e2f725e96c52c5de3d346a48ec21e18634083763a92aedf883e89",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "managed-host/LauncherTools.Land.cs",
+      "layer": "source",
+      "size": 4447,
+      "sha256": "989a78a58f14b422e56f4d110ea8bb6ad3eb31c9e9b52650f5b126764d37b92d",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3990,16 +4006,16 @@
     {
       "path": "managed/Services/ApartmentHousingPolicy.cs",
       "layer": "source",
-      "size": 4088,
-      "sha256": "927e5432956a05d9ab77ee5b701d7f668c91866a6a2e7271934076fd31600bf9",
+      "size": 4130,
+      "sha256": "c2d7aa7f9c2287f7c19f85a99f1e80afb87ccce1392704d7fdcf27d543a87953",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "managed/Services/ApartmentLandPrices.cs",
       "layer": "source",
-      "size": 3433,
-      "sha256": "a3b50e298678c81442ffde2ecc18e5c3989d924af8d36bf54941553e9cd30668",
+      "size": 3900,
+      "sha256": "79a85dcf20cbf4f9af402e0173e96113dccc287667489a4331f23d6e29bf1a56",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5222,8 +5238,8 @@
     {
       "path": "manifest/source_closure.json",
       "layer": "source",
-      "size": 69229,
-      "sha256": "db64b55560ff52d7f97bda01134a940ed491fe82e933ff2e8f140c7b2b7e65b0",
+      "size": 69569,
+      "sha256": "f3e905668a7cc269685bb73d9970afe218a17076410295714e6f11544ba3d2d1",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6678,8 +6694,8 @@
     {
       "path": "scripts/refresh_manifest.py",
       "layer": "source",
-      "size": 18230,
-      "sha256": "5439f6bce85b29acd26e97fbfac08f06a0b763f90c48bb24af267d9a6eb0eed6",
+      "size": 18366,
+      "sha256": "1d6065134d259ee90d8d6891f8f579933c4b0466b99caf0f3b8722d39b6bf72a",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7068,6 +7084,14 @@
       "approval": "required_per_file"
     },
     {
+      "path": "scripts/test_fifth_village_land.py",
+      "layer": "source",
+      "size": 5121,
+      "sha256": "eb3de4ec1ca5f64fdef2316e0000c9a88374c14e1699c757085879ad77abb230",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "scripts/test_fixed_scene_injury_policy.py",
       "layer": "source",
       "size": 3990,
@@ -7142,8 +7166,8 @@
     {
       "path": "scripts/test_launcher_contract.py",
       "layer": "source",
-      "size": 36610,
-      "sha256": "6f898e1b22f6ad7b9f211523763aba7652cf74dafbb23ad06e72a46585865a9f",
+      "size": 37804,
+      "sha256": "e5384d5a67d48a645cf2ada63822f34c57065371f155fbd2744ad96a3c63fff5",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7424,6 +7448,14 @@
       "layer": "source",
       "size": 3753,
       "sha256": "464a77aa0fb39f21365b1bbf222861555ef1ad78331bf16711589574de38d39c",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_social_apartment_resources.py",
+      "layer": "source",
+      "size": 9229,
+      "sha256": "4f6b832f9c4365b1afee5dc93e2c7d7ac91f2236014db26ea1633445c70b7a12",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },

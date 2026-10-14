@@ -133,28 +133,28 @@
         "sha256": "6B60AF0002EF06557A41988975881DFA8BAEC7394C9CFB85C7A4759D66CD42F3"
       },
       "adapter_runtime/Nanaimo.Adapter.dll": {
-        "size": 2297856,
-        "sha256": "FB15C19648B1E79136985DD8F4F8C51854DDC6AEBA7D67D8DA750279F71C2FDF"
+        "size": 2315776,
+        "sha256": "7B1CCDB086C0881936936C21B9517EDCD1C218931137BA81B0D5647BDF528C51"
       },
       "adapter_runtime/Nanaimo.Adapter.exe": {
         "size": 151552,
-        "sha256": "5A513A6D8FA7D3388231D6A3C2DDCE6E6456CFF4C7F8931AE28E2D5B58036999"
+        "sha256": "941996FDEB235729024C56A1576BAD9C5FFBFB83EB1146105DF45AED9D7701BB"
       },
       "adapter_runtime/Nanaimo.Adapter.pdb": {
-        "size": 233336,
-        "sha256": "918C00BFC830E676E26C6C019A585FD91BBCE679C5F86E9EA63F22B597B2D72A"
+        "size": 236004,
+        "sha256": "1F74FBA323950C09C494E671BCA3F072FFB6B4A4B0EDE75712833E594D01AC07"
       },
       "adapter_runtime/Nanaimo.Adapter.runtimeconfig.json": {
         "size": 372,
         "sha256": "D7A0BECA53834E0A387B9E5083BD1DADF5BEE565B48595A9D4CB457D15726C78"
       },
       "adapter_runtime/Nanaimo.Gameplay.dll": {
-        "size": 5860864,
-        "sha256": "68D3EEDC9EB6DC6DC526BA6E9A1EF82D8DAD049C283DDA44F643E7B32EB7DA19"
+        "size": 5861376,
+        "sha256": "569A9752A661D404DFE0F1686E579E991B771A605E3AF326DA9A2D614500C0E2"
       },
       "adapter_runtime/Nanaimo.Gameplay.pdb": {
-        "size": 578428,
-        "sha256": "7125D64546F5DBD57688E44F6913692F8C004015018E308A0B72221FA607E97D"
+        "size": 577680,
+        "sha256": "9C0018E44016E8C1F29C49DDF931CE883823E02390126A001F4BCA3DCC22B28F"
       },
       "adapter_runtime/SQLitePCLRaw.batteries_v2.dll": {
         "size": 5120,
@@ -818,7 +818,7 @@
       },
       "adapter_runtime/adapter_manifest.json": {
         "size": 52662,
-        "sha256": "3050B4A71DDFEDEE6CD6292F7FFF56ADD16C459590CD9133972B73DC11DA4939"
+        "sha256": "6B78CCDD7CE8EED26326FB472D46F6314E4B5D42AC8EBA8206CF8FB7098A3EAA"
       },
       "adapter_runtime/clretwrc.dll": {
         "size": 310568,
@@ -3106,8 +3106,8 @@
       "sha256": "6573E9A691137AABB29C28B0B2CC6A2F2A4476EA6EAD3613E1F9ADB1591827AC"
     },
     "gui_launcher/nanaimo_launcher.ps1": {
-      "size": 156967,
-      "sha256": "266D1663A05EC10B4E8AF49A6AE39854D439A0121F8BE409D322EFFE6C2458D6"
+      "size": 157157,
+      "sha256": "19D55DCA62A38A723F02DF56E5462208C0C0B211E782B7021B0743733EDD50C6"
     },
     "gui_launcher/projectile_browser.ps1": {
       "size": 11534,
@@ -3122,8 +3122,8 @@
       "sha256": "602500EB9E2809E2E707BE2ACD879DAA95EF8B33C7A36A335D1BCA93FB783398"
     },
     "gui_launcher/start_social_client.ps1": {
-      "size": 58487,
-      "sha256": "8D608A0884E2799857010109D453BDD773E7AD35885C56C02C347F2FEF8AE170"
+      "size": 58894,
+      "sha256": "68CF7010D48F70DF4835F05FF5D3CF80B1E56E03C3AC3B7E5EE52FB34B0D929B"
     },
     "knowledge/业务/住宅/公寓引导.md": {
       "size": 2718,
@@ -3826,8 +3826,8 @@
       "sha256": "C39201979F023102B0D62C1BFAD95497DCFE870B020D97E79342B0ADBBBFC242"
     },
     "scripts/refresh_manifest.py": {
-      "size": 18230,
-      "sha256": "5439F6BCE85B29ACD26E97FBFAC08F06A0B763F90C48BB24AF267D9A6EB0EED6"
+      "size": 18366,
+      "sha256": "1D6065134D259EE90D8D6891F8F579933C4B0466B99CAF0F3B8722D39B6BF72A"
     },
     "scripts/refresh_patch_manifest.py": {
       "size": 12916,
@@ -3929,6 +3929,10 @@
       "size": 48531,
       "sha256": "BD31E49282696989C198996AD5C20ABCB9030AAADEBC8BC8E8437C4817323F13"
     },
+    "scripts/test_fifth_village_land.py": {
+      "size": 5121,
+      "sha256": "EB3DE4EC1CA5F64FDEF2316E0000C9A88374C14E1699C757085879AD77ABB230"
+    },
     "scripts/test_gameplay_bugfixes.py": {
       "size": 8329,
       "sha256": "3E516B64A78D87AF1D567DBF18549A29D6B4BBE1A3030CCC0ED60A985C6C0A00"
@@ -3944,6 +3948,10 @@
     "scripts/test_l7_combat_resources.py": {
       "size": 10727,
       "sha256": "E09B8253A2D4193B441AC58B87569F2AF413DF797EE9DE04902FDC0725F69585"
+    },
+    "scripts/test_launcher_contract.py": {
+      "size": 37804,
+      "sha256": "E5384D5A67D48A645CF2ADA63822F34C57065371F155FBD2744AD96A3C63FFF5"
     },
     "scripts/test_launcher_incremental_save.py": {
       "size": 22123,
@@ -4036,6 +4044,10 @@
     "scripts/test_preloaded_targets.py": {
       "size": 8674,
       "sha256": "C222BCF33308FC842923B77772909439851A5F27ED02210B4F6E2344F7308134"
+    },
+    "scripts/test_social_apartment_resources.py": {
+      "size": 9229,
+      "sha256": "4F6B832F9C4365B1AFEE5DC93E2C7D7AC91F2236014DB26EA1633445C70B7A12"
     },
     "scripts/test_verify_document_fusion.py": {
       "size": 13697,
@@ -4266,12 +4278,12 @@
       "sha256": "7E8FC9825FCC92DD481F258F35115678A4A0F3FB1A3011A356358FAAB8063B53"
     },
     "knowledge/业务/住宅/房屋归属/推荐购房与租期.md": {
-      "size": 7445,
-      "sha256": "D2525D85D7EAD158BA1D344321EB8653E39B5C8BBB90DFEE0F71EE1CCFFD18F0"
+      "size": 9748,
+      "sha256": "EFF318AA6A36ACB5017679114DCEC8D7A251EB1E49D64B78331AF660B8C65871"
     },
     "knowledge/业务/住宅/房屋归属/索引.md": {
-      "size": 510,
-      "sha256": "43B1B01E5E845D38049FB7FBB9E26707EAA952E1E4155878EA38845A4ED4FDA3"
+      "size": 528,
+      "sha256": "FB7ED3D3B311B9B207579F182B844E2154D91B270F0003235E48C5870E3CDE23"
     },
     "knowledge/业务/卡片/兑换/VIP经验权益.md": {
       "size": 5569,
@@ -5218,8 +5230,8 @@
       "sha256": "3BAEA9A380D75906829F0A1B37AA74DEB60C6DD7C0067F8C7546C7FB442FB48D"
     },
     "knowledge/工程/验证状态/社交竞技与娱乐验收.md": {
-      "size": 5239,
-      "sha256": "15E33887B8ED6627DE7941661A493DA2ED2D79B44600D2F825B5707DE037741E"
+      "size": 7857,
+      "sha256": "457F54DFB99BFDFFC5B4309D46C3255FEE8A406A95FA9F350CA27C909A618BAB"
     },
     "knowledge/工程/验证状态/索引.md": {
       "size": 912,
@@ -5362,28 +5374,28 @@
       "sha256": "6B60AF0002EF06557A41988975881DFA8BAEC7394C9CFB85C7A4759D66CD42F3"
     },
     "adapter_runtime/Nanaimo.Adapter.dll": {
-      "size": 2297856,
-      "sha256": "FB15C19648B1E79136985DD8F4F8C51854DDC6AEBA7D67D8DA750279F71C2FDF"
+      "size": 2315776,
+      "sha256": "7B1CCDB086C0881936936C21B9517EDCD1C218931137BA81B0D5647BDF528C51"
     },
     "adapter_runtime/Nanaimo.Adapter.exe": {
       "size": 151552,
-      "sha256": "5A513A6D8FA7D3388231D6A3C2DDCE6E6456CFF4C7F8931AE28E2D5B58036999"
+      "sha256": "941996FDEB235729024C56A1576BAD9C5FFBFB83EB1146105DF45AED9D7701BB"
     },
     "adapter_runtime/Nanaimo.Adapter.pdb": {
-      "size": 233336,
-      "sha256": "918C00BFC830E676E26C6C019A585FD91BBCE679C5F86E9EA63F22B597B2D72A"
+      "size": 236004,
+      "sha256": "1F74FBA323950C09C494E671BCA3F072FFB6B4A4B0EDE75712833E594D01AC07"
     },
     "adapter_runtime/Nanaimo.Adapter.runtimeconfig.json": {
       "size": 372,
       "sha256": "D7A0BECA53834E0A387B9E5083BD1DADF5BEE565B48595A9D4CB457D15726C78"
     },
     "adapter_runtime/Nanaimo.Gameplay.dll": {
-      "size": 5860864,
-      "sha256": "68D3EEDC9EB6DC6DC526BA6E9A1EF82D8DAD049C283DDA44F643E7B32EB7DA19"
+      "size": 5861376,
+      "sha256": "569A9752A661D404DFE0F1686E579E991B771A605E3AF326DA9A2D614500C0E2"
     },
     "adapter_runtime/Nanaimo.Gameplay.pdb": {
-      "size": 578428,
-      "sha256": "7125D64546F5DBD57688E44F6913692F8C004015018E308A0B72221FA607E97D"
+      "size": 577680,
+      "sha256": "9C0018E44016E8C1F29C49DDF931CE883823E02390126A001F4BCA3DCC22B28F"
     },
     "adapter_runtime/SQLitePCLRaw.batteries_v2.dll": {
       "size": 5120,
@@ -6047,7 +6059,7 @@
     },
     "adapter_runtime/adapter_manifest.json": {
       "size": 52662,
-      "sha256": "3050B4A71DDFEDEE6CD6292F7FFF56ADD16C459590CD9133972B73DC11DA4939"
+      "sha256": "6B78CCDD7CE8EED26326FB472D46F6314E4B5D42AC8EBA8206CF8FB7098A3EAA"
     },
     "adapter_runtime/clretwrc.dll": {
       "size": 310568,
@@ -6202,7 +6214,7 @@
       "sha256": "0388592AD03CAE6025409410578D58F3276983E409A350033AE2B2613E6C906A"
     }
   },
-  "source_closure_count": 379,
+  "source_closure_count": 381,
   "public_export_policy": {
     "mode": "explicit-reviewed-allowlist-only",
     "exclude_private_profiles_states_logs_backups": true,

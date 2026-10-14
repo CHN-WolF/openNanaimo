@@ -238,15 +238,32 @@ if($script:queries-ne1){throw "queries=$script:queries expected=1"}
                         click.index('Register-ClientProfile $data.Info.AdapterIP'))
         self.assertLess(click.index('Ensure-ClientCompatibility'),
                         click.index('Start-Process -FilePath $Client'))
+    @unittest.skipUnless(shutil.which('powershell.exe'), 'Windows PowerShell required')
     def test_launcher_and_recipe_manifest_select_identical_operations(self):
-        text = (ROOT / 'gui_launcher/nanaimo_launcher.ps1').read_text('utf-8-sig')
-        block = text.split('function Ensure-ClientCompatibility(', 1)[1].split('function Register-ClientProfile', 1)[0]
-        args = re.findall(r"'(--[a-z0-9-]+)'", block.split('$arguments=', 1)[1].split('$output=', 1)[0])
-        recipe = json.loads((ROOT / 'manifest/patch_runtime_requirements.json').read_text('utf-8'))
-        selected = [arg for arg in args if arg not in ('--source-root', '--output-root', '--tools')]
-        self.assertEqual(selected, recipe['compatibility_derivation']['launcher_selection']['arguments'])
-        self.assertIn('--native-state', selected)
-        self.assertNotIn('--revival-display', selected)
+        script = r"""
+$ErrorActionPreference='Stop'
+$tokens=$null;$errors=$null
+$ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'gui_launcher/nanaimo_launcher.ps1'),[ref]$tokens,[ref]$errors)
+if($errors.Count){throw 'Launcher parse failed'}
+$function=$ast.Find({param($n) $n-is[Management.Automation.Language.FunctionDefinitionAst]-and$n.Name-eq'Ensure-ClientCompatibility'},$true)
+$assignments=@($function.Body.EndBlock.Statements|Where-Object {$_-is[Management.Automation.Language.AssignmentStatementAst]-and$_.Left.Extent.Text-eq'$arguments'})
+$conditions=@($function.Body.EndBlock.Statements|Where-Object {$_-is[Management.Automation.Language.IfStatementAst]-and$_.Extent.Text.Contains("'--monk-dialogue'")})
+if($assignments.Count-ne1-or$conditions.Count-ne1){throw 'Compatibility argument statements changed'}
+$Root=$env:TEST_TMP;$ClientCompatibilityOverlay=Join-Path $Root 'overlay'
+$recipe=Get-Content -Raw -Encoding UTF8 manifest/patch_runtime_requirements.json|ConvertFrom-Json
+$expected=@($recipe.compatibility_derivation.launcher_selection.arguments)
+foreach($installed in @($false,$true)){
+ if($installed){[IO.File]::WriteAllText((Join-Path $Root '.openNanaimo-monk-dialogue.json'),'{}')}
+ . ([scriptblock]::Create($assignments[0].Extent.Text))
+ . ([scriptblock]::Create($conditions[0].Extent.Text))
+ $selected=@($arguments|Where-Object {$_-like'--*'-and$_-notin@('--tools','--source-root','--output-root')})
+ $wanted=@($expected);if($installed){$wanted+='--monk-dialogue'}
+ if(($selected-join',')-cne($wanted-join',')){throw "Compatibility selection differs: $selected"}
+ if('--native-state'-notin$selected-or'--revival-display'-in$selected){throw 'Native state policy changed'}
+}
+'COMPATIBILITY_SELECTION_PASS'
+"""
+        self.run_powershell_check(script, 'COMPATIBILITY_SELECTION_PASS')
 
     def test_local_entry_reuses_loopback_adapter_and_allows_multiple_clients(self):
         launcher = (ROOT / 'gui_launcher/nanaimo_launcher.ps1').read_text('utf-8-sig')

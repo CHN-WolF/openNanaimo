@@ -99,6 +99,8 @@ internal static class ApartmentHousingPolicy
         [50011] = 1,
         [50016] = 1,
         [50017] = 1,
+        [50018] = 1,
+        [50019] = 1,
     };
     internal static bool IsHouseSlot(byte town, ushort page, ushort slot)
         => town <= 4 && page <= byte.MaxValue && slot < 20

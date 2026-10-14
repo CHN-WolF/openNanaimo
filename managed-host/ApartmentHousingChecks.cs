@@ -66,6 +66,8 @@ internal static class ApartmentHousingChecks
                 _characters.Add(character);
                 _sessions.Add(sessionId);
             }
+            FifthVillageLandChecks.Run();
+            await CheckFifthVillagePurchasesAsync();
             await Sql("UPDATE Characters SET Hans=100000");
             await CheckPurchasesAsync();
             await CheckExteriorsAsync();
@@ -276,6 +278,48 @@ internal static class ApartmentHousingChecks
                     && (await _db.GetApartmentHousesAsync(0, 8)).Count == 1,
                     "concurrent buyers of one slot debit only its winner");
             }
+        }
+
+        private async Task CheckFifthVillagePurchasesAsync()
+        {
+            var owner = _characters[6];
+            var rival = _characters[7];
+            foreach (var page in ApartmentLandPrices.FifthVillagePages.ToArray())
+            {
+                await Sql($"UPDATE Characters SET Hans=28000 WHERE Id IN ({owner.Id},{rival.Id})");
+                await Points(6, 599);
+                Check(await Purchase(6, 4, page, 0) == 30 && await Balance(6) == 599
+                    && (await _db.GetCharacterByIdAsync(owner.Id))!.Hans == 28000,
+                    $"fifth village {page}: insufficient points preserves both balances");
+                await Points(6, 600);
+                await Sql($"UPDATE Characters SET Hans=27999 WHERE Id={owner.Id}");
+                Check(await Purchase(6, 4, page, 0) == 20 && await Balance(6) == 600
+                    && (await _db.GetCharacterByIdAsync(owner.Id))!.Hans == 27999,
+                    $"fifth village {page}: insufficient Hans rolls back points");
+                await Sql($"UPDATE Characters SET Hans=28000 WHERE Id={owner.Id}");
+                Check(await Purchase(6, 4, page, 1) == 40
+                    && await Purchase(6, 4, page, 0, "stale-session") == 40 && await Balance(6) == 600,
+                    $"fifth village {page}: invalid slot and session rejected");
+                Check(await Purchase(6, 4, page, 0) == 10 && await Balance(6) == 0
+                    && (await _db.GetCharacterByIdAsync(owner.Id))!.Hans == 0,
+                    $"fifth village {page}: exact 28000 Hans and 600 points purchase");
+                var reopened = new DatabaseService(root);
+                var house = await reopened.GetOwnedApartmentHouseAsync(owner.Id);
+                var card = await reopened.GetApartmentLandCardAsync(owner.Id);
+                Check(house is { Town: 4, Slot: 0 } && house.Page == page
+                    && card is { Town: 4, Slot: 0, CardCode: 60000000 } && card.Page == page,
+                    $"fifth village {page}: address and land card persist");
+                await Points(7, 600);
+                Check(await Purchase(7, 4, page, 0) == 40 && await Balance(7) == 600
+                    && (await _db.GetCharacterByIdAsync(rival.Id))!.Hans == 28000,
+                    $"fifth village {page}: occupied address does not debit rival");
+                Check(await _db.DeleteApartmentLandCardAsync(owner.AccountId, owner.Id, _sessions[6]) is { Town: 4 }
+                    && (await _db.GetApartmentHousesAsync(4, checked((byte)page))).Count == 0,
+                    $"fifth village {page}: deleting land card releases address");
+            }
+            Check(await Purchase(6, 4, 20, 0) == 40, "unconfigured fifth-village page rejected");
+            await Points(6, 0);
+            await Points(7, 0);
         }
 
         private async Task CheckExteriorsAsync()

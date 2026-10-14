@@ -513,29 +513,30 @@ function Quote-NativeArgument([string]$Argument){
     [void]$builder.Append('"');return $builder.ToString()
 }
 
-function Sync-IsolatedPetCatalog([string]$SourceRoot,[string]$WorkRoot,[string]$CacheRoot){
-    $source=Join-Path $SourceRoot 'pi._D7'
+function Sync-IsolatedCatalog([string]$SourceRoot,[string]$WorkRoot,[string]$CacheRoot,[string]$Name,[string]$BackupDirectory){
+    if($Name-notin@('pi._D7','MT._D18')-or$BackupDirectory-notin@('pet-catalog-backups','land-catalog-backups')){throw 'Unknown isolated catalog.'}
+    $source=Join-Path $SourceRoot $Name
     if(-not(Test-Path -LiteralPath $source -PathType Leaf)){return}
-    $target=Join-Path $WorkRoot 'pi._D7'
+    $target=Join-Path $WorkRoot $Name
     Assert-ChildPath $CacheRoot $target
     Assert-NoReparseAncestors (Split-Path $target -Parent)
-    if(Test-ReparsePoint $target){throw 'Prepared pet catalog cannot be a reparse point.'}
+    if(Test-ReparsePoint $target){throw 'Prepared catalog cannot be a reparse point.'}
     $sourceHash=Get-OptionalFileHash $source
     $oldHash=Get-OptionalFileHash $target
     if($oldHash-eq$sourceHash){return}
     if($oldHash){
-        $backupDir=Join-Path $CacheRoot ("pet-catalog-backups\{0}"-f$oldHash)
+        $backupDir=Join-Path $CacheRoot ("{0}\{1}"-f$BackupDirectory,$oldHash)
         Assert-ChildPath $CacheRoot $backupDir
         Assert-NoReparseAncestors $backupDir
         New-Item -ItemType Directory -Path $backupDir -Force|Out-Null
-        $backup=Join-Path $backupDir 'pi._D7'
-        if(Test-Path -LiteralPath $backup){if((Get-OptionalFileHash $backup)-ne$oldHash){throw 'Pet catalog backup mismatch.'}}
+        $backup=Join-Path $backupDir $Name
+        if(Test-Path -LiteralPath $backup){if((Get-OptionalFileHash $backup)-ne$oldHash){throw 'Catalog backup mismatch.'}}
         else{Copy-Item -LiteralPath $target -Destination $backup}
     }
     # Caller holds the slot lock and has rejected an active client process.
     # A failed copy/hash check aborts preparation, never starts that client.
     Copy-Item -LiteralPath $source -Destination $target -Force
-    if((Get-OptionalFileHash $target)-ne$sourceHash){throw 'Prepared pet catalog refresh failed.'}
+    if((Get-OptionalFileHash $target)-ne$sourceHash){throw 'Prepared catalog refresh failed.'}
 }
 
 . (Join-Path $PSScriptRoot 'lumineos_resource_identity.ps1')
@@ -569,7 +570,8 @@ function New-IsolatedClientWorkTree([string]$SourceRoot,[string]$WorkRoot,[strin
     foreach($directoryName in @('Working','runtime')){New-Item -ItemType Directory -Path (Join-Path $WorkRoot $directoryName) -Force|Out-Null}
     Sync-IsolatedApartmentResources $SourceRoot $WorkRoot $CacheRoot
     Sync-LumineosResourceIdentity $SourceRoot $WorkRoot $CacheRoot
-    Sync-IsolatedPetCatalog $SourceRoot $WorkRoot $CacheRoot
+    Sync-IsolatedCatalog $SourceRoot $WorkRoot $CacheRoot 'pi._D7' 'pet-catalog-backups'
+    Sync-IsolatedCatalog $SourceRoot $WorkRoot $CacheRoot 'MT._D18' 'land-catalog-backups'
     Sync-KoreanPetResourceIdentity $SourceRoot $WorkRoot $CacheRoot
     $stateDirectory=Join-Path $WorkRoot 'StateOption'
     if(-not(Test-Path -LiteralPath $stateDirectory -PathType Container)){New-Item -ItemType Directory -Path $stateDirectory -Force|Out-Null}
@@ -740,7 +742,8 @@ $resourceMigration=$null
 if($hasState){
     Sync-IsolatedApartmentResources $WorkingDirectory $workDir $CacheRoot
     Sync-LumineosResourceIdentity $WorkingDirectory $workDir $CacheRoot
-    Sync-IsolatedPetCatalog $WorkingDirectory $workDir $CacheRoot
+    Sync-IsolatedCatalog $WorkingDirectory $workDir $CacheRoot 'pi._D7' 'pet-catalog-backups'
+    Sync-IsolatedCatalog $WorkingDirectory $workDir $CacheRoot 'MT._D18' 'land-catalog-backups'
     Sync-KoreanPetResourceIdentity $WorkingDirectory $workDir $CacheRoot
     $entertainmentState=Join-Path $WorkingDirectory 'animalstate.st'
     if(Test-Path -LiteralPath $entertainmentState -PathType Leaf){
