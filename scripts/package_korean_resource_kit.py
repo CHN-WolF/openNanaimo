@@ -20,8 +20,12 @@ TOOLS = ('package_korean_resource_kit.py', 'port_lumineos_resources.py',
          'entertainment_room_compat.py',
          'entertainment_result_compat.py', 'arena_result_compat.py',
          'player_trade_compat.py', 'level200_compat.py',
+         'monk_dialogue_compat.py', 'monk_village_compat.py', 'prepare_monk_dialogue.py',
+         'prepare_monk_entry.py', 'prepare_monk_village_entries.py', 'prepare_monk_resources.py',
          'prepare_hero_dragon.py', 'prepare_korean_pets.py', 'verify_knowledge.py')
 RECIPES = ('hero_dragon_resources.json', 'korean_pet_resources.json', 'lumineos_resource_port.json')
+COMPATIBILITY_RECIPES = ('monk_dialogue_resources.json', 'monk_localization.json',
+                         'monk_resource_port.json')
 GUIDE = 'knowledge/指南/韩服L7-L8与宠物资源说明.md'
 EXTRA_DOCS = (GUIDE, 'knowledge/指南/韩服宠物佩戴等级下放方案.md',
               'knowledge/指南/完整适配器与客户端兼容说明.md', 'knowledge/指南/客户端二进制补丁.md',
@@ -186,7 +190,7 @@ def build(source, bundle, output):
             dict(size=row['size'], sha256=row['sha256']))
     for name in TOOLS:
         add('scripts/' + name, port.safe(ROOT / 'scripts', name))
-    for name in (*RECIPES, 'korean_resource_kit.json'):
+    for name in (*RECIPES, *COMPATIBILITY_RECIPES, 'korean_resource_kit.json'):
         add('manifest/' + name, port.safe(ROOT / 'manifest', name))
     # Keep the guide at its original depth so its relative links remain valid.
     for name in documentation_plan():

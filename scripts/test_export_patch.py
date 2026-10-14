@@ -149,6 +149,8 @@ class ExportPatchTests(unittest.TestCase):
             "knowledge/业务/宠物/所有权.md": "# 所有权\n",
             "knowledge/工程/验证状态.md": "# 验证状态\n",
             "knowledge/工程/历史验证/既有记录.md": "# 既有记录\n",
+            "knowledge/工程/历史验证/索引.md": "# 历史验证\n",
+            "knowledge/工程/子弹DIY兼容/索引.md": "# 子弹DIY兼容\n",
             "knowledge/指南/文件清单与导出工具.md": "# 导出指南\n",
             "knowledge/指南/level200/README.md": "# 桥接操作\n",
             "knowledge/业务/DIY/索引.md": "# DIY专题\n",

@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    'scripts/test_knowledge_routes.py',
     'scripts/generate_managed_compatibility_recipe.py',
     'scripts/monk_dialogue_compat.py',
     'scripts/prepare_monk_dialogue.py',

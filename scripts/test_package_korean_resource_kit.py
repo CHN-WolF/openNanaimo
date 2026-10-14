@@ -13,17 +13,18 @@ PUBLISHED_KIT_SHA256 = '794a7ce9a3b4270aee4fbf50210f7bf9f93c385bf73c23ba16d4063d
 
 
 class KitTests(unittest.TestCase):
-    def test_compatibility_tool_has_all_local_imports(self):
-        tree = ast.parse((kit.ROOT / 'scripts/prepare_client_compatibility.py').read_text('utf-8'))
+    def test_packaged_tools_have_all_local_imports(self):
         modules = set()
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                modules.update(alias.name for alias in node.names)
-            elif isinstance(node, ast.ImportFrom):
-                if node.module:
-                    modules.add(node.module)
-                else:
+        for tool in kit.TOOLS:
+            tree = ast.parse((kit.ROOT / 'scripts' / tool).read_text('utf-8-sig'))
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Import):
                     modules.update(alias.name for alias in node.names)
+                elif isinstance(node, ast.ImportFrom):
+                    if node.module:
+                        modules.add(node.module)
+                    else:
+                        modules.update(alias.name for alias in node.names)
         local = {name + '.py' for name in modules
                  if (kit.ROOT / 'scripts' / (name + '.py')).is_file()}
         self.assertTrue(local.issubset(kit.TOOLS), sorted(local.difference(kit.TOOLS)))
@@ -123,7 +124,7 @@ class KitTests(unittest.TestCase):
         (bundle / 'payload/map.im3').write_bytes(b'output')
         (bundle / 'manifest.json').write_text(json.dumps(dict(id='fixture', files=[dict(
             path='map.im3', size=6, sha256=kit.port.digest(b'output'))])))
-        for rel in [*('scripts/' + x for x in kit.TOOLS), *('manifest/' + x for x in (*kit.RECIPES, 'korean_resource_kit.json')), *kit.EXTRA_DOCS]:
+        for rel in [*('scripts/' + x for x in kit.TOOLS), *('manifest/' + x for x in (*kit.RECIPES, *kit.COMPATIBILITY_RECIPES, 'korean_resource_kit.json')), *kit.EXTRA_DOCS]:
             p = repo / rel
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes(b'tool-or-doc')
@@ -154,9 +155,11 @@ class KitTests(unittest.TestCase):
 
     def test_current_documentation_closure_and_tool_imports(self):
         plan = kit.documentation_plan()
-        self.assertIn('knowledge/业务/宠物/所有权.md', plan)
-        self.assertIn('knowledge/工程/资源安装.md', plan)
-        self.assertIn('knowledge/业务/角色/等级经验.md', plan)
+        # Follow the canonical leaves rather than require retired routing stubs.
+        self.assertIn('knowledge/业务/宠物/所有权/索引.md', plan)
+        self.assertIn('knowledge/业务/宠物/所有权/追加宠物对照表.md', plan)
+        self.assertIn('knowledge/工程/资源安装/索引.md', plan)
+        self.assertIn('knowledge/业务/角色/等级经验/索引.md', plan)
         tree = ast.parse((kit.ROOT / 'scripts/package_korean_resource_kit.py').read_text('utf-8'))
         imports = {alias.name + '.py' for node in ast.walk(tree) if isinstance(node, ast.Import)
                    for alias in node.names if (kit.ROOT / 'scripts' / (alias.name + '.py')).is_file()}
@@ -172,6 +175,8 @@ class KitTests(unittest.TestCase):
             result = kit.build(source, bundle, output)
             self.assertEqual(result['status'], 'KIT_INTEGRITY_PASS')
             with zipfile.ZipFile(output) as z:
+                for name in kit.COMPATIBILITY_RECIPES:
+                    self.assertIn('manifest/' + name, z.namelist())
                 self.assertNotIn('source-kr/accounts.dat', z.namelist())
                 self.assertIn('knowledge/工程/资源安装.md', z.namelist())
                 self.assertNotIn('knowledge/工程/unlinked.md', z.namelist())
