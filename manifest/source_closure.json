@@ -313,8 +313,8 @@
     },
     {
       "path": "managed-host/QuestSystemChecks.cs",
-      "size": 27845,
-      "sha256": "C205424F21833DCFDB133F9CBFB0DBF30356FE77242E2F21FF32130D33B20984"
+      "size": 31230,
+      "sha256": "E4077CED1C8C4BA127F5E2C74220F04797395A7AAF3A01DEC95D98DCDDCFD4D9"
     },
     {
       "path": "managed-host/Resources/client-compatibility.json",
@@ -783,8 +783,8 @@
     },
     {
       "path": "managed/Services/DatabaseService.cs",
-      "size": 598217,
-      "sha256": "19CCF76A62F3E5E7733EDF3F1D14E692A67AE5B8E34F899AF10AA81E215CE692"
+      "size": 598552,
+      "sha256": "7E7248217742BFA6F24A59DD1256DE9FE718B62BF286C06A3F770DF54EAE9FC4"
     },
     {
       "path": "managed/Services/DungeonCombatCatalog.cs",

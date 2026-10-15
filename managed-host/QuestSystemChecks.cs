@@ -340,6 +340,43 @@ internal static class QuestSystemChecks
                 QuestRunRestrictions.None);
             Check(furnished.NewlyCompleted, "placed apartment furniture completes the housing story objective");
 
+            var mentorQuest = QuestCatalog.Quests.Single(quest =>
+                QuestCatalog.MainLineQuestIds.Contains(quest.QuestId)
+                && quest.Objectives.Count == 1 && quest.Objectives[0].ObjectiveType == 11);
+            Check(mentorQuest.Objectives[0].RequiredCount == 2,
+                $"QT mentor mainline {mentorQuest.QuestId} ({mentorQuest.Name}: {mentorQuest.Objectives[0].Name}) requires two accepted students");
+            await SetStory(mentorQuest.QuestId);
+            async Task CheckMentorProgress(uint expected, bool ready, string label)
+            {
+                var frames = await Dispatch(0xC59B, []);
+                var list = FindFrame(frames, 0xC59C);
+                var task = (await db.GetCharacterTasksAsync(account, characterId, sessionId))!
+                    .Single(task => task.QuestId == mentorQuest.QuestId);
+                Check(task.Progress3 == expected && task.Progress1 == (ready ? 1 : 0)
+                    && task.State3 == 0
+                    && BinaryPrimitives.ReadUInt32LittleEndian(list.AsSpan(8 + 224 + 8, 4)) == expected
+                    && BinaryPrimitives.ReadUInt16LittleEndian(list.AsSpan(8 + 224 + 4, 2)) == (ready ? 1 : 0),
+                    label);
+            }
+            await CheckMentorProgress(0, false, "mentor mainline starts at 0/2");
+            var studentAccount = await db.OpenLocalAccountAsync("quest-mentor-student-one");
+            var studentId = await db.CreateLocalCharacterAsync(studentAccount, "QuestStudent1", 1);
+            var secondStudentAccount = await db.OpenLocalAccountAsync("quest-mentor-student-two");
+            var secondStudentId = await db.CreateLocalCharacterAsync(secondStudentAccount, "QuestStudent2", 1);
+            await Execute("INSERT INTO MentorshipRelations(TeacherCharacterId,StudentCharacterId,State,CreatedAt) VALUES($id,$student,0,$now)",
+                ("$id", characterId), ("$student", studentId), ("$now", DateTime.UtcNow.ToString("O")));
+            await CheckMentorProgress(1, false, "one active student persists and encodes 1/2 instead of zero");
+            await Execute("UPDATE MentorshipRelations SET State=1,EndedAt=$now WHERE TeacherCharacterId=$id AND StudentCharacterId=$student",
+                ("$id", characterId), ("$student", studentId), ("$now", DateTime.UtcNow.ToString("O")));
+            await CheckMentorProgress(1, false, "graduation keeps the accepted student counted at 1/2");
+            await Execute("INSERT INTO MentorshipRelations(TeacherCharacterId,StudentCharacterId,State,CreatedAt,EndedAt) VALUES($id,$student,1,$now,$now),($id,$second,2,$now,$now)",
+                ("$id", characterId), ("$student", studentId), ("$second", secondStudentId), ("$now", DateTime.UtcNow.ToString("O")));
+            await CheckMentorProgress(1, false, "duplicate graduated history and released relations do not inflate 1/2");
+            await Execute("INSERT INTO MentorshipRelations(TeacherCharacterId,StudentCharacterId,State,CreatedAt) VALUES($id,$student,0,$now)",
+                ("$id", characterId), ("$student", secondStudentId), ("$now", DateTime.UtcNow.ToString("O")));
+            await CheckMentorProgress(2, true, "second distinct accepted student completes 2/2 without graduation");
+            await CheckMentorProgress(2, true, "repeated mentor refresh preserves completion and valid objective index");
+
             Console.WriteLine("QUEST_SYSTEM_CHECKS_PASS");
         }
         finally

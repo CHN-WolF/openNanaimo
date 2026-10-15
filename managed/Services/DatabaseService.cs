@@ -8911,6 +8911,10 @@ public sealed partial class DatabaseService
                 }
                 if (!ObjectiveMet(objective, progress))
                 {
+                    // Accepted students are a live count, not an all-or-nothing
+                    // objective. Preserve 1/2 in C59C while the task stays unready.
+                    if (objective.ObjectiveType == 11)
+                        completed = checked(completed + Math.Min(objectiveUnits, checked((uint)mentorStudents)));
                     met = false;
                     if (firstUnmetIndex < 0) firstUnmetIndex = index;
                     continue;
