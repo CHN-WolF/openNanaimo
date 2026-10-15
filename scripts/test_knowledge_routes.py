@@ -208,12 +208,68 @@ LEGACY_ANCHORS = {
 }
 
 
+# Section URLs present before the terminology/splitting change at 5f3ac2e.
+for _path, _anchors in {
+    "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u4f24\u5bb3\u4e0e\u76ee\u6807/\u5165\u4f24\u4e0e\u534f\u8bae.md": [
+        "boss\u8089\u5f39\u53cd\u9988",
+        "boss\u96f6\u751f\u547d\u5371\u9669\u90e8\u4ef6",
+        "d014d015\u8fb9\u754c",
+        "kind10\u8d44\u6e90\u57fa\u7840\u653b\u51fb",
+        "kind70\u72b6\u6001\u95e8\u63a7",
+        "\u53d8\u5f62\u969c\u788d\u63a5\u89e6",
+        "\u5404\u4e8b\u4ef6\u7c7b\u522b\u4e0e\u7f3a\u5931\u503c\u7b56\u7565",
+        "\u573a\u666f\u6839\u4e0e\u90e8\u4f4d\u89e3\u6790",
+        "\u6240\u9009\u8d44\u6e90\u76ee\u5f55",
+        "\u6784\u9020\u9a8c\u8bc1",
+        "\u73a9\u5bb6hp\u5206\u6570\u4e0e\u5b8c\u6574\u5e27",
+        "\u73ca\u745a\u53d1\u5149\u4f53",
+        "\u76ee\u6807\u4f24\u5bb3\u6570\u5b57",
+        "\u901a\u4fe1\u4e0e\u8d44\u6e90\u8eab\u4efd"
+    ],
+    "knowledge/\u4e1a\u52a1/\u5730\u5bab/\u5173\u5361\u4e0e\u623f\u95f4/\u62c9\u7c73\u8bfa\u65af\u8d44\u6e90.md": [
+        "bgm\u5f15\u7528\u4e0e\u5730\u56fe\u56fe\u5c42",
+        "cn\u57fa\u7ebf\u8986\u76d6",
+        "cn\u6587\u672c\u4e0e\u7f3a\u5931\u6218\u573a",
+        "l8\u751f\u6210\u53ca\u9a8c\u8bc1",
+        "\u5bfc\u822a\u79f0\u53f7\u5361\u6c60\u4e0e\u9a8c\u6536",
+        "\u5f53\u524dl7\u6574\u5173\u66ff\u6362",
+        "\u62c9\u7c73\u8bfa\u65aflumineos\u6218\u6597\u8d44\u6e90\u9009\u62e9",
+        "\u62c9\u7c73\u8bfa\u65aflumineos\u8eab\u4efd\u8d44\u6e90\u8986\u76d6\u4e0el7l8\u96c6\u6210",
+        "\u666e\u901a\u76ee\u6807\u6e90\u653b\u51fb\u548c\u9009\u5b9a\u8d44\u6e90--\u9488\u5bf9\u4f20\u5165kind10\u8eab\u4efd\u7684pon\u57fa\u7840\u653b\u51fb",
+        "\u8eab\u4efd\u4e0e\u72ec\u7acb\u8d26\u672c",
+        "\u8f6c\u6362\u4e0e\u4f9d\u8d56\u56fe",
+        "\u9009\u62e9\u6027\u8d44\u6e90\u5305",
+        "\u901a\u4fe1\u4e0e\u8d44\u6e90\u6620\u5c04"
+    ],
+    "knowledge/\u4e1a\u52a1/\u5e93\u5b58/\u88c5\u5907.md": [
+        "\u4e3b\u9898\u5bfc\u822a"
+    ],
+    "knowledge/\u4e1a\u52a1/\u7ecf\u6d4e/\u5546\u57ce/\u76ee\u5f55\u5e01\u79cd\u4e0e\u8d2d\u4e70.md": [
+        "\u5546\u57cecashhans\u4f59\u989d\u8bfb\u53d6\u70b9"
+    ]
+}.items():
+    LEGACY_ANCHORS.setdefault(_path, []).extend(_anchors)
+
+
 class KnowledgeRoutingTests(unittest.TestCase):
     def test_legacy_section_links_remain_addressable(self):
         for name, expected in LEGACY_ANCHORS.items():
             with self.subTest(path=name):
                 current = anchors((ROOT / name).read_text('utf-8'))
                 self.assertFalse(set(expected) - current, sorted(set(expected) - current))
+
+    def test_release_and_export_records_match_repository_bytes(self):
+        release = json.loads((ROOT / 'manifest/open_release_manifest.json').read_text('utf-8'))
+        allowlist = json.loads((ROOT / 'manifest/patch_allowlist.json').read_text('utf-8'))
+        contracts = {
+            'release': release['critical_files'].items(),
+            'export': ((row['path'], row) for row in allowlist['files']),
+        }
+        for contract, records in contracts.items():
+            for name, record in records:
+                with self.subTest(contract=contract, path=name):
+                    self.assertEqual(export_patch.digest(ROOT / name),
+                                     (record['size'], record['sha256'].lower()))
 
     def test_all_current_pages_are_export_candidates(self):
         manifest = json.loads((ROOT / 'manifest/patch_allowlist.json').read_text('utf-8'))
