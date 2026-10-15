@@ -1498,7 +1498,22 @@ public sealed partial class NetworkAdapterService
                 ? session.Character.Id
                 : memberUid;
             byte packedRatings = 0;
-            if (session.NativeDungeonHdIndex == 0)
+            var lumineos = DungeonTitleProgression.IsLumineosTuple(session.NativeDungeonHdIndex,
+                session.NativeDungeonEpisode, session.NativeDungeonDungeon, session.NativeDungeonStage);
+            var monk = MonkChallengePolicy.IsPlayableTuple(session.NativeDungeonHdIndex,
+                session.NativeDungeonEpisode, session.NativeDungeonDungeon, session.NativeDungeonStage);
+            if (monk)
+            {
+                readyRoomRank = await _database.GetMonkChallengeReadyRoomRankAsync(characterId,
+                    session.NativeDungeonEpisode, session.NativeDungeonLogicalDifficulty, token);
+            }
+            else if (lumineos)
+            {
+                readyRoomRank = await _database.GetLumineosReadyRoomRankAsync(characterId,
+                    session.NativeDungeonDungeon, session.NativeDungeonStage,
+                    session.NativeDungeonLogicalDifficulty, token);
+            }
+            else if (session.NativeDungeonHdIndex == 0)
             {
                 var ratings = await _database.GetDungeonBestRatingsAsync(characterId, token);
                 var index = session.NativeDungeonEpisode * DungeonDifficultyCount
@@ -1512,10 +1527,11 @@ public sealed partial class NetworkAdapterService
                 if (session.NativeDungeonEpisode < ratings.Length)
                     packedRatings = ratings[session.NativeDungeonEpisode];
             }
-            readyRoomRank = ExtractPackedDungeonReadyRoomRank(
-                packedRatings,
-                session.NativeDungeonDungeon,
-                session.NativeDungeonStage);
+            if (!lumineos && !monk)
+                readyRoomRank = ExtractPackedDungeonReadyRoomRank(
+                    packedRatings,
+                    session.NativeDungeonDungeon,
+                    session.NativeDungeonStage);
         }
 
         var previousRank = frame[0xB4];

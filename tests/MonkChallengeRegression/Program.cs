@@ -14,6 +14,7 @@ internal static partial class Program
         await using var fixture = await Fixture.Create();
         await CheckLedger(fixture);
         await CheckProductionSettlements(fixture);
+        await CheckRankings(fixture);
         IntegrationChecks.Run();
         Console.WriteLine($"MONK_CHALLENGE_REGRESSION_PASS checks={checks}");
     }

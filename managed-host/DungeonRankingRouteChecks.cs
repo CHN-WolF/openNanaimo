@@ -201,12 +201,13 @@ internal static class DungeonRankingRouteChecks
                     command.CommandText = """
                         INSERT INTO LumineosStagePerformance
                         (CharacterId,Episode,Difficulty,ArchiveSlot,BestRating,BestScore,ClearedAt,UpdatedAt)
-                        VALUES($id,100,$difficulty,$slot,5,$score,$now,$now)
+                        VALUES($id,100,$difficulty,$slot,$rating,$score,$now,$now)
                         """;
                     command.Parameters.AddWithValue("$id", character.Id);
                     command.Parameters.AddWithValue("$difficulty", difficulty);
                     command.Parameters.AddWithValue("$slot", dungeon * 2 + stage);
                     command.Parameters.AddWithValue("$score", score);
+                    command.Parameters.AddWithValue("$rating", 1 + (dungeon * 6 + stage * 3 + difficulty) % 5);
                     command.Parameters.AddWithValue("$now", DateTime.UtcNow.ToString("O"));
                     await command.ExecuteNonQueryAsync(token);
                     Set(session, "NativeDungeonHdIndex", (byte)0);
@@ -227,6 +228,49 @@ internal static class DungeonRankingRouteChecks
                         "Lumineos ranking preserves settlement identity and transport integrity");
                 }
             }
+            var monkSession = Guid.NewGuid().ToString("N");
+            Check(await database.BeginWorldSessionAsync(character.AccountId, character.Id, monkSession, 1, "127.0.0.1"),
+                "monk ranking fixture owns its settlement session");
+            await database.InitializeMonkChallengesAsync(token);
+            await using (var sql = new SqliteConnection($"Data Source={Path.Combine(root, "game.db")}"))
+            {
+                await sql.OpenAsync(token);
+                for (byte episode = 24; episode <= 27; episode++)
+                for (byte difficulty = 0; difficulty < 3; difficulty++)
+                {
+                    var score = 20000 + episode * 100 + difficulty;
+                    await using var tx = sql.BeginTransaction();
+                    var committed = await DatabaseService.CommitMonkChallengeSuccessAsync(sql, tx,
+                        character.Id, monkSession, new NativeDungeonSettlementRecord(0, episode, 0, 0,
+                            difficulty, (byte)(1 + (episode + difficulty) % 5), score, score,
+                            SettlementId: $"{episode * 3 + difficulty}:0"), token);
+                    Check(committed.Applied, "monk fixture score uses the production atomic success helper");
+                    await tx.CommitAsync(token);
+                    Set(session, "NativeDungeonEpisode", episode);
+                    Set(session, "NativeDungeonDungeon", (byte)0);
+                    Set(session, "NativeDungeonStage", (byte)0);
+                    Set(session, "NativeDungeonLogicalDifficulty", difficulty);
+                    var before = SettlementState(session);
+                    await Send(NativeDungeonClient.Frame(0xCF15, [20, 0, 0, 0]));
+                    var delivered = await ReadFrame(clientStream, token);
+                    Check(delivered.Length == 252 && U16(delivered, 6) == 0xCF16
+                        && BinaryPrimitives.ReadUInt32LittleEndian(delivered.AsSpan(28)) == score
+                        && delivered.AsSpan(36).ToArray().All(value => value == 0)
+                        && before == SettlementState(session) && ValidChecksum(delivered),
+                        $"native monk ep{episode} difficulty{difficulty}: persistent CF16, zero tail and no gate mutation");
+                    var badge = NativeDungeonClient.Frame(0xCF71, new byte[0xB0]);
+                    BinaryPrimitives.WriteUInt16LittleEndian(badge.AsSpan(0x1A), checked((ushort)character.Id));
+                    await (Task)Method("PatchNativeReadyRoomRankFrameAsync").Invoke(service, [session, badge, token])!;
+                    Check(badge[0xB4] == Math.Clamp((episode + difficulty) % 5 - 1, 0, 3) && badge[0xB5] == 0,
+                        "native monk CF71 uses the selected challenge and difficulty's exact rating");
+                }
+            }
+            await Send(NativeDungeonClient.Frame(0xCF15, [20, 0, 1, 0]));
+            await Send(NativeDungeonClient.Frame(0xCF15, [20, 0, 2, 0]));
+            await database.EndWorldSessionAsync(character.AccountId, character.Id, monkSession,
+                new CharacterRuntimeState(character.CurrentHp, character.CurrentMp, 0, 0, 0, 0, 1));
+            await NoWorkerRequest();
+            Set(session, "NativeDungeonEpisode", (byte)100);
             await Send(NativeDungeonClient.Frame(0xCF15, [20, 0, 8, 0]));
             await Send(NativeDungeonClient.Frame(0xCF15, [20, 0, 7, 1]));
             await NoWorkerRequest();
@@ -263,6 +307,8 @@ internal static class DungeonRankingRouteChecks
             foreach (ushort opcode in new ushort[] { 0xCF78, 0xCF8C, 0xCF1E })
                 await Forward(service, session, NativeDungeonClient.Frame(opcode, new byte[4]), 7, token);
             Check(Queued(session) == 0, "old epoch, inactive forwarding and unsolicited transitions remain suppressed");
+            await CheckManagedRouteAsync(database, root, character);
+            await CheckRatingCarriersAsync(database, root, character);
             Console.WriteLine("DUNGEON_RANKING_ROUTE_CHECKS_PASS CF15=managed-SQLite CF16=real-rows-only domains=normal+secret");
         }
         finally
@@ -271,6 +317,184 @@ internal static class DungeonRankingRouteChecks
             if (writer is not null) await writer.WaitAsync(token);
             workerListener.Stop(); outputListener.Stop();
         }
+    }
+
+    private static async Task CheckManagedRouteAsync(DatabaseService database, string root, CharacterRecord character)
+    {
+        await using var service = new NetworkAdapterService(database, _ => { }, root);
+        var session = Activator.CreateInstance(SessionType, nonPublic: true)!;
+        Set(session, "Character", character);
+        Set(session, "AccountId", character.AccountId);
+        Set(session, "OnlineTracked", true);
+        Set(session, "DungeonRoomId", 1);
+        var sessionId = (string)Get(session, "SessionId")!;
+        var roomType = typeof(NetworkAdapterService).GetNestedType("DungeonRoom", BindingFlags.NonPublic)!;
+        var memberType = typeof(NetworkAdapterService).GetNestedType("DungeonMember", BindingFlags.NonPublic)!;
+        var room = Activator.CreateInstance(roomType, nonPublic: true)!;
+        void RoomSet(string name, object value) => roomType.GetProperty(name)!.SetValue(room, value);
+        RoomSet("Id", 1);
+        RoomSet("OwnerSessionId", sessionId);
+        RoomSet("CreateRequestPayload", new byte[44]);
+        var members = (System.Collections.IDictionary)roomType.GetProperty("Members")!.GetValue(room)!;
+        members[sessionId] = Activator.CreateInstance(memberType,
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, [session, (byte)0], null)!;
+        var rooms = (System.Collections.IDictionary)typeof(NetworkAdapterService)
+            .GetField("_dungeonRooms", PrivateInstance)!.GetValue(service)!;
+        rooms[1] = room;
+        var handler = Method("HandleNativeFrameCoreAsync");
+        Task<byte[]?> Query(byte[] payload, string channel = "WorldAdapter")
+        {
+            var request = NativeDungeonClient.Frame(0xCF15, payload);
+            return (Task<byte[]?>)handler.Invoke(service,
+                [request, (ushort)0xCF15, channel, "127.0.0.1", "127.0.0.1", session, CancellationToken.None])!;
+        }
+        var builder = typeof(NetworkAdapterService).GetMethod("BuildDungeonStageRecordsPayload",
+            BindingFlags.Static | BindingFlags.NonPublic)!;
+        foreach (var domain in new[] { ((byte)0, (byte)2), ((byte)1, (byte)3), ((byte)0, (byte)100),
+            ((byte)0, (byte)24), ((byte)0, (byte)25), ((byte)0, (byte)26), ((byte)0, (byte)27) })
+        {
+            var selection = new byte[44]; selection[26] = domain.Item1;
+            RoomSet("CreateRequestPayload", selection);
+            RoomSet("BattleEpisode", domain.Item2);
+            var monk = MonkChallengePolicy.IsReservedEpisode(domain.Item2);
+            var dungeonCount = monk ? 1 : domain.Item2 == 100 ? 8 : 3;
+            for (byte dungeon = 0; dungeon < dungeonCount; dungeon++)
+            for (byte stage = 0; stage < 2; stage++)
+            for (byte difficulty = 0; difficulty < 3; difficulty++)
+            {
+                if (monk && stage != 0 || !monk && domain.Item2 != 100 && stage == 1 && dungeon != 2) continue;
+                RoomSet("BattleDungeon", dungeon); RoomSet("BattleStage", stage);
+                RoomSet("BattleLogicalDifficulty", difficulty);
+                var before = SettlementState(session);
+                var selector = new byte[] { 20, 0, dungeon, 0 };
+                var rows = await database.GetDungeonStageLeaderboardAsync(
+                    domain.Item1, domain.Item2, dungeon, stage, difficulty);
+                var expected = (byte[])builder.Invoke(null, [selector, rows])!;
+                var response = await Query(selector);
+                Check(response is { Length: 252 } && U16(response, 6) == 0xCF16
+                    && response.AsSpan(8).SequenceEqual(expected),
+                    $"managed CF15 {domain.Item1}/{domain.Item2}/{dungeon}/{stage}/{difficulty}: exact persistent rows and selector echo");
+                Check(SettlementState(session) == before && Queued(session) == 0,
+                    "managed ranking preserves battle state and queues no unsolicited worker frame");
+                if (monk)
+                {
+                    var ranks = await (Task<IReadOnlyDictionary<long, byte>>)
+                        Method("LoadDungeonReadyRoomRanksAsync").Invoke(service, [room, CancellationToken.None])!;
+                    Check(rows.Count == 1 && rows[0].BestScore == 20000 + domain.Item2 * 100 + difficulty
+                        && ranks[character.Id] == Math.Clamp((domain.Item2 + difficulty) % 5 - 1, 0, 3),
+                        "managed monk CF15 and CF71 preserve each challenge's score and selected difficulty");
+                }
+                if (domain.Item2 == 100)
+                {
+                    var ranks = (IReadOnlyDictionary<long, byte>)await (Task<IReadOnlyDictionary<long, byte>>)
+                        Method("LoadDungeonReadyRoomRanksAsync").Invoke(service, [room, CancellationToken.None])!;
+                    Check(ranks[character.Id] == Math.Clamp((dungeon * 6 + stage * 3 + difficulty) % 5 - 1, 0, 3),
+                        "managed CF71 rank uses the selected L1-L8 stage and difficulty, not the cross-difficulty cache");
+                    Check(rows.Count == 1 && rows[0].BestScore == 10000 + dungeon * 100 + stage * 10 + difficulty,
+                        "managed L1-L8 query returns nonempty records for its exact stage and logical difficulty");
+                }
+            }
+        }
+        RoomSet("BattleEpisode", (byte)100);
+        RoomSet("BattleDungeon", (byte)7);
+        RoomSet("BattleStage", (byte)1);
+        foreach (var invalid in new byte[][] { [], [20, 0], [19, 0, 0, 0], [20, 0, 8, 0], [20, 0, 7, 1], [20, 0, 0, 0, 0] })
+            Check(await Query(invalid) is null, "managed ranking rejects malformed selector without fallback");
+        var valid = new byte[] { 20, 0, 7, 0 };
+        Check(await Query(valid, "ArenaAdapter") is null, "managed ranking rejects a request on the arena connection");
+        Set(session, "OnlineTracked", false);
+        Check(await Query(valid) is null, "managed ranking rejects an offline session");
+        Set(session, "OnlineTracked", true);
+        members.Remove(sessionId);
+        Check(await Query(valid) is null, "managed ranking rejects a nonmember even if room id matches");
+        Set(session, "DungeonRoomId", 0);
+        Check(await Query(valid) is null, "managed ranking rejects a session without a room");
+        Console.WriteLine("DUNGEON_RANKING_MANAGED_ROUTE_CHECKS_PASS domains=normal+secret+L1-L8 stages=separate difficulty=authoritative malformed=rejected");
+    }
+
+    private static async Task CheckRatingCarriersAsync(DatabaseService database, string root, CharacterRecord character)
+    {
+        var restarted = new DatabaseService(root);
+        var ratings = await restarted.GetDungeonFrontierBestRatingsAsync(character.Id);
+        Check(ratings.Length == 23 && ratings.AsSpan(12).ToArray().All(value => value == 0),
+            "fifth-village cache restores eight rows after database reopen and leaves eleven unknown rows zero");
+        for (byte dungeon = 0; dungeon < 8; dungeon++)
+        for (byte stage = 0; stage < 2; stage++)
+        {
+            var best = Enumerable.Range(0, 3).Max(d => (dungeon * 6 + stage * 3 + d) % 5 + 1);
+            Check(((ratings[dungeon] >> (2 * stage)) & 3) == Math.Clamp(best - 2, 0, 3),
+                $"L{dungeon + 1} stage{stage}: popup cache uses best D-S rating mapped to blank/B/A/S");
+        }
+        Check((await restarted.GetDungeonFrontierBestRatingsAsync(character.Id - 1)).All(b => b == 0),
+            "a character without fifth-village records has no invented badges");
+        var ordinary = Enumerable.Range(0, 60).Select(i => (byte)i).ToArray();
+        var secret = new byte[] { 0xE4, 0x1B, 0x55, 0xAA };
+        var overlong = ratings.Concat(new byte[] { 0xFF, 0xFF }).ToArray();
+        foreach (var unlock in new[] { false, true })
+        {
+            var body = NetworkAdapterService.BuildLoadNecessityPayload(character, new byte[60],
+                ordinary, secret, null, unlock, overlong);
+            Check(body.AsSpan(0x88 - 8, 60).SequenceEqual(ordinary)
+                && body.AsSpan(0xC4 - 8, 4).SequenceEqual(secret)
+                && body.AsSpan(0xC8 - 8, 23).SequenceEqual(ratings)
+                && body[0xDF - 8] == 0 && body[0xF0 - 8] == 0,
+                "C355 restores separate rating caches without overwriting partner/ring bytes or tying ratings to unlock-all");
+        }
+        await using var service = new NetworkAdapterService(database, _ => { }, root);
+        var session = Activator.CreateInstance(SessionType, nonPublic: true)!;
+        Set(session, "Character", character); Set(session, "OnlineTracked", true);
+        Set(session, "NativeDungeonSelectionValid", true);
+        Set(session, "NativeDungeonEpisode", (byte)100);
+        for (byte dungeon = 0; dungeon < 8; dungeon++)
+        for (byte stage = 0; stage < 2; stage++)
+        for (byte difficulty = 0; difficulty < 3; difficulty++)
+        {
+            Set(session, "NativeDungeonDungeon", dungeon); Set(session, "NativeDungeonStage", stage);
+            Set(session, "NativeDungeonLogicalDifficulty", difficulty);
+            var frame = NativeDungeonClient.Frame(0xCF71, new byte[0xB0]);
+            BinaryPrimitives.WriteUInt16LittleEndian(frame.AsSpan(0x1A), checked((ushort)character.Id));
+            frame[0xB4] = 0xFF; frame[0xB5] = 0xFF;
+            var before = SettlementState(session);
+            await (Task)Method("PatchNativeReadyRoomRankFrameAsync").Invoke(service,
+                [session, frame, CancellationToken.None])!;
+            var expected = Math.Clamp((dungeon * 6 + stage * 3 + difficulty) % 5 - 1, 0, 3);
+            Check(frame[0xB4] == expected && frame[0xB5] == 0 && before == SettlementState(session),
+                $"native CF71 L{dungeon + 1} stage{stage} difficulty{difficulty}: exact persistent badge and unchanged gates");
+        }
+        Set(session, "AccountId", character.AccountId);
+        var sessionId = (string)Get(session, "SessionId")!;
+        Check(await database.BeginWorldSessionAsync(character.AccountId, character.Id, sessionId, 1, "127.0.0.1"),
+            "C354 carrier fixture owns a real world session");
+        try
+        {
+            var response = await (Task<byte[]?>)Method("HandleNativeFrameCoreAsync").Invoke(service,
+                [NativeDungeonClient.Frame(0xC354, []), (ushort)0xC354, "WorldAdapter", "127.0.0.1",
+                    "127.0.0.1", session, CancellationToken.None])!;
+            var found = false;
+            for (var offset = 0; response is not null && offset < response.Length;)
+            {
+                var length = U16(response, offset + 4);
+                Check(length >= 8 && offset + length <= response.Length, "load necessities frame boundaries remain valid");
+                if (U16(response, offset + 6) == 0xC355)
+                {
+                    found = true;
+                    Check(length == 728 && response.AsSpan(offset + 0xC8, 23).SequenceEqual(ratings),
+                        "production C354 route restores the persisted fifth-village ratings in C355");
+                }
+                offset += length;
+            }
+            Check(found, "production C354 responds with its required C355 frame");
+        }
+        finally
+        {
+            await database.EndWorldSessionAsync(character.AccountId, character.Id, sessionId,
+                new CharacterRuntimeState(character.CurrentHp, character.CurrentMp, 0, 0, 0, 0, 1));
+        }
+        Check(await restarted.GetLumineosReadyRoomRankAsync(character.Id, 8, 0, 0) == 0
+            && await restarted.GetLumineosReadyRoomRankAsync(character.Id, 0, 2, 0) == 0
+            && await restarted.GetLumineosReadyRoomRankAsync(character.Id, 0, 0, 3) == 0,
+            "out-of-domain ready-room selectors do not fabricate a badge");
+        Console.WriteLine("DUNGEON_RATING_CARRIERS_CHECKS_PASS C355=23bytes CF71=both-routes L1-L8=stage+difficulty restart=persistent");
     }
 
     private static MethodInfo Method(string name) => typeof(NetworkAdapterService).GetMethod(name, PrivateInstance)!;

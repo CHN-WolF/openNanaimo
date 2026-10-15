@@ -62,6 +62,60 @@ public sealed partial class DatabaseService
         await transaction.CommitAsync(token);
     }
 
+    // C355 restores this independent 23-byte client cache. Village 5 uses
+    // the first eight rows, two stage ratings per row, without a difficulty
+    // selector; display the best B/A/S across difficulties, never access bits.
+    public async Task<byte[]> GetDungeonFrontierBestRatingsAsync(long characterId,
+        CancellationToken token = default)
+    {
+        var ratings = new byte[23];
+        await using var connection = await OpenConnectionAsync(token);
+        await EnsureLumineosPerformanceAsync(connection, null, token);
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT ArchiveSlot, MAX(BestRating) FROM LumineosStagePerformance
+            WHERE CharacterId=$id AND Episode=100 GROUP BY ArchiveSlot
+            """;
+        command.Parameters.AddWithValue("$id", characterId);
+        await using var reader = await command.ExecuteReaderAsync(token);
+        while (await reader.ReadAsync(token))
+        {
+            var slot = reader.GetInt32(0);
+            if ((uint)slot >= 16) continue;
+            var rank = Math.Clamp(reader.GetInt32(1) - 2, 0, 3);
+            ratings[slot / 2] |= (byte)(rank << (2 * (slot % 2)));
+        }
+        await reader.DisposeAsync();
+        // Scoped client extension reserves rows8..11 for the four monk
+        // challenges, with three client-difficulty fields in each row.
+        var monk = await GetMonkChallengeBestRatingsAsync(characterId, token);
+        for (byte clientDifficulty = 0; clientDifficulty < 3; clientDifficulty++)
+        {
+            var logical = DungeonNavigationPolicy.DecodeLogicalDifficulty(0, 0, clientDifficulty);
+            for (int challenge = 0; challenge < 4; challenge++)
+                ratings[8 + challenge] |= (byte)(((monk[challenge] >> (logical * 2)) & 3) << (clientDifficulty * 2));
+        }
+        return ratings;
+    }
+
+    internal async Task<byte> GetLumineosReadyRoomRankAsync(long characterId,
+        byte dungeon, byte stage, byte difficulty, CancellationToken token = default)
+    {
+        if (dungeon >= 8 || stage >= 2 || difficulty >= 3) return 0;
+        await using var connection = await OpenConnectionAsync(token);
+        await EnsureLumineosPerformanceAsync(connection, null, token);
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT BestRating FROM LumineosStagePerformance
+            WHERE CharacterId=$id AND Episode=100 AND ArchiveSlot=$slot AND Difficulty=$difficulty
+            """;
+        command.Parameters.AddWithValue("$id", characterId);
+        command.Parameters.AddWithValue("$slot", dungeon * 2 + stage);
+        command.Parameters.AddWithValue("$difficulty", difficulty);
+        var value = await command.ExecuteScalarAsync(token);
+        return value is null or DBNull ? (byte)0 : (byte)Math.Clamp(Convert.ToInt32(value) - 2, 0, 3);
+    }
+
     // Separate namespace: the ordinary table intentionally limits episode to
     // 0..19 and archive slots to 0..3. Never repurpose or widen those rows.
     private static async Task EnsureLumineosPerformanceAsync(

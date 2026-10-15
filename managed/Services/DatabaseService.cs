@@ -10096,7 +10096,8 @@ public sealed partial class DatabaseService
         CancellationToken cancellationToken = default)
     {
         var lumineos = DungeonTitleProgression.IsLumineosTuple(hdIndex, episode, dungeon, stage);
-        if ((!lumineos && (hdIndex > 1
+        var monk = MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, dungeon, stage);
+        if ((!lumineos && !monk && (hdIndex > 1
             || (hdIndex == 0 && episode >= 20)
             || (hdIndex == 1 && episode >= 4)
             || dungeon >= 3
@@ -10110,14 +10111,19 @@ public sealed partial class DatabaseService
         await using var connection = await OpenConnectionAsync(cancellationToken);
         if (lumineos) await EnsureLumineosPerformanceAsync(connection, null, cancellationToken);
         await using var command = connection.CreateCommand();
-        var table = lumineos ? "LumineosStagePerformance" : hdIndex == 0 ? "DungeonStagePerformance" : "DungeonSecretStagePerformance";
+        if (monk)
+        {
+            command.CommandText = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='MonkChallengePerformance'";
+            if (await command.ExecuteScalarAsync(cancellationToken) is null) return [];
+        }
+        var table = monk ? "MonkChallengePerformance" : lumineos ? "LumineosStagePerformance"
+            : hdIndex == 0 ? "DungeonStagePerformance" : "DungeonSecretStagePerformance";
         command.CommandText = $"""
             SELECT performance.CharacterId, character.Name, performance.BestScore, character.Level
             FROM {table} AS performance
             INNER JOIN Characters AS character ON character.Id = performance.CharacterId
-            WHERE performance.Episode = $episode
+            WHERE {(monk ? "performance.ChallengeIndex = $challenge" : "performance.Episode = $episode AND performance.ArchiveSlot = $archiveSlot")}
               AND performance.Difficulty = $difficulty
-              AND performance.ArchiveSlot = $archiveSlot
             ORDER BY performance.BestScore DESC,
                      CASE WHEN performance.BestElapsedMinutes IS NULL THEN 1 ELSE 0 END,
                      performance.BestElapsedMinutes ASC,
@@ -10129,6 +10135,7 @@ public sealed partial class DatabaseService
         command.Parameters.AddWithValue("$difficulty", difficulty);
         command.Parameters.AddWithValue("$archiveSlot", archiveSlot);
         command.Parameters.AddWithValue("$limit", limit);
+        if (monk) command.Parameters.AddWithValue("$challenge", episode - MonkChallengePolicy.FirstEpisode);
 
         var rows = new List<(long CharacterId, string CharacterName, uint BestScore, ushort CharacterLevel)>(limit);
         await using (var reader = await command.ExecuteReaderAsync(cancellationToken))

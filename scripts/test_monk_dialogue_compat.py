@@ -134,7 +134,7 @@ class DialogueChecks(unittest.TestCase):
         pe=struct.unpack_from('<I',raw,60)[0]
         count=struct.unpack_from('<H',raw,pe+6)[0]
         table=pe+24+struct.unpack_from('<H',raw,pe+20)[0]
-        for rva, span in ((0x120000,0x10000),(0x330000,0x10000),(0x2FA000,0x18000)):
+        for rva, span in ((0x120000,0x10000),(0x330000,0x10000),(0x2FA000,0x18000),(0x4C0000,0x10000)):
             offset=len(raw);raw.extend(b'\0'*span)
             struct.pack_into('<4I',raw,table+count*40+8,span,rva,span,offset);count+=1
         struct.pack_into('<H',raw,pe+6,count)

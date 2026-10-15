@@ -11,7 +11,7 @@ static int terminal_item_drop_is_authored(const struct hp_sync_target_def*td,
     while(lo<hi){unsigned mid=lo+(hi-lo)/2u;if(terminal_item_drop_rows[mid]<row)lo=mid+1u;else hi=mid;}
     return lo<TERMINAL_ITEM_DROP_ROW_COUNT&&terminal_item_drop_rows[lo]==row;
 }
-#define CARD_DROP_BUILD_TAG 2026101301u
+#define CARD_DROP_BUILD_TAG 2026101501u
 /* Authored rate groups replace the fixed ordinary/SP gates. Card eligibility
  * remains independent of the Hans amount calculation; a card replaces this terminal's
  * Hans visual, and a miss falls through to the existing coin economy. */
@@ -24,33 +24,33 @@ static int card_terminal_policy_card_denied_name(const char*name){
 static unsigned card_ordinary_drop_basis_points(unsigned rate,unsigned bonus){
     return card_cn_basis_points(rate,bonus,flight_items_flight_card_percent());
 }
-/* Bounded resource-row policy: these positive-HP arrows are not reward
- * producers. Both sexes have a body at row4; the extra arrow is row23 for
- * C_man and row24 for C_woman, plus rows25..36 in both resources. Do not infer
- * a global MMO+0x19 meaning, use an HP/type cutoff, or merge all placement
- * rows into one reward. The HP terminal path still destroys each arrow. */
-static int combat_economy_terminal_is_ep02_c_arrow(const struct hp_sync_target_def*td,const char*resource){
-    unsigned row;int male,female;
-    if(!td||!resource||td->selector<td->placement_selector_start)return 0;
-    male=card_cn_name_compare(resource,"ep02_mb_C_man.mmo")==0;
-    female=card_cn_name_compare(resource,"ep02_mb_C_woman.mmo")==0;
-    if(!male&&!female)return 0;
+/* Resource identity is not producer identity: embedded children must not
+ * inherit the body's CSV pool. Reviewed row policies deliberately preserve
+ * deform stages, independent targets, HP, score, cleanup and Hans. A zero
+ * MMO+0x19, low HP, type0 or row0 alone is never a global exclusion rule. */
+#include "release/components/cards/card_reward_row_data.inc"
+static unsigned combat_economy_terminal_row_policy(const struct hp_sync_target_def*td,const char*resource){
+    unsigned lo=0u,hi=CARD_REWARD_RESOURCE_COUNT,row;int cmp;
+    const struct card_reward_resource_def*r;
+    if(!td||!resource||td->selector<td->placement_selector_start)return 0u;
     row=(unsigned)td->selector-(unsigned)td->placement_selector_start;
-    return (row>=25u&&row<=36u)||(male&&row==23u)||(female&&row==24u);
+    while(lo<hi){unsigned mid=lo+(hi-lo)/2u;
+        cmp=card_cn_name_compare(card_reward_resources[mid].name,resource);
+        if(cmp<0)lo=mid+1u;else hi=mid;
+    }
+    if(lo>=CARD_REWARD_RESOURCE_COUNT||card_cn_name_compare(card_reward_resources[lo].name,resource))return 0u;
+    r=&card_reward_resources[lo];if(row>=r->record_count)return 0u;
+    lo=r->first;hi=lo+r->count;
+    while(lo<hi){unsigned mid=lo+(hi-lo)/2u;if(card_reward_rows[mid].row<row)lo=mid+1u;else hi=mid;}
+    return lo<r->first+r->count&&card_reward_rows[lo].row==row?card_reward_rows[lo].policy:0u;
 }
-/* This MMO embeds sixteen destructible small objects beside its row0 body.
- * Only their card eligibility differs: keep HP, score, cleanup and Hans intact.
- * Rows18/19 are separate deform stages, not members of this exclusion. */
-static int combat_economy_terminal_is_ep01_mb36_child(const struct hp_sync_target_def*td,const char*resource){
-    unsigned row;
-    if(!td||!resource||td->selector<td->placement_selector_start)return 0;
-    if(card_cn_name_compare(resource,"ep01_dg00_mb_36_1_00.mmo")!=0)return 0;
-    row=(unsigned)td->selector-(unsigned)td->placement_selector_start;
-    return row>=1u&&row<=16u;
+/* Compatibility name used by the existing arrow lifecycle checks. */
+static int combat_economy_terminal_is_ep02_c_arrow(const struct hp_sync_target_def*td,const char*resource){
+    return combat_economy_terminal_row_policy(td,resource)==2u;
 }
 static void combat_economy_select_ordinary_terminal_reward(const struct hp_sync_target_def*td,const struct hp_sync_profile_def*profile,const char*resource,unsigned selector,
         unsigned old_hp,unsigned new_hp,unsigned monster_hp,unsigned*subtype,unsigned*code){
-    unsigned basis_points=0u,hans=0u;int eligible,card_won=0;int ci=flight_items_coin_index();const struct card_cn_pool*pool=0;*subtype=0u;*code=0u;
+    unsigned basis_points=0u,hans=0u,row_policy=combat_economy_terminal_row_policy(td,resource);int eligible,card_won=0;int ci=flight_items_coin_index();const struct card_cn_pool*pool=0;*subtype=0u;*code=0u;
     /* Called only on an accepted terminal D00E, shared by projectile, meat,
        and collision paths. Do not replace the native effect with Hans/cards.
        The normal HP terminal ledger suppresses repeats before this call. */
@@ -61,11 +61,14 @@ static void combat_economy_select_ordinary_terminal_reward(const struct hp_sync_
     }
     /* Exclude before both the card roll and Hans fallback. This is a drop
        gate only: damage, terminal D00E and object cleanup remain unchanged. */
-    if(combat_economy_terminal_is_ep02_c_arrow(td,resource)){
+    if(row_policy==2u){
         printf("  [ECONOMY] terminal-arrow-no-drop selector=%u resource=%s row=%u\n",selector,resource,(unsigned)td->selector-(unsigned)td->placement_selector_start);fflush(0);
         return;
     }
-    eligible=(td&&td->reward_kind==0u&&td->raw_hp>0u&&td->target_type!=4u&&old_hp>0u&&new_hp==0u&&!card_terminal_policy_card_denied_name(resource)&&!combat_economy_terminal_is_ep01_mb36_child(td,resource));
+    if(row_policy==1u&&old_hp>0u&&new_hp==0u){
+        printf("  [CARD_POLICY] no-inherited-card tag=%u selector=%u resource=%s row=%u\n",CARD_DROP_BUILD_TAG,selector,resource,(unsigned)td->selector-(unsigned)td->placement_selector_start);fflush(0);
+    }
+    eligible=(td&&td->reward_kind==0u&&td->raw_hp>0u&&td->target_type!=4u&&old_hp>0u&&new_hp==0u&&!card_terminal_policy_card_denied_name(resource)&&!row_policy);
     /* Exact resource tuple, never album/name-only or episode-wide fallback.
        Positive-HP event boxes use their authored event-card pool here, only
        after the same first-terminal HP gate. Missing pools, type4 controllers,

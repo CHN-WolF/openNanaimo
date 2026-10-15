@@ -127,6 +127,9 @@ REACHABILITY_HARNESS = r"""
 static struct hp_sync_context hp;
 int main(void){
     unsigned pi,i,positive=0,type4=0,affected=0,challenge_profiles=0,challenge_positive=0,challenge_type4=0;
+    unsigned chapter_profiles[4]={0},chapter_positive[4]={0},chapter_type4[4]={0},chapter_slots[4]={0};
+    const unsigned expected_positive[4]={2277u,0u,2385u,4662u};
+    const unsigned expected_type4[4]={1854u,234u,5220u,0u};
     struct crate_drop_policy_context crate;
     struct stable_monster_hp_attack attack;
     struct stable_monster_hp_decision d;
@@ -141,7 +144,13 @@ int main(void){
         unsigned challenge=(p->hd_id==0u&&p->stage_id>=24u&&p->stage_id<=27u);
         unsigned reachable=0,is_affected=(p->stage_id==1u&&p->stage_index==0u&&
             ((p->hd_id==0u&&p->dungeon_id==0u)||(p->hd_id==1u&&p->dungeon_id==1u)));
-        if(challenge)challenge_profiles++;
+        if(challenge){
+            unsigned chapter=p->stage_id-24u;
+            CHECK(p->dungeon_id==0u&&p->stage_index==0u&&p->slot_index<9u);
+            CHECK(p->difficulty==p->slot_index/3u&&p->segment==p->slot_index%3u);
+            CHECK(!(chapter_slots[chapter]&(1u<<p->slot_index)));
+            chapter_slots[chapter]|=1u<<p->slot_index;chapter_profiles[chapter]++;challenge_profiles++;
+        }
         hp_sync_init(&hp);
         CHECK(hp_sync_select_resource_domain(&hp,p->hd_id,p->stage_id,p->dungeon_id,p->stage_index,p->difficulty));
         CHECK(hp_sync_select_segment(&hp,p->segment));CHECK(hp.profile==p);
@@ -154,14 +163,14 @@ int main(void){
             const struct hp_sync_target_def*t=&hp_sync_target_defs[p->first_row+i];
             unsigned value=combat_score_target_scores[p->first_row+i],before=score.total;
             if(t->target_type==4u){
-                type4++;if(challenge)challenge_type4++;CHECK(value==0u);
+                type4++;if(challenge){challenge_type4++;chapter_type4[p->stage_id-24u]++;}CHECK(value==0u);
                 stable_monster_hp_apply_report(&hp,&crate,p->stage_id,i,1,1,&attack,10,&d);
                 CHECK(d.hit.old_hp==d.hit.new_hp);
                 CHECK(combat_economy_score_ordinary_terminal(&score,&hp,i,d.hit.old_hp,d.hit.new_hp)==before);
                 continue;
             }
             if(!value)continue;
-            positive++;if(challenge)challenge_positive++;
+            positive++;if(challenge){challenge_positive++;chapter_positive[p->stage_id-24u]++;}
             stable_monster_hp_apply_report(&hp,&crate,p->stage_id,i,1,1,&attack,10,&d);
             CHECK(d.hit.old_hp>0&&d.hit.new_hp==0);reachable+=value;
             if(is_affected){
@@ -189,7 +198,12 @@ int main(void){
         CHECK(teamplay_settlement_member_rating(1,0,0,sp->total_max,-1)==0u);
     }
     CHECK(HP_SYNC_PROFILE_COUNT-challenge_profiles==864u&&positive-challenge_positive==308623u&&affected==18u&&type4-challenge_type4==131848u);
-    CHECK(challenge_profiles==9u&&challenge_positive==2277u&&challenge_type4==1854u);
+    CHECK(challenge_profiles==36u&&challenge_positive==9324u&&challenge_type4==7308u);
+    for(i=0u;i<4u;i++){
+        CHECK(chapter_profiles[i]==9u&&chapter_slots[i]==0x1FFu);
+        CHECK(chapter_positive[i]==expected_positive[i]&&chapter_type4[i]==expected_type4[i]);
+        printf("MONK_SCORE_REACHABILITY_PASS episode=%u profiles=%u scoring_rows=%u type4=%u\n",24u+i,chapter_profiles[i],chapter_positive[i],chapter_type4[i]);
+    }
     printf("COMBAT_SCORE_REACHABILITY_PASS profiles=%u scoring_rows=%u type4=%u affected=%u\n",HP_SYNC_PROFILE_COUNT,positive,type4,affected);
     return 0;
 }
@@ -324,7 +338,16 @@ class CombatEconomyValueTests(unittest.TestCase):
         self.assertEqual(len(actual),len(targets))
         challenges=[p for p in profiles if p[1]==0 and 24<=p[0]<=27]
         self.assertEqual(len(profiles)-len(challenges),864)
-        self.assertEqual(len(challenges),9)
+        self.assertEqual(len(challenges),36)
+        expected_chapters = {24: (2277,1854), 25: (0,234), 26: (2385,5220), 27: (4662,0)}
+        for episode, (scoring_count,type4_count) in expected_chapters.items():
+            chapter = [p for p in challenges if p[0]==episode]
+            self.assertEqual(len(chapter),9,episode)
+            self.assertEqual({(p[1],p[2],p[3],p[4],p[5],p[6]) for p in chapter},
+                             {(0,0,0,slot//3,slot%3,slot) for slot in range(9)},episode)
+            indices = [i for p in chapter for i in range(p[9],p[9]+p[10])]
+            self.assertEqual(sum(actual[i]>0 for i in indices),scoring_count,episode)
+            self.assertEqual(sum(targets[i][8]==4 for i in indices),type4_count,episode)
         max_rows={tuple(row[:5]):row[8:] for row in numeric_rows(generated,'static const struct combat_score_profile_def')}
         matched=set(); excluded_rows=0; excluded_points={}
         for p in profiles:

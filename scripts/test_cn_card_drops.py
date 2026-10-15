@@ -116,6 +116,39 @@ class CnCardDropTests(unittest.TestCase):
         with self.assertRaises(export.ExportError):
             export.validated_closure({'count': len(rows), 'files': rows})
 
+    def test_reviewed_resource_row_policy_generation_and_catalog_identity(self):
+        import copy
+        import re
+        import generate_card_reward_rows as policy
+        receipt = json.loads(policy.SOURCE.read_text('utf-8'))
+        self.assertEqual(policy.generate(receipt).encode('utf-8'), policy.OUTPUT.read_bytes())
+        hp = (ROOT / 'release/components/targets/hp_resource_global_data.inc').read_text('utf-8')
+        identities = {name.lower(): (sha, int(count)) for name, sha, count in
+                      re.findall(r'\{"([^"\n]+)","([A-F0-9]{64})",(\d+)u\}', hp)}
+        self.assertEqual(receipt['scan']['mixed_resources'], len(receipt['resources']))
+        self.assertEqual(len(receipt['resources']), 90)
+        self.assertEqual(sum(len(r['deny_card_rows']) for r in receipt['resources']), 774)
+        for r in receipt['resources']:
+            if r['resource'] not in identities:
+                self.assertFalse(r['deny_card_rows'])  # CSV-only object, not a generated target.
+                continue
+            self.assertEqual(identities[r['resource']], (r['sha256'], r['record_count']))
+        child = next(r for r in receipt['resources'] if r['resource'] == 'ep03_dg02_mb_32_1_00.mmo')
+        self.assertEqual(child['deny_card_rows'], list(range(11)))
+        self.assertNotIn(19, child['deny_card_rows'])
+        old = next(r for r in receipt['resources'] if r['resource'] == 'ep01_dg00_mb_36_1_00.mmo')
+        self.assertNotIn(18, old['deny_card_rows'])
+        self.assertNotIn(19, old['deny_card_rows'])
+        for mutate in ('duplicate', 'outside', 'all_not_card', 'csv', 'runtime'):
+            bad = copy.deepcopy(receipt)
+            if mutate == 'duplicate': bad['resources'].append(bad['resources'][0])
+            elif mutate == 'outside': bad['resources'][0]['deny_card_rows'] = [65535]
+            elif mutate == 'all_not_card': bad['resources'][0]['deny_all_rows'] = [65535]
+            elif mutate == 'csv': bad['card_csv_sha256'] = '0' * 64
+            else: bad['runtime_acceptance'] = True
+            with self.assertRaises((ValueError, KeyError)):
+                policy.generate(bad)
+
     def test_native_all_pools_and_live_reward_entrypoints(self):
         pools = cn.load_pools()
         # Independent expected table parsed directly from CSV, not generated C.
@@ -159,6 +192,16 @@ struct boss_hp_sync_result {unsigned stage,card_pool_hd,card_pool_key;};
 '''
         code += team + '\n' + boss
         code += '\nstruct expected{unsigned map;const char*name;unsigned code,rate,weight;};\nstatic const struct expected expected_rows[]={\n' + '\n'.join(expected) + '\n};\n'
+        receipt = json.loads((CARDS / 'card_reward_rows.json').read_text('utf-8'))
+        row_cases = []
+        for resource in receipt['resources']:
+            key = next(k for k, name in sorted(pools) if name == resource['resource'])
+            for row in resource['rows']:
+                policy = 2 if row['row'] in resource['deny_all_rows'] else int(row['row'] in resource['deny_card_rows'])
+                row_cases.append('{"%s",%du,%du,%du,%du},' %
+                                 (resource['resource'], key, row['row'], row['hp'], policy))
+        code += '\nstruct row_case{const char*name;unsigned map,row,hp,policy;};\n'
+        code += 'static const struct row_case row_cases[]={\n' + '\n'.join(row_cases) + '\n};\n'
         code += r'''
 int main(void){
  unsigned i,j,f,t,n=sizeof(expected_rows)/sizeof(expected_rows[0]),subtype,code;
@@ -337,17 +380,50 @@ int main(void){
    assert(subtype==30u&&code==13000026u&&g_card_claim_count==1u);
    child.raw_hp=30u;
   }
-  child.selector=101u;assert(combat_economy_terminal_is_ep01_mb36_child(&child,name));
-  assert(combat_economy_terminal_is_ep01_mb36_child(&child,"EP01_DG00_MB_36_1_00.MMO"));
-  assert(!combat_economy_terminal_is_ep01_mb36_child(&child,"ep01_dg00_mb_36_1_01.mmo"));
-  assert(!combat_economy_terminal_is_ep01_mb36_child(&child,"ani_mon_m_03_01.mmo"));
-  child.selector=100u;assert(!combat_economy_terminal_is_ep01_mb36_child(&child,name));
-  for(row=17u;row<=20u;row++){child.selector=100u+row;assert(!combat_economy_terminal_is_ep01_mb36_child(&child,name));}
-  child.selector=99u;assert(!combat_economy_terminal_is_ep01_mb36_child(&child,name));
-  assert(!combat_economy_terminal_is_ep01_mb36_child(0,name));
-  assert(!combat_economy_terminal_is_ep01_mb36_child(&child,0));
+  child.selector=101u;assert(combat_economy_terminal_row_policy(&child,name));
+  assert(combat_economy_terminal_row_policy(&child,"EP01_DG00_MB_36_1_00.MMO"));
+  assert(!combat_economy_terminal_row_policy(&child,"ep01_dg00_mb_36_1_01.mmo"));
+  assert(!combat_economy_terminal_row_policy(&child,"ani_mon_m_03_01.mmo"));
+  child.selector=100u;assert(!combat_economy_terminal_row_policy(&child,name));
+  for(row=17u;row<=20u;row++){child.selector=100u+row;assert(!combat_economy_terminal_row_policy(&child,name));}
+  child.selector=99u;assert(!combat_economy_terminal_row_policy(&child,name));
+  assert(!combat_economy_terminal_row_policy(0,name));
+  assert(!combat_economy_terminal_row_policy(&child,0));
   g_bonus=0u;g_multiplier=100u;
  }
+ /* Regression: 4-3's eleven 500-HP children cannot use row19's pool. */
+ {struct hp_sync_profile_def profile={0u,3u,2u,1u,0u};
+  struct hp_sync_target_def child={0u,500u,0u,100u,100u};unsigned row,calls;
+  g_bonus=0xFFFFFFFFu;g_multiplier=200u;card_system_reset_epoch(50001u);g_next=0u;calls=g_calls;
+  for(row=0u;row<=10u;row++){
+   child.selector=100u+row;
+   combat_economy_select_ordinary_terminal_reward(&child,&profile,"ep03_dg02_mb_32_1_00.mmo",child.selector,500u,0u,500u,&subtype,&code);
+   assert(subtype!=30u&&!g_card_claim_count&&g_calls==calls);
+  }
+  child.selector=119u;child.raw_hp=7337u;
+  combat_economy_select_ordinary_terminal_reward(&child,&profile,"ep03_dg02_mb_32_1_00.mmo",119u,7337u,0u,7337u,&subtype,&code);
+  assert(subtype==30u&&g_card_claim_count==1u);g_bonus=0u;g_multiplier=100u;
+ }
+ /* Every reviewed positive-HP row: never consume RNG or claims for children.
+    Body/deform rows, alternate maps and placement offsets stay independent. */
+ for(i=0u;i<sizeof(row_cases)/sizeof(row_cases[0]);i++){
+  const struct row_case*r=&row_cases[i];unsigned offset,calls,variant;
+  for(offset=0u;offset<=317u;offset+=317u){
+   struct hp_sync_profile_def profile={r->map>>24,(r->map>>16)&255u,(r->map>>8)&255u,r->map&255u,0u};
+   struct hp_sync_target_def target={0u,r->hp,0u,offset+r->row,offset};
+   assert(combat_economy_terminal_row_policy(&target,r->name)==r->policy);
+   if(!r->policy)continue;
+   for(variant=0u;variant<4u;variant++){
+    card_system_reset_epoch(60000u+i*8u+variant);g_next=0u;calls=g_calls;
+    g_bonus=variant==3u?0xFFFFFFFFu:27u;g_multiplier=variant==0u?100u:variant==1u?120u:200u;
+    combat_economy_select_ordinary_terminal_reward(&target,&profile,r->name,target.selector,r->hp,0u,r->hp,&subtype,&code);
+    assert(subtype!=30u&&!g_card_claim_count&&g_calls==calls);
+    if(r->policy==2u)assert(subtype==0u&&code==0u);
+    else if(r->hp>=100u)assert(subtype==20u&&code==r->hp/100u);
+   }
+  }
+ }
+ g_bonus=0u;g_multiplier=100u;
  assert(!card_cn_boss_lookup(0u,0xFFFFFFFFu));assert(!card_cn_boss_lookup(0u,9u<<18));
  assert(!card_cn_boss_lookup(0u,23u<<25));assert(!boss_hp_sync_terminal_card(0));
  puts("CN_CARD_NATIVE_PARITY_PASS");return 0;

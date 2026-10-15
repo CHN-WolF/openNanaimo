@@ -112,7 +112,7 @@ internal static partial class Program
             {
                 command.CommandText = """
                     SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'
-                      AND name NOT IN ('CharacterMonkChallenges','MonkChallengeCommits') ORDER BY name
+                      AND name NOT IN ('CharacterMonkChallenges','MonkChallengeCommits','MonkChallengePerformance') ORDER BY name
                     """;
                 await using var reader = await command.ExecuteReaderAsync();
                 while (await reader.ReadAsync()) names.Add(reader.GetString(0));

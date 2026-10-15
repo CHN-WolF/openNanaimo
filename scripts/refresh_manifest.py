@@ -14,6 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    'scripts/prepare_story_catalog.py',
+    'scripts/test_story_catalog.py',
     'scripts/test_knowledge_routes.py',
     'scripts/test_fifth_village_land.py',
     'scripts/test_social_apartment_resources.py',
@@ -23,6 +25,8 @@ REPOSITORY_FILES = [
     'scripts/prepare_monk_dialogue.py',
     'scripts/test_monk_dialogue_compat.py',
     'scripts/test_monk_result_controls.py',
+    'scripts/test_monk_ranking.py',
+    'tests/MonkChallengeRegression/RankingChecks.cs',
     'scripts/test_monk_portrait.py',
     'scripts/test_monk_dialogue_resources.py',
     'manifest/monk_dialogue_resources.json',

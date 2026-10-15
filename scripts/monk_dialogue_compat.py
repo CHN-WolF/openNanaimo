@@ -400,7 +400,11 @@ ROOM_NAME, ROOM_BOSS = EXT_BASE+0x1000, EXT_BASE+0x1080
 ROOM_NUMBER, BOSS_STRINGS = EXT_BASE+0x13A0, EXT_BASE+0x13C0
 
 
-def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False, legacy_names=False):
+RANK_INIT, RANK_GET, RANK_SET = EXT_BASE+0x1100, EXT_BASE+0xB00, EXT_BASE+0xB80
+RANK_DRAW, RANK_TEXT = EXT_BASE+0xC80, EXT_BASE+0x1440
+
+
+def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False, legacy_names=False, legacy_ranking=False):
     legacy_room = legacy_room or legacy_portrait
     data = bytearray(b'\xCC' * EXT_SPAN)
     local = localization(legacy_names)
@@ -482,6 +486,56 @@ def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=F
             c.emit('8B8034E5010083E818C1E00505');c.u32(strings)
             c.emit('8944241C')
             c.label('native');c.emit('619D');jump(c,native);put(at,c.finish(),0x80)
+    if not legacy_ranking and not legacy_room and not legacy_names:
+        # Popup51 is local-cache only. Leave the original object lifecycle,
+        # vtable, close buttons and draw loop intact; replace initialization
+        # only for the exact four solo challenge tuples.
+        c=Code(RANK_INIT);c.emit('9C60');c.call(IS_CHALLENGE)
+        c.emit('85C0');c.branch('0F84','native');c.emit('619D60')
+        c.emit('8B7DA0');c.call(0x419BBE);c.emit('8B35');c.u32(PROFILE)
+        c.emit('8BB6A4260000')
+        c.emit('6844010000');c.call(0xB479CC);c.emit('83C40485C0');c.branch('0F84','allocated')
+        c.emit('8BC8');c.call(0x41BE00)
+        c.label('allocated');c.emit('89472885C0');c.branch('0F84','badges')
+        c.emit('6A00682C01000068900100006A0068');c.u32(0xCA5AA4)
+        c.emit('8BC8');c.call(0x404232)
+        c.label('badges');c.emit('33DB')
+        c.label('loop');c.emit('8BC333D2B903000000F7F1')
+        c.emit('8BC86BC92681C10C01000051') # y=268+38*challenge
+        c.emit('8BCA03C90FB6440644D3E883E003')
+        c.emit('69D28C00000081C2EE00000052508BCF');c.call(0x41E67D)
+        c.emit('89449F2C4383FB0C');c.branch('0F82','loop')
+        c.emit('61');jump(c,0x8C2DDE)
+        c.label('native');c.emit('619D8B0D');c.u32(PROFILE);c.call(0x411379);jump(c,0x8C25B3)
+        put(RANK_INIT,c.finish(),0x220)
+        # CF88's existing B/A/S update must address our reserved cache row,
+        # not index episode24..27 beyond the ordinary 60-byte table.
+        c=Code(RANK_GET);c.emit('9C60');c.call(IS_CHALLENGE)
+        c.emit('85C0');c.branch('0F84','native');c.emit('619D51');c.call(0x419BBE)
+        c.emit('598B8034E5010083E8180FB64401448B54240C83FA03');c.branch('0F83','zero')
+        c.emit('D1E2518BCAD3E85983E003C21000')
+        c.label('zero');c.emit('33C0C21000')
+        c.label('native');c.emit('619D');jump(c,0x40EDC2);put(RANK_GET,c.finish(),0x80)
+        c=Code(RANK_SET);c.emit('9C60');c.call(IS_CHALLENGE)
+        c.emit('85C0');c.branch('0F84','native');c.emit('619D5356578BF1');c.call(0x419BBE)
+        c.emit('8B8034E5010083E8188D7406448B4C241883F903');c.branch('0F83','done')
+        c.emit('D1E18B7C242083FF01');c.branch('0F82','done')
+        c.emit('83FF03');c.branch('0F87','done')
+        c.emit('0FB606D3E883E0033BC7');c.branch('0F83','done')
+        c.emit('BB03000000D3E3F7D30FB60623C3D3E70BC78806')
+        c.label('done');c.emit('5F5E5BC21400')
+        c.label('native');c.emit('619D');jump(c,0x4103D9);put(RANK_SET,c.finish(),0x100)
+        # The original last draw block labels ordinary dungeon rows. Draw
+        # our four localized challenge names instead, with the same text ABI.
+        c=Code(RANK_DRAW);c.emit('9C60');c.call(IS_CHALLENGE)
+        c.emit('85C0');c.branch('0F84','native');c.emit('619D60')
+        for row in range(4):
+            c.emit('6A006A006A006A006A006A006A016A006A0068FFFFFF0068');c.u32(TITLE_STRINGS+row*32)
+            c.emit('68');c.u32(268+38*row);c.emit('6880000000');c.call(0x414A6F)
+            c.emit('8BC8');c.call(0x40DA1C)
+        c.emit('61');jump(c,0x8C3182)
+        c.label('native');c.emit('619D');c.call(0x419BBE);jump(c,0x8C30F2)
+        put(RANK_DRAW,c.finish(),0x240)
     return bytes(data)
 
 
@@ -497,6 +551,14 @@ def sites():
         ('monk_ready_named_header',0x737DAD,0x411379,0x411379)):
         opcode = b'\xE9' if target == RESULT_TITLE else b'\xE8'
         result.append((name,at,b'\xE8'+struct.pack('<i',native-at-5),opcode+struct.pack('<i',target-at-5)))
+    for name,at,native,target in (
+        ('monk_rank_result_read',0x6FA50D,0x40EDC2,RANK_GET),
+        ('monk_rank_result_write',0x6FA591,0x4103D9,RANK_SET),
+        ('monk_rank_popup_draw',0x8C30ED,0x419BBE,RANK_DRAW)):
+        result.append((name,at,b'\xE8'+struct.pack('<i',native-at-5),
+                       b'\xE8'+struct.pack('<i',target-at-5) if target != RANK_DRAW else b'\xE9'+struct.pack('<i',target-at-5)))
+    result.append(('monk_rank_popup_init',0x8C25A8,bytes.fromhex('8B0DD469D800E8C6EDB4FF'),
+                   b'\xE9'+struct.pack('<i',RANK_INIT-0x8C25A8-5)+b'\x90'*6))
     result.extend(followup_sites())
     for name,at,original,target in (
         ('monk_room_named_header',0x70F769,'6A006A006A00',ROOM_TITLE),

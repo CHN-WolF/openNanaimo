@@ -6,6 +6,16 @@ public static class MonkChallengePolicy
     public const int ChallengeCount = 4;
     public const byte FullClearMask = 0x0F;
 
+    // Project policy: only newly crossed boundaries require their challenge.
+    // Do not retroactively strand a legacy character returning to an old village.
+    public static bool CanTravelForward(byte sourceTown, byte destinationTown, byte clearMask)
+    {
+        if (sourceTown > 4 || destinationTown > 4 || clearMask > FullClearMask) return false;
+        if (destinationTown <= sourceTown) return true;
+        var required = (1 << destinationTown) - (1 << sourceTown);
+        return (clearMask & required) == required;
+    }
+
     // Episodes 24..27 map to the four village-exit challenges.
     public static bool IsReservedEpisode(byte episode)
         => episode >= FirstEpisode && episode < FirstEpisode + ChallengeCount;

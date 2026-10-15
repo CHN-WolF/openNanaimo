@@ -2329,6 +2329,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var dungeonSecretBestRatings = session.Character is null
                     ? new byte[C355SecretRatingsLength]
                     : await _database.GetDungeonSecretBestRatingsAsync(session.Character.Id, token);
+                var dungeonFrontierBestRatings = session.Character is null
+                    ? new byte[C355FrontierRatingsLength]
+                    : await _database.GetDungeonFrontierBestRatingsAsync(session.Character.Id, token);
                 var coupleRelation = session.Character is null
                     ? null
                     : await _database.GetActiveCoupleRelationAsync(session.Character.Id, token);
@@ -2341,13 +2344,13 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 if (session.Character.TutorialCompleted)
                     await EnsureSessionStoryQuestAsync(session, token);
                 var mentorProfile = await _database.GetMentorshipProfileAsync(session.Character.Id, token);
-                var loadNecessityFrames = BuildLoadNecessityResponse(
+                var loadNecessityFrames = BuildLoadNecessityResponseWithFrontier(
                     frame,
                     session,
                     dungeonClearMasks,
                     dungeonBestRatings,
                     dungeonSecretBestRatings,
-                    coupleRelation, mentorProfile);
+                    coupleRelation, mentorProfile, dungeonFrontierBestRatings);
                 await RestoreNativeFriendNamesAsync(loadNecessityFrames, session, token);
                 // C355 full-frame +0xF3 is the client's persisted story-medal byte.
                 // The numeric source is the committed story-claim ledger, not C59A
@@ -4991,6 +4994,15 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 }
 
                 var sourceTownId = session.TownId;
+                if (RequireMonkChallengeForVillageTravel
+                    && !await _database.AuthorizeMonkVillageTravelAsync(session.AccountId,
+                        session.Character.Id, session.SessionId, sourceTownId, townId, token))
+                {
+                    _log($"C365 monk travel rejected: source={sourceTownId} destination={townId}; no fare or scene mutation");
+                    return BuildNativeFrame(frame, 0xC366,
+                        BuildTownEnterPayload(TownEnterStatusGenericFailure, session.TownId, session.TownPage, 0),
+                        session);
+                }
                 var transition = TownPositionPolicy.ResolveTransition(townId, townPage, transientFlag);
                 var travelFare = TownTravelPolicy.ResolveFare(sourceTownId, townId, transientFlag);
                 if (travelFare > 0)
@@ -7990,9 +8002,6 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     return null;
                 var recordsRoom = GetDungeonRoom(session);
                 if (recordsRoom is null)
-                    return null;
-                if (BinaryPrimitives.ReadUInt16LittleEndian(payload) != DungeonEpisodeCount
-                    || BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(2, 2)) >= DungeonDifficultyCount)
                     return null;
                 byte recordsHdIndex;
                 byte recordsEpisode;
@@ -12577,13 +12586,26 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 .ToArray();
         }
 
+        var lumineos = DungeonTitleProgression.IsLumineosTuple(hdIndex, episode, dungeon, stage);
         var archiveSlot = dungeon + stage;
-        if (archiveSlot > 3 || logicalDifficulty >= DungeonDifficultyCount)
+        if ((!lumineos && archiveSlot > 3) || logicalDifficulty >= DungeonDifficultyCount)
             return new Dictionary<long, byte>();
 
         var result = new Dictionary<long, byte>(characters.Length);
         foreach (var character in characters)
         {
+            if (MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, dungeon, stage))
+            {
+                result[character.Id] = await _database.GetMonkChallengeReadyRoomRankAsync(
+                    character.Id, episode, logicalDifficulty, token);
+                continue;
+            }
+            if (lumineos)
+            {
+                result[character.Id] = await _database.GetLumineosReadyRoomRankAsync(
+                    character.Id, dungeon, stage, logicalDifficulty, token);
+                continue;
+            }
             byte packedRatings;
             if (hdIndex == 0)
             {
@@ -14095,16 +14117,27 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
     }
 
     private byte[] BuildLoadNecessityResponse(
+        byte[] request, ConnectionSession session, byte[] dungeonClearMasks,
+        byte[] dungeonBestRatings, byte[] dungeonSecretBestRatings,
+        CoupleRelationRecord? coupleRelation,
+        (string TeacherName, int Graduates, int Students) mentorship)
+        => BuildLoadNecessityResponseWithFrontier(request, session, dungeonClearMasks,
+            dungeonBestRatings, dungeonSecretBestRatings, coupleRelation, mentorship,
+            new byte[C355FrontierRatingsLength]);
+
+    private byte[] BuildLoadNecessityResponseWithFrontier(
         byte[] request,
         ConnectionSession session,
         byte[] dungeonClearMasks,
         byte[] dungeonBestRatings,
         byte[] dungeonSecretBestRatings,
         CoupleRelationRecord? coupleRelation,
-        (string TeacherName, int Graduates, int Students) mentorship)
+        (string TeacherName, int Graduates, int Students) mentorship,
+        byte[] dungeonFrontierBestRatings)
     {
         var payload = BuildLoadNecessityPayload(session.Character, dungeonClearMasks,
-            dungeonBestRatings, dungeonSecretBestRatings, coupleRelation, UnlockAllDungeons && !IsPureNewProfile(session));
+            dungeonBestRatings, dungeonSecretBestRatings, coupleRelation, UnlockAllDungeons && !IsPureNewProfile(session),
+            dungeonFrontierBestRatings);
         payload[2] = mentorship.TeacherName.Length > 0 ? (byte)3
             : mentorship.Graduates > 0 || mentorship.Students > 0 ? (byte)2 : (byte)4;
         payload[3] = (byte)Math.Min(255, mentorship.Students);
@@ -16176,7 +16209,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         byte[] dungeonBestRatings,
         byte[] dungeonSecretBestRatings,
         CoupleRelationRecord? coupleRelation,
-        bool unlockAllDungeons = true)
+        bool unlockAllDungeons = true,
+        byte[]? dungeonFrontierBestRatings = null)
     {
         var payload = new byte[C355FrameLength - NativeHeaderLength];
         // The C355 consumer passes frame+13 to the client's pet-carry setter.
@@ -16232,12 +16266,15 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         // board is a different cached domain: +0x88..+0xC3 contains the
         // 20-episode x 3-difficulty ordinary table, and +0xC4..+0xC7 contains
         // four secret-episode bytes. Each byte packs four two-bit best ranks
-        // (0=none, 1=B, 2=A, 3=S). +0xC8..+0xDE is a separate 23-row frontier
-        // table and remains zero until that progression domain is persisted.
+        // (0=none, 1=B, 2=A, 3=S). +0xC8..+0xDE is an independent 23-row
+        // frontier cache; its first eight rows restore Lumineos stage0/stage1.
         dungeonBestRatings.AsSpan(0, Math.Min(dungeonBestRatings.Length, C355DungeonRatingsLength))
             .CopyTo(payload.AsSpan(C355DungeonRatingsFrameOffset - NativeHeaderLength, C355DungeonRatingsLength));
         dungeonSecretBestRatings.AsSpan(0, Math.Min(dungeonSecretBestRatings.Length, C355SecretRatingsLength))
             .CopyTo(payload.AsSpan(C355SecretRatingsFrameOffset - NativeHeaderLength, C355SecretRatingsLength));
+        if (dungeonFrontierBestRatings is not null)
+            dungeonFrontierBestRatings.AsSpan(0, Math.Min(dungeonFrontierBestRatings.Length, C355FrontierRatingsLength))
+                .CopyTo(payload.AsSpan(C355FrontierRatingsFrameOffset - NativeHeaderLength, C355FrontierRatingsLength));
         // The retail C355 consumer restores the partner name from frame+0xDF
         // and the short ring suffix from frame+0xF0. The native emotion-page
         // gate is name-derived: an empty slot blocks the ring lookup entirely.

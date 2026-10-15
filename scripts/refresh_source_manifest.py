@@ -103,6 +103,11 @@ def collect(root=ROOT):
             path = root / rel
             if not path.is_file(): raise ValueError('missing L7 derivation input: ' + rel)
             seen.add(path.resolve())
+    if (root / 'release/components/cards/card_reward_row_data.inc').resolve() in seen:
+        for rel in ('release/components/cards/card_reward_rows.json', 'scripts/generate_card_reward_rows.py'):
+            path = root / rel
+            if not path.is_file(): raise ValueError('missing reviewed card row policy: ' + rel)
+            seen.add(path.resolve())
     complete_build = root / 'scripts/build_complete_adapter.ps1'
     if complete_build.is_file():
         seen.add(complete_build.resolve())

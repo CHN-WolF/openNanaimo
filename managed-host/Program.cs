@@ -185,6 +185,11 @@ static async Task RunAsync(string[] args)
         await VillagePositionChecks.RunAsync();
         return;
     }
+    if (args.Contains("--monk-travel-self-test"))
+    {
+        await MonkVillageTravelChecks.RunAsync();
+        return;
+    }
     if (args.Contains("--village-shop-pet-self-test"))
     {
         await VillageShopPetSceneChecks.RunAsync();
@@ -256,6 +261,8 @@ if (!System.Net.IPAddress.TryParse(bindAddressText, out var bindAddress)
     throw new ArgumentException($"--bind-address must be a specific IPv4 address: {bindAddressText}");
 bindAddressText = bindAddress.ToString();
 bool unlockAllDungeons = ReadProfileBoolean(profile, "unlock_all_dungeons", defaultValue: true);
+bool requireMonkTravel = args.Contains("--require-monk-travel")
+    || ReadProfileBoolean(profile, "require_monk_village_travel", defaultValue: false);
 int loginPort = int.Parse(Option("--login-port", "11005"));
 int worldPort = int.Parse(Option("--world-port", "12050"));
 int profilePort = int.Parse(Option("--profile-port", "11999"));
@@ -327,7 +334,8 @@ try
     }
     await using var rooms = new NativeDungeonPool(native, Path.Combine(data, "native-rooms"));
     await using var host = new NetworkAdapterService(database, message => Console.WriteLine($"{DateTime.Now:O} {message}"), data)
-    { NativeDungeonEnabled = true, UnlockAllDungeons = unlockAllDungeons, NativeJournalDirectory = journal, NativeRooms = rooms };
+    { NativeDungeonEnabled = true, UnlockAllDungeons = unlockAllDungeons,
+      RequireMonkChallengeForVillageTravel = requireMonkTravel, NativeJournalDirectory = journal, NativeRooms = rooms };
     await host.StartAsync(new AdapterOptions { BindAddress = bindAddressText, GameAdapterPort = loginPort, WorldAdapterPort = worldPort },
         new[] { new AdapterEndpoint { Id = 1, Host = bindAddressText, Port = worldPort } }, stop.Token);
     var profiles = host.RunLocalProfileListenerAsync(bindAddress, profilePort, stop.Token, Path.GetDirectoryName(profile)!);
