@@ -23,8 +23,8 @@ import export_patch as patch
 DOCUMENT_PATH_MIGRATION = {
     'docs/L7-L8资源移植.md': 'knowledge/指南/L7-L8资源移植.md',
     'docs/apartment_guide_lifecycle.md': 'knowledge/业务/住宅/公寓引导.md',
-    'docs/event-card-rewards.md': 'knowledge/指南/event-card-rewards.md',
-    'docs/level200/README.md': 'knowledge/指南/level200/README.md',
+    'docs/event-card-rewards.md': 'knowledge/指南/活动卡奖池安装.md',
+    'docs/level200/README.md': 'knowledge/指南/level200/索引.md',
     'docs/level200/internal-layout.md': 'knowledge/基础/桥接布局.md',
     'docs/住宅土地卡片与温度计恢复.md': 'knowledge/指南/住宅土地卡片与温度计恢复.md',
     'docs/单身公寓.md': 'knowledge/指南/单身公寓.md',

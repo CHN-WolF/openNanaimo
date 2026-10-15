@@ -5,10 +5,10 @@
   "baseline_archive_sha256": "7261da8299457949bbe74dcb416002426d4da73a826cda8ed63668e26511b80c",
   "path_mapping": {
     "docs/apartment_guide_lifecycle.md": "knowledge/业务/住宅/公寓引导.md",
-    "docs/event-card-rewards.md": "knowledge/指南/event-card-rewards.md",
+    "docs/event-card-rewards.md": "knowledge/指南/活动卡奖池安装.md",
     "docs/L7-L8资源移植.md": "knowledge/指南/L7-L8资源移植.md",
     "docs/level200/internal-layout.md": "knowledge/基础/桥接布局.md",
-    "docs/level200/README.md": "knowledge/指南/level200/README.md",
+    "docs/level200/README.md": "knowledge/指南/level200/索引.md",
     "docs/住宅土地卡片与温度计恢复.md": "knowledge/指南/住宅土地卡片与温度计恢复.md",
     "docs/单身公寓.md": "knowledge/指南/单身公寓.md",
     "docs/启动流程与源码索引.md": "knowledge/指南/启动流程与源码索引.md",
@@ -192,7 +192,7 @@
       "start": 2305,
       "end": 2700,
       "source_sha256": "d4b4d6ea74a6749bf07757d69ac854bff56a9fcf0c5eb9776014d8fb82b89d3f",
-      "target": "knowledge/指南/event-card-rewards.md",
+      "target": "knowledge/指南/活动卡奖池安装.md",
       "initial_target": "knowledge/指南/event-card-rewards.md",
       "initial_sha256": "d4b4d6ea74a6749bf07757d69ac854bff56a9fcf0c5eb9776014d8fb82b89d3f",
       "content_sha256": "d4b4d6ea74a6749bf07757d69ac854bff56a9fcf0c5eb9776014d8fb82b89d3f"
@@ -7391,7 +7391,7 @@
     },
     {
       "from": "knowledge/指南/event-card-rewards.md#随仓库默认奖池",
-      "to": "knowledge/指南/event-card-rewards.md#随仓库默认奖池"
+      "to": "knowledge/指南/活动卡奖池安装.md#随仓库默认奖池"
     },
     {
       "from": "knowledge/指南/event-card-rewards.md#验证范围",
@@ -9247,11 +9247,11 @@
         "size": 2859,
         "sha256": "4BFC55EF0931319D252E1CFDD47C00B721E3D38962431C1D6CD7EBB87299FF01"
       },
-      "knowledge/指南/event-card-rewards.md": {
+      "knowledge/指南/活动卡奖池安装.md": {
         "size": 1571,
         "sha256": "1E16AF41652DC5D91364B2ADA3A3E8B52C03E16AF044BEAF7CB931F7DF4BC1DE"
       },
-      "knowledge/指南/level200/README.md": {
+      "knowledge/指南/level200/索引.md": {
         "size": 808,
         "sha256": "71F4944CCAB6C8CFE77BBA1C489D17BB0AF95AC49E76C1308CE1A9410E3F9AC5"
       },

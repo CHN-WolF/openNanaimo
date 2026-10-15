@@ -152,7 +152,7 @@ class ExportPatchTests(unittest.TestCase):
             "knowledge/工程/历史验证/索引.md": "# 历史验证\n",
             "knowledge/工程/子弹DIY兼容/索引.md": "# 子弹DIY兼容\n",
             "knowledge/指南/文件清单与导出工具.md": "# 导出指南\n",
-            "knowledge/指南/level200/README.md": "# 桥接操作\n",
+            "knowledge/指南/level200/索引.md": "# 桥接操作\n",
             "knowledge/业务/DIY/索引.md": "# DIY专题\n",
             "knowledge/业务/DIY/子弹/索引.md": "# 子弹DIY\n",
             "knowledge/业务/DIY/NPC/索引.md": "# NPC DIY\n",
