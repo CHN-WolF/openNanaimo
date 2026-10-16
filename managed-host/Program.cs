@@ -17,6 +17,16 @@ catch (Exception ex) { Console.Error.WriteLine(ex); Environment.ExitCode = 1; }
 
 static async Task RunAsync(string[] args)
 {
+    if (args.Contains("--chapter-story-reward-audit"))
+    {
+        ChapterStoryRewardAudit.Run();
+        return;
+    }
+    if (args.Contains("--chapter-story-self-test"))
+    {
+        await ChapterStoryChecks.RunAsync();
+        return;
+    }
     if (args.Length > 0 && args[0] == "--tools") { await LauncherTools.RunAsync(args[1..]); return; }
     if (args.Contains("--live-dungeon-experience-self-test"))
     {

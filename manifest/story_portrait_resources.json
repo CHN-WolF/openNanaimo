@@ -1,0 +1,514 @@
+{
+  "activation_allowed": false,
+  "effects": [
+    {
+      "expression": 0,
+      "npc_uid": 6,
+      "path": "effs/interface/NPC_6_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 18,
+      "path": "effs/interface/NPC_18_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 23,
+      "path": "effs/interface/NPC_23_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 24,
+      "path": "effs/interface/NPC_24_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 25,
+      "path": "effs/interface/NPC_25_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 28,
+      "path": "effs/interface/NPC_28_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 30,
+      "path": "effs/interface/NPC_30_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 33,
+      "path": "effs/interface/NPC_33_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 52,
+      "path": "effs/interface/NPC_52_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 53,
+      "path": "effs/interface/NPC_53_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 54,
+      "path": "effs/interface/NPC_54_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 55,
+      "path": "effs/interface/NPC_55_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 56,
+      "path": "effs/interface/NPC_56_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 57,
+      "path": "effs/interface/NPC_57_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 58,
+      "path": "effs/interface/NPC_58_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 59,
+      "path": "effs/interface/NPC_59_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 60,
+      "path": "effs/interface/NPC_60_0.eff"
+    },
+    {
+      "expression": 0,
+      "npc_uid": 61,
+      "path": "effs/interface/NPC_61_0.eff"
+    }
+  ],
+  "files": [
+    {
+      "image_header": [
+        0,
+        2,
+        64670,
+        180,
+        285,
+        180,
+        285,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_18.im3",
+      "sha256": "08cdf7a45bd3ef50fa254129d737316a42ada2e0ceb43e5dbf4a6eb5a08a6312",
+      "size": 64678
+    },
+    {
+      "path": "effs/interface/NPC_18_0.eff",
+      "sha256": "91d90bbaf0375e16ae3bbaab92d449d2011f4268c4094516741a148ebaecaf89",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        94722,
+        180,
+        301,
+        180,
+        301,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_23.im3",
+      "sha256": "edb7da0fd822109177651fb7437b7591cfafe1e37e18f5dce5111d5c1bf5abf0",
+      "size": 94730
+    },
+    {
+      "path": "effs/interface/NPC_23_0.eff",
+      "sha256": "41fe19e6be49f611c80df4376429d295f288050da6046e85b1ca09c271c7c642",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        76766,
+        205,
+        294,
+        205,
+        294,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_24.im3",
+      "sha256": "1a69609b5c73ca581d5571f11491efbe31e4967afe18411d78a331a45cf1829e",
+      "size": 76774
+    },
+    {
+      "path": "effs/interface/NPC_24_0.eff",
+      "sha256": "486d31437c6a23a930bde5d8a9fc74be8a4b3700320fbc4a8408b9a572f8278b",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        84320,
+        260,
+        271,
+        260,
+        271,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_25.im3",
+      "sha256": "46d290e1dbb8a91c1b3625d0892ebd86aed1fffaf55e775e95a8d46426d0903b",
+      "size": 84328
+    },
+    {
+      "path": "effs/interface/NPC_25_0.eff",
+      "sha256": "d590b29c4e29ad512dd0e77e1df68200c75d54b67a9565217da5ae754c5e4d5c",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        78784,
+        195,
+        296,
+        195,
+        296,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_28.im3",
+      "sha256": "010b5f825c589468b8d72b4d84801ae5dfb21efbd841bb9a369c2947d6f12416",
+      "size": 78792
+    },
+    {
+      "path": "effs/interface/NPC_28_0.eff",
+      "sha256": "6aa7802c25002c6b11daa41487649758cbd5897fa28cfbda5c60ae38d6910077",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        76934,
+        195,
+        291,
+        195,
+        291,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_30.im3",
+      "sha256": "c198ae986c0d1ce0776ba4eb9cb96643efcd9afab2fc99c18d0e7b1153efbe29",
+      "size": 76942
+    },
+    {
+      "path": "effs/interface/NPC_30_0.eff",
+      "sha256": "97f45c2bd572efff1945bb0031bbcf619dd01fbda8710f68f5a86f6700d73bb0",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        69990,
+        170,
+        301,
+        170,
+        301,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_33.im3",
+      "sha256": "de710d0eb31b33a346b31eb4fec45280fbbe41da0b0c647451cdc07f97480b09",
+      "size": 69998
+    },
+    {
+      "path": "effs/interface/NPC_33_0.eff",
+      "sha256": "989735ba8dd3717c75861e1eec90839a8c6fc70b5b50435472ac504605dbda4d",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        81124,
+        280,
+        344,
+        280,
+        344,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_52.im3",
+      "sha256": "b1a83d8a6f622ab6abfbbc3a954f2e4dbb3ecbadf7f663da29eda3b4bc552baf",
+      "size": 81132
+    },
+    {
+      "path": "effs/interface/NPC_52_0.eff",
+      "sha256": "acb6c9f1d7404c24a02450cf22c9bbc985e17e521aef8666bf5e4b1a56a44296",
+      "size": 2024
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        75344,
+        280,
+        344,
+        280,
+        344,
+        8,
+        0
+      ],
+      "path": "effs/interface/NPC_52_b.im3",
+      "sha256": "f8688d0bf6248e742dbfbb56d20f9fdd45e3763eea9c54e244e545a250ee13b6",
+      "size": 75352
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        75128,
+        230,
+        272,
+        230,
+        272,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_53.im3",
+      "sha256": "914f15f602fd34ba7ef6fc34f2731b6f691df62c4070a1ca3a5659f9499affc7",
+      "size": 75136
+    },
+    {
+      "path": "effs/interface/NPC_53_0.eff",
+      "sha256": "f7643f2d91e60f3aee77c9c007f40f77bfa193b5cc3379bc83cb5fed2cbe2594",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        89718,
+        258,
+        261,
+        258,
+        261,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_54.im3",
+      "sha256": "b87583fcc102f70346c7285d9a5205722bc3214349f307bc5c692469cf36dda9",
+      "size": 89726
+    },
+    {
+      "path": "effs/interface/NPC_54_0.eff",
+      "sha256": "b0770ad7897317c10e079bb98f14612fcdef3e6486695c2f51b894adb6f048c7",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        72530,
+        258,
+        261,
+        258,
+        261,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_55.im3",
+      "sha256": "f4ff9848181508b2fa96b3332c834735e9a3bd36415bf8f17cd1dc5fc15e9884",
+      "size": 72538
+    },
+    {
+      "path": "effs/interface/NPC_55_0.eff",
+      "sha256": "8fdfaf6095fbf3cdb093729d5375e31fc1d4c81a1fe029de0431213a2249fc02",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        61320,
+        230,
+        195,
+        230,
+        195,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_56.im3",
+      "sha256": "5f0a2225e2f48dc261d399c07c24ce4eadecfe7783b7a8ab9ebf7fd067bf26ae",
+      "size": 61328
+    },
+    {
+      "path": "effs/interface/NPC_56_0.eff",
+      "sha256": "b3fd497a46345a94df2f072fd47f2855636c60bd9463c92448288dd686550687",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        86992,
+        230,
+        238,
+        230,
+        238,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_57.im3",
+      "sha256": "1c8fe74f3c6952558c2af2e7cc58646f6ad89e414056913ffa052604e6fd7baa",
+      "size": 87000
+    },
+    {
+      "path": "effs/interface/NPC_57_0.eff",
+      "sha256": "69eac08911462e3f0f72b32bdaae14eaadabf5d4f580669190d66469e0a38408",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        75104,
+        210,
+        217,
+        210,
+        217,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_58.im3",
+      "sha256": "feeb00c1584182f660a62b5b812616a3c93e6013488be94c48bd1153baef4bf2",
+      "size": 75112
+    },
+    {
+      "path": "effs/interface/NPC_58_0.eff",
+      "sha256": "227a8675cd7b86058db77300f7e46e0e6b794b02495dbdd0de90f68b7102c55f",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        77866,
+        230,
+        266,
+        230,
+        266,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_59.im3",
+      "sha256": "0908d5addb87c28454776c08e8177d6c6647a7f9eba83ccec09986087a6c0c3b",
+      "size": 77874
+    },
+    {
+      "path": "effs/interface/NPC_59_0.eff",
+      "sha256": "4fd72428f17c81765efba3dae9bd4a59fed2ba229ae9743f91d3a8fa7cb16424",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        71672,
+        170,
+        311,
+        170,
+        311,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_6.im3",
+      "sha256": "ec6b8166bf0e532548f977ed1504bc2691555451af1b0412c628a9a0d3e325e1",
+      "size": 71680
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        57812,
+        244,
+        164,
+        244,
+        164,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_60.im3",
+      "sha256": "22a0a07c025244975478a682e4ad90a2dbb848cc9150b637e624e7ebf50cbd71",
+      "size": 57820
+    },
+    {
+      "path": "effs/interface/NPC_60_0.eff",
+      "sha256": "0e36eb387b1cc53dfe5dab6424cbf7978936a92576b654dd24f77747589cbc4b",
+      "size": 1324
+    },
+    {
+      "image_header": [
+        0,
+        2,
+        67172,
+        240,
+        194,
+        240,
+        194,
+        10,
+        0
+      ],
+      "path": "effs/interface/NPC_61.im3",
+      "sha256": "efe6b3c58f4d263eb9c812ab1e98bc196be66802744837b85e10aa3ea2441574",
+      "size": 67180
+    },
+    {
+      "path": "effs/interface/NPC_61_0.eff",
+      "sha256": "dd033f86c05a3c29f2c445206a79c089a9b0a887e2d032c69d5ac6afe84c5a8f",
+      "size": 1324
+    },
+    {
+      "path": "effs/interface/NPC_6_0.eff",
+      "sha256": "06bac1094bc7df1fd130ed7630c633f47fd688f682d719ba2ef1e5e7694063cf",
+      "size": 1324
+    }
+  ],
+  "npc_scope": [
+    6,
+    18,
+    23,
+    24,
+    25,
+    28,
+    30,
+    33,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61
+  ],
+  "runtime_acceptance": false,
+  "schema": "openNanaimo.story-portraits.v1",
+  "source_catalog_sha256": "c06962ae2ef4f03c0717a4d257dc4ef01bf7f411126c791f8430d1d104ec34ab"
+}

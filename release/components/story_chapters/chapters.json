@@ -1,0 +1,6158 @@
+{
+  "activation_allowed": false,
+  "chapters": [
+    {
+      "description_qs_id": 3000,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3001",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 1,
+          "source_script_uid": 10000,
+          "speeches": [
+            {
+              "npc_uid": 52,
+              "qs_id": 3001,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3001",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "你是受尼莫委托，前去击退村里出现的怪物^&的吧？骑着宠物进入地宫后，^&卡片册的魔力会让宠物变成飞行推进器，^&这你应该知道了吧？我也有件事想拜托你。^&最近怪物的攻击似乎变得越来越有组织，^&好像有人在背后操纵它们，^&你能帮忙寻找线索吗？^&先看看击落怪物时，它们会不会掉落卡片。^&怪物如果带着卡片，^&很可能就是“他”的手下。^&但愿不是“他”……"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3002",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 1,
+          "source_script_uid": 10001,
+          "speeches": [
+            {
+              "npc_uid": 52,
+              "qs_id": 3002,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3002",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "哇，真了不起！出现在普拉塔诺斯天空的^&怪物都被你打败了！^&可是，怪物的幕后主使果然是“他”……^&虽然时隔多年，如今已成遥远的传说，^&但很久以前，Nanaimo的人们曾结合科学与魔法，^&发明了“魔法卡片”，凭借卡片创造出^&高度发达的文明。当时，科学家们^&发明了能将现实物品转移到另一个世界的空间，^&再在需要时取出的机器。^&可是机器太大，不方便随身携带，^&魔法师便用魔法把机器变成卡片，^&让人们放进卡片册，随身带着。^&当然，要取出存放在另一空间的物品时，^&只需使用名为“魔法钥匙”的魔法卷轴，^&就能随时将它们召唤出来。^&但魔法师们并不满足于此，^&他们继续发明各种等级的卡片，最后创造出^&能赋予绝对力量的“究极卡片”。^&然而，魔法师们为了争夺究极卡片，^&被贪欲驱使。其中的罗兰组建怪物军团，^&入侵Nanaimo，战争就此爆发。^&Nanaimo的人们也利用卡片，组建了能够飞翔的^&强大宠物部队展开反击，但一切还是^&被摧毁，化为废墟。漫长岁月过去，^&魔法卡片的秘密也被深深埋藏，^&渐渐成了传说。^&可这次出现的怪物竟然是罗兰的手下！^&一定是罗兰为了寻找究极卡片派来的！^&请一边夺回怪物持有的卡片，^&一边寻找究极卡片的线索吧。"
+            }
+          ]
+        }
+      ],
+      "episode": 1,
+      "existing_monk": null,
+      "next_quest_id": 73000001,
+      "objectives": [
+        {
+          "id": 75100000,
+          "kind": 39,
+          "name": "与NPC交谈（进入第1章）",
+          "raw_fields": [
+            "75100000",
+            "NPC와 대화 (에피소드1 입장)",
+            "39",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10000",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100001,
+          "kind": 40,
+          "name": "通关第1章全部地宫",
+          "raw_fields": [
+            "75100001",
+            "에피소드1의 모든 던전 클리어",
+            "40",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100002,
+          "kind": 39,
+          "name": "与NPC交谈（离开第1章）",
+          "raw_fields": [
+            "75100002",
+            "NPC와 대화 (에피소드1 퇴장)",
+            "39",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10001",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000000,
+      "reward_qs_id": 3003,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          1,
+          0,
+          200
+        ],
+        [
+          6,
+          13000020,
+          10
+        ]
+      ],
+      "title": "第1章：普拉塔诺斯的天空",
+      "village_index": 0
+    },
+    {
+      "description_qs_id": 3004,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3005",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 3,
+          "source_script_uid": 10002,
+          "speeches": [
+            {
+              "npc_uid": 6,
+              "qs_id": 3005,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3005",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "你好，我叫恰恰。^&初次见面就这样问可能有点失礼，你带的^&那本书……看起来很像传说中的卡片册，^&能让我看看吗？村里卡片商店的董古莉姐姐^&卖一种形状像钥匙的魔法钥匙。^&小云云叔叔说，只要有传说中的卡片册，^&就能用这种钥匙，把册子里的卡片变成^&想要的物品。^&要是只说它是古董，大家或许还会同情他，^&买上一点呢……而且，他还说以前把卡片^&收进卡片册的人叫收集者，那些收集者^&能利用卡片册，把宠物变成飞行推进器，^&在空中飞来飞去。总之，小云云叔叔^&一直说那些传说总有一天会重现，^&可惜谁也不信，真让人难过。^&我想着至少陪叔叔聊聊天，^&所以经常去卡片商店。他以前拿给我看的^&那本卡片册，和你现在带的很像呢。^&我原本也不相信，可听故事听得太多，^&不知不觉就知道了不少Nanaimo的传说。^&嗯……说得太久了。怎么样，能让我看看吗？^&什么？你现在要进秘密之丛调查？^&好像是急事，那我先不耽误你。不过，^&以后一定要让我看看哦！快进森林吧。"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "53",
+              "string_uid": "3006",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3007",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 3,
+          "source_script_uid": 10003,
+          "speeches": [
+            {
+              "npc_uid": 53,
+              "qs_id": 3006,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "53",
+                "string_uid": "3006",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "可恶！另外两位先遣队长一定会惩罚你！^&对了，你刚才看到的地下通道，已经^&被我们弄塌了。你一定很想知道^&它通向哪里吧？哈哈，慢慢找吧！"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3007,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3007",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "怎么这么晚才回来？咦，你怎么这副表情？^&原来森林里真的出现了怪物！^&不过你真厉害，居然打败了怪物！^&既然宠物会变成推进器，你那本卡片册^&果然是传说中的宝物吧！什么？传说中的伊露卡女神！^&哇，预言说会有勇敢的勇士出现，^&让Nanaimo的传说重现，难道就是你？^&突然觉得你不一样了呢！^&嗯……不过，地下通道堵住了，该怎么办？^&啊！村里卡片交易所附近，有个通向秘密之丛的^&黑暗地下洞穴。进去以后，^&也许能找到其他怪物的踪迹？^&所以别灰心，我们一起去看看吧！"
+            }
+          ]
+        }
+      ],
+      "episode": 2,
+      "existing_monk": null,
+      "next_quest_id": 73000002,
+      "objectives": [
+        {
+          "id": 75100003,
+          "kind": 39,
+          "name": "与NPC交谈（进入第2章）",
+          "raw_fields": [
+            "75100003",
+            "NPC와 대화 (에피소드2 입장)",
+            "39",
+            "1",
+            "3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10002",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100004,
+          "kind": 40,
+          "name": "通关第2章全部地宫",
+          "raw_fields": [
+            "75100004",
+            "에피소드2의 모든 던전 클리어",
+            "40",
+            "1",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100005,
+          "kind": 39,
+          "name": "与NPC交谈（离开第2章）",
+          "raw_fields": [
+            "75100005",
+            "NPC와 대화 (에피소드2 퇴장)",
+            "39",
+            "1",
+            "3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10003",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000001,
+      "reward_qs_id": 3008,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          13000037,
+          5
+        ],
+        [
+          6,
+          13000040,
+          10
+        ]
+      ],
+      "title": "第2章：秘密之丛",
+      "village_index": 0
+    },
+    {
+      "description_qs_id": 3009,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "54",
+              "string_uid": "3010",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3011",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 5,
+          "source_script_uid": 10004,
+          "speeches": [
+            {
+              "npc_uid": 54,
+              "qs_id": 3010,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "54",
+                "string_uid": "3010",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "你们几个，还没找到吗？^&这可是非常重要的任务，一定要找到！^&……"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3011,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3011",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "呼，差点被发现！怎么样，我说得没错吧？^&不用谢，能帮你找到怪物的踪迹，^&我才觉得荣幸呢，嘿嘿。^&不过，要打败那种家伙，^&是不是应该带斑点狗或者腊肠犬，至少也要^&紫色兔子这个等级的宠物才行？^&啊，我只是随口说说自己的想法，^&绝对不是怀疑你的实力！^&小云云叔叔说，收集者的实力提高后，^&就会使用更强的宠物。^&我先去告诉村民，这个洞穴很危险。^&你一定要打败怪物哦！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "55",
+              "string_uid": "3012",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3013",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3014",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3015",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3016",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3017",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 5,
+          "source_script_uid": 10005,
+          "speeches": [
+            {
+              "npc_uid": 55,
+              "qs_id": 3012,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "55",
+                "string_uid": "3012",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "通往怪物天地的秘密通道，可不能轻易让给你！^&另一位先遣队长正在那里执行任务，^&我们当然得阻止你去捣乱，哈哈。^&那条通道已经封锁，另找一条路吧！"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3013,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3013",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "你进了秘密之丛后一直没消息，我就来找你了。^&看来罗兰为了不重蹈过去的覆辙，^&这次是下定决心，有计划地展开^&入侵！没想到他连怪物天地都建好了……"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3014,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3014",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "我倒是知道一个可疑的地方，不知道是不是那里……^&从前那里有座机械工厂，如今已经废弃了。^&入口就在村子东边，^&我们去找找怪物和卡片的线索吧！"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3015,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3015",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "你竟然能看见我，恰恰，你似乎也背负着特殊的^&命运。你手上戴的戒指，是你的吗？^&它和我很久以前认识的一位收集者的戒指很像。^&你认识“古斯塔夫”吗？"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3016,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3016",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "你怎么会知道我的名字和祖先的名字？^&难道你就是……伊露卡女神？^&哇，我还以为那只是传说呢……^&不过，这枚戒指是母亲给我的，怎么了？"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3017,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3017",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "原来如此。过去的战争让Nanaimo化为废墟，^&是古斯塔夫重新找回散落的卡片，^&建立了普拉塔诺斯村。^&那枚戒指似乎就是古斯塔夫留下的信物。^&对了，除了古斯塔夫，当时还有另外四位收集者。^&他们也在Nanaimo建立了其他村庄，^&四处寻找究极卡片。^&他们似乎把寻找的痕迹留在信物上，准备传给后裔。^&恰恰，请和我们一起寻找其余传说中^&收集者的后裔吧！为了不让究极卡片^&落入罗兰之手，请加入这场拯救Nanaimo的^&冒险！^&那么，%s，^&请你先去寻找怪物天地，^&恰恰则回去准备出发吧。"
+            }
+          ]
+        }
+      ],
+      "episode": 3,
+      "existing_monk": null,
+      "next_quest_id": 73000003,
+      "objectives": [
+        {
+          "id": 75100006,
+          "kind": 39,
+          "name": "与NPC交谈（进入第3章）",
+          "raw_fields": [
+            "75100006",
+            "NPC와 대화 (에피소드3 입장)",
+            "39",
+            "1",
+            "5",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10004",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100007,
+          "kind": 40,
+          "name": "通关第3章全部地宫",
+          "raw_fields": [
+            "75100007",
+            "에피소드3의 모든 던전 클리어",
+            "40",
+            "1",
+            "3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100008,
+          "kind": 39,
+          "name": "与NPC交谈（离开第3章）",
+          "raw_fields": [
+            "75100008",
+            "NPC와 대화 (에피소드3 퇴장)",
+            "39",
+            "1",
+            "5",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10005",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000002,
+      "reward_qs_id": 3018,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          13000059,
+          5
+        ],
+        [
+          6,
+          13000073,
+          5
+        ]
+      ],
+      "title": "第3章：阴暗的地下迷宫",
+      "village_index": 0
+    },
+    {
+      "description_qs_id": 3019,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "56",
+              "string_uid": "3020",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3021",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 7,
+          "source_script_uid": 10006,
+          "speeches": [
+            {
+              "npc_uid": 56,
+              "qs_id": 3020,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "56",
+                "string_uid": "3020",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "（一片嘈杂）^&（怪物们正向某处移动）^&动作快点！这批要送到另一边！"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3021,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3021",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "恰恰说得没错。^&原来村里出现的怪物，都是在这里^&制造的！那群怪物好像又被送往^&别的地方了……请仔细调查这里！^&等等，我差点又忘了。^&%s，虽然我相信你的实力，^&但至少带上耍宝小猕猴这个等级的宠物才安全。^&怪物越强，越需要使用强大的宠物！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3022",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3023",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3024",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3025",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 7,
+          "source_script_uid": 10007,
+          "speeches": [
+            {
+              "npc_uid": 52,
+              "qs_id": 3022,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3022",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "不好！已经制造完成的怪物，竟然已经前往各村^&寻找究极卡片了。我们也^&赶快去桃园村，寻找究极卡片的线索，^&以及传说中的收集者飞龙的后裔吧。"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3023,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3023",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "呼……我没来晚吧？^&我已经做好旅行的准备了。^&现在就出发吗？"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3024,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3024",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "等一下，普拉塔诺斯村外也有很多^&怪物。通往桃园村的出口前，应该^&有位修道僧。听说没有足够实力击退^&村外怪物的人，他是不会放行的。"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3025,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3025",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "别担心，伊露卡女神。^&凭%s的实力，应该没问题！^&那么，我们去村子南边喷泉下方的出口，^&找站在那里的修道僧吧。"
+            }
+          ]
+        }
+      ],
+      "episode": 4,
+      "existing_monk": {
+        "clear_mask": 1,
+        "existing_episode": 24,
+        "existing_script_uid": 24000,
+        "localization_owner": "manifest/monk_localization.json",
+        "npc_uid": 62,
+        "owner": "CharacterMonkChallenges.ClearMask",
+        "reused_text_ids": [
+          6000,
+          6002,
+          6001
+        ],
+        "source_actions": [
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "62",
+            "string_uid": "6000",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "condition": "1",
+            "dtype": "3",
+            "dungeon": "",
+            "episode": "0",
+            "level": "",
+            "type": "D_START"
+          },
+          {
+            "goto": "4",
+            "type": "CONDITION",
+            "value": "1"
+          },
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "62",
+            "string_uid": "6002",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "step_clear": "0",
+            "type": "COMPLETE"
+          },
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "62",
+            "string_uid": "6001",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "step_clear": "1",
+            "type": "COMPLETE"
+          }
+        ],
+        "source_objective_id": 75100012,
+        "source_script_uid": 10032
+      },
+      "next_quest_id": 73000004,
+      "objectives": [
+        {
+          "id": 75100009,
+          "kind": 39,
+          "name": "与NPC交谈（进入第4章）",
+          "raw_fields": [
+            "75100009",
+            "NPC와 대화 (에피소드4 입장)",
+            "39",
+            "1",
+            "7",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10006",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100010,
+          "kind": 40,
+          "name": "通关第4章全部地宫",
+          "raw_fields": [
+            "75100010",
+            "에피소드4의 모든 던전 클리어",
+            "40",
+            "1",
+            "4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100011,
+          "kind": 39,
+          "name": "与NPC交谈（离开第4章）",
+          "raw_fields": [
+            "75100011",
+            "NPC와 대화 (에피소드4 퇴장)",
+            "39",
+            "1",
+            "7",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10007",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100012,
+          "kind": 1,
+          "name": "通过普拉塔诺斯村修道僧挑战",
+          "raw_fields": [
+            "75100012",
+            "플라타너스 수도승 클리어",
+            "1",
+            "1",
+            "62",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10032",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000003,
+      "reward_qs_id": 3026,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          13000111,
+          5
+        ],
+        [
+          2,
+          19000006,
+          1
+        ],
+        [
+          4,
+          10069204,
+          1
+        ]
+      ],
+      "title": "第4章：怪物天地",
+      "village_index": 0
+    },
+    {
+      "description_qs_id": 3027,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3028",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3029",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3030",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 9,
+          "source_script_uid": 10008,
+          "speeches": [
+            {
+              "npc_uid": 6,
+              "qs_id": 3028,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3028",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "%s～^&我去逛逛村子，顺便向村民打听^&传说中的收藏家“飞龙”的后裔。^&那我们待会儿见！"
+            },
+            {
+              "npc_uid": 18,
+              "qs_id": 3029,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3029",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "你们是来旅行的吗？我叫“小青璃”。^&最近村子周围出现了许多怪物，^&这样随意走动很危险的！^&我特地赶来就是提醒你们。那我先走啦。"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3030,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3030",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "正如那位少年所说，村子各处隐约^&都能感觉到罗兰的气息。但怪物似乎被施了魔法，^&无法确定具体的位置和数量。^&附近好像就有怪物，我们先去调查吧！^&对了！这里的怪物比普拉塔诺斯村的更强，^&带上帅帅的哈士奇这一等级的宠物才安全。"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3031",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 9,
+          "source_script_uid": 10009,
+          "speeches": [
+            {
+              "npc_uid": 52,
+              "qs_id": 3031,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3031",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "这是来到桃园村后第一次遇见怪物，^&可惜它们也不知道究极卡片的消息。^&幸好我们已经从怪物手中夺回了^&不少卡片。^&把卡片册同一页中的每一种卡片^&各集齐一张，就能制作特殊卡片。^&卡片店的小云云会帮忙制作，再用它^&和魔法钥匙，就能在卡片册中制作黄金粉末。^&给宠物涂上黄金粉末，宠物就能发挥^&最高阶段的攻击力。当然，想要发挥^&最高阶段的力量，还得带宠物参加战斗，^&让它不断成长。^&用夺回的卡片制作宠物，把它培养到最高阶段，^&再涂上黄金粉末，变成金光闪闪的伙伴！^&怎么样？光想想就很有成就感吧？^&以后条件允许，一定要试试黄金宠物哦！^&现在先去下一处感应到怪物^&气息的地方。奥兹屋东边的竹林里^&有怪物的气息，出发！"
+            }
+          ]
+        }
+      ],
+      "episode": 5,
+      "existing_monk": null,
+      "next_quest_id": 73000005,
+      "objectives": [
+        {
+          "id": 75100013,
+          "kind": 39,
+          "name": "第5章：进场交谈",
+          "raw_fields": [
+            "75100013",
+            "NPC와 대화 (에피소드5 입장)",
+            "39",
+            "1",
+            "9",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10008",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100014,
+          "kind": 40,
+          "name": "通关第5章全部地宫",
+          "raw_fields": [
+            "75100014",
+            "에피소드5의 모든 던전 클리어",
+            "40",
+            "1",
+            "5",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100015,
+          "kind": 39,
+          "name": "第5章：离场交谈",
+          "raw_fields": [
+            "75100015",
+            "NPC와 대화 (에피소드5 퇴장)",
+            "39",
+            "1",
+            "9",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10009",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000004,
+      "reward_qs_id": 3032,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          12000002,
+          10
+        ],
+        [
+          6,
+          12000012,
+          10
+        ],
+        [
+          4,
+          10019997,
+          1
+        ],
+        [
+          4,
+          10029997,
+          1
+        ],
+        [
+          4,
+          10039997,
+          1
+        ]
+      ],
+      "title": "第5章：瀑布之石窟",
+      "village_index": 1
+    },
+    {
+      "description_qs_id": 3033,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3034",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 11,
+          "source_script_uid": 10010,
+          "speeches": [
+            {
+              "npc_uid": 6,
+              "qs_id": 3034,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3034",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "咦，又见面啦！我向村民打听过，^&但没有找到知道飞龙后裔的人。^&不过，最近村里不断有人因为怪物而^&失踪。^&几天前，一名叫“小青璃”的少年的父亲也失踪了。^&嗯？刚才见过他，他却没提这件事？^&那我再去找他，问清楚事情经过。^&你先到这片森林里寻找究极卡片吧。^&对了！虽然你肯定明白，想对付这里的怪物，^&恐怕得带上梅花鹿这一等级的宠物。^&怪物越强，同行的宠物也必须^&越强，别忘了哦！那就进森林看看吧！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3035",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 11,
+          "source_script_uid": 10011,
+          "speeches": [
+            {
+              "npc_uid": 52,
+              "qs_id": 3035,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3035",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "村民接连失踪，看来确实和怪物^&有关系。可是怪物们也不知道^&究极卡片的事情……^&罗兰究竟在策划什么阴谋呢？^&恰恰正在村里努力四处^&打听消息，我们也抓紧时间^&寻找究极卡片的线索吧！^&接下来去调查林中的公墓。^&就在桃园村装饰店附近，出发！"
+            }
+          ]
+        }
+      ],
+      "episode": 6,
+      "existing_monk": null,
+      "next_quest_id": 73000006,
+      "objectives": [
+        {
+          "id": 75100016,
+          "kind": 39,
+          "name": "第6章：进场交谈",
+          "raw_fields": [
+            "75100016",
+            "NPC와 대화 (에피소드6 입장)",
+            "39",
+            "1",
+            "11",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10010",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100017,
+          "kind": 40,
+          "name": "通关第6章全部地宫",
+          "raw_fields": [
+            "75100017",
+            "에피소드6의 모든 던전 클리어",
+            "40",
+            "1",
+            "6",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100018,
+          "kind": 39,
+          "name": "第6章：离场交谈",
+          "raw_fields": [
+            "75100018",
+            "NPC와 대화 (에피소드6 퇴장)",
+            "39",
+            "1",
+            "11",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10011",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000005,
+      "reward_qs_id": 3036,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          22000011,
+          7
+        ],
+        [
+          4,
+          10050263,
+          1
+        ],
+        [
+          4,
+          10060350,
+          1
+        ]
+      ],
+      "title": "第6章：战场之树林",
+      "village_index": 1
+    },
+    {
+      "description_qs_id": 3037,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3038",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3039",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 13,
+          "source_script_uid": 10012,
+          "speeches": [
+            {
+              "npc_uid": 6,
+              "qs_id": 3038,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3038",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "%s～不好了！^&我去找“小青璃”，却怎么也^&找不到。他可能独自进了亡者的坟墓^&寻找父亲，我们得帮帮他！"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3039,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3039",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "恰恰，这片公墓里的怪物气息^&很强，最好先调查这里^&再走。既然已经来了，直接离开^&总让人放心不下。^&%s，除了怪物的气息，^&这里还有强烈的宝石力量，实在很可疑。^&越是这种时候，越要做好准备，明白吧？^&请带上适合自己等级的宠物进去调查！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3040",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 13,
+          "source_script_uid": 10013,
+          "speeches": [
+            {
+              "npc_uid": 52,
+              "qs_id": 3040,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3040",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "刚才感应到的原来是缟玛瑙的力量。^&这种宝石能帮你回收更多怪物藏着的^&卡片，有机会一定要试试！^&现在赶快去救“小青璃”吧。^&亡者的坟墓就在桃园村的卡片店附近！"
+            }
+          ]
+        }
+      ],
+      "episode": 7,
+      "existing_monk": null,
+      "next_quest_id": 73000007,
+      "objectives": [
+        {
+          "id": 75100019,
+          "kind": 39,
+          "name": "第7章：进场交谈",
+          "raw_fields": [
+            "75100019",
+            "NPC와 대화 (에피소드7 입장)",
+            "39",
+            "1",
+            "13",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10012",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100020,
+          "kind": 40,
+          "name": "通关第7章全部地宫",
+          "raw_fields": [
+            "75100020",
+            "에피소드7의 모든 던전 클리어",
+            "40",
+            "1",
+            "7",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100021,
+          "kind": 39,
+          "name": "第7章：离场交谈",
+          "raw_fields": [
+            "75100021",
+            "NPC와 대화 (에피소드7 퇴장)",
+            "39",
+            "1",
+            "13",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10013",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000006,
+      "reward_qs_id": 3041,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          13000189,
+          1
+        ],
+        [
+          2,
+          48000008,
+          1
+        ],
+        [
+          2,
+          14002487,
+          3
+        ]
+      ],
+      "title": "第7章：丛林之墓地",
+      "village_index": 1
+    },
+    {
+      "description_qs_id": 3042,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "57",
+              "string_uid": "3043",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3044",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3045",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "57",
+              "string_uid": "3046",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3047",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 15,
+          "source_script_uid": 10014,
+          "speeches": [
+            {
+              "npc_uid": 57,
+              "qs_id": 3043,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "57",
+                "string_uid": "3043",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "早就听说过你的名声。我叫魔鬼金狮，^&你认识这个少年吗？哈哈。^&想救他，就把你们知道的^&究极卡片的消息全都交出来！"
+            },
+            {
+              "npc_uid": 18,
+              "qs_id": 3044,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3044",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "啊……是刚才见过的各位。对不起，给你们添麻烦了。^&如果我没有被怪物抓住就好了……"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3045,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3045",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "魔鬼金狮，我们不会向你这样的恶徒妥协！^&趁我们还好好说话，快把村民全都放了！"
+            },
+            {
+              "npc_uid": 57,
+              "qs_id": 3046,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "57",
+                "string_uid": "3046",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "哼，看你们还能嘴硬到什么时候。^&为了引你们过来，我可是抓了不少人。^&少废话，带上情报，跟着我^&进墓里来！"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3047,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3047",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "没办法了……%s～^&能让魔鬼金狮见识一下你的厉害吧？^&请把被抓的村民全都救回来！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3048",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3049",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3050",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3051",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3052",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "58",
+              "string_uid": "3053",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3054",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 15,
+          "source_script_uid": 10015,
+          "speeches": [
+            {
+              "npc_uid": 18,
+              "qs_id": 3048,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3048",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "呜呜……谢谢你们救了我……"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3049,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3049",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "这段时间你受苦了。"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3050,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3050",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "恰恰的戒指和小青璃的项链靠在一起，^&竟然隐约显现出两块地图碎片。^&嗯，上面还有一段留言。传说中的收藏家^&虽然找到了究极卡片的位置，却因为它的力量^&太过强大，无法靠近。他们希望日后^&自己的后裔能够积蓄力量，揭开究极卡片^&的秘密，所以在各自的信物上^&留下了它所在的位置。如果能找到其他收藏家^&后裔持有的信物，就能马上确定^&位置了。留言还特意叮嘱，希望卡片^&不要被用于邪恶的目的。"
+            },
+            {
+              "npc_uid": 18,
+              "qs_id": 3051,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3051",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "这么说，我的项链就是传说中收藏家的信物？^&这是父亲留给我的，可父亲已经被那些自称^&罗兰部下的怪物害死了……如果可以，^&我也想加入你们，一起行动。"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3052,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3052",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "%s～^&已经找到两位后裔了，请继续寻找其他人，^&保护究极卡片，别让它落入罗兰手中！^&接下来先去寻找萨恩村的后裔吧？"
+            },
+            {
+              "npc_uid": 58,
+              "qs_id": 3053,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "58",
+                "string_uid": "3053",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "哈哈哈，原来还有这样的秘密……我一直只顾^&寻找卡片，原来关键是信物。偷偷听听果然有收获！^&那么，就去萨恩村吧，嘿嘿！"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3054,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3054",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "糟了！我们也抓紧，不能落在那个人后面！^&村子南边通往萨恩村的出口前有一位修道僧。^&向他展示你的实力，^&然后赶快前往萨恩村吧！"
+            }
+          ]
+        }
+      ],
+      "episode": 8,
+      "existing_monk": {
+        "clear_mask": 2,
+        "existing_episode": 25,
+        "existing_script_uid": 24001,
+        "localization_owner": "manifest/monk_localization.json",
+        "npc_uid": 63,
+        "owner": "CharacterMonkChallenges.ClearMask",
+        "reused_text_ids": [
+          6003,
+          6005,
+          6004
+        ],
+        "source_actions": [
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "63",
+            "string_uid": "6003",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "condition": "1",
+            "dtype": "3",
+            "dungeon": "",
+            "episode": "1",
+            "level": "",
+            "type": "D_START"
+          },
+          {
+            "goto": "4",
+            "type": "CONDITION",
+            "value": "1"
+          },
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "63",
+            "string_uid": "6005",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "step_clear": "0",
+            "type": "COMPLETE"
+          },
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "63",
+            "string_uid": "6004",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "step_clear": "1",
+            "type": "COMPLETE"
+          }
+        ],
+        "source_objective_id": 75100025,
+        "source_script_uid": 10033
+      },
+      "next_quest_id": 73000008,
+      "objectives": [
+        {
+          "id": 75100022,
+          "kind": 39,
+          "name": "第8章：进场交谈",
+          "raw_fields": [
+            "75100022",
+            "NPC와 대화 (에피소드8 입장)",
+            "39",
+            "1",
+            "15",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10014",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100023,
+          "kind": 40,
+          "name": "通关第8章全部地宫",
+          "raw_fields": [
+            "75100023",
+            "에피소드8의 모든 던전 클리어",
+            "40",
+            "1",
+            "8",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100024,
+          "kind": 39,
+          "name": "第8章：离场交谈",
+          "raw_fields": [
+            "75100024",
+            "NPC와 대화 (에피소드8 퇴장)",
+            "39",
+            "1",
+            "15",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10015",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100025,
+          "kind": 1,
+          "name": "通过桃园村修道僧挑战",
+          "raw_fields": [
+            "75100025",
+            "아이라이 수도승 클리어",
+            "1",
+            "1",
+            "63",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10033",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000007,
+      "reward_qs_id": 3055,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          13000198,
+          1
+        ],
+        [
+          2,
+          15009353,
+          1
+        ]
+      ],
+      "title": "第8章：亡者的坟墓",
+      "village_index": 1
+    },
+    {
+      "description_qs_id": 3056,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3057",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3058",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "23",
+              "string_uid": "3059",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "25",
+              "string_uid": "3060",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3061",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3062",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "25",
+              "string_uid": "3063",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3064",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "28",
+              "string_uid": "3065",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3066",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 17,
+          "source_script_uid": 10016,
+          "speeches": [
+            {
+              "npc_uid": 6,
+              "qs_id": 3057,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3057",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "萨恩村的后裔会是谁呢？"
+            },
+            {
+              "npc_uid": 18,
+              "qs_id": 3058,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3058",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "不知道。啊，那边好像正在举行村子的仪式。"
+            },
+            {
+              "npc_uid": 23,
+              "qs_id": 3059,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "23",
+                "string_uid": "3059",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "现在，我将把族长和酋长之位传给女儿小熊，^&并开始向祖先禀告^&此事的仪式。"
+            },
+            {
+              "npc_uid": 25,
+              "qs_id": 3060,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "25",
+                "string_uid": "3060",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "等……等一下！出大事了！从第一代大熊开始^&世代相传的黄金熊神像不见了！^&没有神像，就不能开始仪式！"
+            },
+            {
+              "npc_uid": 24,
+              "qs_id": 3061,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3061",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "怎么会突然发生这种事？"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3062,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3062",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "嘘，等等！我们是来自普拉塔诺斯和桃园的^&收藏家。一个叫罗兰的邪恶魔法师似乎在萨恩^&策划阴谋，我们是来阻止他的。^&这件事恐怕也和罗兰有关。"
+            },
+            {
+              "npc_uid": 25,
+              "qs_id": 3063,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "25",
+                "string_uid": "3063",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "大家请安静。身为巫师，我会向天空^&询问黄金熊神像的位置。请在我念咒时^&稍等片刻。^&斯帕斯帕，阿普阿，沙玛哈，莫姆阿莫姆，卡罗塔尼！^&上天回应：“大熊一族的命运已经走到尽头，^&黄金熊神像因此自行隐去。如今的命运^&已从大熊一族转移到鹰之一族！”^&也就是说，从现在起，将由身为鹰族代表^&和巫师的我来领导村庄。大熊父女^&可能给村子带来混乱，必须将他们^&关进地牢。大熊一族的人，只要不对^&囚禁他们一事有所怨言，仍然能够平静生活。"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3064,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3064",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "那个叫鹰眼的人，很可疑啊！"
+            },
+            {
+              "npc_uid": 28,
+              "qs_id": 3065,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "28",
+                "string_uid": "3065",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "请问，你们是从其他村庄来的收藏家吧？我刚才^&听见你们和小熊姐姐说话。^&啊，我叫提米德，是大熊一族的人。^&其实昨晚我在这里看见一个蒙着黑色面巾的人，^&藏着什么东西走进丛林。因为距离太远，^&没能看清，但那是一尊金色的雕像。^&刚才他们把大熊父女关进监狱时，我害怕鹰族^&的人，不敢说出实情。请一定找回黄金熊神像，^&救救小熊姐姐。^&我一直把她当成亲姐姐一样敬爱……呜呜。"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3066,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3066",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "知道了，别哭。^&看来想找到黄金熊神像，^&就只能进这片丛林调查了。^&%s～调查的事就拜托你啦！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3067",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "59",
+              "string_uid": "3068",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "28",
+              "string_uid": "3069",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 17,
+          "source_script_uid": 10017,
+          "speeches": [
+            {
+              "npc_uid": 18,
+              "qs_id": 3067,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3067",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "喂！黄金熊神像在哪里？"
+            },
+            {
+              "npc_uid": 59,
+              "qs_id": 3068,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "59",
+                "string_uid": "3068",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "哼，居然到我这里找黄金熊神像……^&它早已不在我手里，已经去了天空荣耀开始的地方。^&现在不在我这里，怎么找也没用！"
+            },
+            {
+              "npc_uid": 28,
+              "qs_id": 3069,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "28",
+                "string_uid": "3069",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "天空荣耀开始的地方？^&应该是指天堂都市。去奥兹屋东边^&通往天堂都市的入口看看吧！"
+            }
+          ]
+        }
+      ],
+      "episode": 9,
+      "existing_monk": null,
+      "next_quest_id": 73000009,
+      "objectives": [
+        {
+          "id": 75100026,
+          "kind": 39,
+          "name": "第9章：进场交谈",
+          "raw_fields": [
+            "75100026",
+            "NPC와 대화 (에피소드9 입장)",
+            "39",
+            "1",
+            "17",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10016",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100027,
+          "kind": 40,
+          "name": "通关第9章全部地宫",
+          "raw_fields": [
+            "75100027",
+            "에피소드9의 모든 던전 클리어",
+            "40",
+            "1",
+            "9",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100028,
+          "kind": 39,
+          "name": "第9章：离场交谈",
+          "raw_fields": [
+            "75100028",
+            "NPC와 대화 (에피소드9 퇴장)",
+            "39",
+            "1",
+            "17",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10017",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000008,
+      "reward_qs_id": 3070,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          22000012,
+          7
+        ],
+        [
+          2,
+          44000022,
+          1
+        ],
+        [
+          2,
+          44000024,
+          1
+        ]
+      ],
+      "title": "第9章：危险地带",
+      "village_index": 2
+    },
+    {
+      "description_qs_id": 3071,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "30",
+              "string_uid": "3072",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3073",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 19,
+          "source_script_uid": 10018,
+          "speeches": [
+            {
+              "npc_uid": 30,
+              "qs_id": 3072,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "30",
+                "string_uid": "3072",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "抱歉突然现身。我是鹰族战士^&康多尔。为了揭开村里所有事件的^&真相，我一直在找你们。^&黄金熊神像失踪，是鹰眼一手策划的。^&我无法容忍他这种玷污部族荣誉的^&卑鄙行径。恐怕他已经察觉我的背叛，^&可能会派刺客来杀我。^&你们也务必小心。"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3073,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3073",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "我就觉得他很可疑！^&那我们就在天堂都市^&寻找黄金熊神像吧！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3074",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "28",
+              "string_uid": "3075",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3076",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3077",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 19,
+          "source_script_uid": 10019,
+          "speeches": [
+            {
+              "npc_uid": 6,
+              "qs_id": 3074,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3074",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "奇怪，这里也没有黄金熊神像？"
+            },
+            {
+              "npc_uid": 28,
+              "qs_id": 3075,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "28",
+                "string_uid": "3075",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "恐怕鹰眼察觉到康多尔的背叛，^&已经把神像藏到别处去了。"
+            },
+            {
+              "npc_uid": 18,
+              "qs_id": 3076,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3076",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "既然已经知道一切都是鹰眼策划的，^&不如先救出牢里的大熊和小熊，再和大熊^&一族的人一起抓住鹰眼，怎么样？"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3077,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3077",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "好主意！那就赶快去地牢吧！"
+            }
+          ]
+        }
+      ],
+      "episode": 10,
+      "existing_monk": null,
+      "next_quest_id": 73000010,
+      "objectives": [
+        {
+          "id": 75100029,
+          "kind": 39,
+          "name": "第10章：进场交谈",
+          "raw_fields": [
+            "75100029",
+            "NPC와 대화 (에피소드10 입장)",
+            "39",
+            "1",
+            "19",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10018",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100030,
+          "kind": 40,
+          "name": "通关第10章全部地宫",
+          "raw_fields": [
+            "75100030",
+            "에피소드10의 모든 던전 클리어",
+            "40",
+            "1",
+            "10",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100031,
+          "kind": 39,
+          "name": "第10章：离场交谈",
+          "raw_fields": [
+            "75100031",
+            "NPC와 대화 (에피소드10 퇴장)",
+            "39",
+            "1",
+            "19",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10019",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000009,
+      "reward_qs_id": 3078,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          22000013,
+          7
+        ],
+        [
+          2,
+          15009354,
+          1
+        ]
+      ],
+      "title": "第10章：天堂都市",
+      "village_index": 2
+    },
+    {
+      "description_qs_id": 3079,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3080",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "23",
+              "string_uid": "3081",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3082",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 21,
+          "source_script_uid": 10020,
+          "speeches": [
+            {
+              "npc_uid": 24,
+              "qs_id": 3080,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3080",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "父亲，我们现在该怎么办？"
+            },
+            {
+              "npc_uid": 23,
+              "qs_id": 3081,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "23",
+                "string_uid": "3081",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "比起我们，我更担心大熊一族的族人……"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3082,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3082",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "%s～^&你看到了吗？大熊父女即使身陷牢狱，^&也还在为村子担忧。如果罗兰也有这份善心，^&纳纳伊莫就不会发生战争了……^&寻找究极卡片固然重要，但我们不能对^&陷入困境的人置之不理吧？^&救出他们，为萨恩村带回和平吧！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3083",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "23",
+              "string_uid": "3084",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3085",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 21,
+          "source_script_uid": 10021,
+          "speeches": [
+            {
+              "npc_uid": 6,
+              "qs_id": 3083,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3083",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "大熊，您受苦了！^&已经查明这一切都是鹰眼的阴谋，快离开^&这里吧！看守此处的怪物^&已经被我们全部打败，不用担心！"
+            },
+            {
+              "npc_uid": 23,
+              "qs_id": 3084,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "23",
+                "string_uid": "3084",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "这份恩情，我该如何报答……真是太感谢你们了！"
+            },
+            {
+              "npc_uid": 24,
+              "qs_id": 3085,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3085",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "我刚才看见鹰眼拿着黄金熊神像，^&往炎之黄金神殿逃走了！^&为了夺回神像，我也来帮忙，^&我们赶快去炎之黄金神殿吧！"
+            }
+          ]
+        }
+      ],
+      "episode": 11,
+      "existing_monk": null,
+      "next_quest_id": 73000011,
+      "objectives": [
+        {
+          "id": 75100032,
+          "kind": 39,
+          "name": "第11章：进场交谈",
+          "raw_fields": [
+            "75100032",
+            "NPC와 대화 (에피소드11 입장)",
+            "39",
+            "1",
+            "21",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10020",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100033,
+          "kind": 40,
+          "name": "通关第11章全部地宫",
+          "raw_fields": [
+            "75100033",
+            "에피소드11의 모든 던전 클리어",
+            "40",
+            "1",
+            "11",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100034,
+          "kind": 39,
+          "name": "第11章：离场交谈",
+          "raw_fields": [
+            "75100034",
+            "NPC와 대화 (에피소드11 퇴장)",
+            "39",
+            "1",
+            "21",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10021",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000010,
+      "reward_qs_id": 3086,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          22000014,
+          7
+        ]
+      ],
+      "title": "第11章：消失的地下监狱",
+      "village_index": 2
+    },
+    {
+      "description_qs_id": 3087,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3088",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "25",
+              "string_uid": "3089",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3090",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 23,
+          "source_script_uid": 10022,
+          "speeches": [
+            {
+              "npc_uid": 24,
+              "qs_id": 3088,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3088",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "哈哈，真是冤家路窄！^&这下抓到你了。等真相大白，你就完了！"
+            },
+            {
+              "npc_uid": 25,
+              "qs_id": 3089,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "25",
+                "string_uid": "3089",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "呵呵，找不到黄金熊神像，^&萨恩村就连酋长仪式也办不了！^&想夺回神像，就进这座满是怪物的^&神殿里来吧，哈哈！"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3090,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3090",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "要说对付怪物，我们也有行家！^&%s～就拜托你了！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "25",
+              "string_uid": "3091",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3092",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "25",
+              "string_uid": "3093",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3094",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "23",
+              "string_uid": "3095",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "25",
+              "string_uid": "3096",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "23",
+              "string_uid": "3097",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "25",
+              "string_uid": "3098",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3099",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "23",
+              "string_uid": "3100",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3101",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 23,
+          "source_script_uid": 10023,
+          "speeches": [
+            {
+              "npc_uid": 25,
+              "qs_id": 3091,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "25",
+                "string_uid": "3091",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "咦……这是哪里？小熊，你怎么在这里？^&啊，我手里的是黄金熊神像！它怎么会在这儿？^&呜，头好痛……啊！"
+            },
+            {
+              "npc_uid": 24,
+              "qs_id": 3092,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3092",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "嗯？您不记得这几天自己做过什么了吗？"
+            },
+            {
+              "npc_uid": 25,
+              "qs_id": 3093,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "25",
+                "string_uid": "3093",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "什么？呃……我一定是疯了……啊，想起来了，^&那天晚上，一个穿黑衣的神秘男人来找过我，^&看来他那时对我施了催眠……^&我犯下这样的错，该怎么求得原谅……呜呜。"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3094,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3094",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "看来黄金熊神像就是萨恩村收藏家的^&信物。神像、小青璃的项链，^&还有恰恰的戒指一起发光，这次映出了^&三块地图碎片！既然罗兰已经知道收藏家信物的^&秘密，就请赶快前往金誉村，寻找传说中的收藏家“瓦伊”^&的后裔吧。"
+            },
+            {
+              "npc_uid": 23,
+              "qs_id": 3095,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "23",
+                "string_uid": "3095",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "哦，我的女儿小熊！你平安无事，太好了！"
+            },
+            {
+              "npc_uid": 25,
+              "qs_id": 3096,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "25",
+                "string_uid": "3096",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "我实在无颜面对酋长……呜呜。"
+            },
+            {
+              "npc_uid": 23,
+              "qs_id": 3097,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "23",
+                "string_uid": "3097",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "怎么样？不如明天就为小熊举行酋长继承^&仪式。鹰眼，就由你来主持吧！"
+            },
+            {
+              "npc_uid": 25,
+              "qs_id": 3098,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "25",
+                "string_uid": "3098",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "您竟然愿意原谅我……这份恩情该如何报答。^&我一定精心准备，办一场隆重而圆满的继承仪式！"
+            },
+            {
+              "npc_uid": 24,
+              "qs_id": 3099,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3099",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "谢谢父亲的好意，但经历这件事，我发现自己^&还有很多不足。^&我想先帮助%s一行人打败罗兰，^&等回来之后，再举行酋长继承仪式。"
+            },
+            {
+              "npc_uid": 23,
+              "qs_id": 3100,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "23",
+                "string_uid": "3100",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "既然你已经决定，就把这尊黄金熊神像^&带上，好好保管。^&一定要保重身体，平安回来！"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3101,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3101",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "%s，去金誉村之前，^&别忘了拜访修道僧。去村子西边的出口看看吧！"
+            }
+          ]
+        }
+      ],
+      "episode": 12,
+      "existing_monk": {
+        "clear_mask": 4,
+        "existing_episode": 26,
+        "existing_script_uid": 24002,
+        "localization_owner": "manifest/monk_localization.json",
+        "npc_uid": 64,
+        "owner": "CharacterMonkChallenges.ClearMask",
+        "reused_text_ids": [
+          6006,
+          6008,
+          6007
+        ],
+        "source_actions": [
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "64",
+            "string_uid": "6006",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "condition": "1",
+            "dtype": "3",
+            "dungeon": "",
+            "episode": "2",
+            "level": "",
+            "type": "D_START"
+          },
+          {
+            "goto": "4",
+            "type": "CONDITION",
+            "value": "1"
+          },
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "64",
+            "string_uid": "6008",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "step_clear": "0",
+            "type": "COMPLETE"
+          },
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "64",
+            "string_uid": "6007",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "step_clear": "1",
+            "type": "COMPLETE"
+          }
+        ],
+        "source_objective_id": 75100038,
+        "source_script_uid": 10034
+      },
+      "next_quest_id": 73000012,
+      "objectives": [
+        {
+          "id": 75100035,
+          "kind": 39,
+          "name": "第12章：进场交谈",
+          "raw_fields": [
+            "75100035",
+            "NPC와 대화 (에피소드12 입장)",
+            "39",
+            "1",
+            "23",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10022",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100036,
+          "kind": 40,
+          "name": "通关第12章全部地宫",
+          "raw_fields": [
+            "75100036",
+            "에피소드12의 모든 던전 클리어",
+            "40",
+            "1",
+            "12",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100037,
+          "kind": 39,
+          "name": "第12章：离场交谈",
+          "raw_fields": [
+            "75100037",
+            "NPC와 대화 (에피소드12 퇴장)",
+            "39",
+            "1",
+            "23",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10023",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100038,
+          "kind": 1,
+          "name": "通过萨恩村修道僧挑战",
+          "raw_fields": [
+            "75100038",
+            "샤이엔 수도승 클리어",
+            "1",
+            "1",
+            "64",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10034",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000011,
+      "reward_qs_id": 3102,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          7,
+          0,
+          5000000
+        ]
+      ],
+      "title": "第12章：炎之黄金神殿",
+      "village_index": 2
+    },
+    {
+      "description_qs_id": 3103,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "33",
+              "string_uid": "3104",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3105",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "33",
+              "string_uid": "3106",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "60",
+              "string_uid": "3107",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3108",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "60",
+              "string_uid": "3109",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3110",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 25,
+          "source_script_uid": 10024,
+          "speeches": [
+            {
+              "npc_uid": 33,
+              "qs_id": 3104,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "33",
+                "string_uid": "3104",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "你们好！这里的沉船是新兴的观光景点哦！^&要我当向导吗？价钱当然很便宜！"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3105,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3105",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "那个，我们不是来观光的，抱歉啦。^&下次再来，一定请你当向导，再见！"
+            },
+            {
+              "npc_uid": 33,
+              "qs_id": 3106,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "33",
+                "string_uid": "3106",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "那就没办法啦。总之，祝各位玩得愉快！"
+            },
+            {
+              "npc_uid": 60,
+              "qs_id": 3107,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "60",
+                "string_uid": "3107",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "呵呵，看看这是谁！竟然有三位收藏家的后裔。^&我们也为了寻找瓦伊的继承者和他的信物，^&来到了金誉村，嘿嘿。"
+            },
+            {
+              "npc_uid": 24,
+              "qs_id": 3108,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3108",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "咦，我的黄金熊神像不见了！是不是你们偷走，^&还故意搭话拖延时间？"
+            },
+            {
+              "npc_uid": 60,
+              "qs_id": 3109,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "60",
+                "string_uid": "3109",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "怎么能这样冤枉人！我们是清白的。^&真不相信，就搜搜看嘛。^&不过，可不能白白让你们搜。来决斗吧！^&输的人必须答应赢家的一切要求，怎么样？"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3110,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3110",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "我们费了那么大力气才找回黄金熊神像，^&你们又偷走它，还想耍什么花招！^&%s～^&给这些家伙一点教训！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3111",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3112",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 25,
+          "source_script_uid": 10025,
+          "speeches": [
+            {
+              "npc_uid": 24,
+              "qs_id": 3111,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3111",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "咦，黄金熊神像真的不在。^&看来不是他们干的……"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3112,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3112",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "啊！那就是刚才说要当向导的少年，阿郁塔！^&我们去找他。^&既然他做向导，嗯……对了！^&去入口西边的海滩看看吧！"
+            }
+          ]
+        }
+      ],
+      "episode": 13,
+      "existing_monk": null,
+      "next_quest_id": 73000013,
+      "objectives": [
+        {
+          "id": 75100039,
+          "kind": 39,
+          "name": "第13章：进场交谈",
+          "raw_fields": [
+            "75100039",
+            "NPC와 대화 (에피소드13 입장)",
+            "39",
+            "1",
+            "25",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10024",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100040,
+          "kind": 40,
+          "name": "通关第13章全部地宫",
+          "raw_fields": [
+            "75100040",
+            "에피소드13의 모든 던전 클리어",
+            "40",
+            "1",
+            "13",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100041,
+          "kind": 39,
+          "name": "第13章：离场交谈",
+          "raw_fields": [
+            "75100041",
+            "NPC와 대화 (에피소드13 퇴장)",
+            "39",
+            "1",
+            "25",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10025",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000012,
+      "reward_qs_id": 3113,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          4,
+          10019999,
+          1
+        ]
+      ],
+      "title": "第13章：黑色旗帜的秘密",
+      "village_index": 3
+    },
+    {
+      "description_qs_id": 3114,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "33",
+              "string_uid": "3115",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3116",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 27,
+          "source_script_uid": 10026,
+          "speeches": [
+            {
+              "npc_uid": 33,
+              "qs_id": 3115,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "33",
+                "string_uid": "3115",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "偷走黄金熊神像真的很抱歉！我有不得已的苦衷。^&其实，几天前有个男人威胁我，^&要我偷走你们的黄金熊神像。^&我在这里把神像交给了他，你们去里面看看吧！"
+            },
+            {
+              "npc_uid": 18,
+              "qs_id": 3116,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3116",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "阿郁塔，你就在这里等着，不许乱跑！^&我们先去里面的海滩，^&把黄金熊神像找回来。"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3117",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "33",
+              "string_uid": "3118",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 27,
+          "source_script_uid": 10027,
+          "speeches": [
+            {
+              "npc_uid": 24,
+              "qs_id": 3117,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3117",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "呼，终于又找回黄金熊神像了！^&幽灵岛的大头目逃走时把它掉了下来。"
+            },
+            {
+              "npc_uid": 33,
+              "qs_id": 3118,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "33",
+                "string_uid": "3118",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "对不起，几天前，一个穿黑衣的男人闯入^&我住的神庙，抓住弟弟妹妹们当人质，^&威胁我去偷黄金熊神像……呜呜。^&为了他们，我实在没有办法。^&现在你们夺回了神像，弟弟妹妹们^&会有危险。请去我住的神庙，^&救救他们，拜托了！^&神庙就在村子北边，我们一起过去吧。"
+            }
+          ]
+        }
+      ],
+      "episode": 14,
+      "existing_monk": null,
+      "next_quest_id": 73000014,
+      "objectives": [
+        {
+          "id": 75100042,
+          "kind": 39,
+          "name": "第14章：进场交谈",
+          "raw_fields": [
+            "75100042",
+            "NPC와 대화 (에피소드14 입장)",
+            "39",
+            "1",
+            "27",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10026",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100043,
+          "kind": 40,
+          "name": "通关第14章全部地宫",
+          "raw_fields": [
+            "75100043",
+            "에피소드14의 모든 던전 클리어",
+            "40",
+            "1",
+            "14",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100044,
+          "kind": 39,
+          "name": "第14章：离场交谈",
+          "raw_fields": [
+            "75100044",
+            "NPC와 대화 (에피소드14 퇴장)",
+            "39",
+            "1",
+            "27",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10027",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000013,
+      "reward_qs_id": 3119,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          4,
+          10029999,
+          1
+        ]
+      ],
+      "title": "第14章：伤之营地的袭击",
+      "village_index": 3
+    },
+    {
+      "description_qs_id": 3120,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "18",
+              "string_uid": "3121",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "33",
+              "string_uid": "3122",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 29,
+          "source_script_uid": 10028,
+          "speeches": [
+            {
+              "npc_uid": 18,
+              "qs_id": 3121,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "18",
+                "string_uid": "3121",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "这里的神庙看起来不像有人居住的地方。"
+            },
+            {
+              "npc_uid": 33,
+              "qs_id": 3122,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "33",
+                "string_uid": "3122",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "只是几天就变成这样了。^&他们抓走弟弟妹妹当人质，放出怪物，^&监视着这里。^&请打败神庙里的所有怪物，^&救救我的弟弟妹妹！"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3123",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "58",
+              "string_uid": "3124",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3125",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3126",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 29,
+          "source_script_uid": 10029,
+          "speeches": [
+            {
+              "npc_uid": 24,
+              "qs_id": 3123,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3123",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "阿郁塔，我们把你的弟弟妹妹救出来了！阿郁塔？"
+            },
+            {
+              "npc_uid": 58,
+              "qs_id": 3124,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "58",
+                "string_uid": "3124",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "阿郁塔已经成了我的人质，嘿嘿。^&想救他，就带上所有收藏家的信物，^&到古代的机械文明曾经繁盛的地方来！"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3125,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3125",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "那是什么？有把短剑正在发光。^&好像是阿郁塔掉下的，让我看看……"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3126,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3126",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "找到了！这正是瓦伊的信物。^&一定要救出阿郁塔，请抓紧时间！^&从村子出发，在这座神庙西边，^&就是古代的机械文明曾经繁盛的地方。"
+            }
+          ]
+        }
+      ],
+      "episode": 15,
+      "existing_monk": null,
+      "next_quest_id": 73000015,
+      "objectives": [
+        {
+          "id": 75100045,
+          "kind": 39,
+          "name": "第15章：进场交谈",
+          "raw_fields": [
+            "75100045",
+            "NPC와 대화 (에피소드15 입장)",
+            "39",
+            "1",
+            "29",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10028",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100046,
+          "kind": 40,
+          "name": "通关第15章全部地宫",
+          "raw_fields": [
+            "75100046",
+            "에피소드15의 모든 던전 클리어",
+            "40",
+            "1",
+            "15",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100047,
+          "kind": 39,
+          "name": "第15章：离场交谈",
+          "raw_fields": [
+            "75100047",
+            "NPC와 대화 (에피소드15 퇴장)",
+            "39",
+            "1",
+            "29",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10029",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000014,
+      "reward_qs_id": 3127,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          4,
+          10039999,
+          1
+        ]
+      ],
+      "title": "第15章：召唤死亡的神宫",
+      "village_index": 3
+    },
+    {
+      "description_qs_id": 3128,
+      "dialogue": [
+        {
+          "objective_index": 0,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "61",
+              "string_uid": "3129",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3130",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "61",
+              "string_uid": "3131",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "6",
+              "string_uid": "3132",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 31,
+          "source_script_uid": 10030,
+          "speeches": [
+            {
+              "npc_uid": 61,
+              "qs_id": 3129,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "61",
+                "string_uid": "3129",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "想救阿郁塔，就交出所有信物！"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3130,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3130",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "就算罗兰亲自来索要信物，我们也不会答应，^&何况你只是个部下，真够狂妄！"
+            },
+            {
+              "npc_uid": 61,
+              "qs_id": 3131,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "61",
+                "string_uid": "3131",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "哼，不知道究竟是谁狂妄。^&看来你们还没弄清状况。^&谈判结束！想救阿郁塔，就进^&地宫试试看吧！我不会留情！"
+            },
+            {
+              "npc_uid": 6,
+              "qs_id": 3132,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "6",
+                "string_uid": "3132",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "你想把我们引进地宫，再夺走信物，^&这招对我们可没用！^&%s～怎么样？^&你一定能平安救出阿郁塔吧？"
+            }
+          ]
+        },
+        {
+          "objective_index": 2,
+          "source_actions": [
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "24",
+              "string_uid": "3133",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "33",
+              "string_uid": "3134",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3135",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "33",
+              "string_uid": "3136",
+              "type": "SPEECH",
+              "value": "0"
+            },
+            {
+              "close": "1",
+              "expression": "0",
+              "face_count": "1",
+              "npc_uid": "52",
+              "string_uid": "3137",
+              "type": "SPEECH",
+              "value": "1"
+            },
+            {
+              "step_clear": "1",
+              "type": "COMPLETE"
+            }
+          ],
+          "source_scene_selector": 31,
+          "source_script_uid": 10031,
+          "speeches": [
+            {
+              "npc_uid": 24,
+              "qs_id": 3133,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "24",
+                "string_uid": "3133",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "阿郁塔，你没事真是太好了！"
+            },
+            {
+              "npc_uid": 33,
+              "qs_id": 3134,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "33",
+                "string_uid": "3134",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "咦，我的短剑在发出强烈的光芒！"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3135,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3135",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "四件信物和收藏家的后裔终于聚齐，^&显现出了完整的地图！^&地图指向的是拉米诺斯村。^&阿郁塔，你可能很惊讶，但你正是创建金誉村的^&传说中的收藏家“瓦伊”的后裔。这里的其他^&伙伴，也都是各个村庄收藏家的后裔。^&几千年前，一个名叫罗兰的邪恶魔法师^&在纳纳伊莫大陆掀起大战，如今他似乎复活了。^&为了抢在他之前找到究极卡片，^&守护纳纳伊莫的和平，大家一路^&冒险来到这里。怎么样，作为瓦伊的后裔，^&你愿意为了纳纳伊莫，与大家并肩同行吗？"
+            },
+            {
+              "npc_uid": 33,
+              "qs_id": 3136,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "33",
+                "string_uid": "3136",
+                "type": "SPEECH",
+                "value": "0"
+              },
+              "text": "我知道这是好事，可是我还有弟弟妹妹需要照顾……"
+            },
+            {
+              "npc_uid": 52,
+              "qs_id": 3137,
+              "source_attributes": {
+                "close": "1",
+                "expression": "0",
+                "face_count": "1",
+                "npc_uid": "52",
+                "string_uid": "3137",
+                "type": "SPEECH",
+                "value": "1"
+              },
+              "text": "村民们知道你是收藏家的后裔后，^&已经答应帮忙照顾弟弟妹妹啦！^&所以，阿郁塔，放心和我们一起走吧！^&拉米诺斯村的怪物会更强大，大家^&都要做好准备！那么，我们就去拉米诺斯，^&寻找传说中的收藏家“露露”的后裔吧！^&啊，%s，这次也别忘了^&去拜访修道僧。去村子西边的出口^&看看吧，祝你好运！"
+            }
+          ]
+        }
+      ],
+      "episode": 16,
+      "existing_monk": {
+        "clear_mask": 8,
+        "existing_episode": 27,
+        "existing_script_uid": 24003,
+        "localization_owner": "manifest/monk_localization.json",
+        "npc_uid": 65,
+        "owner": "CharacterMonkChallenges.ClearMask",
+        "reused_text_ids": [
+          6009,
+          6011,
+          6010
+        ],
+        "source_actions": [
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "65",
+            "string_uid": "6009",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "condition": "1",
+            "dtype": "3",
+            "dungeon": "",
+            "episode": "3",
+            "level": "",
+            "type": "D_START"
+          },
+          {
+            "goto": "4",
+            "type": "CONDITION",
+            "value": "1"
+          },
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "65",
+            "string_uid": "6011",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "step_clear": "0",
+            "type": "COMPLETE"
+          },
+          {
+            "close": "1",
+            "expression": "0",
+            "face_count": "2",
+            "npc_uid": "65",
+            "string_uid": "6010",
+            "type": "SPEECH",
+            "value": "0"
+          },
+          {
+            "step_clear": "1",
+            "type": "COMPLETE"
+          }
+        ],
+        "source_objective_id": 75100051,
+        "source_script_uid": 10035
+      },
+      "next_quest_id": 0,
+      "objectives": [
+        {
+          "id": 75100048,
+          "kind": 39,
+          "name": "第16章：进场交谈",
+          "raw_fields": [
+            "75100048",
+            "NPC와 대화 (에피소드16 입장)",
+            "39",
+            "1",
+            "31",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10030",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100049,
+          "kind": 40,
+          "name": "通关第16章全部地宫",
+          "raw_fields": [
+            "75100049",
+            "에피소드16의 모든 던전 클리어",
+            "40",
+            "1",
+            "16",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100050,
+          "kind": 39,
+          "name": "第16章：离场交谈",
+          "raw_fields": [
+            "75100050",
+            "NPC와 대화 (에피소드16 퇴장)",
+            "39",
+            "1",
+            "31",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10031",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "id": 75100051,
+          "kind": 1,
+          "name": "通过金誉村修道僧挑战",
+          "raw_fields": [
+            "75100051",
+            "골든글로리 수도승 클리어",
+            "1",
+            "1",
+            "65",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "10035",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "quest_id": 73000015,
+      "reward_qs_id": 3138,
+      "rewards_resolved": false,
+      "source_rewards": [
+        [
+          6,
+          13000374,
+          3
+        ]
+      ],
+      "title": "第16章：古代的机械文明",
+      "village_index": 3
+    }
+  ],
+  "counts": {
+    "chapters": 16,
+    "objectives": 52,
+    "reused_monk_speeches": 12,
+    "scripts": 36,
+    "story_speeches": 107
+  },
+  "first_quest_id": 73000000,
+  "last_quest_id": 73000015,
+  "localization_sha256": "46f35941d0bb2c6f02d57d2ada9d3c1175a1ae4df9681278bf0ee2ba7c8546ea",
+  "policies": {
+    "clear": "candidate-policy-three-ordinary-dungeons-after-entry-any-difficulty",
+    "entry": "explicit-new-story-start-at-episode-1-no-backfill",
+    "localization": "draft-human-review-required",
+    "monk": "reuse-existing-clearmask-only-after-own-chapter-dialogues",
+    "reward": "fail-closed-until-reviewed-CN-mapping"
+  },
+  "runtime_acceptance": false,
+  "schema": "openNanaimo.chapter-story.v1",
+  "source_catalog_sha256": "c06962ae2ef4f03c0717a4d257dc4ef01bf7f411126c791f8430d1d104ec34ab",
+  "status": "host-candidate-not-client-installed",
+  "texts": [
+    {
+      "approved": false,
+      "qs_id": 3000,
+      "source_ko": "에피소드1에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드1의 던전을 모두 클리어^&한 후 에피소드1을 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第1章时，与出现的^&NPC交谈，^&通关第1章的全部地宫，^&然后离开第1章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3001,
+      "source_ko": "플라이의 부탁으로 마을에 나타난 몬스터를 물리치러^&가는 길이군요? 펫을 타고 던전에 들어가면^&딱지북의 마법력에 의해 펫이 비행부스터로 변신하는^&건 잘 아실테고, ^^ 저도 부탁 하나 드릴게 있어요.^&최근 몬스터들의 공격이 점점 조직적으로 변해가는 듯^&해요. 누군가 뒤에서 조종하고 있는 것 같은데,^&단서를 찾아주시겠어요?^&일단, 몬스터들을 격추시킬 때 딱지를 떨어트리는지 ^&알아봐주세요. 몬스터가 딱지를 가지고 있다는건^&'그'의 부하일 가능성이 높거든요~ ^&'그'가 아니라면 좋을텐데.... ",
+      "translation_zh": "你是受尼莫委托，前去击退村里出现的怪物^&的吧？骑着宠物进入地宫后，^&卡片册的魔力会让宠物变成飞行推进器，^&这你应该知道了吧？我也有件事想拜托你。^&最近怪物的攻击似乎变得越来越有组织，^&好像有人在背后操纵它们，^&你能帮忙寻找线索吗？^&先看看击落怪物时，它们会不会掉落卡片。^&怪物如果带着卡片，^&很可能就是“他”的手下。^&但愿不是“他”……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3002,
+      "source_ko": "와우~ 대단한데요!! 플라타너스의 하늘에 나타난^&모든 몬스터들을 물리쳤네요 ^^^&하지만, 몬스터들의 배후가 역시 '그'였다니..^&지금은 수많은 세월이 흘러 아득한 전설이 되었지만,^&예전의 나나이모는 과학과 마법을 조화시켜^&'마법의 딱지'를 발명해 내고, 딱지로 인해 고도로^&발달된 문명을 누리고 있었어요. 당시 과학자들은 ^&현실의 물건들을 다른 세계의 공간에 옮겨놓고^&필요할 때 꺼내쓸 수 있는 기계를 발명해냈죠.^&하지만, 기계가 너무 커서 들고다니기 불편해서^&마법사들이 마법을 사용하여 그 기계를 딱지로 만들고^&딱지북에 보관해서 들고다닐 수 있게했어요.^&물론, 다른 공간 속에 옮겨둔 물건을 꺼낼때도^&'소환서'라는 마법주문서를 이용해^&언제든지 꺼내쓸 수 있게 했죠.^&하지만, 마법사들은 거기에 만족하지 않고^&다양한 등급의 딱지를 계속 발명해냈고, 결국 절대적^&힘을 가질 수 있는 '궁극의 딱지'란 걸 발명해냈어요.^&그런데, 마법사들이 이 궁국의 딱지를 차지하려^&욕심을 부리더니 그들 중 한명인 롤랑이 몬스터부대를^&만들어 나나이모를 침공했고 전쟁이 일어나고 말았죠.^&나나이모의 사람들도 딱지를 이용해 만든 하늘을 나는^&강력한 펫부대를 결성해 반격에 나섰지만 모든 것들이^&파괴되고 폐허로 변해갔어요. 수많은 세월이 흐르면서^&마법 딱지의 비밀도 깊숙히 묻혀 버렸고, 전설 속^&이야기가 되어 버렸죠.^&그런데 이번에 나타난 몬스터들이 롤랑 부하들이라니!^&궁극의 딱지를 찾기 위해 롤랑이 보낸게 틀림 없어요!^&몬스터들이 가진 딱지를 회수하면서^&궁극의 딱지에 대한 단서를 찾아주세요.",
+      "translation_zh": "哇，真了不起！出现在普拉塔诺斯天空的^&怪物都被你打败了！^&可是，怪物的幕后主使果然是“他”……^&虽然时隔多年，如今已成遥远的传说，^&但很久以前，Nanaimo的人们曾结合科学与魔法，^&发明了“魔法卡片”，凭借卡片创造出^&高度发达的文明。当时，科学家们^&发明了能将现实物品转移到另一个世界的空间，^&再在需要时取出的机器。^&可是机器太大，不方便随身携带，^&魔法师便用魔法把机器变成卡片，^&让人们放进卡片册，随身带着。^&当然，要取出存放在另一空间的物品时，^&只需使用名为“魔法钥匙”的魔法卷轴，^&就能随时将它们召唤出来。^&但魔法师们并不满足于此，^&他们继续发明各种等级的卡片，最后创造出^&能赋予绝对力量的“究极卡片”。^&然而，魔法师们为了争夺究极卡片，^&被贪欲驱使。其中的罗兰组建怪物军团，^&入侵Nanaimo，战争就此爆发。^&Nanaimo的人们也利用卡片，组建了能够飞翔的^&强大宠物部队展开反击，但一切还是^&被摧毁，化为废墟。漫长岁月过去，^&魔法卡片的秘密也被深深埋藏，^&渐渐成了传说。^&可这次出现的怪物竟然是罗兰的手下！^&一定是罗兰为了寻找究极卡片派来的！^&请一边夺回怪物持有的卡片，^&一边寻找究极卡片的线索吧。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3003,
+      "source_ko": "200한스^&딱지 20번(MP물약40) 10장",
+      "translation_zh": "200汉斯^&卡片20号（蓄能药水40）10张"
+    },
+    {
+      "approved": false,
+      "qs_id": 3004,
+      "source_ko": "에피소드2에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드2의 던전을 모두 클리어^&한 후 에피소드2를 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第2章时，与出现的^&NPC交谈，^&通关第2章的全部地宫，^&然后离开第2章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3005,
+      "source_ko": "안녕~ 난 차차라고해. ^&초면에 이런 질문 실례인줄 아는데, 니가 갖고 있는^&그 책...전설의 딱지북과 비슷하게 생겼는데,^&한번 구경해도돼? 마을 딱지샵에서 동그리언니가^&열쇠같이 생긴 마법의 소환서를 파는데,^&글쎄, 그게 전설의 딱지북이 있으면 딱지북 안의 ^&딱지를 원하는 물건으로 만들어 줄 수 있는 ^&소환서라고 위트캐인 아저씨가 주장하고 계셔.^&그냥 골동품이다~ 이랬으면 사람들이 불쌍해서라도 ^&좀 사줄텐데....거기다, 예전엔 딱지북에 딱지를^&모으는 사람들을 콜렉터라고 불렀고, 그 콜렉터들은^&딱지북을 이용해 펫을 비행부스터로 변신시켜^&하늘을 날아 다녔대. 아무튼 위트캐인 아저씨는^&그런 전설이 부활될 날이 있을거라고 얘기하고^&다니시는데, 아무도 믿어주질 않아서 좀 안됐어.^&나라도 아저씨 말동무나 되어드려야겠다 싶어서^&종종 딱지샵에 가는데, 전에 아저씨가 딱지북이라며^&보여준게 지금 니가 갖고 있는 책과 비슷해보이네 ^^^&나도 믿기진 않는데, 이야기를 너무 많이 들어서^&뜻하지않게 나나이모 전설에 대해 아는게 많아졌어.^&음..말이 많이 길어졌네..어때? 좀 보여줄 수 있어?^&뭐? 지금은 비밀의 숲을 조사하러 들어가야한다구?^&흠...급한 일인 것 같으니, 내가 양보할게. 대신,^&나중에 꼭 구경시켜 줘야해!! 그럼 숲 속에 들어가봐~",
+      "translation_zh": "你好，我叫恰恰。^&初次见面就这样问可能有点失礼，你带的^&那本书……看起来很像传说中的卡片册，^&能让我看看吗？村里卡片商店的董古莉姐姐^&卖一种形状像钥匙的魔法钥匙。^&小云云叔叔说，只要有传说中的卡片册，^&就能用这种钥匙，把册子里的卡片变成^&想要的物品。^&要是只说它是古董，大家或许还会同情他，^&买上一点呢……而且，他还说以前把卡片^&收进卡片册的人叫收集者，那些收集者^&能利用卡片册，把宠物变成飞行推进器，^&在空中飞来飞去。总之，小云云叔叔^&一直说那些传说总有一天会重现，^&可惜谁也不信，真让人难过。^&我想着至少陪叔叔聊聊天，^&所以经常去卡片商店。他以前拿给我看的^&那本卡片册，和你现在带的很像呢。^&我原本也不相信，可听故事听得太多，^&不知不觉就知道了不少Nanaimo的传说。^&嗯……说得太久了。怎么样，能让我看看吗？^&什么？你现在要进秘密之丛调查？^&好像是急事，那我先不耽误你。不过，^&以后一定要让我看看哦！快进森林吧。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3006,
+      "source_ko": "분하지만, 또다른 두명의 선발대장이 네 녀석을 응징^&할 것이다!! 참! 아까 니가 본 지하통로는 이미 ^&우리가 붕괴시켜버렸으니 그곳이 어디로 통하는지^&무척이나 궁금하겠구만..하하...어디 한번 고생해봐! ",
+      "translation_zh": "可恶！另外两位先遣队长一定会惩罚你！^&对了，你刚才看到的地下通道，已经^&被我们弄塌了。你一定很想知道^&它通向哪里吧？哈哈，慢慢找吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3007,
+      "source_ko": "왜이리 늦었어? 엇, 근데 너 표정이 왜그래? ^&숲에 몬스터가 나타난다더니 진짜였나 보네!!^&그래도 너 대단하다~ 몬스터랑 싸워서 이기다니 ^^^&펫이 부스터로 변하는 걸 보면 니가 가진 그 딱지북은^&역시 전설의 딱지북인가봐! 뭐?! 전설의 일루가 여신!^&꺄아~ 용감한 용사가 나타나 나나이모의 전설을 ^&부활시킬 것이라는 예언이 있다더니, 혹시 니가? +ㅁ+^&갑자기 니가 달라보이는데? ^^^&흠...그나저나 그 지하통로가 막혀버렸으니 어쩌지?^&아!! 마을 딱지거래소 근처에 비밀의 숲으로 이어지는^&어두운 지하동굴이 있는데, 그안에 들어가면 ^&나머지 몬스터들의 흔적을 찾을수 있지 않을까?^&그러니 너무 실망말고, 거기로 같이 가보자!!",
+      "translation_zh": "怎么这么晚才回来？咦，你怎么这副表情？^&原来森林里真的出现了怪物！^&不过你真厉害，居然打败了怪物！^&既然宠物会变成推进器，你那本卡片册^&果然是传说中的宝物吧！什么？传说中的伊露卡女神！^&哇，预言说会有勇敢的勇士出现，^&让Nanaimo的传说重现，难道就是你？^&突然觉得你不一样了呢！^&嗯……不过，地下通道堵住了，该怎么办？^&啊！村里卡片交易所附近，有个通向秘密之丛的^&黑暗地下洞穴。进去以后，^&也许能找到其他怪物的踪迹？^&所以别灰心，我们一起去看看吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3008,
+      "source_ko": "딱지 37번(핑크토끼) 5장^&딱지 40번(아이스크림) 10장",
+      "translation_zh": "卡片37号（紫色兔子）5张^&卡片40号（冰淇淋）10张"
+    },
+    {
+      "approved": false,
+      "qs_id": 3009,
+      "source_ko": "에피소드3에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드3의 던전을 모두 클리어^&한 후 에피소드3을 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第3章时，与出现的^&NPC交谈，^&通关第3章的全部地宫，^&然后离开第3章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3010,
+      "source_ko": "얘들아~ 아직도 못 찾았냐??^&아주 중요한 임무니 꼭 찾아야 돼!^&...",
+      "translation_zh": "你们几个，还没找到吗？^&这可是非常重要的任务，一定要找到！^&……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3011,
+      "source_ko": "휴~ 들킬뻔 했네! 어때? 내말이 맞지? ^^^&고맙긴~ 몬스터들의 흔적을 찾는데 도움이 되어서 ^&내가 더 영광인걸..ㅎㅎ ^&그런데 저 정도 녀석들한테 이기려면 ^&달마시안이나 닥스훈트, 적어도 핑크토끼 펫 정도는^&되어야 하지 않을까?^&아~ 이건 그냥 내 생각을 말해본거야...^^^&네 실력을 의심하는거 절대 아니야~ ㅎㅎ^&콜렉터들은 실력이 오를수록 더 강한 펫을 사용한다고^&위트캐인 아저씨한테 들었거든~^&그럼, 난 마을 사람들에게 여기 동굴의 위험을 알리러^&갔다올테니, 넌 꼭 몬스터들을 무찔러죠 ^^",
+      "translation_zh": "呼，差点被发现！怎么样，我说得没错吧？^&不用谢，能帮你找到怪物的踪迹，^&我才觉得荣幸呢，嘿嘿。^&不过，要打败那种家伙，^&是不是应该带斑点狗或者腊肠犬，至少也要^&紫色兔子这个等级的宠物才行？^&啊，我只是随口说说自己的想法，^&绝对不是怀疑你的实力！^&小云云叔叔说，收集者的实力提高后，^&就会使用更强的宠物。^&我先去告诉村民，这个洞穴很危险。^&你一定要打败怪物哦！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3012,
+      "source_ko": "몬스터공장으로 이어지는 비밀통로 역시 쉽게 내줄 순^&없지..또다른 선발대장이 거기에서 임무중일테니, ^&네가 방해하지 못하도록 막아야 하지 않겠어? ㅋㅋ^&그 통로는 이미 봉쇄됐으니, 다른 길을 찾아보시지! ",
+      "translation_zh": "通往怪物天地的秘密通道，可不能轻易让给你！^&另一位先遣队长正在那里执行任务，^&我们当然得阻止你去捣乱，哈哈。^&那条通道已经封锁，另找一条路吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3013,
+      "source_ko": "비밀의 숲에 들어간 후 소식이 없어 찾아 다녔어요.^&흠...롤랑이 과거의 실수를 되풀이 하지 않으려고^&이번엔 제대로 작정을 하고 체계적으로 침입한 것^&같군요! 몬스터공장까지 세웠을 줄이야...",
+      "translation_zh": "你进了秘密之丛后一直没消息，我就来找你了。^&看来罗兰为了不重蹈过去的覆辙，^&这次是下定决心，有计划地展开^&入侵！没想到他连怪物天地都建好了……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3014,
+      "source_ko": "의심스러운 장소가 하나 있긴한데,,,거기가 맞을지..^&지금은 없어졌지만 예전에 기계공장이 하나 있었어요.^&마을의 동쪽에 가면 입구가 있는데,^&그곳에서 몬스터나 딱지에 대한 단서를 찾아보죠~",
+      "translation_zh": "我倒是知道一个可疑的地方，不知道是不是那里……^&从前那里有座机械工厂，如今已经废弃了。^&入口就在村子东边，^&我们去找找怪物和卡片的线索吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3015,
+      "source_ko": "제가 눈에 보이다니, 차차님도 특별한 운명을 타고난^&것 같군요. 손에 낀 그 반지 혹시 차차님 것인가요?^&오래전에 알았던 한 콜렉터의 반지와 같아서요~ ^^^&혹시'구스타프'님을 아시나요? ",
+      "translation_zh": "你竟然能看见我，恰恰，你似乎也背负着特殊的^&命运。你手上戴的戒指，是你的吗？^&它和我很久以前认识的一位收集者的戒指很像。^&你认识“古斯塔夫”吗？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3016,
+      "source_ko": "제 이름과 저희 조상님 성함을 어떻게? ^&당신은 혹시.. 일루가 여신님?^&우아~ 전설속 이야긴줄만 알았는데..^&근데 이 반지는 어머니께 받은 것인데, 왜 그러시죠?",
+      "translation_zh": "你怎么会知道我的名字和祖先的名字？^&难道你就是……伊露卡女神？^&哇，我还以为那只是传说呢……^&不过，这枚戒指是母亲给我的，怎么了？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3017,
+      "source_ko": "그렇군요. 과거 전쟁 이후 폐허가 된 나나이모에서^&잃어버린 딱지들을 다시 찾고, 플라타너스 마을을 ^&세우신 분이 바로 구스타프님이세요. ^^ ^&그 반지는 구스타프님이 남긴 징표인것 같군요.^&아! 구스타프님 외에도, 4명의 콜렉터가 더 있었는데^&그분들 역시 나나이모의 다른 마을들을 세우고, ^&궁극의 딱지란 걸 찾으러 다니셨어요. ^&그 흔적을 후예에게 전하려고 징표에 남긴 것 같은데,^&차차님도 나머지 전설의 콜렉터 후예들을^&같이 찾아주세요! 롤랑의 손에 궁극의 딱지가^&들어가지 않도록 나나이모를 구하는 모험에^&함께 해주세요 ^^^&그럼 %s님은 ^&몬스터 공장을 찾으러 이동하시고,^&차차님은 여행 떠날 준비를 하고 오세요 ^^",
+      "translation_zh": "原来如此。过去的战争让Nanaimo化为废墟，^&是古斯塔夫重新找回散落的卡片，^&建立了普拉塔诺斯村。^&那枚戒指似乎就是古斯塔夫留下的信物。^&对了，除了古斯塔夫，当时还有另外四位收集者。^&他们也在Nanaimo建立了其他村庄，^&四处寻找究极卡片。^&他们似乎把寻找的痕迹留在信物上，准备传给后裔。^&恰恰，请和我们一起寻找其余传说中^&收集者的后裔吧！为了不让究极卡片^&落入罗兰之手，请加入这场拯救Nanaimo的^&冒险！^&那么，%s，^&请你先去寻找怪物天地，^&恰恰则回去准备出发吧。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3018,
+      "source_ko": "딱지 59번(새끼달마시안) 5장^&딱지 73번(재치원숭이) 5장",
+      "translation_zh": "卡片59号（小斑点狗）5张^&卡片73号（耍宝小猕猴）5张"
+    },
+    {
+      "approved": false,
+      "qs_id": 3019,
+      "source_ko": "에피소드4에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드4의 던전을 모두 클리어^&한 후 에피소드4를 나오면^&다시 NPC들과 대화가 진행된다.^&대화 완료 후, 아이라이 마을로^&가는 통로앞의 수도승에게^&말을 걸면 던전이 열리는데^&이 던전을 클리어 해야^&아이라이 마을로 이동할 수 있다",
+      "translation_zh": "进入第4章时，与出现的^&NPC交谈，^&通关第4章的全部地宫，^&然后离开第4章，^&再次与NPC交谈。^&对白结束后，前往通向桃园村^&的出口，与修道僧^&交谈即可开启挑战地宫。^&必须通过这场挑战，^&才能前往桃园村。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3020,
+      "source_ko": "(시끌시끌)^&(어디론가 이동중인 몬스터들)^&빨리빨리 움직여~ 이건 반대쪽으로 내보내야지!!~",
+      "translation_zh": "（一片嘈杂）^&（怪物们正向某处移动）^&动作快点！这批要送到另一边！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3021,
+      "source_ko": "차차님 말이 맞았군요.^&마을에서 나타났던 몬스터들이 여기서 생산되고^&있었다니!! 저 무리들은 또 다른 어딘가로 이동되는^&것 같은데...이 안을 자세히 조사해 주세요~^&잠깐, 또 깜빡할 뻔 했네요.^&%s 님의 실력은 믿지만, 그래도^&펫이 재치원숭이 정도는 되어야 안전할 거에요.^^^&몬스터가 강할수록 펫도 강한 것을 사용해야죠!",
+      "translation_zh": "恰恰说得没错。^&原来村里出现的怪物，都是在这里^&制造的！那群怪物好像又被送往^&别的地方了……请仔细调查这里！^&等等，我差点又忘了。^&%s，虽然我相信你的实力，^&但至少带上耍宝小猕猴这个等级的宠物才安全。^&怪物越强，越需要使用强大的宠物！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3022,
+      "source_ko": "저런!! 이미 생산이 끝난 몬스터들이 각 마을로 ^&궁극의 딱지를 찾아 떠나버렸군요. 우리도^&빨리 아이라이 마을로 가서 궁극의 딱지단서와^&전설의 콜렉터였던 페이롱의 후예를 찾아봐요.",
+      "translation_zh": "不好！已经制造完成的怪物，竟然已经前往各村^&寻找究极卡片了。我们也^&赶快去桃园村，寻找究极卡片的线索，^&以及传说中的收集者飞龙的后裔吧。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3023,
+      "source_ko": "휴...저 안늦었죠? ^&이제 여행준비 다 마치고 왔어요.^&지금 바로 출발인가요?",
+      "translation_zh": "呼……我没来晚吧？^&我已经做好旅行的准备了。^&现在就出发吗？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3024,
+      "source_ko": "잠깐만요. 플라타너스 마을밖에도 몬스터들이 ^&많이 있어요. 아마 아이라이 마을로 가는 출구 앞에^&수도승이 있을텐데, 마을 밖의 몬스터를 물리칠만한^&실력이 없으면 마을밖으로 못나가게 한다더군요..",
+      "translation_zh": "等一下，普拉塔诺斯村外也有很多^&怪物。通往桃园村的出口前，应该^&有位修道僧。听说没有足够实力击退^&村外怪物的人，他是不会放行的。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3025,
+      "source_ko": "걱정마세요, 일루가 여신님~^&%s님 정도의 실력이라면 충분할 것 같아요~^&그럼, 마을 남쪽 분수대 아래의 마을출구에^&서있는 수도승을 만나러 가보죠.",
+      "translation_zh": "别担心，伊露卡女神。^&凭%s的实力，应该没问题！^&那么，我们去村子南边喷泉下方的出口，^&找站在那里的修道僧吧。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3026,
+      "source_ko": "딱지 111번(시베리안허스키) 5장^&황금가루 600g 1개^&비밀에피소드 무료권(1일)",
+      "translation_zh": "卡片111号（帅帅的哈士奇）5张^&黄金粉末600g 1份^&秘密关卡免费券（1天）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3027,
+      "source_ko": "에피소드5에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드5의 던전을 모두 클리어^&한 후 에피소드5를 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第5章时，与出现的^&NPC交谈，^&通关第5章的全部地宫，^&然后离开第5章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3028,
+      "source_ko": "%s ~^&난 마을 구경도 할겸, 전설의 콜렉터 '페이롱'의 ^&후예에 대한 정보도 구할 겸, 마을 주민들을 만나고 ^&올게~ ^^  그럼 나중에 봐!",
+      "translation_zh": "%s～^&我去逛逛村子，顺便向村民打听^&传说中的收藏家“飞龙”的后裔。^&那我们待会儿见！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3029,
+      "source_ko": "여행오신 분이신가요? 전 '샤오챙리'라고 해요. ^&요즘 마을 주위에 부쩍 몬스터들이 많이 나타나는데^&이렇게 함부로 돌아다니면 위험하다구요~^&이 말 하려고 여기까지 왔어요. 그런 전 이만 갈게요",
+      "translation_zh": "你们是来旅行的吗？我叫“小青璃”。^&最近村子周围出现了许多怪物，^&这样随意走动很危险的！^&我特地赶来就是提醒你们。那我先走啦。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3030,
+      "source_ko": "저 소년 말대로, 어렴풋이 롤랑의 기운이 ^&마을 곳곳에서 느껴져요. 그런데, 몬스터에 마법을 ^&걸어뒀는지 정확한 위치와 규모는 파악이 안되네요.^&일단 이 근처에 몬스터가 있는 것 같으니 살펴보죠!^&아!, 여기 몬스터들은 플라타너스마을보다 강할테니 ^&시베리안 허스키 정도되는 펫이 있어야 안전할거에요!",
+      "translation_zh": "正如那位少年所说，村子各处隐约^&都能感觉到罗兰的气息。但怪物似乎被施了魔法，^&无法确定具体的位置和数量。^&附近好像就有怪物，我们先去调查吧！^&对了！这里的怪物比普拉塔诺斯村的更强，^&带上帅帅的哈士奇这一等级的宠物才安全。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3031,
+      "source_ko": "아이라이 마을에서 처음 만난 몬스터들인데,^&역시나 이들도 궁극의 딱지에 대한 정보는 갖고 있지^&않군요. 그래도 그동안 몬스터로부터 되찾은 딱지가^&조금 모여서 다행이에요. ^^^&딱지북 한 페이지에 빈 딱지없이 딱지를 종류별로 ^&한장씩 모두 모으면 유니크딱지란걸 만들 수 있어요.^&딱지샵의 위트캐인님이 만들어 주실텐데, 그 딱지와 ^&소환서로 딱지북에서 황금가루란 걸 만들 수 있어요.^&펫에 황금가루를 바르게 되면, 펫이 최대단계의 ^&공격력을 낼 수 있답니다. 물론, 펫이 최대^&단계의 공격력을 내려면 그 펫과 전투에 많이 참여^&해서 펫을 성장시켜야 할 필요가 있지요. ^^ ^&몬스터들에게서 얻은 딱지로 펫을 만들어 최대단계로^&성장시키고, 황금가루를 발라서 금빛으로 변한 내 펫!^&어때요? 상상만 해도 뿌듯하지 않나요? ^^ ^&나중에 여건이 되면 꼭 황금펫을 만들어 보세요~^&지금은 일단 다음 몬스터들의 기운이 느껴지는^&곳으로 이동하죠. 오즈빌 동쪽의 대나무숲에서^&몬스터들의 기운이 느껴지네요. 출발~",
+      "translation_zh": "这是来到桃园村后第一次遇见怪物，^&可惜它们也不知道究极卡片的消息。^&幸好我们已经从怪物手中夺回了^&不少卡片。^&把卡片册同一页中的每一种卡片^&各集齐一张，就能制作特殊卡片。^&卡片店的小云云会帮忙制作，再用它^&和魔法钥匙，就能在卡片册中制作黄金粉末。^&给宠物涂上黄金粉末，宠物就能发挥^&最高阶段的攻击力。当然，想要发挥^&最高阶段的力量，还得带宠物参加战斗，^&让它不断成长。^&用夺回的卡片制作宠物，把它培养到最高阶段，^&再涂上黄金粉末，变成金光闪闪的伙伴！^&怎么样？光想想就很有成就感吧？^&以后条件允许，一定要试试黄金宠物哦！^&现在先去下一处感应到怪物^&气息的地方。奥兹屋东边的竹林里^&有怪物的气息，出发！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3032,
+      "source_ko": "스킬딱지 2번(폭탄형SP+2) 10장^&스킬딱지 12번(육탄형SP+2) 10장^&무료 체험 의상세트(1일)",
+      "translation_zh": "技能卡2号（炸弹型SP+2）10张^&技能卡12号（肉搏型SP+2）10张^&免费体验服装套装（1天）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3033,
+      "source_ko": "에피소드6에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드6의 던전을 모두 클리어^&한 후 에피소드6을 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第6章时，与出现的^&NPC交谈，^&通关第6章的全部地宫，^&然后离开第6章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3034,
+      "source_ko": "어, 여기서 만났네~ ^^ 마을 사람들을 만나봤는데,^&페이롱의 후예에 대해 아는 사람은 찾지 못했어.^&대신 최근 마을에서 몬스터들때문에 주민들이 실종^&되고 있대. ^&몇일 전엔 '샤오챙리'란 소년의 아버지도 실종되었다^&하더라구. 응?  아까 만났었는데 그런 얘기 없었다구?^&흠...그럼 난 다시 그 소년을 만나 자세히 들어볼게.^&넌 여기 숲 안에 들어가서 궁극의 딱지를 찾아봐.^&참! 이미 충분히 알고 있겠지만, 여기의 몬스터들은^&꽃사슴 정도의 펫이어야 통할꺼 같아. ^^^&몬스터들이 강해질수록 펫도 더 강한 걸 데리고 ^&다녀야 한다는 것 잊지마~ ^^ 그럼 숲에 들어가봐~",
+      "translation_zh": "咦，又见面啦！我向村民打听过，^&但没有找到知道飞龙后裔的人。^&不过，最近村里不断有人因为怪物而^&失踪。^&几天前，一名叫“小青璃”的少年的父亲也失踪了。^&嗯？刚才见过他，他却没提这件事？^&那我再去找他，问清楚事情经过。^&你先到这片森林里寻找究极卡片吧。^&对了！虽然你肯定明白，想对付这里的怪物，^&恐怕得带上梅花鹿这一等级的宠物。^&怪物越强，同行的宠物也必须^&越强，别忘了哦！那就进森林看看吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3035,
+      "source_ko": "주민들이 자꾸 실종되는 걸 보면, 몬스터들이랑^&연관이 있는거 같긴한데, 궁극의 딱지에 대해선^&몬스터들도 아는바가 없고,,,^&도대체 롤랑은 무슨 음모를 꾸미고 있는건지...^&그래도 마을에서 차차님이 정보를 얻기위해 열심히^&돌아다니고 있을테니 우리도 부지런히^&궁극의 딱지 단서를 찾아보도록 해요 ^^^&다음은 숲 속 공동묘지쪽을 탐색할 거에요~^&아이라이 마을의 인테리어샵 근처로 가면 되요! 출발~",
+      "translation_zh": "村民接连失踪，看来确实和怪物^&有关系。可是怪物们也不知道^&究极卡片的事情……^&罗兰究竟在策划什么阴谋呢？^&恰恰正在村里努力四处^&打听消息，我们也抓紧时间^&寻找究极卡片的线索吧！^&接下来去调查林中的公墓。^&就在桃园村装饰店附近，出发！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3036,
+      "source_ko": "스페셜딱지11번(한스상품권) 7장^&마술지팡이 악세사리(1일)^&이글이글불꽃 이펙트(1일)",
+      "translation_zh": "特殊卡11号（汉斯礼券）7张^&魔术手杖饰品（1天）^&熊熊火焰特效（1天）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3037,
+      "source_ko": "에피소드7에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드7의 던전을 모두 클리어^&한 후 에피소드7을 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第7章时，与出现的^&NPC交谈，^&通关第7章的全部地宫，^&然后离开第7章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3038,
+      "source_ko": "%s ~ 큰일이야!^&'샤오챙리'란 소년을 만나러 갔는데, 어디를 갔는지^&보이질 않아. 왠지 망자의 무덤에 아버지를 찾아서^&혼자 들어간 것 같은데, 우리가 좀 도와줘야겠어!!",
+      "translation_zh": "%s～不好了！^&我去找“小青璃”，却怎么也^&找不到。他可能独自进了亡者的坟墓^&寻找父亲，我们得帮帮他！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3039,
+      "source_ko": "차차님~ 이곳 공동묘지에서 몬스터의 기운이 ^&강하게 느껴지는데, 여기를 먼저 조사해보고 ^&가는게 좋겠어요. 여기까지 왔다가 그냥 가려니^&이곳도 왠지 안심이 안되네요.^&%s 님~ 여긴 몬스터기운 외에도,^&강렬한 보석의 힘도 느껴지고, 뭔가 많이 수상해요.^&이럴 때 일수록 준비 잘해야하는 것 아시죠?^&레벨에 맞는 펫을 데리고 들어가 조사해주세요~ ",
+      "translation_zh": "恰恰，这片公墓里的怪物气息^&很强，最好先调查这里^&再走。既然已经来了，直接离开^&总让人放心不下。^&%s，除了怪物的气息，^&这里还有强烈的宝石力量，实在很可疑。^&越是这种时候，越要做好准备，明白吧？^&请带上适合自己等级的宠物进去调查！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3040,
+      "source_ko": "아까 느껴졌던 기운은 오닉스의 기운이었군요. ^^^&몬스터들이 숨겨둔 딱지를 더 많이 회수할 수 있는^&보석인데, 언제 기회되면 꼭 사용해 보세요~ ^^^&그럼, 빨리 '샤오챙리'를 구하러 가도록 해요~^&망자의 무덤은 아이라이마을의 딱지샵 근처에 있어요!",
+      "translation_zh": "刚才感应到的原来是缟玛瑙的力量。^&这种宝石能帮你回收更多怪物藏着的^&卡片，有机会一定要试试！^&现在赶快去救“小青璃”吧。^&亡者的坟墓就在桃园村的卡片店附近！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3041,
+      "source_ko": "딱지 189번(에메랄드) 1장^&부활쿠폰3개^&빅베어의 축복(푸드)3개",
+      "translation_zh": "卡片189号（绿宝石）1张^&复活券3张^&大熊的祝福（食物）3份"
+    },
+    {
+      "approved": false,
+      "qs_id": 3042,
+      "source_ko": "에피소드8에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드8의 던전을 모두 클리어^&한 후 에피소드8을 나오면^&다시 NPC들과 대화가 진행된다.^&대화 완료 후, 샤이엔 마을로^&가는 통로앞의 수도승에게^&말을 걸면 던전이 열리는데^&이 던전을 클리어 해야^&샤이엔 마을로 이동할 수 있다",
+      "translation_zh": "进入第8章时，与出现的^&NPC交谈，^&通关第8章的全部地宫，^&然后离开第8章，^&再次与NPC交谈。^&对白结束后，前往通向萨恩村^&的出口，与修道僧^&交谈即可开启挑战地宫。^&必须通过这场挑战，^&才能前往萨恩村。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3043,
+      "source_ko": "네 녀석의 소문은 익히 들었다. 난 데블진시라고 ^&하지. 이 소년을 아느냐? ㅋㅋ^&이 소년을 구하고 싶다면, 궁극의 딱지에 대해^&알고 있는 모든 것을 우리에게 넘겨라. ㅎㅎ",
+      "translation_zh": "早就听说过你的名声。我叫魔鬼金狮，^&你认识这个少年吗？哈哈。^&想救他，就把你们知道的^&究极卡片的消息全都交出来！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3044,
+      "source_ko": "어..그때 봤던 분들이시네,,곤란하게 해서 미안해요.^&제가 몬스터들한테 붙잡히지만 않았어도...ㅠㅜ",
+      "translation_zh": "啊……是刚才见过的各位。对不起，给你们添麻烦了。^&如果我没有被怪物抓住就好了……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3045,
+      "source_ko": "데블진시..우린 너같은 악당이랑은 타협하지 않아!^&좋은 말로 할 때 마을사람들을 모두 풀어주시지!",
+      "translation_zh": "魔鬼金狮，我们不会向你这样的恶徒妥协！^&趁我们还好好说话，快把村民全都放了！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3046,
+      "source_ko": "훗..언제까지 큰소리를 칠 수 있나 두고보지.^&너희를 유인하려고 그동안 사람들을 좀 잡아들였지.^&잔말말고 정보를 가지고 무덤 속으로 뒤따라^&들어 오는 게 좋을거야!!",
+      "translation_zh": "哼，看你们还能嘴硬到什么时候。^&为了引你们过来，我可是抓了不少人。^&少废话，带上情报，跟着我^&进墓里来！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3047,
+      "source_ko": "할 수 없군...%s ~^&데블진시에게 본때를 보여줄 수 있지? ㅎㅎ^&잡혀있는 마을사람들 모두 구해서 돌아와줘~ ^^",
+      "translation_zh": "没办法了……%s～^&能让魔鬼金狮见识一下你的厉害吧？^&请把被抓的村民全都救回来！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3048,
+      "source_ko": "엉엉...고마워요~ 구해줘서,,,",
+      "translation_zh": "呜呜……谢谢你们救了我……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3049,
+      "source_ko": "그동안 고생많았어~",
+      "translation_zh": "这段时间你受苦了。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3050,
+      "source_ko": "차차님의 반지와 샤오챙리님의 목걸이가 서로 가까이^&있으니 지도 2조각이 희미하게 나타나는군요.^&음..이런 메세지가 있네요. 전설의 콜렉터들은 궁극의^&딱지의 위치를 찾아냈지만, 궁극의 딱지의 힘이 강렬^&하여 자신들이 접근할 수 없었다고 해요. 대신 훗날^&자신의 후예들이 힘을 길러 궁극의 딱지의 비밀을^&밝혀내길 바라는 마음에 각자의 징표에 궁극의 딱지가^&위치한 곳을 표시해뒀다고 하는데, 나머지 콜렉터의 ^&후예들이 가진 징표가 있으면 위치를 바로 알수 있을^&것 같군요. 역시나, 나쁜 용도로 사용되지 않았으면 ^&한다고 당부말이 써져 있어요 ^^",
+      "translation_zh": "恰恰的戒指和小青璃的项链靠在一起，^&竟然隐约显现出两块地图碎片。^&嗯，上面还有一段留言。传说中的收藏家^&虽然找到了究极卡片的位置，却因为它的力量^&太过强大，无法靠近。他们希望日后^&自己的后裔能够积蓄力量，揭开究极卡片^&的秘密，所以在各自的信物上^&留下了它所在的位置。如果能找到其他收藏家^&后裔持有的信物，就能马上确定^&位置了。留言还特意叮嘱，希望卡片^&不要被用于邪恶的目的。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3051,
+      "source_ko": "제 목걸이가 그럼 전설의 콜렉터의 징표란 말인가요?^&아버지께 물려받은 것인데, 아버진 롤랑의 부하라는^&몬스터들에게 억울한 죽음을 당했어요..괜찮다면^&저도 여러분이 하는 일에 동참하고 싶어요 ",
+      "translation_zh": "这么说，我的项链就是传说中收藏家的信物？^&这是父亲留给我的，可父亲已经被那些自称^&罗兰部下的怪物害死了……如果可以，^&我也想加入你们，一起行动。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3052,
+      "source_ko": "%s 님~^&이미 두명의 후예를 찾아냈으니, 나머지 후예들도^&찾아서 롤랑으로부터 궁극의 딱지를 지켜주세요~^&우선, 샤이엔 마을의 후예부터 찾아야 겠죠? ^^",
+      "translation_zh": "%s～^&已经找到两位后裔了，请继续寻找其他人，^&保护究极卡片，别让它落入罗兰手中！^&接下来先去寻找萨恩村的后裔吧？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3053,
+      "source_ko": "하하하..그런 비밀이 있었다니....그동안 딱지만^&찾아다녔는데,,,징표라..몰래 엿들은 보람이 있군..^^^&그럼 샤이엔 마을로 가볼까? ㅋㅋㅋ",
+      "translation_zh": "哈哈哈，原来还有这样的秘密……我一直只顾^&寻找卡片，原来关键是信物。偷偷听听果然有收获！^&那么，就去萨恩村吧，嘿嘿！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3054,
+      "source_ko": "이런!! 우리도 저 사람보다 늦지않게 서둘러요!^&마을 남쪽, 샤이엔 마을로 가는 출구앞에 수도승이^&있을거에요. 수도승에게 당신의 실력을 보여주고^&샤이엔 마을로 어서 이동하도록 하죠~",
+      "translation_zh": "糟了！我们也抓紧，不能落在那个人后面！^&村子南边通往萨恩村的出口前有一位修道僧。^&向他展示你的实力，^&然后赶快前往萨恩村吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3055,
+      "source_ko": "딱지 198번(오닉스) 1장^&LV36 기사 펫(1일)",
+      "translation_zh": "卡片198号（缟玛瑙）1张^&36级骑士宠物（1天）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3056,
+      "source_ko": "에피소드9에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드9의 던전을 모두 클리어^&한 후 에피소드9를 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第9章时，与出现的^&NPC交谈，^&通关第9章的全部地宫，^&然后离开第9章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3057,
+      "source_ko": "샤이엔 마을의 후예는 누굴까?",
+      "translation_zh": "萨恩村的后裔会是谁呢？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3058,
+      "source_ko": "글쎄요. 아! 저기에서 마을 의식을 진행하나봐요.",
+      "translation_zh": "不知道。啊，那边好像正在举行村子的仪式。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3059,
+      "source_ko": "그럼 지금부터 제 딸인 리틀베어에게 부족장과 추장의^&자리를 물려주고, 조상들에게 이를 알리는 제의를^&시작하도록 하겠습니다.",
+      "translation_zh": "现在，我将把族长和酋长之位传给女儿小熊，^&并开始向祖先禀告^&此事的仪式。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3060,
+      "source_ko": "자...잠깐!! 큰일이에요. 초대 빅베어로부터 대대로 ^&내려오던 마을의 황금곰신상이 사라졌어요~^&황금곰신상이 없이는 제의를 시작할 수 없습니다!",
+      "translation_zh": "等……等一下！出大事了！从第一代大熊开始^&世代相传的黄金熊神像不见了！^&没有神像，就不能开始仪式！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3061,
+      "source_ko": "갑자기 이게 무슨 일이지??",
+      "translation_zh": "怎么会突然发生这种事？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3062,
+      "source_ko": "쉿! 잠깐만! 우린 플라타너스와 아이라이 마을에서 온^&콜렉터들이야. 롤랑이라는 나쁜 마법사가 샤이엔에서^&음모를 꾸미는 것 같은데, 그걸 막으려고 여기 왔어.^&이번 사건도 왠지 롤랑의 짓인 것 같아..",
+      "translation_zh": "嘘，等等！我们是来自普拉塔诺斯和桃园的^&收藏家。一个叫罗兰的邪恶魔法师似乎在萨恩^&策划阴谋，我们是来阻止他的。^&这件事恐怕也和罗兰有关。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3063,
+      "source_ko": "자...모두 조용히 해 주시고, 주술사인 제가 하늘에^&황금곰신상의 위치를 물어보겠습니다. 주문을 외우는^&동안 잠시 기다려주십시오.^&스파스파 아푸아 샤마하 몸 아몸 카로타니!!!^&하늘에서 대답하길 \"큰곰일족의 운명이 다하여 ^&황금곰신상이 스스로 모습을 감추었고, 이제 운명은^&큰곰일족에서 매의 일족으로 바뀌었다! \"고 합니다.^&즉, 이제부턴 매의 일족대표이자 주술사인 제가  ^&마을을 이끌 것이고, 마을을 혼란에 빠뜨릴 가능성이^&있는 빅베어부녀를 지하감옥에 감금시키도록 ^&하겠습니다. 큰곰일족 사람들은 빅베어부녀의 감금에^&대해 불평만 하지 않으면 평화롭게 살 수 있습니다.",
+      "translation_zh": "大家请安静。身为巫师，我会向天空^&询问黄金熊神像的位置。请在我念咒时^&稍等片刻。^&斯帕斯帕，阿普阿，沙玛哈，莫姆阿莫姆，卡罗塔尼！^&上天回应：“大熊一族的命运已经走到尽头，^&黄金熊神像因此自行隐去。如今的命运^&已从大熊一族转移到鹰之一族！”^&也就是说，从现在起，将由身为鹰族代表^&和巫师的我来领导村庄。大熊父女^&可能给村子带来混乱，必须将他们^&关进地牢。大熊一族的人，只要不对^&囚禁他们一事有所怨言，仍然能够平静生活。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3064,
+      "source_ko": "호크아이란 저 사람 수상한데? ",
+      "translation_zh": "那个叫鹰眼的人，很可疑啊！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3065,
+      "source_ko": "저기요~ 다른 마을에서 온 콜렉터라고 하셨죠? 아까^&리틀베어 누나랑 얘기하는 걸 들었어요.^&아..전 큰곰 일족인 티미드라고 해요.^&사실은 어제밤 여기서 검은 복면을 쓴 사람이 정글로^&뭔가를 숨기고 들어가는 걸 봤어요. 멀리 있어서 ^&자세히는 보지 못했지만 황금색 동상이었어요.^&아까 빅베어부녀를 감옥에 가둘때 매의 일족 사람들이^&무서워 사실을 밝힐 수 없었는데, 꼭 황금곰신상을^&찾아서 리틀베어 누나를 구해주세요.^&리틀베어 누나를 친누나처럼 따르고 좋아했었는데..흑",
+      "translation_zh": "请问，你们是从其他村庄来的收藏家吧？我刚才^&听见你们和小熊姐姐说话。^&啊，我叫提米德，是大熊一族的人。^&其实昨晚我在这里看见一个蒙着黑色面巾的人，^&藏着什么东西走进丛林。因为距离太远，^&没能看清，但那是一尊金色的雕像。^&刚才他们把大熊父女关进监狱时，我害怕鹰族^&的人，不敢说出实情。请一定找回黄金熊神像，^&救救小熊姐姐。^&我一直把她当成亲姐姐一样敬爱……呜呜。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3066,
+      "source_ko": "알았어..울지마...^&일단 황금곰신상을 찾으려면 이 곳 정글 안으로 ^&들어가보는 수 밖에 없겠네. ^^^&%s ~ 조사를 부탁해~ ㅋㅋ",
+      "translation_zh": "知道了，别哭。^&看来想找到黄金熊神像，^&就只能进这片丛林调查了。^&%s～调查的事就拜托你啦！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3067,
+      "source_ko": "이봐~ 황금곰신상은 어딨나! ",
+      "translation_zh": "喂！黄金熊神像在哪里？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3068,
+      "source_ko": "훗...내게서 황금곰신상을 찾다니...^&이미 내 손을 떠나 하늘의 영광이 시작되는 곳으로^&갔다. 내게 지금 없으니 아무리 찾아도 소용없어!!",
+      "translation_zh": "哼，居然到我这里找黄金熊神像……^&它早已不在我手里，已经去了天空荣耀开始的地方。^&现在不在我这里，怎么找也没用！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3069,
+      "source_ko": "하늘의 영광이 시작되는 곳이라면?^&하늘도시를 말하는 것 같아요. 오즈빌 동쪽에^&하늘도시로 가는 입구로 가봐요~",
+      "translation_zh": "天空荣耀开始的地方？^&应该是指天堂都市。去奥兹屋东边^&通往天堂都市的入口看看吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3070,
+      "source_ko": "스페셜딱지12번(피흡,마흡) 7장^&아이템슬롯쿠폰(1일)^&자유소환서(1일)",
+      "translation_zh": "特殊卡12号（吸血、吸魔）7张^&道具栏位券（1天）^&自由魔法钥匙（1天）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3071,
+      "source_ko": "에피소드10에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드10 던전을 모두 클리어^&한 후 에피소드10을 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第10章时，与出现的^&NPC交谈，^&通关第10章的全部地宫，^&然后离开第10章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3072,
+      "source_ko": "이렇게 불쑥 나타나 미안하네. 난 매의 일족 전사인^&콘도르라고 하네. 이 마을에 벌어진 모든 사건의^&진실을 밝히기 위해 당신들을 찾아다녔어. ^&황금곰신상이 사라진 건 호크아이가 저지른 짓이야.^&부족의 명예를 더럽히는 그의 비겁한 짓을 용납할 수^&없었어. 아마 지금쯤이면 호크아이가 내 배신을 알아^&채고, 날 처치하려 자객을 보낼지도 모르겠군.^&자네들도 부디 조심하게나. ",
+      "translation_zh": "抱歉突然现身。我是鹰族战士^&康多尔。为了揭开村里所有事件的^&真相，我一直在找你们。^&黄金熊神像失踪，是鹰眼一手策划的。^&我无法容忍他这种玷污部族荣誉的^&卑鄙行径。恐怕他已经察觉我的背叛，^&可能会派刺客来杀我。^&你们也务必小心。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3073,
+      "source_ko": "어쩐지 수상하다 했어!!^&그럼 우린 여기 하늘도시에서 황금곰신상을^&찾아보자구~ ^^",
+      "translation_zh": "我就觉得他很可疑！^&那我们就在天堂都市^&寻找黄金熊神像吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3074,
+      "source_ko": "이런...여기에도 황금곰신상은 없는데?",
+      "translation_zh": "奇怪，这里也没有黄金熊神像？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3075,
+      "source_ko": "아마 콘도르의 배신을 눈치챈 호크아이가 이미^&황금곰신상을 다른 곳으로 숨겼겠죠..",
+      "translation_zh": "恐怕鹰眼察觉到康多尔的背叛，^&已经把神像藏到别处去了。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3076,
+      "source_ko": "그럼, 호크아이가 모든 걸 꾸몄다는 것을 알게됐으니^&먼저 감옥에 갇힌 빅베어와 리틀베어를 구하고, 큰곰^&일족 사람들과 같이 호크아이를 붙잡는 건 어때?",
+      "translation_zh": "既然已经知道一切都是鹰眼策划的，^&不如先救出牢里的大熊和小熊，再和大熊^&一族的人一起抓住鹰眼，怎么样？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3077,
+      "source_ko": "그거 괜찮은데? 그럼 빨리 지하감옥으로 가보자구!",
+      "translation_zh": "好主意！那就赶快去地牢吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3078,
+      "source_ko": "스페셜딱지13번(마블잼) 7장^&LV46 포이달 신관기사 펫(1일)",
+      "translation_zh": "特殊卡13号（魔力宝石）7张^&46级波伊达尔神官骑士宠物（1天）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3079,
+      "source_ko": "에피소드11에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드11 던전을 모두 클리어^&한 후 에피소드11을 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第11章时，与出现的^&NPC交谈，^&通关第11章的全部地宫，^&然后离开第11章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3080,
+      "source_ko": "아버지~ 이제 우린 어쩌죠?",
+      "translation_zh": "父亲，我们现在该怎么办？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3081,
+      "source_ko": "그것보다 큰곰 일족사람들이 더 걱정이구나..",
+      "translation_zh": "比起我们，我更担心大熊一族的族人……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3082,
+      "source_ko": "%s 님~^&보셨죠? 빅베어 부녀는 감옥에서까지 마을 걱정을^&하고 있네요. 저런 마음씨를 롤랑이 가졌다면, ^&나나이모에도 전쟁은 일어나지 않았을텐데요..^&궁극의 딱지를 찾는 것도 중요하지만, 곤경에 빠진^&사람들을 나몰라라 할 수는 없겠죠? ^^^&저들을 구해 샤이엔마을에 평화를 되찾아주도록 해요!",
+      "translation_zh": "%s～^&你看到了吗？大熊父女即使身陷牢狱，^&也还在为村子担忧。如果罗兰也有这份善心，^&纳纳伊莫就不会发生战争了……^&寻找究极卡片固然重要，但我们不能对^&陷入困境的人置之不理吧？^&救出他们，为萨恩村带回和平吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3083,
+      "source_ko": "빅베어님~ 그동안 고생하셨어요!^&이 모든게 호크아이 짓이란게 밝혀졌으니, 어서 여길^&빠져나가세요! 이 곳을 지키던 몬스터들은^&저희가 모두 물리쳤으니 걱정마시구요~",
+      "translation_zh": "大熊，您受苦了！^&已经查明这一切都是鹰眼的阴谋，快离开^&这里吧！看守此处的怪物^&已经被我们全部打败，不用担心！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3084,
+      "source_ko": "이 은혜를 어찌 갚을지... 자네들 정말 고맙네",
+      "translation_zh": "这份恩情，我该如何报答……真是太感谢你们了！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3085,
+      "source_ko": "여기서 아까 호크아이가 황금곰신상을 들고^&화염의 황금신전 쪽으로 도망치는 걸 봤어요! ^&황금곰신상을 되찾기위해 저도 당신들을 도울테니^&어서 화염의 황금신전으로 가봐요~!",
+      "translation_zh": "我刚才看见鹰眼拿着黄金熊神像，^&往炎之黄金神殿逃走了！^&为了夺回神像，我也来帮忙，^&我们赶快去炎之黄金神殿吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3086,
+      "source_ko": "스페셜딱지14번(오리하르콘) 7장",
+      "translation_zh": "特殊卡14号（山铜）7张"
+    },
+    {
+      "approved": false,
+      "qs_id": 3087,
+      "source_ko": "에피소드12에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드12 던전을 모두 클리어^&한 후 에피소드12을 나오면^&다시 NPC들과 대화가 진행된다.^&대화 완료 후, 골든글로리마을로^&가는 통로앞의 수도승에게^&말을 걸면 던전이 열리는데 이^&던전을 클리어 해야 골든글로리^&마을로 이동할 수 있다",
+      "translation_zh": "进入第12章时，与出现的^&NPC交谈，^&通关第12章的全部地宫，^&然后离开第12章，^&再次与NPC交谈。^&对白结束后，前往通向金誉村^&的出口，与修道僧^&交谈即可开启挑战地宫。^&必须通过这场挑战，^&才能前往金誉村。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3088,
+      "source_ko": "하하..원수는 외나무 다리에서 만난다더니,^&딱 걸렸군.. 진실이 밝혀지면 아저씬 끝이에요!!",
+      "translation_zh": "哈哈，真是冤家路窄！^&这下抓到你了。等真相大白，你就完了！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3089,
+      "source_ko": "후후..황금곰신상을 찾기 전에는 ^&샤이엔 마을에서 추장의식도 치를 수 없을텐데!!^&황금곰신상을 찾고 싶으면 몬스터가 득실거리는^&이 신전 안으로 들어와봐~ 하하",
+      "translation_zh": "呵呵，找不到黄金熊神像，^&萨恩村就连酋长仪式也办不了！^&想夺回神像，就进这座满是怪物的^&神殿里来吧，哈哈！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3090,
+      "source_ko": "몬스터 처리라면 우리도 전문가가 있지~ ㅎㅎ^&%s ~ 부탁해요~ ^^",
+      "translation_zh": "要说对付怪物，我们也有行家！^&%s～就拜托你了！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3091,
+      "source_ko": "어라...여긴 어디지? 리틀베어 니가 여긴 왜?^&엇..내손에 든 건 황금곰신상! 이건 또 왜 여기에?^&으~~ 머리가 너무 아프군..아악!!",
+      "translation_zh": "咦……这是哪里？小熊，你怎么在这里？^&啊，我手里的是黄金熊神像！它怎么会在这儿？^&呜，头好痛……啊！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3092,
+      "source_ko": "음? 며칠동안 아저씨가 저지른 일들 기억 안나세요?",
+      "translation_zh": "嗯？您不记得这几天自己做过什么了吗？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3093,
+      "source_ko": "뭐라구? 윽..내가 미쳤나보군...아~ 그러고보니^&그날 밤 검은 옷을 입은 의문의 사나이가 내게 찾아^&왔었는데,,,그때 내게 최면을 씌운 모양이군...^&내가 한 잘못을 어찌 용서를 구해야하나..흑흑",
+      "translation_zh": "什么？呃……我一定是疯了……啊，想起来了，^&那天晚上，一个穿黑衣的神秘男人来找过我，^&看来他那时对我施了催眠……^&我犯下这样的错，该怎么求得原谅……呜呜。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3094,
+      "source_ko": "그 황금곰신상이 샤이엔 마을 콜렉터의 징표였나 ^&보군요..황금곰신상, 샤오챙리님의 목걸이,^&차차님의 반지가 빛을 내면서 이번엔 지도조각3개를^&비춰주네요 ^^  롤랑이 콜렉터의 징표를 알게된 이상 ^&서둘러 골든글로리로 가서 전설의 콜렉터 '와이'의^&후예를 찾아주세요.",
+      "translation_zh": "看来黄金熊神像就是萨恩村收藏家的^&信物。神像、小青璃的项链，^&还有恰恰的戒指一起发光，这次映出了^&三块地图碎片！既然罗兰已经知道收藏家信物的^&秘密，就请赶快前往金誉村，寻找传说中的收藏家“瓦伊”^&的后裔吧。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3095,
+      "source_ko": "오오~ 내 딸 리틀베어야! 무사했구나..",
+      "translation_zh": "哦，我的女儿小熊！你平安无事，太好了！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3096,
+      "source_ko": "추장님 뵐 면목이 없군요. 흑흑",
+      "translation_zh": "我实在无颜面对酋长……呜呜。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3097,
+      "source_ko": "어떤가? 내일 당장이라도 리틀베어의 추장직 계승식을^&올리는게? 호크아이 자네가 제의를 진행해주게~ ^^",
+      "translation_zh": "怎么样？不如明天就为小熊举行酋长继承^&仪式。鹰眼，就由你来主持吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3098,
+      "source_ko": "절 용서해 주시다니..이 은혜를 어찌 갚을지..^&실수없이 화려한 계승식을 준비하도록 하겠습니다.",
+      "translation_zh": "您竟然愿意原谅我……这份恩情该如何报答。^&我一定精心准备，办一场隆重而圆满的继承仪式！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3099,
+      "source_ko": "아버지 뜻은 감사하지만, 이번 사건을 계기로 제가^&많이 부족한 걸 알았어요. ^&%s 님 일행을 도와 롤랑을 물리친 ^&이후에 다시 돌아와서 그때 추장직 계승식을 할게요.",
+      "translation_zh": "谢谢父亲的好意，但经历这件事，我发现自己^&还有很多不足。^&我想先帮助%s一行人打败罗兰，^&等回来之后，再举行酋长继承仪式。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3100,
+      "source_ko": "니 의견이 그렇다면 이 황금곰신상을 줄테니^&잘 간직 하도록 하거라~^&부디 몸건강히 잘 다녀오도록~",
+      "translation_zh": "既然你已经决定，就把这尊黄金熊神像^&带上，好好保管。^&一定要保重身体，平安回来！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3101,
+      "source_ko": "%s 님~ 골든글로리로 가기 전에^&수도승 찾는거 아시죠? 마을서쪽 출구로 가보세요.",
+      "translation_zh": "%s，去金誉村之前，^&别忘了拜访修道僧。去村子西边的出口看看吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3102,
+      "source_ko": "경험치 5000000",
+      "translation_zh": "经验值5000000"
+    },
+    {
+      "approved": false,
+      "qs_id": 3103,
+      "source_ko": "에피소드13에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드13 던전을 모두 클리어^&한 후 에피소드13을 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第13章时，与出现的^&NPC交谈，^&通关第13章的全部地宫，^&然后离开第13章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3104,
+      "source_ko": "안녕하세요~ 여기 난파선은 새로운 관광명소죠~ ^^^&제가 가이드 해드릴까요? 비용은 물론 저렴해요 ^^",
+      "translation_zh": "你们好！这里的沉船是新兴的观光景点哦！^&要我当向导吗？价钱当然很便宜！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3105,
+      "source_ko": "저기, 우린 여기 관광온게 아니라서,,,미안~^&다음에 오게 되면 꼭 널 가이드로 써줄게~ 안녕~",
+      "translation_zh": "那个，我们不是来观光的，抱歉啦。^&下次再来，一定请你当向导，再见！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3106,
+      "source_ko": "그럼 뭐 할 수 없죠~ 아무쪼록 즐거운 시간들 되세요~",
+      "translation_zh": "那就没办法啦。总之，祝各位玩得愉快！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3107,
+      "source_ko": "후후..이게 누구신가? 콜렉터들의 후예가 3명이나..ㅎ^&우리 역시 와이의 후계자와 그 징표를 찾기 위해^&이 곳 골든글로리로 왔지...ㅋㅋ",
+      "translation_zh": "呵呵，看看这是谁！竟然有三位收藏家的后裔。^&我们也为了寻找瓦伊的继承者和他的信物，^&来到了金誉村，嘿嘿。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3108,
+      "source_ko": "어랏...내 황금곰신상이 사라졌어. 너희들이 훔쳐놓고^&시간벌려고 일부러 말걸고 있는거 아니야?",
+      "translation_zh": "咦，我的黄金熊神像不见了！是不是你们偷走，^&还故意搭话拖延时间？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3109,
+      "source_ko": "무슨 그런 섭섭한 소릴! 우린 결백해..^&정 못믿겠으면 뒤져보든지...ㅎㅎㅎ^&단, 그냥은 못 뒤지게 하지...결투다...^&지는 쪽이 이긴 쪽 소원 모두 들어주기! 어때? ㅋㅋ",
+      "translation_zh": "怎么能这样冤枉人！我们是清白的。^&真不相信，就搜搜看嘛。^&不过，可不能白白让你们搜。来决斗吧！^&输的人必须答应赢家的一切要求，怎么样？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3110,
+      "source_ko": "우리가 얼마나 힘들게 황금곰신상을 찾았는데^&그걸 다시 훔쳐가놓고는 어디서 수작이야!^&%s~ ^&저 녀석들 혼 좀 내줘!!",
+      "translation_zh": "我们费了那么大力气才找回黄金熊神像，^&你们又偷走它，还想耍什么花招！^&%s～^&给这些家伙一点教训！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3111,
+      "source_ko": "엇...황금곰신상이 정말 없어.^&이녀석들 짓이 아닌가봐...",
+      "translation_zh": "咦，黄金熊神像真的不在。^&看来不是他们干的……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3112,
+      "source_ko": "아!! 그럼 아까 그 가이드 해준다던 소년! 아유타!!^&그 녀석을 찾으러 가보자구..^&가이드를 한다고 했으니~ 음..아!!^&이곳 입구 서쪽에 있던 해변으로 가보자!",
+      "translation_zh": "啊！那就是刚才说要当向导的少年，阿郁塔！^&我们去找他。^&既然他做向导，嗯……对了！^&去入口西边的海滩看看吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3113,
+      "source_ko": "아바타 의상 (Lv79 제독상의)",
+      "translation_zh": "角色服装（79级提督上衣）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3114,
+      "source_ko": "에피소드14에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드14 던전을 모두 클리어^&한 후 에피소드14를 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第14章时，与出现的^&NPC交谈，^&通关第14章的全部地宫，^&然后离开第14章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3115,
+      "source_ko": "황금곰신상은 정말 미안해요! 그럴 사정이 있었어요~^&사실...몇일 전 어떤 남자에게 당신들이 가진^&황금곰신상을 훔쳐오라고 협박을 받았었어요 ㅠㅜ^&여기서 그 남자에게 전해줬는데, 저 안으로 가보세요!",
+      "translation_zh": "偷走黄金熊神像真的很抱歉！我有不得已的苦衷。^&其实，几天前有个男人威胁我，^&要我偷走你们的黄金熊神像。^&我在这里把神像交给了他，你们去里面看看吧！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3116,
+      "source_ko": "아유타 넌 여기서꼼짝말고 기다려!^&우린 일단 저 안쪽 해변으로 들어가서 황금곰신상부터^&찾아올테니~",
+      "translation_zh": "阿郁塔，你就在这里等着，不许乱跑！^&我们先去里面的海滩，^&把黄金熊神像找回来。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3117,
+      "source_ko": "휴... 황금곰신상을 다시 찾았어~ ^^^&고스트아일 대보스가 떨어트리고 갔더라..ㅎㅎ",
+      "translation_zh": "呼，终于又找回黄金熊神像了！^&幽灵岛的大头目逃走时把它掉了下来。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3118,
+      "source_ko": "미안해요. 며칠전 검은옷을 입은 어떤 남자가 제가^&살고 있던 사원에 침입해 동생들을 인질로 삼고,^&황금곰신상을 훔쳐오라고 협박했었거든요..흑흑^&동생들때문에 어쩔수가 없었어요..^&이제 당신들이 황금곰신상을 되찾아서 동생들이^&위험해질텐데, 제가 사는 사원으로가서 동생들을^&구해주세요. 부탁이에요~^&마을 북쪽에 사원이 있으니 그리로 같이 가요~",
+      "translation_zh": "对不起，几天前，一个穿黑衣的男人闯入^&我住的神庙，抓住弟弟妹妹们当人质，^&威胁我去偷黄金熊神像……呜呜。^&为了他们，我实在没有办法。^&现在你们夺回了神像，弟弟妹妹们^&会有危险。请去我住的神庙，^&救救他们，拜托了！^&神庙就在村子北边，我们一起过去吧。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3119,
+      "source_ko": "아바타 의상 (Lv79 제독하의)",
+      "translation_zh": "角色服装（79级提督下装）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3120,
+      "source_ko": "에피소드15에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드15 던전을 모두 클리어^&한 후 에피소드15를 나오면^&다시 NPC들과 대화가 진행된다.",
+      "translation_zh": "进入第15章时，与出现的^&NPC交谈，^&通关第15章的全部地宫，^&然后离开第15章，^&再次与NPC交谈。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3121,
+      "source_ko": "여기 사원은 사람이 사는 곳이 아닌거 같아.",
+      "translation_zh": "这里的神庙看起来不像有人居住的地方。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3122,
+      "source_ko": "며칠 사이 이렇게 변해버린 거에요.^&동생들을 인질로 잡더니 몬스터들을 풀어놓고^&이곳을 감시하고 있어요.^&이 사원에서 몬스터들을 모두 물리치고 동생들을 좀^&구해주세요~",
+      "translation_zh": "只是几天就变成这样了。^&他们抓走弟弟妹妹当人质，放出怪物，^&监视着这里。^&请打败神庙里的所有怪物，^&救救我的弟弟妹妹！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3123,
+      "source_ko": "아유타~ 사원에서 니 동생들을 구해왔어~ 아유타?",
+      "translation_zh": "阿郁塔，我们把你的弟弟妹妹救出来了！阿郁塔？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3124,
+      "source_ko": "아유타는 나에게 인질로 잡혀있지..ㅎㅎ^&아유타를 구하려면 고대의 기계문명이 발달했던^&곳으로 콜렉터의 징표를 모두 가지고 오거라!! ",
+      "translation_zh": "阿郁塔已经成了我的人质，嘿嘿。^&想救他，就带上所有收藏家的信物，^&到古代的机械文明曾经繁盛的地方来！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3125,
+      "source_ko": "저게 뭐죠? 단검이 하나 있는데 빛이 나네요. ^&아유타에게서 떨어진거 같은데, 어디보자..",
+      "translation_zh": "那是什么？有把短剑正在发光。^&好像是阿郁塔掉下的，让我看看……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3126,
+      "source_ko": "찾았어요~ 이게 바로 와이의 징표에요.^&아유타를 꼭 구해내야 겠네요~ 서둘러 주세요^&마을에서 이 사원의 서쪽에 고대 기계문명이 발달한^&장소가 있어요.",
+      "translation_zh": "找到了！这正是瓦伊的信物。^&一定要救出阿郁塔，请抓紧时间！^&从村子出发，在这座神庙西边，^&就是古代的机械文明曾经繁盛的地方。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3127,
+      "source_ko": "아바타 의상 (Lv79 베레모)",
+      "translation_zh": "角色服装（79级贝雷帽）"
+    },
+    {
+      "approved": false,
+      "qs_id": 3128,
+      "source_ko": "에피소드16에 입장 시 등장하는^&NPC들과 대화를 진행하고^&에피소드16 던전을 모두 클리어^&한 후 에피소드16을 나오면^&다시 NPC들과 대화가 진행된다.^&대화 완료 후, 루미너스 마을로^&가는 통로앞의 수도승에게^&말을 걸면 던전이 열리는데^&이 던전을 클리어 해야^&루미너스 마을로 이동할 수 있다",
+      "translation_zh": "进入第16章时，与出现的^&NPC交谈，^&通关第16章的全部地宫，^&然后离开第16章，^&再次与NPC交谈。^&对白结束后，前往通向拉米诺斯村^&的出口，与修道僧^&交谈即可开启挑战地宫。^&必须通过这场挑战，^&才能前往拉米诺斯村。"
+    },
+    {
+      "approved": false,
+      "qs_id": 3129,
+      "source_ko": "아유타를 구하고 싶으면 징표를 모두 내놓으시지!!",
+      "translation_zh": "想救阿郁塔，就交出所有信物！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3130,
+      "source_ko": "롤랑이 나와서 징표를 내 놓으라고 해도 통하지^&않을 판에, 고작 부하녀석이 건방지기는..",
+      "translation_zh": "就算罗兰亲自来索要信物，我们也不会答应，^&何况你只是个部下，真够狂妄！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3131,
+      "source_ko": "훗...누가 건방진건지 모르겠군...^&사태파악이 잘 안되나 본데...^&협상은 끝이다...아유타를 구하려면 어디 한번^&던전으로 들어와서 구출해 봐!! 용서는 없다~!",
+      "translation_zh": "哼，不知道究竟是谁狂妄。^&看来你们还没弄清状况。^&谈判结束！想救阿郁塔，就进^&地宫试试看吧！我不会留情！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3132,
+      "source_ko": "그렇게 우릴 유인해서 던전에서 징표를 뺏아가려는^&계획인거 같은데, 우리에겐 안통해!^&%s ~ 어때?^&아유타를 잘 구출해 낼 수 있겠지? ^^",
+      "translation_zh": "你想把我们引进地宫，再夺走信物，^&这招对我们可没用！^&%s～怎么样？^&你一定能平安救出阿郁塔吧？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3133,
+      "source_ko": "아유타~ 무사했구나!",
+      "translation_zh": "阿郁塔，你没事真是太好了！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3134,
+      "source_ko": "엇...내 단검이 강렬한 빛을 내는데요?",
+      "translation_zh": "咦，我的短剑在发出强烈的光芒！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3135,
+      "source_ko": "4개의 징표들과 콜렉터의 후예가 모이자 완벽한^&지도를 표시해주네요 ^^^&지도가 가리키는 곳은 루미너스 마을이군요!^&아유타~ 놀랐겠지만, 당신은 골든글로리 마을을 세운^&전설의 콜렉터 '와이'의 후예에요. 여기 있는 나머지^&분들도 마찬가지로 각 마을의 후예분들이구요~ ^^^&수천년전에 나나이모 대륙에 큰 전쟁을 일으킨^&롤랑이란 나쁜 마법사가 최근 부활을 한 것 같아요.^&그가 찾고 있는 궁극의 딱지를 우리가 먼저 찾아내^&나나이모의 평화를 지키려고 다들 여기까지^&모험을 해왔답니다. 어때요? '와이'의 후예로써,^&나나이모를 위해 이분들과 함께 하시겠어요? ",
+      "translation_zh": "四件信物和收藏家的后裔终于聚齐，^&显现出了完整的地图！^&地图指向的是拉米诺斯村。^&阿郁塔，你可能很惊讶，但你正是创建金誉村的^&传说中的收藏家“瓦伊”的后裔。这里的其他^&伙伴，也都是各个村庄收藏家的后裔。^&几千年前，一个名叫罗兰的邪恶魔法师^&在纳纳伊莫大陆掀起大战，如今他似乎复活了。^&为了抢在他之前找到究极卡片，^&守护纳纳伊莫的和平，大家一路^&冒险来到这里。怎么样，作为瓦伊的后裔，^&你愿意为了纳纳伊莫，与大家并肩同行吗？"
+    },
+    {
+      "approved": false,
+      "qs_id": 3136,
+      "source_ko": "좋은 일인 줄 알지만...제겐 보살펴야 할 동생들이..",
+      "translation_zh": "我知道这是好事，可是我还有弟弟妹妹需要照顾……"
+    },
+    {
+      "approved": false,
+      "qs_id": 3137,
+      "source_ko": "아유타님이 콜렉터의 후예란 걸 알게된 마을사람들이 ^&동생들을 돌봐주시겠다고 하셨어요~ ㅎㅎ^&그러니 아유타님도 걱정말고 저희와 함께 해요!^&루미너스마을은 몬스터들이 더 강력할테니, 모두들^&마음의 준비를 잘 하시고!! 그럼 루미너스 마을로^&전설의 콜렉터 '루루'의 후예를 찾아 떠나볼까요? ^&아~ %s 님은 이번에도^&수도승을 만나야 하는 것 알죠? 마을 서쪽출구로^&가보세요~ 이번에도 행운을 빌어요!",
+      "translation_zh": "村民们知道你是收藏家的后裔后，^&已经答应帮忙照顾弟弟妹妹啦！^&所以，阿郁塔，放心和我们一起走吧！^&拉米诺斯村的怪物会更强大，大家^&都要做好准备！那么，我们就去拉米诺斯，^&寻找传说中的收藏家“露露”的后裔吧！^&啊，%s，这次也别忘了^&去拜访修道僧。去村子西边的出口^&看看吧，祝你好运！"
+    },
+    {
+      "approved": false,
+      "qs_id": 3138,
+      "source_ko": "딱지 374번(오닉스) 3장",
+      "translation_zh": "卡片374号（缟玛瑙）3张"
+    }
+  ],
+  "unresolved_gates": [
+    "cn-story-executor-and-confirmation",
+    "cn-scene-and-portrait-mapping",
+    "reviewed-gbk-localization",
+    "cn-reward-mapping-and-atomic-transaction",
+    "type40-settlement-condition",
+    "first-grant-and-legacy-save-policy",
+    "transactional-client-install-and-rollback",
+    "original-client-episode-1-acceptance"
+  ]
+}

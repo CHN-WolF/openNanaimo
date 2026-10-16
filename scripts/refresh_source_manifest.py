@@ -45,6 +45,16 @@ def collect(root=ROOT):
                 raise ValueError('missing or unsafe embedded source resource: ' + rel)
             seen.add(resource)
     # Authoritative card distribution inputs must travel with the compiled table.
+    if (root / 'release/components/story_chapters/chapters.json').resolve() in seen:
+        for rel in ('release/components/story_chapters/manifest.json',
+                    'manifest/story_localization.json', 'manifest/story_terms.json',
+                    'manifest/story_portrait_resources.json',
+                    'scripts/prepare_story_catalog.py', 'scripts/prepare_story_port.py',
+                    'scripts/prepare_story_portraits.py', 'scripts/audit_story_localization.py',
+                    'scripts/generate_inventory_card_catalog.py'):
+            path = root / rel
+            if not path.is_file(): raise ValueError('missing chapter source input: ' + rel)
+            seen.add(path.resolve())
     if (root / 'release/components/target_resources/arena_target_catalog.json').resolve() in seen:
         for rel in ('scripts/generate_arena_targets.py', 'scripts/generate_lumineos_combat.py',
                     'scripts/lumineos_codec.py'):

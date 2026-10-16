@@ -18,6 +18,14 @@ import refresh_patch_manifest as refresh
 
 
 class ExportPatchTests(unittest.TestCase):
+    def test_story_sources_are_exactly_scoped(self):
+        rows=[dict(path=name,size=0,sha256='0'*64) for name in sorted(patch.STORY_SOURCES)]
+        self.assertEqual(patch.validated_closure(dict(count=len(rows),files=rows)),rows)
+        for name in ('release/components/story_chapters/private.json',
+                     'manifest/story_rewards_unreviewed.json', 'effs/interface/NPC_53.im3'):
+            with self.subTest(path=name), self.assertRaises(patch.ExportError):
+                patch.payload_policy(name,'source')
+
     def test_l7_source_closure_inputs_are_exactly_scoped(self):
         names = ['scripts/audit_l7_combat_resources.py',
                  'scripts/generate_boss_contact_catalog.py',

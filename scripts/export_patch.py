@@ -109,6 +109,16 @@ RESERVED = re.compile(r"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)", re.I)
 SHA256 = re.compile(r"^[0-9a-fA-F]{64}$")
 INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"\r\n]+)"', re.M)
 TEXT_SUFFIXES = {".py", ".ps1", ".bat", ".c", ".h", ".inc", ".cs", ".csproj", ".md", ".json", ".ini", ".tsv"}
+# Candidate inputs have exact scope; rights and export approval are separate gates.
+STORY_SOURCES = {
+    'release/components/story_chapters/chapters.json',
+    'release/components/story_chapters/manifest.json',
+    'manifest/story_localization.json', 'manifest/story_terms.json',
+    'manifest/story_portrait_resources.json',
+    'scripts/prepare_story_catalog.py', 'scripts/prepare_story_port.py',
+    'scripts/prepare_story_portraits.py', 'scripts/audit_story_localization.py',
+    'scripts/generate_inventory_card_catalog.py',
+}
 # This is only a rejection aid; NOT a privacy certification. Exact-byte human review
 # remains mandatory for every payload, especially knowledge and protocol fixtures.
 PRIVATE_MARKERS = (
@@ -179,6 +189,7 @@ def payload_policy(value: str, layer: str) -> None:
                 or (parts[0] == "scripts" and p.suffix in {".py", ".ps1"})
                 or value in DUNGEON7_ARTWORK
                 or value in card_generation_sources
+                or value in STORY_SOURCES
                 or value in {"manifest/source_closure.json", "manifest/lumineos_combat.json", "manifest/l7_combat.json", "manifest/lumineos_resource_port.json", "manifest/korean_pet_resources.json",
                              "manifest/knowledge_migration.json", "manifest/knowledge_baseline.json.gz",
                              "manifest/document_fusion.json", "manifest/document_fusion_baseline.json.gz",
@@ -411,7 +422,7 @@ def validated_closure(closure: dict) -> list[dict]:
             "scripts/generate_l7_combat.py",
             "scripts/test_l7_combat_resources.py",
         }
-        if not (native or managed or build_script or embedded_recipe or card_distribution):
+        if not (native or managed or build_script or embedded_recipe or card_distribution or rel in STORY_SOURCES):
             raise ExportError("source closure contains an ineligible project source")
         payload_policy(rel, "source")
         if rel.casefold() in seen:

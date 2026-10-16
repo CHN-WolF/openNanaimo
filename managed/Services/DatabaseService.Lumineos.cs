@@ -87,14 +87,9 @@ public sealed partial class DatabaseService
         }
         await reader.DisposeAsync();
         // Scoped client extension reserves rows8..11 for the four monk
-        // challenges, with three client-difficulty fields in each row.
+        // challenges, with one blank/B/A/S value in each row.
         var monk = await GetMonkChallengeBestRatingsAsync(characterId, token);
-        for (byte clientDifficulty = 0; clientDifficulty < 3; clientDifficulty++)
-        {
-            var logical = DungeonNavigationPolicy.DecodeLogicalDifficulty(0, 0, clientDifficulty);
-            for (int challenge = 0; challenge < 4; challenge++)
-                ratings[8 + challenge] |= (byte)(((monk[challenge] >> (logical * 2)) & 3) << (clientDifficulty * 2));
-        }
+        monk.CopyTo(ratings, 8);
         return ratings;
     }
 

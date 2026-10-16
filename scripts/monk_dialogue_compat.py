@@ -402,9 +402,10 @@ ROOM_NUMBER, BOSS_STRINGS = EXT_BASE+0x13A0, EXT_BASE+0x13C0
 
 RANK_INIT, RANK_GET, RANK_SET = EXT_BASE+0x1100, EXT_BASE+0xB00, EXT_BASE+0xB80
 RANK_DRAW, RANK_TEXT = EXT_BASE+0xC80, EXT_BASE+0x1440
+RANK_BACKGROUND = EXT_BASE+0x1460
 
 
-def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False, legacy_names=False, legacy_ranking=False):
+def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False, legacy_names=False, legacy_ranking=False, legacy_rank_matrix=False):
     legacy_room = legacy_room or legacy_portrait
     data = bytearray(b'\xCC' * EXT_SPAN)
     local = localization(legacy_names)
@@ -497,45 +498,74 @@ def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=F
         c.emit('6844010000');c.call(0xB479CC);c.emit('83C40485C0');c.branch('0F84','allocated')
         c.emit('8BC8');c.call(0x41BE00)
         c.label('allocated');c.emit('89472885C0');c.branch('0F84','badges')
-        c.emit('6A00682C01000068900100006A0068');c.u32(0xCA5AA4)
+        c.emit('6A00682C01000068900100006A0068');c.u32(0xCA5AA4 if legacy_rank_matrix else RANK_BACKGROUND)
         c.emit('8BC8');c.call(0x404232)
         c.label('badges');c.emit('33DB')
-        c.label('loop');c.emit('8BC333D2B903000000F7F1')
-        c.emit('8BC86BC92681C10C01000051') # y=268+38*challenge
-        c.emit('8BCA03C90FB6440644D3E883E003')
-        c.emit('69D28C00000081C2EE00000052508BCF');c.call(0x41E67D)
-        c.emit('89449F2C4383FB0C');c.branch('0F82','loop')
+        c.label('loop')
+        if legacy_rank_matrix:
+            c.emit('8BC333D2B903000000F7F1')
+            c.emit('8BC86BC92681C10C01000051')
+            c.emit('8BCA03C90FB6440644D3E883E003')
+            c.emit('69D28C00000081C2EE00000052508BCF');c.call(0x41E67D)
+            c.emit('89449F2C4383FB0C')
+        else:
+            c.emit('6BCB2681C10C01000051') # y=268+38*challenge
+            c.emit('0FB6441E4483E00368');c.u32(430)
+            c.emit('508BCF');c.call(0x41E67D)
+            c.emit('89449F2C4383FB04')
+        c.branch('0F82','loop')
         c.emit('61');jump(c,0x8C2DDE)
         c.label('native');c.emit('619D8B0D');c.u32(PROFILE);c.call(0x411379);jump(c,0x8C25B3)
         put(RANK_INIT,c.finish(),0x220)
         # CF88's existing B/A/S update must address our reserved cache row,
         # not index episode24..27 beyond the ordinary 60-byte table.
         c=Code(RANK_GET);c.emit('9C60');c.call(IS_CHALLENGE)
-        c.emit('85C0');c.branch('0F84','native');c.emit('619D51');c.call(0x419BBE)
-        c.emit('598B8034E5010083E8180FB64401448B54240C83FA03');c.branch('0F83','zero')
-        c.emit('D1E2518BCAD3E85983E003C21000')
-        c.label('zero');c.emit('33C0C21000')
+        c.emit('85C0');c.branch('0F84','native')
+        if not legacy_rank_matrix:
+            for offset in (0x28,0x30,0x34):
+                c.emit(bytes((0x83,0x7C,0x24,offset,0)));c.branch('0F85','native')
+            c.call(0x419BBE);c.emit('8B8034E501003B44242C');c.branch('0F85','native')
+        c.emit('619D51');c.call(0x419BBE)
+        c.emit('598B8034E5010083E8180FB6440144')
+        if legacy_rank_matrix:
+            c.emit('8B54240C83FA03');c.branch('0F83','zero')
+            c.emit('D1E2518BCAD3E85983E003C21000')
+            c.label('zero');c.emit('33C0C21000')
+        else:
+            c.emit('83E003C21000')
         c.label('native');c.emit('619D');jump(c,0x40EDC2);put(RANK_GET,c.finish(),0x80)
         c=Code(RANK_SET);c.emit('9C60');c.call(IS_CHALLENGE)
-        c.emit('85C0');c.branch('0F84','native');c.emit('619D5356578BF1');c.call(0x419BBE)
-        c.emit('8B8034E5010083E8188D7406448B4C241883F903');c.branch('0F83','done')
-        c.emit('D1E18B7C242083FF01');c.branch('0F82','done')
+        c.emit('85C0');c.branch('0F84','native')
+        if not legacy_rank_matrix:
+            for offset in (0x28,0x30,0x34):
+                c.emit(bytes((0x83,0x7C,0x24,offset,0)));c.branch('0F85','native')
+            c.call(0x419BBE);c.emit('8B8034E501003B44242C');c.branch('0F85','native')
+        c.emit('619D5356578BF1');c.call(0x419BBE)
+        c.emit('8B8034E5010083E8188D740644')
+        if legacy_rank_matrix:
+            c.emit('8B4C241883F903');c.branch('0F83','done');c.emit('D1E1')
+        c.emit('8B7C242083FF01');c.branch('0F82','done')
         c.emit('83FF03');c.branch('0F87','done')
-        c.emit('0FB606D3E883E0033BC7');c.branch('0F83','done')
-        c.emit('BB03000000D3E3F7D30FB60623C3D3E70BC78806')
+        c.emit('0FB606')
+        if legacy_rank_matrix:c.emit('D3E8')
+        c.emit('83E0033BC7');c.branch('0F83','done')
+        c.emit('BB03000000D3E3F7D30FB60623C3D3E70BC78806' if legacy_rank_matrix else '8BC78806')
         c.label('done');c.emit('5F5E5BC21400')
         c.label('native');c.emit('619D');jump(c,0x4103D9);put(RANK_SET,c.finish(),0x100)
         # The original last draw block labels ordinary dungeon rows. Draw
-        # our four localized challenge names instead, with the same text ABI.
+        # four ASCII numbers in the existing Epi boxes, with the same text ABI.
         c=Code(RANK_DRAW);c.emit('9C60');c.call(IS_CHALLENGE)
         c.emit('85C0');c.branch('0F84','native');c.emit('619D60')
         for row in range(4):
-            c.emit('6A006A006A006A006A006A006A016A006A0068FFFFFF0068');c.u32(TITLE_STRINGS+row*32)
-            c.emit('68');c.u32(268+38*row);c.emit('6880000000');c.call(0x414A6F)
+            c.emit('6A006A006A006A006A006A006A016A006A0068FFFFFF0068');c.u32(TITLE_STRINGS+row*32 if legacy_rank_matrix else RANK_TEXT+row*8)
+            c.emit('68');c.u32(268+38*row);c.emit('68');c.u32(128 if legacy_rank_matrix else 207);c.call(0x414A6F)
             c.emit('8BC8');c.call(0x40DA1C)
         c.emit('61');jump(c,0x8C3182)
         c.label('native');c.emit('619D');c.call(0x419BBE);jump(c,0x8C30F2)
         put(RANK_DRAW,c.finish(),0x240)
+        if not legacy_rank_matrix:
+            for row in range(4):put(RANK_TEXT+row*8,str(row+1).encode('ascii')+b'\0',8)
+            put(RANK_BACKGROUND,b'interface\\openNanaimo_monk_rank.eff\0',0x40)
     return bytes(data)
 
 

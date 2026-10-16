@@ -121,6 +121,16 @@
       "size": 65948
     },
     {
+      "path": "effs/interface/openNanaimo_monk_rank.eff",
+      "sha256": "7f1ee24b25ce0f53f668e1070ec8b8a727a84a95a03df4aad3b22dac5e70668e",
+      "size": 1132
+    },
+    {
+      "path": "effs/interface/openNanaimo_monk_rank.im3",
+      "sha256": "8be929ecf87bacddf2f84bf8b9a19c3aa0ec7e8c504de4eef69172d9393bd67a",
+      "size": 375020
+    },
+    {
       "path": "effs/village/openNanaimo_monk01.eff",
       "sha256": "6d6957f894bcac49761aa960e220a28eb967606b57d81294cdebbaf8c7174a07",
       "size": 1688

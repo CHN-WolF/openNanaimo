@@ -704,7 +704,8 @@ def patch_monk_dialogue(data: bytes) -> tuple[bytes, dict]:
         if va == monk_dialogue_compat.FOLLOW_BASE:
             known += (monk_dialogue_compat.followup_payload(legacy_portrait=True),)
         if va == monk_dialogue_compat.EXT_BASE:
-            known += (monk_dialogue_compat.gameplay_payload(legacy_ranking=True),
+            known += (monk_dialogue_compat.gameplay_payload(legacy_rank_matrix=True),
+                      monk_dialogue_compat.gameplay_payload(legacy_ranking=True),
                       monk_dialogue_compat.gameplay_payload(legacy_portrait=True),
                       monk_dialogue_compat.gameplay_payload(legacy_room=True))
         if va == monk_dialogue_compat.BASE:

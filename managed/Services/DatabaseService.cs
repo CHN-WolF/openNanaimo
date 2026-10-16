@@ -905,6 +905,16 @@ public sealed partial class DatabaseService
         await InitializeCardPageUnionsAsync(connection, cancellationToken);
         await InitializeCardExchangeAsync(cancellationToken);
         await InitializeMentorshipAsync(cancellationToken);
+        await using (var monk = connection.CreateCommand())
+        {
+            monk.CommandText = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='MonkChallengePerformance'";
+            if (await monk.ExecuteScalarAsync(cancellationToken) is not null)
+            {
+                await using var transaction = connection.BeginTransaction();
+                await EnsureMonkChallengeSchemaAsync(connection, transaction, cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+        }
         await ExpireMentorshipRequestsAsync(cancellationToken);
     }
 
@@ -10097,6 +10107,7 @@ public sealed partial class DatabaseService
     {
         var lumineos = DungeonTitleProgression.IsLumineosTuple(hdIndex, episode, dungeon, stage);
         var monk = MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, dungeon, stage);
+        if (monk && difficulty != 0) return [];
         if ((!lumineos && !monk && (hdIndex > 1
             || (hdIndex == 0 && episode >= 20)
             || (hdIndex == 1 && episode >= 4)

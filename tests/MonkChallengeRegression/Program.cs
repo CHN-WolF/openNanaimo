@@ -15,6 +15,7 @@ internal static partial class Program
         await CheckLedger(fixture);
         await CheckProductionSettlements(fixture);
         await CheckRankings(fixture);
+        await CheckRankingMigration();
         IntegrationChecks.Run();
         Console.WriteLine($"MONK_CHALLENGE_REGRESSION_PASS checks={checks}");
     }

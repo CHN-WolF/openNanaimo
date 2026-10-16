@@ -58,7 +58,7 @@ public sealed partial class NetworkAdapterService
             || BinaryPrimitives.ReadUInt16LittleEndian(request.AsSpan(6, 2)) != 0xCF15
             || BinaryPrimitives.ReadUInt16LittleEndian(request.AsSpan(8, 2)) != DungeonEpisodeCount
             || !IsDungeonStageRecordsSelectorValid(request[10], request[11], lumineosTuple)
-            || (monkTuple && request[10] != 0)
+            || (monkTuple && (request[10] != 0 || difficulty != 0))
             || (!standardTuple && !lumineosTuple && !monkTuple)
             || difficulty >= DungeonDifficultyCount)
             return null;

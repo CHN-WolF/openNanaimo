@@ -10,6 +10,7 @@ import prepare_monk_entry as scene
 import prepare_monk_village_entries as fifth
 import prepare_monk_resources as resources
 import monk_dialogue_compat as dialogue
+import monk_ranking_resources
 from prepare_monk_entry import require
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -158,6 +159,7 @@ def build(source, client, output, font=None):
             require(header[2] + 8 == len(raw), 'challenge UI image size differs')
             files[base+target_name] = raw
     files.update(portrait_files(source))
+    files.update(monk_ranking_resources.ranking_files(client))
     recipe = dict(schema=SCHEMA,runtime_acceptance=False,entry_binding='village-dialogue-bound',
                   parent_pack_sha256=parent_row['sha256'],
                   parent_files={row['path']:row['sha256'] for row in parent['files'] if row['path'] in files},

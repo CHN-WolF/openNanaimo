@@ -40,14 +40,46 @@ public sealed partial class DatabaseService
             CREATE TABLE IF NOT EXISTS MonkChallengePerformance (
                 CharacterId INTEGER NOT NULL REFERENCES Characters(Id) ON DELETE CASCADE,
                 ChallengeIndex INTEGER NOT NULL CHECK (ChallengeIndex BETWEEN 0 AND 3),
-                Difficulty INTEGER NOT NULL CHECK (Difficulty BETWEEN 0 AND 2),
+                Difficulty INTEGER NOT NULL CHECK (Difficulty = 0),
                 BestRating INTEGER NOT NULL CHECK (BestRating BETWEEN 1 AND 5),
                 BestScore INTEGER NOT NULL CHECK (BestScore >= 0),
                 BestElapsedMinutes INTEGER NULL,
                 ClearedAt TEXT NOT NULL,
                 UpdatedAt TEXT NOT NULL,
-                PRIMARY KEY (CharacterId, ChallengeIndex, Difficulty)
+                PRIMARY KEY (CharacterId, ChallengeIndex)
             );
+            """;
+        await command.ExecuteNonQueryAsync(token);
+        command.CommandText = "SELECT pk FROM pragma_table_info('MonkChallengePerformance') WHERE name='Difficulty'";
+        if (Convert.ToInt32(await command.ExecuteScalarAsync(token)) == 0) return;
+
+        // Collapse the released three-difficulty ledger atomically. Score metadata
+        // follows the winning score row; rating and first clear remain independent.
+        command.CommandText = """
+            CREATE TABLE MonkChallengePerformanceSingle (
+                CharacterId INTEGER NOT NULL REFERENCES Characters(Id) ON DELETE CASCADE,
+                ChallengeIndex INTEGER NOT NULL CHECK (ChallengeIndex BETWEEN 0 AND 3),
+                Difficulty INTEGER NOT NULL CHECK (Difficulty = 0),
+                BestRating INTEGER NOT NULL CHECK (BestRating BETWEEN 1 AND 5),
+                BestScore INTEGER NOT NULL CHECK (BestScore >= 0),
+                BestElapsedMinutes INTEGER NULL,
+                ClearedAt TEXT NOT NULL,
+                UpdatedAt TEXT NOT NULL,
+                PRIMARY KEY (CharacterId, ChallengeIndex)
+            );
+            INSERT INTO MonkChallengePerformanceSingle
+            SELECT CharacterId,ChallengeIndex,0,Rating,BestScore,BestElapsedMinutes,FirstClear,UpdatedAt
+            FROM (
+                SELECT *,
+                    MAX(BestRating) OVER (PARTITION BY CharacterId,ChallengeIndex) AS Rating,
+                    MIN(ClearedAt) OVER (PARTITION BY CharacterId,ChallengeIndex) AS FirstClear,
+                    ROW_NUMBER() OVER (PARTITION BY CharacterId,ChallengeIndex ORDER BY
+                        BestScore DESC, BestElapsedMinutes IS NULL, BestElapsedMinutes,
+                        UpdatedAt, Difficulty) AS Winner
+                FROM MonkChallengePerformance
+            ) WHERE Winner=1;
+            DROP TABLE MonkChallengePerformance;
+            ALTER TABLE MonkChallengePerformanceSingle RENAME TO MonkChallengePerformance;
             """;
         await command.ExecuteNonQueryAsync(token);
     }
@@ -86,7 +118,7 @@ public sealed partial class DatabaseService
             throw new ArgumentException("The transaction must belong to the supplied connection.", nameof(transaction));
         if (characterId <= 0 || string.IsNullOrWhiteSpace(sessionId)
             || settlement.Rating is < DungeonRewardPolicy.ClearRatingD or > DungeonRewardPolicy.ClearRatingS
-            || settlement.LogicalDifficulty >= 3 || settlement.Score < 0
+            || settlement.LogicalDifficulty != 0 || settlement.Score < 0
             || settlement.StageRecordScore < settlement.Score
             || !TryParseMonkChallengeSettlementId(settlement.SettlementId, out var epoch, out var cycle)
             || !MonkChallengePolicy.TryGetChallengeIndex(settlement.HdIndex, settlement.Episode,
@@ -166,16 +198,17 @@ public sealed partial class DatabaseService
         await using (var performance = Command("""
             INSERT INTO MonkChallengePerformance
                 (CharacterId,ChallengeIndex,Difficulty,BestRating,BestScore,BestElapsedMinutes,ClearedAt,UpdatedAt)
-            VALUES($id,$index,$difficulty,$rating,$score,NULL,$now,$now)
-            ON CONFLICT(CharacterId,ChallengeIndex,Difficulty) DO UPDATE SET
+            VALUES($id,$index,0,$rating,$score,NULL,$now,$now)
+            ON CONFLICT(CharacterId,ChallengeIndex) DO UPDATE SET
                 BestRating=MAX(MonkChallengePerformance.BestRating,excluded.BestRating),
+                BestElapsedMinutes=CASE WHEN excluded.BestScore>MonkChallengePerformance.BestScore
+                    THEN excluded.BestElapsedMinutes ELSE MonkChallengePerformance.BestElapsedMinutes END,
                 BestScore=MAX(MonkChallengePerformance.BestScore,excluded.BestScore),
                 UpdatedAt=CASE WHEN excluded.BestScore>MonkChallengePerformance.BestScore
                     THEN excluded.UpdatedAt ELSE MonkChallengePerformance.UpdatedAt END
             """))
         {
             performance.Parameters.AddWithValue("$index", index);
-            performance.Parameters.AddWithValue("$difficulty", settlement.LogicalDifficulty);
             performance.Parameters.AddWithValue("$rating", settlement.Rating);
             performance.Parameters.AddWithValue("$score", settlement.StageRecordScore ?? settlement.Score);
             performance.Parameters.AddWithValue("$now", DateTime.UtcNow.ToString("O"));
@@ -194,30 +227,29 @@ public sealed partial class DatabaseService
         command.CommandText = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='MonkChallengePerformance'";
         if (await command.ExecuteScalarAsync(token) is null) return ratings;
         command.CommandText = """
-            SELECT ChallengeIndex,Difficulty,BestRating FROM MonkChallengePerformance WHERE CharacterId=$id
+            SELECT ChallengeIndex,BestRating FROM MonkChallengePerformance WHERE CharacterId=$id AND Difficulty=0
             """;
         command.Parameters.AddWithValue("$id", characterId);
         await using var reader = await command.ExecuteReaderAsync(token);
         while (await reader.ReadAsync(token))
-            ratings[reader.GetInt32(0)] |= (byte)(Math.Clamp(reader.GetInt32(2) - 2, 0, 3) << (2 * reader.GetInt32(1)));
+            ratings[reader.GetInt32(0)] = (byte)Math.Clamp(reader.GetInt32(1) - 2, 0, 3);
         return ratings;
     }
 
     internal async Task<byte> GetMonkChallengeReadyRoomRankAsync(long characterId,
         byte episode, byte difficulty, CancellationToken token = default)
     {
-        if (characterId <= 0 || !MonkChallengePolicy.IsReservedEpisode(episode) || difficulty >= 3) return 0;
+        if (characterId <= 0 || !MonkChallengePolicy.IsReservedEpisode(episode) || difficulty != 0) return 0;
         await using var connection = await OpenConnectionAsync(token);
         await using var command = connection.CreateCommand();
         command.CommandText = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='MonkChallengePerformance'";
         if (await command.ExecuteScalarAsync(token) is null) return 0;
         command.CommandText = """
             SELECT BestRating FROM MonkChallengePerformance
-            WHERE CharacterId=$id AND ChallengeIndex=$index AND Difficulty=$difficulty
+            WHERE CharacterId=$id AND ChallengeIndex=$index AND Difficulty=0
             """;
         command.Parameters.AddWithValue("$id", characterId);
         command.Parameters.AddWithValue("$index", episode - MonkChallengePolicy.FirstEpisode);
-        command.Parameters.AddWithValue("$difficulty", difficulty);
         var value = await command.ExecuteScalarAsync(token);
         return value is null or DBNull ? (byte)0 : (byte)Math.Clamp(Convert.ToInt32(value) - 2, 0, 3);
     }

@@ -14,6 +14,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    'scripts/prepare_story_port.py',
+    'scripts/prepare_story_portraits.py',
+    'scripts/audit_story_localization.py',
+    'scripts/test_story_port.py',
+    'scripts/test_story_portraits.py',
+    'scripts/test_story_localization.py',
+    'manifest/story_localization.json',
+    'manifest/story_terms.json',
+    'manifest/story_portrait_resources.json',
+    'release/components/story_chapters/chapters.json',
+    'release/components/story_chapters/manifest.json',
     'scripts/prepare_story_catalog.py',
     'scripts/test_story_catalog.py',
     'scripts/test_knowledge_routes.py',
@@ -26,6 +37,7 @@ REPOSITORY_FILES = [
     'scripts/test_monk_dialogue_compat.py',
     'scripts/test_monk_result_controls.py',
     'scripts/test_monk_ranking.py',
+    'scripts/monk_ranking_resources.py',
     'tests/MonkChallengeRegression/RankingChecks.cs',
     'scripts/test_monk_portrait.py',
     'scripts/test_monk_dialogue_resources.py',

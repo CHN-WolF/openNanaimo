@@ -227,7 +227,8 @@ public sealed partial class NetworkAdapterService
             session.NativeDungeonEpisode = quickEpisode;
             session.NativeDungeonDungeon = quickDungeon;
             session.NativeDungeonStage = 0;
-            session.NativeDungeonLogicalDifficulty = DecodeDungeonLogicalDifficulty(quickDungeon, 0, quickDifficulty);
+            session.NativeDungeonLogicalDifficulty = MonkChallengePolicy.IsReservedEpisode(quickEpisode)
+                ? quickDifficulty : DecodeDungeonLogicalDifficulty(quickDungeon, 0, quickDifficulty);
         }
         // CF83 mode is the proven selector: mode1 is the service-egg/CF95
         // path; mode0 is the Hans/F104 path and its second WORD is the price.
@@ -452,14 +453,21 @@ public sealed partial class NetworkAdapterService
         var lumineosTuple = DungeonTitleProgression.IsLumineosTuple(
             hdIndex, episode, dungeon, stage);
         var monkTuple = MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, dungeon, stage);
+        if (monkTuple)
+        {
+            var selector = BinaryPrimitives.ReadUInt16LittleEndian(frame.Slice(0x26, 2));
+            if (selector != 0) return false;
+            logicalDifficulty = 0;
+        }
         return (standardTuple || lumineosTuple || monkTuple)
+            && (!monkTuple || logicalDifficulty == 0)
             && logicalDifficulty < DungeonDifficultyCount;
     }
 
     internal static bool IsMonkPrototypeSelectionAllowed(
         byte hd, byte episode, byte dungeon, byte stage, byte difficulty, long partyId)
         => MonkChallengePolicy.IsPlayableTuple(hd, episode, dungeon, stage)
-            && difficulty < DungeonDifficultyCount && partyId == 0;
+            && difficulty == 0 && partyId == 0;
 
     internal static bool TryParseMonkVillageSelection(ReadOnlySpan<byte> frame,
         long partyId, byte village, byte page, out byte hd, out byte episode,
@@ -548,7 +556,7 @@ public sealed partial class NetworkAdapterService
         var responseDungeon = BinaryPrimitives.ReadUInt16LittleEndian(response.Slice(0x2E, 2));
         if (MonkChallengePolicy.IsReservedEpisode(episode))
             return MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, currentDungeon, currentStage)
-                && currentLogicalDifficulty < DungeonDifficultyCount
+                && currentLogicalDifficulty == 0
                 && mode == 1 && requestedRealStage == 0
                 && responseDungeon == 0 && responseRealStage == 0;
         // Wire domains are distinct; resource aliases must never authorize room transitions.

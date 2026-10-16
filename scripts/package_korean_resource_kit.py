@@ -21,6 +21,7 @@ TOOLS = ('package_korean_resource_kit.py', 'port_lumineos_resources.py',
          'entertainment_result_compat.py', 'arena_result_compat.py',
          'player_trade_compat.py', 'level200_compat.py',
          'monk_dialogue_compat.py', 'monk_village_compat.py', 'prepare_monk_dialogue.py',
+         'monk_ranking_resources.py',
          'prepare_monk_entry.py', 'prepare_monk_village_entries.py', 'prepare_monk_resources.py',
          'prepare_hero_dragon.py', 'prepare_korean_pets.py', 'verify_knowledge.py')
 RECIPES = ('hero_dragon_resources.json', 'korean_pet_resources.json', 'lumineos_resource_port.json')

@@ -803,6 +803,12 @@ public sealed partial class DatabaseService
             await transaction.RollbackAsync(token);
             return default;
         }
+        // Reject unsupported challenge difficulty before failed results lose their
+        // success tuple; failures must not persist rewards or receipts for it either.
+        if (settlement is { } challengeResult
+            && MonkChallengePolicy.IsReservedEpisode(challengeResult.Episode)
+            && challengeResult.LogicalDifficulty != 0)
+            throw new InvalidDataException("Monk challenge settlement difficulty must be zero.");
         // Invalid result ratings carry no authority to close a battle cycle.
         // Rating zero is a valid failed result and closes that cycle with zero EXP.
         if (settlement is { Rating: > DungeonRewardPolicy.ClearRatingS })
@@ -1066,6 +1072,7 @@ public sealed partial class DatabaseService
             var monkTuple = MonkChallengePolicy.IsPlayableTuple(
                 result.HdIndex, result.Episode, result.Dungeon, result.Stage);
             if ((!standardTuple && !lumineosTuple && !monkTuple)
+                || (monkTuple && result.LogicalDifficulty != 0)
                 || result.LogicalDifficulty >= 3
                 || result.Rating > DungeonRewardPolicy.ClearRatingS
                 || result.Score < 0

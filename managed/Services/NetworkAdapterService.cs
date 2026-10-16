@@ -12594,10 +12594,12 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         var result = new Dictionary<long, byte>(characters.Length);
         foreach (var character in characters)
         {
-            if (MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, dungeon, stage))
+            if (MonkChallengePolicy.IsReservedEpisode(episode))
             {
-                result[character.Id] = await _database.GetMonkChallengeReadyRoomRankAsync(
-                    character.Id, episode, logicalDifficulty, token);
+                result[character.Id] = logicalDifficulty == 0
+                    && MonkChallengePolicy.IsPlayableTuple(hdIndex, episode, dungeon, stage)
+                    ? await _database.GetMonkChallengeReadyRoomRankAsync(character.Id, episode, 0, token)
+                    : (byte)0;
                 continue;
             }
             if (lumineos)

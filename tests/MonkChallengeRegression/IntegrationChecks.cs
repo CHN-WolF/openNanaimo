@@ -17,10 +17,11 @@ internal static class IntegrationChecks
         {
             BinaryPrimitives.WriteUInt16LittleEndian(selection.AsSpan(38), difficulty);
             Require(NetworkAdapterService.TryParseNativeDungeonSelectionFrame(selection,
-                out var hd, out var ep, out var dg, out var st, out var logical), "prototype selection");
-            Require(NetworkAdapterService.IsMonkPrototypeSelectionAllowed(hd, ep, dg, st, logical, 0), "solo selection");
+                out var hd, out var ep, out var dg, out var st, out var logical) == (difficulty == 0), "single-slot selection");
+            Require(NetworkAdapterService.IsMonkPrototypeSelectionAllowed(hd, ep, dg, st, (byte)difficulty, 0) == (difficulty == 0), "solo selection");
             Require(!NetworkAdapterService.IsMonkPrototypeSelectionAllowed(hd, ep, dg, st, logical, 1), "party selection");
         }
+        BinaryPrimitives.WriteUInt16LittleEndian(selection.AsSpan(38), 0);
         foreach (var field in new[] { 34, 36, 37 })
         {
             selection[field] = 1;
@@ -47,7 +48,7 @@ internal static class IntegrationChecks
         for (byte difficulty = 0; difficulty < 3; difficulty++)
         {
             Require(NetworkAdapterService.TryResolveNativeDungeonTransition(0, 0, difficulty,
-                request, response, out var dg, out var st, out var nextDifficulty, 0, 24)
+                request, response, out var dg, out var st, out var nextDifficulty, 0, 24) == (difficulty == 0)
                 && dg == 0 && st == 0 && nextDifficulty == difficulty, "same challenge retry");
         }
         BinaryPrimitives.WriteUInt16LittleEndian(request.AsSpan(10), 2);
@@ -77,6 +78,14 @@ internal static class IntegrationChecks
                     out _, out _, out _, out _), "village exit page ownership");
                 Require(!NetworkAdapterService.TryParseMonkVillageSelection(entry, 1, village, pages[village],
                     out _, out _, out _, out _), "village solo ownership");
+                var difficultyOffset = opcode == 0xCF6C ? 38 : 13;
+                foreach (byte invalid in new byte[] { 1, 2, 255 })
+                {
+                    entry[difficultyOffset] = invalid;
+                    Require(!NetworkAdapterService.TryParseMonkVillageSelection(entry, 0, village, pages[village],
+                        out _, out _, out _, out _), "nonzero difficulty cannot enter any village challenge");
+                }
+                entry[difficultyOffset] = 0;
             }
         }
         Console.WriteLine("MONK_INTEGRATION_CHECKS_PASS");

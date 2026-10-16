@@ -1,0 +1,12 @@
+{
+  "activation_allowed": false,
+  "files": [
+    {
+      "path": "chapters.json",
+      "sha256": "5513c201a019d3bc0620a7ab104178a4fbbbd5e2e1cefc746850c5ac7900d1d6",
+      "size": 225216
+    }
+  ],
+  "runtime_acceptance": false,
+  "schema": "openNanaimo.chapter-story.v1.build"
+}

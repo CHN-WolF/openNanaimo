@@ -236,8 +236,8 @@ internal static class DungeonRankingRouteChecks
             {
                 await sql.OpenAsync(token);
                 for (byte episode = 24; episode <= 27; episode++)
-                for (byte difficulty = 0; difficulty < 3; difficulty++)
                 {
+                    byte difficulty = 0;
                     var score = 20000 + episode * 100 + difficulty;
                     await using var tx = sql.BeginTransaction();
                     var committed = await DatabaseService.CommitMonkChallengeSuccessAsync(sql, tx,
@@ -262,7 +262,7 @@ internal static class DungeonRankingRouteChecks
                     BinaryPrimitives.WriteUInt16LittleEndian(badge.AsSpan(0x1A), checked((ushort)character.Id));
                     await (Task)Method("PatchNativeReadyRoomRankFrameAsync").Invoke(service, [session, badge, token])!;
                     Check(badge[0xB4] == Math.Clamp((episode + difficulty) % 5 - 1, 0, 3) && badge[0xB5] == 0,
-                        "native monk CF71 uses the selected challenge and difficulty's exact rating");
+                        "native monk CF71 uses the selected challenge's single rating");
                 }
             }
             await Send(NativeDungeonClient.Frame(0xCF15, [20, 0, 1, 0]));
@@ -371,6 +371,15 @@ internal static class DungeonRankingRouteChecks
                     domain.Item1, domain.Item2, dungeon, stage, difficulty);
                 var expected = (byte[])builder.Invoke(null, [selector, rows])!;
                 var response = await Query(selector);
+                if (monk && difficulty != 0)
+                {
+                    var invalidRanks = await (Task<IReadOnlyDictionary<long, byte>>)
+                        Method("LoadDungeonReadyRoomRanksAsync").Invoke(service, [room, CancellationToken.None])!;
+                    Check(response is null && rows.Count == 0 && invalidRanks[character.Id] == 0
+                        && SettlementState(session) == before && Queued(session) == 0,
+                        "managed nonzero monk difficulty returns no ranking or badge and leaves state untouched");
+                    continue;
+                }
                 Check(response is { Length: 252 } && U16(response, 6) == 0xCF16
                     && response.AsSpan(8).SequenceEqual(expected),
                     $"managed CF15 {domain.Item1}/{domain.Item2}/{dungeon}/{stage}/{difficulty}: exact persistent rows and selector echo");
@@ -382,7 +391,7 @@ internal static class DungeonRankingRouteChecks
                         Method("LoadDungeonReadyRoomRanksAsync").Invoke(service, [room, CancellationToken.None])!;
                     Check(rows.Count == 1 && rows[0].BestScore == 20000 + domain.Item2 * 100 + difficulty
                         && ranks[character.Id] == Math.Clamp((domain.Item2 + difficulty) % 5 - 1, 0, 3),
-                        "managed monk CF15 and CF71 preserve each challenge's score and selected difficulty");
+                        "managed monk CF15 and CF71 preserve each challenge's single score and badge");
                 }
                 if (domain.Item2 == 100)
                 {

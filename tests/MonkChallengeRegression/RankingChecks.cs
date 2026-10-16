@@ -12,28 +12,35 @@ internal static partial class Program
         var protectedState = await ProtectedProductionState(f, actors[0]);
         for (int actor = 0; actor < actors.Count; actor++)
         for (byte index = 0; index < 4; index++)
-        for (byte difficulty = 0; difficulty < 3; difficulty++)
         {
-            var score = 1000 + index * 10000 + difficulty * 1000 + actor * 10;
+            var score = 1000 + index * 10000 + actor * 10;
             var result = new NativeDungeonSettlementRecord(0, (byte)(24 + index), 0, 0,
-                difficulty, (byte)(1 + (actor + index + difficulty) % 5), score,
-                score, SettlementId: $"{index * 3 + difficulty + 1}:0");
+                0, (byte)(1 + (actor + index) % 5), score,
+                score, SettlementId: $"{index + 1}:0");
             Check((await f.Commit(actors[actor], result)).Applied,
-                $"monk{index} difficulty{difficulty} actor{actor}: successful receipt and ranking commit together");
+                $"monk{index} actor{actor}: successful receipt and single ranking slot commit together");
         }
         var restarted = new DatabaseService(f.Root, readOnly: true);
         for (byte index = 0; index < 4; index++)
-        for (byte difficulty = 0; difficulty < 3; difficulty++)
         {
-            var rows = await restarted.GetDungeonStageLeaderboardAsync(0, (byte)(24 + index), 0, 0, difficulty);
+            var rows = await restarted.GetDungeonStageLeaderboardAsync(0, (byte)(24 + index), 0, 0, 0);
             Check(rows.Count == 10 && rows.Select(r => r.CharacterName)
                     .SequenceEqual(Enumerable.Range(2, 10).Reverse().Select(i => $"MRank{i:D2}"))
-                && rows[0].BestScore == 1110 + index * 10000 + difficulty * 1000,
-                $"monk{index} difficulty{difficulty}: exact independent top-ten survives read-only reopen");
+                && rows[0].BestScore == 1110 + index * 10000,
+                $"monk{index}: exact independent top-ten survives read-only reopen");
             var rank = await restarted.GetMonkChallengeReadyRoomRankAsync(actors[0].CharacterId,
-                (byte)(24 + index), difficulty);
-            Check(rank == Math.Clamp((index + difficulty) % 5 - 1, 0, 3),
-                "monk ready-room badge is selected difficulty's actual blank/B/A/S, never another challenge's rating");
+                (byte)(24 + index), 0);
+            Check(rank == Math.Clamp(index % 5 - 1, 0, 3),
+                "monk ready-room badge is the selected challenge's single blank/B/A/S slot");
+            foreach (byte invalid in new byte[] { 1, 2, 3, 255 })
+            {
+                Check((await restarted.GetDungeonStageLeaderboardAsync(0, (byte)(24 + index), 0, 0, invalid)).Count == 0
+                    && await restarted.GetMonkChallengeReadyRoomRankAsync(actors[0].CharacterId, (byte)(24 + index), invalid) == 0,
+                    "nonzero challenge difficulty cannot query or alias the single slot");
+                Check(!(await f.Commit(actors[0], Result("19:0") with
+                    { Episode = (byte)(24 + index), LogicalDifficulty = invalid })).Applied,
+                    "nonzero challenge difficulty cannot create a score or receipt");
+            }
             var selector = new byte[] { 20, 0, 0, 0 };
             var builder = typeof(NetworkAdapterService).GetMethod("BuildDungeonStageRecordsPayload",
                 BindingFlags.NonPublic | BindingFlags.Static)!;
@@ -45,12 +52,10 @@ internal static partial class Program
         }
         var cache = await f.Database.GetDungeonFrontierBestRatingsAsync(actors[0].CharacterId);
         for (byte challenge = 0; challenge < 4; challenge++)
-        for (byte clientDifficulty = 0; clientDifficulty < 3; clientDifficulty++)
         {
-            var logical = DungeonNavigationPolicy.DecodeLogicalDifficulty(0, 0, clientDifficulty);
-            var expected = Math.Clamp((challenge + logical) % 5 - 1, 0, 3);
-            Check(((cache[8 + challenge] >> (clientDifficulty * 2)) & 3) == expected,
-                "monk popup cache keeps four challenge rows and client/logical difficulty mapping");
+            var expected = Math.Clamp(challenge % 5 - 1, 0, 3);
+            Check(cache[8 + challenge] == expected,
+                "monk popup cache keeps exactly one rating byte per challenge");
         }
         Check(cache.AsSpan(0, 8).ToArray().All(b => b == 0) && cache.AsSpan(12).ToArray().All(b => b == 0),
             "monk cache does not fill any fifth-village or unassigned rating rows");
@@ -93,6 +98,6 @@ internal static partial class Program
             && await f.Database.GetMonkChallengeReadyRoomRankAsync(legacy.CharacterId, 24, 0) == 0
             && (await f.Database.GetDungeonStageLeaderboardAsync(0, 24, 0, 0, 0)).All(r => r.CharacterId != legacy.CharacterId),
             "legacy clear bits and duplicate receipts do not fabricate missing historical scores");
-        Console.WriteLine("MONK_RANKING_CHECKS_PASS four-challenges three-difficulties top10 CF16 CF71 atomic restart no-fake-history");
+        Console.WriteLine("MONK_RANKING_CHECKS_PASS four-challenges single-slot top10 CF16 CF71 atomic restart no-fake-history");
     }
 }
