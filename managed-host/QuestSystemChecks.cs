@@ -377,6 +377,13 @@ internal static class QuestSystemChecks
             await CheckMentorProgress(2, true, "second distinct accepted student completes 2/2 without graduation");
             await CheckMentorProgress(2, true, "repeated mentor refresh preserves completion and valid objective index");
 
+            CheckChapterTopology();
+            await CheckChapterProjection(db, account, characterId, sessionId);
+            await CheckChapterProgression(adapter, db, account, characterId, sessionId, session,
+                text => Execute(text, ("$id", characterId)));
+            await CheckChapterClaim(adapter, db, account, characterId, sessionId, session);
+            CheckChapterRewardReviewFile();
+
             Console.WriteLine("QUEST_SYSTEM_CHECKS_PASS");
         }
         finally
@@ -385,9 +392,285 @@ internal static class QuestSystemChecks
         }
     }
 
+    private static void CheckChapterTopology()
+    {
+        var objectives = new Dictionary<uint, QuestObjectiveDefinition>();
+        var quests = new Dictionary<uint, QuestDefinition>();
+        for (var index = 0; index < 4; index++)
+        {
+            var count = index % 4 == 3 ? 4 : 3;
+            var baseObjective = 75_100_000u + (uint)(3 * index + index / 4);
+            var linked = new List<QuestObjectiveDefinition>();
+            for (var order = 0; order < count; order++)
+            {
+                // The written rows follow the CN vocabulary: talk is type 1.
+                var type = order == 1 ? (byte)40 : (byte)1;
+                var objective = new QuestObjectiveDefinition(baseObjective + (uint)order, "chapter", type, 1, 1,
+                    Array.Empty<QuestObjectiveCondition>());
+                objectives[objective.ObjectiveId] = objective;
+                linked.Add(objective);
+            }
+            var id = 73_000_000u + (uint)index;
+            quests[id] = new QuestDefinition(id, "chapter", linked, 3000, Array.Empty<QuestRewardDefinition>());
+        }
+        QuestCatalog.ValidateChapterRows(objectives, quests, 4);
+        Check(true, "chapter topology accepts one reviewed village block (four chapters)");
+        QuestCatalog.ValidateChapterRows(
+            objectives.Where(row => row.Key < 75_100_003).ToDictionary(row => row.Key, row => row.Value),
+            new Dictionary<uint, QuestDefinition> { [73_000_000] = quests[73_000_000] }, 1);
+        Check(true, "chapter topology accepts a single-chapter probe");
+        QuestCatalog.ValidateChapterRows(objectives, quests, 0);
+        Check(true, "chapter topology is skipped while the switch is off");
+        var missingQuest = new Dictionary<uint, QuestDefinition>(quests);
+        missingQuest.Remove(73_000_003);
+        CheckThrows(() => QuestCatalog.ValidateChapterRows(objectives, missingQuest, 4),
+            "missing chapter quest rejected");
+        CheckThrows(() => QuestCatalog.ValidateChapterRows(objectives, quests, 5),
+            "coverage beyond the reviewed chapters rejected");
+        var shortChapter = new Dictionary<uint, QuestDefinition>(quests);
+        shortChapter[73_000_003] = shortChapter[73_000_003] with
+        {
+            Objectives = shortChapter[73_000_003].Objectives.Take(3).ToArray()
+        };
+        CheckThrows(() => QuestCatalog.ValidateChapterRows(objectives, shortChapter, 4),
+            "monk reference objective required in the fourth chapter");
+        var wrongType = new Dictionary<uint, QuestObjectiveDefinition>(objectives);
+        wrongType[75_100_001] = wrongType[75_100_001] with { ObjectiveType = 39 };
+        var patchedQuest = new Dictionary<uint, QuestDefinition>(quests);
+        patchedQuest[73_000_000] = patchedQuest[73_000_000] with
+        {
+            Objectives = new[]
+            {
+                patchedQuest[73_000_000].Objectives[0], wrongType[75_100_001],
+                patchedQuest[73_000_000].Objectives[2]
+            }
+        };
+        CheckThrows(() => QuestCatalog.ValidateChapterRows(wrongType, patchedQuest, 4),
+            "dungeon objective type must stay 40");
+        var shifted = new Dictionary<uint, QuestDefinition>(quests);
+        shifted[73_000_001] = shifted[73_000_001] with
+        {
+            Objectives = new[]
+            {
+                objectives[75_100_003], objectives[75_100_001], objectives[75_100_005]
+            }
+        };
+        CheckThrows(() => QuestCatalog.ValidateChapterRows(objectives, shifted, 4),
+            "objective ids must stay contiguous per chapter");
+    }
+
+    private static async Task CheckChapterProjection(DatabaseService db, long account, long character,
+        string sessionId)
+    {
+        var previous = QuestCatalog.StoryChaptersEnabled;
+        try
+        {
+            QuestCatalog.StoryChaptersEnabled = false;
+            Check(!await db.ActivateChapterTaskAsync(account, character, sessionId, 73_000_000, 0),
+                "chapter task is rejected while the switch is off");
+            QuestCatalog.StoryChaptersEnabled = true;
+            Check(!await db.ActivateChapterTaskAsync(account, character, sessionId, 73_000_000, 0),
+                "chapter task is not projected without stored progress");
+            var started = await db.ReadChapterStoryAsync(account, character, sessionId, true);
+            Check(started is { QuestId: 73_000_000, ObjectiveIndex: 0 },
+                "explicit episode one start creates the stored progress");
+            Check(!await db.ActivateChapterTaskAsync(account, character, sessionId, 73_000_000, 2),
+                "chapter task rejects an objective the stored progress does not hold");
+            Check(await db.ActivateChapterTaskAsync(account, character, sessionId, 73_000_000, 0),
+                "chapter task projects the stored objective");
+            var tasks = await db.GetCharacterTasksAsync(account, character, sessionId);
+            var chapterTask = tasks.SingleOrDefault(task => task.SlotType == 2);
+            Check(chapterTask is { TaskType: 2, State3: 0, Progress2: 1, QuestId: 73_000_000 },
+                "fixed type-2 slot carries the chapter quest and its objective index");
+            var payload = (byte[])typeof(NetworkAdapterService)
+                .GetMethod("BuildTaskListPayload", BindingFlags.NonPublic | BindingFlags.Static)!
+                .Invoke(null, new object[] { tasks, false })!;
+            Check(BinaryPrimitives.ReadUInt32LittleEndian(payload.AsSpan(204 + 12, 4)) == 73_000_000,
+                "C59C type-2 record carries the chapter quest id");
+            Check(payload[204 + 2] == 2 && payload[204 + 3] == 0,
+                "C59C type-2 record carries task type 2 and objective index 0");
+            var advanced = await db.ApplyChapterDialogueAsync(account, character, sessionId,
+                73_000_000, started!.Revision, 1);
+            Check(advanced is { ObjectiveIndex: 1 }, "entry dialogue advances the stored objective");
+            Check(await db.ActivateChapterTaskAsync(account, character, sessionId, 73_000_000,
+                    advanced!.ObjectiveIndex),
+                "chapter task re-projects after the objective advances");
+            tasks = await db.GetCharacterTasksAsync(account, character, sessionId);
+            Check(tasks.Single(task => task.SlotType == 2).State3 == 1,
+                "fixed type-2 slot follows the new objective index");
+        }
+        finally
+        {
+            QuestCatalog.StoryChaptersEnabled = previous;
+        }
+    }
+
+    private static void CheckThrows(Action action, string label)    {
+        try { action(); }
+        catch (InvalidDataException) { Check(true, label); return; }
+        throw new InvalidDataException("CHECK_FAILED " + label);
+    }
+
+    private static async Task CheckChapterProgression(NetworkAdapterService adapter, DatabaseService db,
+        long account, long character, string sessionId, object session, Func<string, Task> execute)
+    {
+        var previous = QuestCatalog.StoryChaptersEnabled;
+        try
+        {
+            QuestCatalog.StoryChaptersEnabled = true;
+            await db.ReadChapterStoryAsync(account, character, sessionId, true);
+            var current = (await db.ReadChapterStoryAsync(account, character, sessionId))!;
+            await execute($"UPDATE CharacterChapterStory SET QuestId=73000000,ObjectiveIndex=0,ClearMask=0,"
+                + $"RewardPending=0,Finished=0,Revision={current.Revision + 1} WHERE CharacterId=$id");
+            var baseline = (await db.ReadChapterStoryAsync(account, character, sessionId))!;
+            var observeTown = typeof(NetworkAdapterService)
+                .GetMethod("ObserveChapterTownAsync", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            var observeClear = typeof(NetworkAdapterService)
+                .GetMethod("ObserveChapterClearAsync", BindingFlags.Instance | BindingFlags.NonPublic)!;
+            async Task<bool> Town(byte townId) => await (Task<bool>)observeTown.Invoke(adapter,
+                [session, townId, ChapterStoryPolicy.DungeonRoomPage(1), CancellationToken.None])!;
+            async Task<bool> Clear(int episode, int dungeon) => await (Task<bool>)observeClear.Invoke(adapter,
+                [session, episode, dungeon, CancellationToken.None])!;
+
+            Check(!await Town(1), "a chapter entry is not confirmed in another village");
+            Check((await db.ReadChapterStoryAsync(account, character, sessionId))!.ObjectiveIndex == 0,
+                "a mismatched village leaves the entry dialogue unconfirmed");
+            Check(await Town(0), "the chapter's own village confirms the entry dialogue");
+            var entered = (await db.ReadChapterStoryAsync(account, character, sessionId))!;
+            Check(entered.ObjectiveIndex == 1 && entered.Revision == baseline.Revision + 1,
+                "entry confirmation advances exactly one revision");
+            Check((await db.GetCharacterTasksAsync(account, character, sessionId))
+                    .Single(task => task.SlotType == 2).State3 == 1,
+                "the fixed type-2 slot follows the confirmed objective");
+            Check(!await Town(0), "a repeated village entry does not reconfirm");
+            Check(!await Clear(1, 0), "a clear from another episode does not settle the chapter");
+            // Ordinary settlement bits and the super-boss bit accumulate independently.
+            var episode = StoryChapterCatalog.Get(73_000_000).Episode;
+            var required = ChapterStoryPolicy.RequiredDungeonCount(episode);
+            Check(!await Clear(0, required), "a dungeon beyond the episode count is refused");
+            for (var dungeon = 0; dungeon < required; dungeon++)
+                Check(await Clear(0, dungeon), $"chapter dungeon {dungeon} settles");
+            var cleared = (await db.ReadChapterStoryAsync(account, character, sessionId))!;
+            Check(cleared.ObjectiveIndex == 1
+                  && ChapterStoryPolicy.HasCleared(cleared.ClearMask, episode),
+                "super-boss settlement satisfies combat while the exit dialogue awaits room entry");
+            Check(await Town(0), "returning to the village confirms the exit dialogue");
+            var pending = (await db.ReadChapterStoryAsync(account, character, sessionId))!;
+            Check(pending.RewardPending && !pending.Finished,
+                "the exit dialogue stops at the reviewed reward boundary");
+            Check((await db.GetCharacterTasksAsync(account, character, sessionId))
+                    .Single(task => task.SlotType == 2).State3 == 2,
+                "the fixed type-2 slot holds the exit objective while the reward is pending");
+            Check(!await Town(0), "a pending reward blocks further confirmations");
+        }
+        finally
+        {
+            QuestCatalog.StoryChaptersEnabled = previous;
+        }
+    }
+
+    private static async Task CheckChapterClaim(NetworkAdapterService adapter, DatabaseService db,
+        long account, long character, string sessionId, object session)
+    {
+        var previous = QuestCatalog.StoryChaptersEnabled;
+        QuestCatalog.StoryChaptersEnabled = true;
+        try
+        {
+        var quest = 73_000_000u;
+        var chapter = StoryChapterCatalog.Get(quest);
+        var days = chapter.SourceRewards.Select(reward =>
+            reward.Kind is 2 or 4 && ShopCatalog.TryGet(reward.Code, out var item)
+                ? item.DurationDays : (ushort)0).ToArray();
+        var rejected = new ChapterRewardReview(quest, ChapterRewardPolicy.PackageSha256, "review-pending",
+            false, chapter.SourceRewards, days);
+        var pending = (await db.ReadChapterStoryAsync(account, character, sessionId))!;
+        Check(pending.RewardPending, "the chapter reaches the reviewed reward boundary");
+        var refused = await db.ClaimChapterRewardsAsync(account, character, sessionId, quest,
+            pending.Revision, rejected);
+        Check(refused.Status == ChapterClaimStatus.ReviewRequired,
+            "an unapproved review never grants the chapter reward");
+        var tampered = new ChapterRewardReview(quest, ChapterRewardPolicy.PackageSha256, "review-tampered",
+            true, chapter.SourceRewards.Select((reward, index) => index == 0
+                ? new ChapterSourceReward(reward.Kind, reward.Code, reward.Amount + 1) : reward).ToArray(),
+            days);
+        var rewrote = await db.ClaimChapterRewardsAsync(account, character, sessionId, quest,
+            pending.Revision, tampered);
+        Check(rewrote.Status == ChapterClaimStatus.ReviewRequired,
+            "a review that changes a reward triple is refused");
+        var unreviewed = await db.ClaimChapterRewardsAsync(account, character, sessionId, quest,
+            pending.Revision, null);
+        Check(unreviewed.Status == ChapterClaimStatus.ReviewRequired,
+            "a missing review stops at ReviewRequired");
+        Check((await db.ReadChapterStoryAsync(account, character, sessionId))!.QuestId == quest,
+            "a refused claim leaves the chapter in place");
+
+        var approved = new ChapterRewardReview(quest, ChapterRewardPolicy.PackageSha256,
+            "host-selftest-review", true, chapter.SourceRewards, days);
+        adapter.StoryChapterRewards = [approved];
+        var claimed = await db.ClaimChapterRewardsAsync(account, character, sessionId, quest,
+            pending.Revision, approved);
+        Check(claimed.Status == ChapterClaimStatus.Claimed, "reviewed reward commits at explicit claim");
+        var ensure = typeof(NetworkAdapterService)
+            .GetMethod("EnsureSessionChapterTaskAsync", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        await (Task)ensure.Invoke(adapter, [session, CancellationToken.None])!;
+        var next = (await db.ReadChapterStoryAsync(account, character, sessionId))!;
+        Check(next.QuestId == quest + 1 && next.ObjectiveIndex == 0 && next.Revision == pending.Revision + 1,
+            "an approved review advances to the next chapter at objective zero");
+        var slot = (await db.GetCharacterTasksAsync(account, character, sessionId))
+            .Single(task => task.SlotType == 2);
+        Check(slot.QuestId == quest + 1 && slot.State3 == 0,
+            "the fixed type-2 slot moves to the next chapter");
+        var replay = await db.ClaimChapterRewardsAsync(account, character, sessionId, quest,
+            pending.Revision, approved);
+        Check(replay.Status == ChapterClaimStatus.AlreadyClaimed,
+            "the same chapter cannot be claimed twice");
+        adapter.StoryChapterRewards = [];
+        }
+        finally
+        {
+            QuestCatalog.StoryChaptersEnabled = previous;
+        }
+    }
+
+    private static void CheckChapterRewardReviewFile()
+    {
+        var path = Path.Combine(Path.GetTempPath(), "nanaimo-chapter-review-" + Guid.NewGuid().ToString("N") + ".json");
+        try
+        {
+            ChapterStoryRewardAudit.Run(path);
+            var template = ChapterRewardReviewFile.Load(path);
+            Check(template.Count == 16 && template.All(row => !row.Approved && row.ReviewId.Length == 0),
+                "the reward review template covers sixteen unapproved chapters");
+            Check(template[0].QuestId == 73_000_000
+                && template[0].DurationDays.Count == template[0].SourceRewards.Count
+                && template[0].PackageSha256 == ChapterRewardPolicy.PackageSha256,
+                "the template keeps the package identity, triples and matching durations");
+            var overwrite = false;
+            try { ChapterStoryRewardAudit.Run(path); }
+            catch (InvalidDataException) { overwrite = true; }
+            Check(overwrite, "the template never overwrites an existing review");
+            var node = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!;
+            node["reviews"]![0]!["approved"] = true;
+            node["reviews"]![0]!["review_id"] = "self-test";
+            File.WriteAllText(path, node.ToJsonString());
+            var approved = ChapterRewardReviewFile.Load(path);
+            Check(approved[0].Approved && approved[0].ReviewId == "self-test" && !approved[1].Approved,
+                "an operator approval is read back per chapter");
+            node["package_sha256"] = new string('0', 64);
+            File.WriteAllText(path, node.ToJsonString());
+            var foreign = false;
+            try { ChapterRewardReviewFile.Load(path); }
+            catch (InvalidDataException) { foreign = true; }
+            Check(foreign, "a review for another chapter package is refused");
+        }
+        finally
+        {
+            try { File.Delete(path); } catch { }
+        }
+    }
+
     private static ushort ReadOpcode(ReadOnlySpan<byte> frame)
         => frame.Length >= 8 ? BinaryPrimitives.ReadUInt16LittleEndian(frame.Slice(6, 2)) : (ushort)0;
-
     private static ushort[] Opcodes(byte[] response)
     {
         var result = new List<ushort>();

@@ -50,8 +50,13 @@ public sealed partial class DatabaseService
         // Every mandatory member must be granted; a blank draw cannot settle this transaction.
         command.CommandText = "SELECT PetVariant FROM Characters WHERE Id=$id";
         int petVariant = Convert.ToInt32(await command.ExecuteScalarAsync(token));
+        // CN costumes are gender split: the reward table carries the female piece
+        // and a male character receives its counterpart instead.
+        command.CommandText = "SELECT Gender FROM Characters WHERE Id=$id";
+        var male = Convert.ToInt32(await command.ExecuteScalarAsync(token)) == 1;
+        var grants = ChapterRewardPolicy.ForGender(plan.Grants, male);
         var inventoryBefore = await GetGameInventoryItemCodesAsync(c, tx, character, token);
-        foreach (var reward in plan.Grants)
+        foreach (var reward in grants)
         {
             // The shared capacity helper assumes stored quantities are nonnegative integers.
             bool card = reward.Kind == 6;
@@ -65,7 +70,9 @@ public sealed partial class DatabaseService
             for (uint i = 0; i < reward.Amount; i++)
             {
                 if (await CheckCardRewardCapacityAsync(c, tx, character, reward.Code, petVariant, token) != CardRewardCapacity.Available
-                    || await GrantCardRewardAsync(c, tx, character, reward.Code, token) != CardRewardGrant.Granted)
+                    || await GrantCardRewardAsync(c, tx, character, reward.Code, token,
+                        clothingDurationDays: reward.Kind == 4 ? ChapterRewardPolicy.DurationDays(quest, reward) : null)
+                        != CardRewardGrant.Granted)
                     return new(ChapterClaimStatus.CapacityExceeded, before);
             }
         }

@@ -5,6 +5,7 @@ import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+RUNTIME_ROOT = 'adapter_runtime'
 ENTRIES = ('adapter/nanaimo_adapter.c', 'adapter/nanaimo_adapter_testports.c')
 OPTIONAL_ENTRIES = ('adapter/nanaimo_gameplay_bridge.c',)
 INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"\r\n]+)"', re.M)
@@ -52,6 +53,11 @@ def collect(root=ROOT):
                     'scripts/prepare_story_catalog.py', 'scripts/prepare_story_port.py',
                     'scripts/prepare_story_portraits.py', 'scripts/audit_story_localization.py',
                     'scripts/install_story_portraits.py',
+                    'manifest/chapter_dialogue_triggers.json',
+                    'scripts/chapter_dialogue_patch.py', 'scripts/chapter_window_probe.py',
+                    'scripts/story_qt_patch.py', 'scripts/story_qs_patch.py',
+                    'scripts/test_chapter_dialogue_patch.py',
+                    'scripts/test_story_qt_patch.py', 'scripts/test_story_qs_patch.py',
                     'scripts/generate_inventory_card_catalog.py'):
             path = root / rel
             if not path.is_file(): raise ValueError('missing chapter source input: ' + rel)
@@ -142,14 +148,24 @@ def main():
     }
     for name, build_name in build_names.items():
         rel = 'adapter/' + name
+        # These are *reviewed* build contracts. A plain source refresh must not
+        # silently re-pin them to whatever binary happens to sit in the tree --
+        # the loose `adapter/` and `adapter_runtime/` copies can be different
+        # builds. Only an explicit --build-root replaces the contract; without
+        # one, a fresh tree resolves the binary and a known tree keeps its pin.
         candidates = ((args.build_root.resolve() / name,) if args.build_root else
-                      (ROOT / rel, ROOT / 'build' / build_name, ROOT / 'build' / name))
+                      (ROOT / RUNTIME_ROOT / name, ROOT / 'build' / build_name,
+                       ROOT / 'build' / name, ROOT / rel))
+        known = previous.get('build_outputs', {}).get(rel)
+        if not args.build_root and known:
+            outputs[rel] = known
+            continue
         path = next((candidate for candidate in candidates if candidate.is_file()), None)
         if path is not None:
             outputs[rel] = {'size': path.stat().st_size,
                             'sha256': hashlib.sha256(path.read_bytes()).hexdigest().upper()}
-        elif not args.build_root and rel in previous.get('build_outputs', {}):
-            outputs[rel] = previous['build_outputs'][rel]
+        elif known:
+            outputs[rel] = known
         else:
             raise ValueError('missing reviewed build output contract: ' + rel)
     entrypoints = list(ENTRIES) + [name for name in OPTIONAL_ENTRIES if (ROOT / name).is_file()]

@@ -45,6 +45,24 @@ public static class QuestCatalog
     private const int ObjectiveFieldCount = 27;
     private const int OfficialObjectiveCount = 357;
     private const int OfficialQuestCount = 217;
+    // Candidate chapter rows are opt-in and may be any prefix of the sixteen
+    // chapters: each chapter adds three objectives, and every fourth chapter
+    // adds the monk reference, so the shipped catalog stays exact while the
+    // switch is off and the extra rows are validated against the topology
+    // instead of being accepted from the count alone.
+    internal const int ChapterMaximum = 16;
+    private const uint FirstChapterQuest = 73_000_000;
+    private const uint FirstChapterObjective = 75_100_000;
+    internal static bool StoryChaptersEnabled { get; set; }
+
+    internal static int ChapterExtraObjectives(int chapters) => 3 * chapters + chapters / 4;
+
+    private static int ChapterCountFor(int extraObjectives)
+    {
+        for (var chapters = 0; chapters <= ChapterMaximum; chapters++)
+            if (ChapterExtraObjectives(chapters) == extraObjectives) return chapters;
+        return -1;
+    }
     private const int QuestFixedFieldCount = 10;
     private const int QuestConditionTripleCount = 4;
 
@@ -58,7 +76,12 @@ public static class QuestCatalog
     private static IReadOnlyList<uint> ComputeMainLine(CatalogData data)
     {
         var sold = data.Scrolls.Values.Select(item => item.QuestId).ToHashSet();
-        var story = data.Quests.Values.Where(item => !sold.Contains(item.QuestId)).ToArray();
+        // The chapter chain carries its own successor field and must never be
+        // enrolled in the medal mainline: the unsold heuristic would append
+        // every chapter quest to the fixed chain.
+        var story = data.Quests.Values
+            .Where(item => !sold.Contains(item.QuestId) && !IsChapterQuest(item.QuestId))
+            .ToArray();
         var storyIds = story.Select(item => item.QuestId).ToHashSet();
         var next = new Dictionary<uint, uint>();
         var referenced = new HashSet<uint>();
@@ -80,8 +103,13 @@ public static class QuestCatalog
         foreach (var quest in story.OrderBy(item => item.QuestId))
             if (seen.Add(quest.QuestId))
                 result.Add(quest.QuestId);
+        if (result.Any(IsChapterQuest))
+            throw new InvalidDataException("The chapter chain must not enter the mainline selection.");
         return result;
     }
+
+    internal static bool IsChapterQuest(uint questId)
+        => questId >= FirstChapterQuest && questId < FirstChapterQuest + 16;
 
     public static bool TryGetScroll(uint scrollCode, out QuestScrollDefinition definition)
         => Data.Value.Scrolls.TryGetValue(scrollCode, out definition!);
@@ -241,11 +269,19 @@ public static class QuestCatalog
     private static IReadOnlyDictionary<uint, QuestDefinition> LoadQuests()
     {
         var fields = CardCatalog.DecryptFields(QuestResourceName);
+        int chapterCount = 0;
+        if (!ParseInt(fields.Length > 2 ? fields[2] : "", out var declaredObjectives))
+            throw new InvalidDataException("The official QT quest catalog header is invalid.");
+        if (StoryChaptersEnabled && declaredObjectives >= OfficialObjectiveCount)
+            chapterCount = ChapterCountFor(declaredObjectives - OfficialObjectiveCount);
         if (fields.Length < 4
             || fields[0] != "QUEST"
             || !ParseInt(fields[2], out var objectiveCount)
-            || objectiveCount != OfficialObjectiveCount)
+            || objectiveCount != OfficialObjectiveCount + ChapterExtraObjectives(chapterCount))
             throw new InvalidDataException("The official QT quest catalog header is invalid.");
+        if (chapterCount < 0)
+            throw new InvalidDataException(
+                $"The QT objective count {objectiveCount} is not a reviewed chapter prefix.");
 
         var offset = 3;
         if (offset + objectiveCount * ObjectiveFieldCount >= fields.Length)
@@ -275,8 +311,8 @@ public static class QuestCatalog
         offset += objectiveCount * ObjectiveFieldCount;
 
         var questCount = ReadInt(fields, ref offset, "QT quest count");
-        if (questCount != OfficialQuestCount)
-            throw new InvalidDataException($"The official QT quest count is {questCount}, expected {OfficialQuestCount}.");
+        if (questCount != OfficialQuestCount + chapterCount)
+            throw new InvalidDataException($"The official QT quest count is {questCount}, expected {OfficialQuestCount + chapterCount}.");
         var quests = new Dictionary<uint, QuestDefinition>(questCount);
         for (var index = 0; index < questCount; index++)
         {
@@ -322,7 +358,50 @@ public static class QuestCatalog
 
         if (quests.Count != questCount)
             throw new InvalidDataException($"QT declares {questCount} quests but contains {quests.Count}.");
+        ValidateChapterRows(objectives, quests, chapterCount);
         return quests;
+    }
+
+    /// <summary>
+    /// The opt-in chapter rows must match the reviewed topology: one quest per
+    /// chapter, three objectives plus a monk reference every fourth chapter, and
+    /// contiguous ids starting at 73000000 / 75100000. Any prefix of the sixteen
+    /// chapters is accepted, so a single-chapter probe needs only three extra
+    /// objectives; a count match alone is still not enough.
+    /// </summary>
+    internal static void ValidateChapterRows(
+        IReadOnlyDictionary<uint, QuestObjectiveDefinition> objectives,
+        IReadOnlyDictionary<uint, QuestDefinition> quests, int chapters)
+    {
+        if (chapters == 0) return;
+        if (chapters < 0 || chapters > ChapterMaximum)
+            throw new InvalidDataException($"Chapter coverage {chapters} is not reviewed.");
+        for (var index = 0; index < chapters; index++)
+        {
+            var questId = FirstChapterQuest + (uint)index;
+            if (!quests.TryGetValue(questId, out var quest))
+                throw new InvalidDataException($"The chapter table is missing quest {questId}.");
+            var count = index % 4 == 3 ? 4 : 3;
+            if (quest.Objectives.Count != count)
+                throw new InvalidDataException($"Chapter quest {questId} has {quest.Objectives.Count} objectives.");
+            var baseObjective = FirstChapterObjective + (uint)(3 * index + index / 4);
+            for (var order = 0; order < count; order++)
+            {
+                var expectedId = baseObjective + (uint)order;
+                var objective = quest.Objectives[order];
+                if (objective.ObjectiveId != expectedId || !objectives.ContainsKey(expectedId))
+                    throw new InvalidDataException($"Chapter quest {questId} objective {order} is not {expectedId}.");
+                // The written chapter rows use the CN vocabulary: its own talk
+                // objective is type 1 (mainline 75000000 与尼莫对话), while the
+                // KR code 39 never appears in the shipped table and the client
+                // cannot react to it. The dungeon objective keeps 40 because the
+                // host side counts the settlements itself.
+                var expectedType = order == 1 ? (byte)40 : (byte)1;
+                if (objective.ObjectiveType != expectedType)
+                    throw new InvalidDataException(
+                        $"Chapter objective {expectedId} type {objective.ObjectiveType} is not {expectedType}.");
+            }
+        }
     }
 
     private static void EnsureAvailable(string[] fields, int offset, int count, string label)

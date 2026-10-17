@@ -94,6 +94,30 @@ class VerifyPackageTests(unittest.TestCase):
         (self.root / 'README.md').write_text('Korean flying shooter Nanaimo adapter', 'utf-8')
         verifier.scan_public_text(self.root)
 
+    def test_story_proper_name_is_scoped_to_canonical_content(self):
+        name = ''.join(map(chr, (0x98DE, 0x884C, 0x5C9B)))
+        path = self.root / 'manifest/story_localization.json'
+        path.parent.mkdir()
+        data = dict(schema='openNanaimo.chapter-story-localization.v1',
+                    texts=[dict(translation_zh=name)])
+        path.write_text(json.dumps(data, ensure_ascii=False), 'utf-8')
+        verifier.scan_public_text(self.root)
+        private = chr(67) + ':' + chr(47) + 'Users/private/input'
+        for key, value in [('note', name), ('source', private)]:
+            changed = dict(data, **{key: value})
+            path.write_text(json.dumps(changed, ensure_ascii=False), 'utf-8')
+            with self.assertRaises(ValueError):
+                verifier.scan_public_text(self.root)
+        data['schema'] = 'other'
+        path.write_text(json.dumps(data, ensure_ascii=False), 'utf-8')
+        with self.assertRaises(ValueError):
+            verifier.scan_public_text(self.root)
+        data['schema'] = 'openNanaimo.chapter-story-localization.v1'
+        data['texts'][0]['translation_zh'] = ''.join(map(chr, (0x817E, 0x8BAF)))
+        path.write_text(json.dumps(data, ensure_ascii=False), 'utf-8')
+        with self.assertRaises(ValueError):
+            verifier.scan_public_text(self.root)
+
     def test_process_narrative_is_restricted_to_changelog(self):
         phrase = chr(0x6765) + chr(0x6e90) + chr(0x8bf4) + chr(0x660e)
         (self.root / 'README.md').write_text(phrase, 'utf-8')

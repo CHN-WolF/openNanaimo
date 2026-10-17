@@ -5,4 +5,15 @@ public sealed partial class NetworkAdapterService
     // Opt-in until the native rejection UI and all four boundaries are accepted.
     // Dungeon unlock flags do not bypass this independent travel policy.
     public bool RequireMonkChallengeForVillageTravel { get; set; }
+
+    // Candidate chapter policy: start episode 1 explicitly on the first session
+    // after the tutorial. Default off; the grant stays an explicit decision and
+    // is never an implicit side effect of login.
+    public bool StoryChaptersAutoStart { get; set; }
+
+    // Operator-supplied reward review, one row per chapter. Empty by default:
+    // a chapter that reaches RewardPending simply waits until a reviewed row
+    // exists, and the database layer re-validates every number.
+    internal IReadOnlyList<ChapterRewardReview> StoryChapterRewards { get; set; }
+        = Array.Empty<ChapterRewardReview>();
 }

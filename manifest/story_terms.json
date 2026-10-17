@@ -1,39 +1,1108 @@
 {
   "schema": "openNanaimo.story-terms.v1",
-  "status": "cn-resource-terms-with-unreviewed-remainders",
+  "task_panel_texts": {
+    "3026": "B11_宠物天使（哈士奇）5张^&6级黄金粉末1份^&秘密关卡免费券（1天）1张",
+    "3032": "炮弹型 SP +2卡片10张^&肉弹型 SP +2卡片10张^&提督上衣（体验1天）1件^&提督下衣（体验1天）1件^&男贝雷帽／女军人帽子（1天）",
+    "3036": "幸运卡片A 7张^&水晶魔法棒（15天）1件^&炎炎火花（15天）1件",
+    "3113": "永久提督上衣（男女对应）1件",
+    "3119": "永久提督下衣（男女对应）1件",
+    "3127": "永久男贝雷帽／女军人帽子1件"
+  },
+  "status": "cn-resource-identities-checked-runtime-and-reward-approval-pending",
   "terms": [
-    {"source_ko": "MP물약40", "translation_zh": "蓄能药水40", "rejected_aliases": ["MP药水40"], "authority": "adapter_runtime/资源/数据/ddakg._D4", "source_id": 13000020},
-    {"source_ko": "핑크토끼", "translation_zh": "紫色兔子", "rejected_aliases": ["粉红兔子", "粉红兔"], "authority": "adapter_runtime/资源/数据/ddakg._D4", "source_id": 13000037},
-    {"source_ko": "새끼달마시안", "translation_zh": "小斑点狗", "rejected_aliases": ["幼年达尔马提亚"], "authority": "adapter_runtime/资源/数据/ddakg._D4", "source_id": 13000059},
-    {"source_ko": "재치원숭이", "translation_zh": "耍宝小猕猴", "rejected_aliases": ["机灵猴"], "authority": "adapter_runtime/资源/数据/ddakg._D4", "source_id": 13000073},
-    {"source_ko": "시베리안허스키", "translation_zh": "帅帅的哈士奇", "rejected_aliases": ["西伯利亚雪橇犬"], "authority": "adapter_runtime/资源/数据/ddakg._D4", "source_id": 13000111},
-    {"source_ko": "어둠의 지하던전", "translation_zh": "阴暗的地下迷宫", "rejected_aliases": ["黑暗的秘密地宫"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2161},
-    {"source_ko": "몬스터 공장", "translation_zh": "怪物天地", "rejected_aliases": ["怪物工厂"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2162},
-    {"source_ko": "폭포안 종유동굴", "translation_zh": "瀑布之石窟", "rejected_aliases": ["瀑布中的钟乳洞", "瀑布内的钟乳洞"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2164},
-    {"source_ko": "전장의 대나무숲", "translation_zh": "战场之树林", "rejected_aliases": ["战场竹林"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2165},
-    {"source_ko": "숲 속 공동묘지", "translation_zh": "丛林之墓地", "rejected_aliases": ["林中公墓", "森林公墓"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2166},
-    {"source_ko": "망자의 무덤", "translation_zh": "亡者的坟墓", "rejected_aliases": ["亡者之墓"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2167},
-    {"source_ko": "위험한 정글", "translation_zh": "危险地带", "rejected_aliases": ["危险丛林"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2169},
-    {"source_ko": "하늘도시", "translation_zh": "天堂都市", "rejected_aliases": ["天空之城"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2170},
-    {"source_ko": "잊혀진 지하감옥", "translation_zh": "消失的地下监狱", "rejected_aliases": ["被遗忘的地下监狱", "遗忘的地下监狱"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2171},
-    {"source_ko": "화염의 황금신전", "translation_zh": "炎之黄金神殿", "rejected_aliases": ["火焰黄金神殿", "火焰的黄金神殿"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2172},
-    {"source_ko": "검은 깃발의 비밀", "translation_zh": "黑色旗帜的秘密", "rejected_aliases": ["黑旗的秘密"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2174},
-    {"source_ko": "휴양지의 습격", "translation_zh": "伤之营地的袭击", "rejected_aliases": ["度假地遇袭", "休养地的袭击"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2175},
-    {"source_ko": "죽음을 부르는 사원", "translation_zh": "召唤死亡的神宫", "rejected_aliases": ["召唤死亡的神庙"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2176},
-    {"source_ko": "고대의 기계문명", "translation_zh": "古代的机械文明", "rejected_aliases": ["古代机械文明"], "authority": "cn-GS._D20.decoded.txt", "source_id": 2177},
-    {"source_ko": "황금가루", "translation_zh": "黄金粉末", "rejected_aliases": [], "authority": "cn-GS._D20.decoded.txt", "source_id": 8030},
-    {"source_ko": "플라이", "translation_zh": "尼莫", "rejected_aliases": ["飞伊", "飞莱"], "authority": "cn-QS._D31.decoded.txt", "source_id": 1000},
-    {"source_ko": "차차", "translation_zh": "恰恰", "rejected_aliases": ["茶茶"], "authority": "cn-QS._D31.decoded.txt", "source_id": 506},
-    {"source_ko": "일루가", "translation_zh": "伊露卡", "rejected_aliases": ["伊露迦"], "authority": "cn-QS._D31.decoded.txt", "source_id": 552},
-    {"source_ko": "위트캐인", "translation_zh": "小云云", "rejected_aliases": ["维特凯恩"], "authority": "cn-QS._D31.decoded.txt", "source_id": 1012},
-    {"source_ko": "아유타", "translation_zh": "阿郁塔", "rejected_aliases": ["阿尤塔"], "authority": "cn-QS._D31.decoded.txt", "source_id": 533},
-    {"source_ko": "딱지북", "translation_zh": "卡片册", "rejected_aliases": ["卡片书"], "authority": "cn-QS._D31.decoded.txt", "source_id": 1013},
-    {"source_ko": "소환서", "translation_zh": "魔法钥匙", "rejected_aliases": ["召唤书"], "authority": "cn-QS._D31.decoded.txt", "source_id": 1013},
-    {"source_ko": "유니크딱지", "translation_zh": "特殊卡片", "rejected_aliases": ["独特卡片"], "authority": "cn-QS._D31.decoded.txt", "source_id": 1013},
-    {"source_ko": "비밀의 숲", "translation_zh": "秘密之丛", "rejected_aliases": ["秘密森林"], "authority": "cn-QS._D31.decoded.txt", "source_id": 10002},
-    {"source_ko": "루미너스", "translation_zh": "拉米诺斯", "rejected_aliases": ["卢米诺斯"], "authority": "manifest/monk_localization.json", "source_id": "villages"}
+    {
+      "source_ko": "MP물약40",
+      "translation_zh": "蓄能药水40",
+      "rejected_aliases": [
+        "MP药水40"
+      ],
+      "authority": "adapter_runtime/资源/数据/ddakg._D4",
+      "source_id": 13000020
+    },
+    {
+      "source_ko": "핑크토끼",
+      "translation_zh": "紫色兔子",
+      "rejected_aliases": [
+        "粉红兔子",
+        "粉红兔"
+      ],
+      "authority": "adapter_runtime/资源/数据/ddakg._D4",
+      "source_id": 13000037
+    },
+    {
+      "source_ko": "새끼달마시안",
+      "translation_zh": "小斑点狗",
+      "rejected_aliases": [
+        "幼年达尔马提亚"
+      ],
+      "authority": "adapter_runtime/资源/数据/ddakg._D4",
+      "source_id": 13000059
+    },
+    {
+      "source_ko": "재치원숭이",
+      "translation_zh": "耍宝小猕猴",
+      "rejected_aliases": [
+        "机灵猴"
+      ],
+      "authority": "adapter_runtime/资源/数据/ddakg._D4",
+      "source_id": 13000073
+    },
+    {
+      "source_ko": "시베리안허스키",
+      "translation_zh": "帅帅的哈士奇",
+      "rejected_aliases": [
+        "西伯利亚雪橇犬"
+      ],
+      "authority": "adapter_runtime/资源/数据/ddakg._D4",
+      "source_id": 13000111
+    },
+    {
+      "source_ko": "어둠의 지하던전",
+      "translation_zh": "阴暗的地下迷宫",
+      "rejected_aliases": [
+        "黑暗的秘密地宫"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2161
+    },
+    {
+      "source_ko": "몬스터 공장",
+      "translation_zh": "怪物天地",
+      "rejected_aliases": [
+        "怪物工厂"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2162
+    },
+    {
+      "source_ko": "폭포안 종유동굴",
+      "translation_zh": "瀑布之石窟",
+      "rejected_aliases": [
+        "瀑布中的钟乳洞",
+        "瀑布内的钟乳洞"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2164
+    },
+    {
+      "source_ko": "전장의 대나무숲",
+      "translation_zh": "战场之树林",
+      "rejected_aliases": [
+        "战场竹林"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2165
+    },
+    {
+      "source_ko": "숲 속 공동묘지",
+      "translation_zh": "丛林之墓地",
+      "rejected_aliases": [
+        "林中公墓",
+        "森林公墓"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2166
+    },
+    {
+      "source_ko": "망자의 무덤",
+      "translation_zh": "亡者的坟墓",
+      "rejected_aliases": [
+        "亡者之墓"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2167
+    },
+    {
+      "source_ko": "위험한 정글",
+      "translation_zh": "危险地带",
+      "rejected_aliases": [
+        "危险丛林"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2169
+    },
+    {
+      "source_ko": "하늘도시",
+      "translation_zh": "天堂都市",
+      "rejected_aliases": [
+        "天空之城"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2170
+    },
+    {
+      "source_ko": "잊혀진 지하감옥",
+      "translation_zh": "消失的地下监狱",
+      "rejected_aliases": [
+        "被遗忘的地下监狱",
+        "遗忘的地下监狱"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2171
+    },
+    {
+      "source_ko": "화염의 황금신전",
+      "translation_zh": "炎之黄金神殿",
+      "rejected_aliases": [
+        "火焰黄金神殿",
+        "火焰的黄金神殿"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2172
+    },
+    {
+      "source_ko": "검은 깃발의 비밀",
+      "translation_zh": "黑色旗帜的秘密",
+      "rejected_aliases": [
+        "黑旗的秘密"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2174
+    },
+    {
+      "source_ko": "휴양지의 습격",
+      "translation_zh": "伤之营地的袭击",
+      "rejected_aliases": [
+        "度假地遇袭",
+        "休养地的袭击"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2175
+    },
+    {
+      "source_ko": "죽음을 부르는 사원",
+      "translation_zh": "召唤死亡的神宫",
+      "rejected_aliases": [
+        "召唤死亡的神庙"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2176
+    },
+    {
+      "source_ko": "고대의 기계문명",
+      "translation_zh": "古代的机械文明",
+      "rejected_aliases": [
+        "古代机械文明"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2177
+    },
+    {
+      "source_ko": "황금가루",
+      "translation_zh": "黄金粉末",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 8030
+    },
+    {
+      "source_ko": "플라이",
+      "translation_zh": "尼莫",
+      "rejected_aliases": [
+        "飞伊",
+        "飞莱"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 1000
+    },
+    {
+      "source_ko": "차차",
+      "translation_zh": "恰恰",
+      "rejected_aliases": [
+        "茶茶"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 506
+    },
+    {
+      "source_ko": "일루가",
+      "translation_zh": "伊露卡",
+      "rejected_aliases": [
+        "伊露迦"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 552
+    },
+    {
+      "source_ko": "위트캐인",
+      "translation_zh": "小云云",
+      "rejected_aliases": [
+        "维特凯恩"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 1012
+    },
+    {
+      "source_ko": "아유타",
+      "translation_zh": "阿雅塔",
+      "source_translation_zh": "阿郁塔",
+      "override_reason": "用户指定章节人物译名为阿雅塔；原QS533仍记录旧译名，不作为新译名证据。",
+      "rejected_aliases": [
+        "阿郁塔",
+        "阿尤塔"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 533
+    },
+    {
+      "source_ko": "딱지북",
+      "translation_zh": "卡片册",
+      "rejected_aliases": [
+        "卡片书"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 1013
+    },
+    {
+      "source_ko": "소환서",
+      "translation_zh": "魔法钥匙",
+      "rejected_aliases": [
+        "召唤书"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 1013
+    },
+    {
+      "source_ko": "유니크딱지",
+      "translation_zh": "特殊卡片",
+      "rejected_aliases": [
+        "独特卡片"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 1013
+    },
+    {
+      "source_ko": "비밀의 숲",
+      "translation_zh": "秘密之丛",
+      "rejected_aliases": [
+        "秘密森林"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 10002
+    },
+    {
+      "source_ko": "루미너스",
+      "translation_zh": "拉米诺斯",
+      "rejected_aliases": [
+        "卢米诺斯"
+      ],
+      "authority": "manifest/monk_localization.json",
+      "source_id": "villages"
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "李小成",
+      "rejected_aliases": [
+        "小青璃"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 518
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "蒂米",
+      "rejected_aliases": [
+        "提米德"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 528
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "秃鹫",
+      "rejected_aliases": [
+        "康多尔"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 530
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "大熊",
+      "rejected_aliases": [],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 523
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "小熊",
+      "rejected_aliases": [],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 524
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "鹰眼",
+      "rejected_aliases": [],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 525
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "董古莉",
+      "rejected_aliases": [],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 606
+    },
+    {
+      "source_ko": "콜렉터",
+      "translation_zh": "收集者",
+      "rejected_aliases": [
+        "收藏家"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 1032
+    },
+    {
+      "source_ko": "나나이모",
+      "translation_zh": "飞行岛",
+      "rejected_aliases": [
+        "Nanaimo",
+        "纳纳伊莫"
+      ],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 1032
+    },
+    {
+      "source_ko": "롤랑",
+      "translation_zh": "罗兰博士",
+      "rejected_aliases": [],
+      "authority": "cn-QS._D31.decoded.txt",
+      "source_id": 10026
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "大机械熊偶",
+      "rejected_aliases": [
+        "贝德博格王",
+        "贝德博"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2066
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "斯巴特洛",
+      "rejected_aliases": [
+        "斯帕多骑士"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2070
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "不老的始皇帝",
+      "rejected_aliases": [
+        "魔鬼金狮",
+        "恶魔金希"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2090
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "乔伊桑和蜈蚣王",
+      "rejected_aliases": [
+        "三段颜面角"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2094
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "海盗王丹尼",
+      "rejected_aliases": [
+        "虎克船长"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2110
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "派·罗斯",
+      "rejected_aliases": [
+        "波伊达洛斯"
+      ],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2122
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "普拉塔诺斯的天空",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2159
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "机炮飞艇",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2062
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "单眼怪里奥",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2074
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "石鬼豪斯",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2078
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "立忠大将军",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2082
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "独角蓝鬼咒魁",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2086
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "疾风刺客法雷",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2098
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "不死神坛",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2102
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "坏熊梅尔文",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2106
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "轰天炮台",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2114
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "三龟巨魔",
+      "rejected_aliases": [],
+      "authority": "cn-GS._D20.decoded.txt",
+      "source_id": 2118
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "普拉塔诺斯村",
+      "rejected_aliases": [],
+      "authority": "manifest/monk_localization.json",
+      "source_id": "villages"
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "桃园村",
+      "rejected_aliases": [],
+      "authority": "manifest/monk_localization.json",
+      "source_id": "villages"
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "萨恩村",
+      "rejected_aliases": [],
+      "authority": "manifest/monk_localization.json",
+      "source_id": "villages"
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "金誉村",
+      "rejected_aliases": [],
+      "authority": "manifest/monk_localization.json",
+      "source_id": "villages"
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "炮弹型 SP +2",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 12000002
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "肉弹型 SP +2",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 12000012
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "R20_食物卡片",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000020
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "O17_宠物天使",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000037
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "O20_食物卡片",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000040
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "Y19_宠物天使",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000059
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "G13_宠物天使",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000073
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "B11_宠物天使",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000111
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "A09_能力宝石",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000189
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "A18_能力宝石",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000198
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "E04*能力宝石",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000374
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "幸运卡片A",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 22000011
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "幸运卡片B",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 22000012
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "幸运卡片C",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 22000013
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "幸运卡片D",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 22000014
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "女提督上衣",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10010116
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "女提督下衣",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10020116
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "女军人帽子",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10030079
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "水晶魔法棒",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10050065
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "炎炎火花",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10060004
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "秘密关卡免费券",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10069201
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "提督上衣",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10110107
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "提督下衣",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10120107
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "贝雷帽",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_clothing.json",
+      "source_id": 10130113
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "大熊祝福(全队)",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_game_items.json",
+      "source_id": 14002487
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "6级黄金粉末",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_game_items.json",
+      "source_id": 19000006
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "道具箱扩容券",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_game_items.json",
+      "source_id": 44000003
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "自由魔法钥匙",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_game_items.json",
+      "source_id": 44000009
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "复活彩蛋",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_game_items.json",
+      "source_id": 48000001
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "银骑士",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_pets.json",
+      "source_id": 15009353
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "机械鱼头马",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_pets.json",
+      "source_id": 15009354
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "祖母绿",
+      "rejected_aliases": [
+        "绿宝石"
+      ],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000189,
+      "field": "effect"
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "黑曜石",
+      "rejected_aliases": [
+        "缟玛瑙"
+      ],
+      "authority": "gui_launcher/data/inventory_cards.json",
+      "source_id": 13000198,
+      "field": "effect"
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "小腊肠犬",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_pets.json",
+      "source_id": 15000031
+    },
+    {
+      "source_ko": "",
+      "translation_zh": "梅花鹿",
+      "rejected_aliases": [],
+      "authority": "gui_launcher/data/inventory_pets.json",
+      "source_id": 15000082
+    }
   ],
-  "unresolved": ["小青璃与NPC18的中文身份对应", "古斯塔夫", "飞龙", "露露", "宠物及奖励道具逐ID映射", "正文NPC53..61名称和表情消费"],
+  "unresolved": [
+    "四位先祖的CN专名缺证，以身份描述替代，韩文源文保留",
+    "究极卡片及黄金熊神像为KR剧情概念的语义翻译，未宣称是CN词条",
+    "黑色剪影与咒语采用语义/动作描述，无新增音译",
+    "全部新译文的原客户端显示验收",
+    "奖励审批绑定最终包哈希，不能自动续签旧审批"
+  ],
   "runtime_acceptance": false,
-  "activation_allowed": false
+  "activation_allowed": false,
+  "unsupported_names": {
+    "古斯塔夫": "当前客户端非移植章节文本缺少对应先祖名证据；以普拉塔诺斯村的先祖指代，保留韩文源文。",
+    "飞龙": "当前客户端非移植章节文本缺少对应先祖名证据；以桃园村的先祖指代。",
+    "瓦伊": "当前客户端非移植章节文本缺少对应先祖名证据；以金誉村的先祖指代。",
+    "露露": "不可拿无关的红衫鬼魂米露露充当先祖名；以拉米诺斯村的先祖指代。",
+    "斯帕斯帕": "没有CN咒语依据，不杜撰音译；用念诵咒语的动作描述。",
+    "奥兹屋": "未找到CN同名地点，暂用商店指代，不宣称已核实地图位置。",
+    "黄金荣耀": "第四村的CN名称为金誉村，且四个修道僧目标不能共用第四村。"
+  },
+  "speaker_names": {
+    "6": "恰恰",
+    "18": "李小成",
+    "23": "大熊",
+    "24": "小熊",
+    "25": "鹰眼",
+    "28": "蒂米",
+    "30": "秃鹫",
+    "33": "阿雅塔",
+    "52": "伊露卡",
+    "53": "坏掉的大机械熊偶",
+    "54": "斯巴特洛与手下",
+    "55": "坏掉的斯巴特洛与手下",
+    "56": "怪物天地的怪物群",
+    "57": "不老的始皇帝",
+    "58": "黑色剪影",
+    "59": "坏掉的乔伊桑和蜈蚣王",
+    "60": "海盗王丹尼",
+    "61": "派·罗斯"
+  },
+  "speaker_mapping_notes": {
+    "53..61": "KR QS2053..2061的人物语义对应CN普通章节GS2066/2070/2090/2094/2110/2122；坏掉的、与手下是状态描述，不是新音译名。",
+    "57": "按第8章普通首领GS2090与称号GS2046映射；GS2454是秘密关卡变体青龙大帝里斯，不混用。",
+    "58": "黑色剪影是原文검은 실루엣的描述性翻译，CN无姓名条目，不当作音译专名。"
+  },
+  "reward_bindings": [
+    {
+      "episode": 1,
+      "qs_id": 3003,
+      "source_rewards": [
+        [
+          1,
+          0,
+          200
+        ],
+        [
+          6,
+          13000020,
+          10
+        ]
+      ],
+      "translation_zh": "200金币^&R20_食物卡片（蓄能药水40）10张"
+    },
+    {
+      "episode": 2,
+      "qs_id": 3008,
+      "source_rewards": [
+        [
+          6,
+          13000037,
+          5
+        ],
+        [
+          6,
+          13000040,
+          10
+        ]
+      ],
+      "translation_zh": "O17_宠物天使（紫色兔子）5张^&O20_食物卡片（冰淇淋）10张"
+    },
+    {
+      "episode": 3,
+      "qs_id": 3018,
+      "source_rewards": [
+        [
+          6,
+          13000059,
+          5
+        ],
+        [
+          6,
+          13000073,
+          5
+        ]
+      ],
+      "translation_zh": "Y19_宠物天使（小斑点狗）5张^&G13_宠物天使（耍宝小猕猴）5张"
+    },
+    {
+      "episode": 4,
+      "qs_id": 3026,
+      "source_rewards": [
+        [
+          6,
+          13000111,
+          5
+        ],
+        [
+          2,
+          19000006,
+          1
+        ],
+        [
+          4,
+          10069201,
+          1
+        ]
+      ],
+      "translation_zh": "B11_宠物天使（帅帅的哈士奇）5张^&6级黄金粉末1份^&秘密关卡免费券（1天）1张"
+    },
+    {
+      "episode": 5,
+      "qs_id": 3032,
+      "source_rewards": [
+        [
+          6,
+          12000002,
+          10
+        ],
+        [
+          6,
+          12000012,
+          10
+        ],
+        [
+          4,
+          10010116,
+          1
+        ],
+        [
+          4,
+          10020116,
+          1
+        ],
+        [
+          4,
+          10030079,
+          1
+        ]
+      ],
+      "translation_zh": "炮弹型 SP +2卡片10张^&肉弹型 SP +2卡片10张^&提督上衣／女提督上衣、提督下衣／女提督下衣、贝雷帽／女军人帽子各1件（体验1天，按角色性别发放）"
+    },
+    {
+      "episode": 6,
+      "qs_id": 3036,
+      "source_rewards": [
+        [
+          6,
+          22000011,
+          7
+        ],
+        [
+          4,
+          10050065,
+          1
+        ],
+        [
+          4,
+          10060004,
+          1
+        ]
+      ],
+      "translation_zh": "幸运卡片A 7张^&水晶魔法棒（15天，男女对应）1件^&炎炎火花（15天，男女对应）1件"
+    },
+    {
+      "episode": 7,
+      "qs_id": 3041,
+      "source_rewards": [
+        [
+          6,
+          13000189,
+          1
+        ],
+        [
+          2,
+          48000001,
+          1
+        ],
+        [
+          2,
+          14002487,
+          3
+        ]
+      ],
+      "translation_zh": "A09_能力宝石（祖母绿）1张^&复活彩蛋（5次）1个^&大熊祝福(全队)3份"
+    },
+    {
+      "episode": 8,
+      "qs_id": 3055,
+      "source_rewards": [
+        [
+          6,
+          13000198,
+          1
+        ],
+        [
+          2,
+          15009353,
+          1
+        ]
+      ],
+      "translation_zh": "A18_能力宝石（黑曜石）1张^&银骑士（36级，1天）1只"
+    },
+    {
+      "episode": 9,
+      "qs_id": 3070,
+      "source_rewards": [
+        [
+          6,
+          22000012,
+          7
+        ],
+        [
+          2,
+          44000003,
+          1
+        ],
+        [
+          2,
+          44000009,
+          1
+        ]
+      ],
+      "translation_zh": "幸运卡片B 7张^&道具箱扩容券（30天）1张^&自由魔法钥匙（1天）1把"
+    },
+    {
+      "episode": 10,
+      "qs_id": 3078,
+      "source_rewards": [
+        [
+          6,
+          22000013,
+          7
+        ],
+        [
+          2,
+          15009354,
+          1
+        ]
+      ],
+      "translation_zh": "幸运卡片C 7张^&机械鱼头马（46级，1天）1只"
+    },
+    {
+      "episode": 11,
+      "qs_id": 3086,
+      "source_rewards": [
+        [
+          6,
+          22000014,
+          7
+        ]
+      ],
+      "translation_zh": "幸运卡片D 7张"
+    },
+    {
+      "episode": 12,
+      "qs_id": 3102,
+      "source_rewards": [
+        [
+          7,
+          0,
+          5000000
+        ]
+      ],
+      "translation_zh": "经验值5000000"
+    },
+    {
+      "episode": 13,
+      "qs_id": 3113,
+      "source_rewards": [
+        [
+          4,
+          10010116,
+          1
+        ]
+      ],
+      "translation_zh": "提督上衣／女提督上衣（永久，按角色性别发放）1件"
+    },
+    {
+      "episode": 14,
+      "qs_id": 3119,
+      "source_rewards": [
+        [
+          4,
+          10020116,
+          1
+        ]
+      ],
+      "translation_zh": "提督下衣／女提督下衣（永久，按角色性别发放）1件"
+    },
+    {
+      "episode": 15,
+      "qs_id": 3127,
+      "source_rewards": [
+        [
+          4,
+          10030079,
+          1
+        ]
+      ],
+      "translation_zh": "贝雷帽／女军人帽子（永久，按角色性别发放）1件"
+    },
+    {
+      "episode": 16,
+      "qs_id": 3138,
+      "source_rewards": [
+        [
+          6,
+          13000374,
+          3
+        ]
+      ],
+      "translation_zh": "E04*能力宝石（黑曜石）3张"
+    }
+  ],
+  "reward_policy": "名称按GUI目录；数量按source_rewards，期限按CN ShopCatalog，性别按ChapterRewardPolicy；文字审核不是发奖授权。"
 }

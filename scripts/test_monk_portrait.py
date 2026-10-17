@@ -145,7 +145,7 @@ class PortraitChecks(unittest.TestCase):
                              (r.FOLLOW_BASE,r.followup_payload(legacy_portrait=True))):
             self.assertIn(previous.hex(),sites[va]['known'])
         # Retain the original guide/lifetime migrations byte-for-byte.
-        self.assertEqual(hashlib.sha256(r.payload(legacy_guide=True)).hexdigest(),
+        self.assertEqual(hashlib.sha256(r.payload(legacy_guide=True,legacy_names=True)).hexdigest(),
                          'e97bee081a8139f44ba1ea6d2b81f54d8a759f8a2f3a0b4d432e618821ec6640')
 
 

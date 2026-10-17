@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "chapters.json",
-      "sha256": "5513c201a019d3bc0620a7ab104178a4fbbbd5e2e1cefc746850c5ac7900d1d6",
-      "size": 225216
+      "sha256": "31093c2e770e7f4a249ef2d973d31f48ef6276710683f658af1926334f4d9475",
+      "size": 225976
     }
   ],
   "runtime_acceptance": false,

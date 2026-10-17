@@ -18,7 +18,13 @@ def generate():
     try:
         p._patch_site=site;p._migrate_site=migration
         groups=[('character-creation',[p.patch_character_creation,p.patch_referral_dialog]),('furniture',[p.patch_furniture_getter]),('native-state',[p.restore_native_state]),('dungeon-state',[p.patch_dungeon_state_controls]),('inventory-gift-display',[p.patch_inventory_gift_display]),('land-purchase',[p.patch_land_purchase]),('apartment-recommendation',[p.patch_apartment_recommendation]),('apartment-exterior',[p.patch_apartment_room_resource_guard,p.patch_apartment_exterior,p.patch_apartment_exterior_layout,p.patch_apartment_decoration])]
-        groups.append(('monk-dialogue', [p.patch_monk_dialogue]))
+        # The chapter dialogue rides the monk group: the launcher already passes
+        # --monk-dialogue whenever the receipt exists, so no launcher change is
+        # needed. It creates an instance of that payload's dialogue window class
+        # (vtable 0x6E4000) and registers it, so it shares the class's draw,
+        # paging and destroy path instead of patching a second render hook.
+        groups.append(('monk-dialogue', [p.patch_monk_dialogue, p.patch_chapter_dialogue]))
+
         for group,functions in groups:
             for fn in functions:fn(b'')
         group='apartment-exterior'
@@ -27,6 +33,7 @@ def generate():
             if name=='code':rows[-1]['known_hashes']=[p.exterior_panel.LEGACY_CAVE_SHA256]
             if name=='banner_image_getter':rows[-1]['known'].append(p.exterior_panel.branch(0x5DC585,0x414FFC).hex())
     finally:p._patch_site=old_site;p._migrate_site=old_migration
+
     challenge_path = ROOT/'manifest/monk_challenge_resources.json'
     challenge = json.loads(challenge_path.read_text('utf-8'))
     import hashlib

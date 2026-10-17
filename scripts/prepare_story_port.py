@@ -34,6 +34,21 @@ def unique(rows, key):
     return result
 
 
+def mapped_rewards(chapter, mapping=None):
+    rewards = chapter['rewards']
+    if mapping is None:
+        return rewards
+    require(mapping['quest_id'] == chapter['id'] and mapping['source_rewards'] == rewards,
+            'Stale KR reward mapping')
+    mapped = mapping['cn_rewards']
+    require(len(mapped) == len(rewards) and all(
+        len(r) == 3 and all(type(v) is int and 0 <= v <= 4294967295 for v in r)
+        and r[0] == source[0] and r[2] == source[2]
+        and (r[0] not in (1, 7) or r[1] == 0)
+        for r, source in zip(mapped, rewards)), 'Invalid CN reward mapping')
+    return mapped
+
+
 def compile_package(catalog, digest, localization):
     require(localization['schema'] == 'openNanaimo.chapter-story-localization.v1', 'Unknown localization schema')
     require(localization['source_catalog_sha256'] == digest, 'Stale localization source')
@@ -53,6 +68,8 @@ def compile_package(catalog, digest, localization):
     text = unique(localization['texts'], 'qs_id')
     titles = unique(localization['titles'], 'quest_id')
     names = unique(localization['objective_names'], 'objective_id')
+    reward_mappings = unique(localization.get('reward_mappings', []), 'quest_id')
+    require(set(reward_mappings) <= set(chapters), 'Unknown chapter reward mapping')
     require(set(chapters) == set(range(FIRST, LAST+1)), 'Chapter coverage differs')
     require(set(objectives) == set(range(75100000, 75100052)), 'Source objective coverage differs')
     require(set(titles) == set(range(FIRST, LAST+1)), 'Title coverage differs')
@@ -115,11 +132,12 @@ def compile_package(catalog, digest, localization):
                               clear_mask=1<<monk_index, owner='CharacterMonkChallenges.ClearMask',
                               localization_owner='manifest/monk_localization.json')
         needed_text.update((int(q['header'][9]), q['reward_text_id']))
+        rewards = mapped_rewards(q, reward_mappings.get(uid))
         result.append(dict(quest_id=uid, episode=episode, village_index=(episode-1)//4,
                            next_quest_id=uid+1 if uid<LAST else 0, title=title['translation_zh'],
                            description_qs_id=int(q['header'][9]), reward_qs_id=q['reward_text_id'],
                            objectives=converted, dialogue=dialogue, existing_monk=dependency,
-                           source_rewards=q['rewards'], rewards_resolved=False))
+                           source_rewards=rewards, rewards_resolved=False))
     require(set(text) == needed_text, 'Text coverage differs or includes out-of-scope/monk text')
     require(set(names) == needed_names, 'Objective coverage differs')
     for uid, row in text.items():
@@ -135,7 +153,7 @@ def compile_package(catalog, digest, localization):
                     reused_monk_speeches=sum(len(q['existing_monk']['reused_text_ids']) for q in result if q['existing_monk'])),
                 first_quest_id=FIRST, last_quest_id=LAST,
                 policies=dict(entry='explicit-new-story-start-at-episode-1-no-backfill',
-                    clear='candidate-policy-three-ordinary-dungeons-after-entry-any-difficulty',
+                    clear='super-boss-bit-3-after-entry-any-difficulty',
                     monk='reuse-existing-clearmask-only-after-own-chapter-dialogues',
                     reward='fail-closed-until-reviewed-CN-mapping',
                     localization='draft-human-review-required'),

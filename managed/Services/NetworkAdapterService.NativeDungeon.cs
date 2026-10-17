@@ -1195,6 +1195,7 @@ public sealed partial class NetworkAdapterService
                 && response[10] == 0))
             session.NativeBattleResources = skillResources with { CurrentMp = (ushort)Math.Min(skillResources.MaximumMp, next.Get(28)) };
         session.NativeBattleResources?.ApplyTo(next);
+        var chapterSettled = false;
         NativeDungeonSettlementRecord? settlement = pendingRanking;
         if (requestOpcode == 0xCF87 && session.NativeDungeonSelectionValid
             && session.NativeDungeonSettlementAwaitingAction)
@@ -1261,6 +1262,18 @@ public sealed partial class NetworkAdapterService
                 GetEquippedPetItemCode(session.Character), bossDefeated: true);
             if (questProgress.Changed && frame is not null)
                 BuildQuestProgressFrames(frame, questProgress.Tasks, session, questProgress.NewlyCompleted);
+            await ObserveChapterClearAsync(session, session.QuestClearEpisode,
+                session.QuestClearDungeonBit, token);
+            chapterSettled = session.ChapterTaskListDirty;
+        }
+        // Read the authoritative monk ledger only after the settlement transaction
+        // has applied. Never treat ordinary episode clears as monk challenge bits.
+        if (applied.Applied && settlement is { Rating: > 0 } monkSettlement
+            && MonkChallengePolicy.IsReservedEpisode(monkSettlement.Episode)
+            && !session.NativeDungeonDeathLatched && QuestCatalog.StoryChaptersEnabled)
+        {
+            await EnsureSessionChapterTaskAsync(session, token);
+            chapterSettled |= session.ChapterTaskListDirty;
         }
         foreach (var response in exchange.Frames)
         {
@@ -1268,6 +1281,20 @@ public sealed partial class NetworkAdapterService
                 response, next.Get(4), progressionBefore, session.Character);
             PatchNativePetSettlementFrame(response, next.Get(4), applied);
             PatchNativeDungeonTitleFrame(response, next.Get(4), CharacterTitleState.GetGrade(session.Character));
+        }
+        // A settled chapter dungeon must reach the panel on the result screen, not
+        // on the next room entry. The list is pushed with the push marker, so the
+        // client patch rebuilds the records without opening the task window.
+        if (chapterSettled && frame is not null && session.Character is not null)
+        {
+            session.ChapterTaskListDirty = false;
+            var chapterTasks = await _database.GetCharacterTasksAsync(
+                session.AccountId, session.Character.Id, session.SessionId, token);
+            var chapterPush = BuildNativeFrame(
+                frame, 0xC59C, BuildTaskListPayload(chapterTasks, unsolicitedPush: true), session);
+            exchange = new NativeDungeonExchangeResult(
+                exchange.State, exchange.Frames.Append(chapterPush).ToArray());
+            _log($"chapter task list pushed on dungeon settlement: character={session.Character.Id} tasks={chapterTasks.Count}");
         }
         return exchange;
     }

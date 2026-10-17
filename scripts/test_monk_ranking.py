@@ -38,22 +38,56 @@ class MonkRankingChecks(unittest.TestCase):
             self.assertEqual([m.reg_read(a) for a in [x.UC_X86_REG_EBX,x.UC_X86_REG_ESI,x.UC_X86_REG_EDI]],[0x1111,0x2222,0x3333])
 
     def test_popup_initializes_exact_four_badges_and_numbers(self):
-        m=self.machine();ratings=bytes([0,1,2,3]);m.mem_write(self.cache+0x44,ratings)
+        for episode in range(24,28):
+            with self.subTest(episode=episode):
+                self.check_popup(episode)
+
+    def test_each_digit_allocation_failure_still_draws_remaining_widgets(self):
+        for digit in range(8):
+            with self.subTest(digit=digit):
+                self.check_popup(24, digit)
+
+    def check_popup(self, episode, failed_digit=None):
+        m=self.machine(episode);ratings=bytes([0,1,2,3]);m.mem_write(self.cache+0x44,ratings)
         self.put(self.frame-0x60,self.window);self.put(self.frame-0x10,77)
-        calls=[];effects=[];backgrounds=[]
+        calls=[];effects=[];backgrounds=[];digits=[];frames=[];draws=[];moves=[];rects=[]
+        vtable=0x202E000
+        self.put(vtable+0x14,0x400800);self.put(vtable+0x1C,0x400900)
+        for index in range(2):
+            button=0x202D000+index*0x100;sprite=button+0x40
+            self.put(self.window+0x20+index*4,button);self.put(button,sprite);self.put(sprite,vtable)
         for a,raw in [(0xB479CC,b'\xB8'+struct.pack('<I',0x2025000)+b'\xC3'),
             (0x41BE00,b'\x8B\xC1\xC3'),(0x404232,b'\xC2\x14\x00'),
-            (0x41E67D,b'\xC2\x0C\x00'),(0x414A6F,b'\xC3'),(0x40DA1C,b'\xC2\x34\x00')]:m.mem_write(a,raw)
+            (0x41E67D,b'\xC2\x0C\x00'),(0x41206C,b'\xC3'),(0x40DA1C,b'\xC2\x34\x00'),
+            (0x41CC33,b'\xC3'),(0x41E0E7,b'\xC2\x20\x00'),
+            (0x40A62D,b'\x8B\xC1\xC2\x10\x00'),(0x402770,b'\xC2\x04\x00'),
+            (0x400800,b'\xC3'),(0x400900,b'\xC2\x04\x00'),(0x410DFC,b'\xC2\x08\x00')]:m.mem_write(a,raw)
         def hook(mm,a,size,data):
             sp=mm.reg_read(x.UC_X86_REG_ESP)
+            if a==0xB479CC:
+                size=struct.unpack('<I',mm.mem_read(sp+4,4))[0]
+                if size==0x16C and mm.reg_read(x.UC_X86_REG_EBX)==failed_digit:
+                    # Skip the allocator stub, retaining its ordinary return.
+                    mm.reg_write(x.UC_X86_REG_EAX,0)
+                    mm.reg_write(x.UC_X86_REG_EIP,a+5)
             if a==0x41E67D:
                 args=struct.unpack('<3I',mm.mem_read(sp+4,12));calls.append(args)
                 value=0x1000+len(calls);effects.append(value);mm.reg_write(x.UC_X86_REG_EAX,value)
             if a==0x40DA1C:calls.append(('text',struct.unpack('<13I',mm.mem_read(sp+4,52))))
             if a==0x404232:backgrounds.append(struct.unpack('<5I',mm.mem_read(sp+4,20)))
+            if a==0x41E0E7:
+                self.assertEqual(struct.unpack('<8I',mm.mem_read(sp+4,32)),(13,0xCA5AE4,0,3,0,0,0,0))
+            if a==0x40A62D:
+                obj=0x2026000+len(digits)*0x200
+                mm.reg_write(x.UC_X86_REG_ECX,obj);self.put(obj,vtable)
+                digits.append(struct.unpack('<IIff',mm.mem_read(sp+4,16)))
+            if a==0x402770:frames.append(struct.unpack('<I',mm.mem_read(sp+4,4))[0])
+            if a==0x400800:draws.append(mm.reg_read(x.UC_X86_REG_ECX))
+            if a==0x410DFC:moves.append(struct.unpack('<ff',mm.mem_read(sp+4,8)))
+            if a==0x400900:rects.append(struct.unpack('<I',mm.mem_read(sp+4,4))[0])
             if a in (0x8C2DDE,0x8C3182):mm.emu_stop()
         m.hook_add(uc.UC_HOOK_CODE,hook);m.emu_start(r.RANK_INIT,0,count=2000)
-        expected=[(ratings[c],430,268+c*38) for c in range(4)]
+        expected=[(ratings[c],431,268+c*38) for c in range(4)]
         self.assertEqual(calls,expected)
         self.assertEqual(backgrounds,[(r.RANK_BACKGROUND,0,400,300,0)])
         path=b'interface\\openNanaimo_monk_rank.eff\0'
@@ -62,12 +96,21 @@ class MonkRankingChecks(unittest.TestCase):
         self.assertEqual(m.mem_read(self.window+44+16,44*4),b'\0'*(44*4))
         self.assertEqual(m.reg_read(x.UC_X86_REG_ESP),self.stack)
         self.assertEqual(struct.unpack('<I',m.mem_read(self.frame-0x10,4))[0],77)
+        visible=[i for i in range(8) if i!=failed_digit]
+        self.assertEqual([(d[1],d[2],d[3]) for d in digits],[(0,253.+14*(i%2),273.+38*(i//2)) for i in visible])
+        self.assertEqual(frames,[0 if i%2==0 else i//2+1 for i in visible])
+        if failed_digit is not None:
+            self.assertEqual(bytes(m.mem_read(self.window+0xEC+4*failed_digit,4)),bytes(4))
+        self.assertEqual(moves,[(557.,428.),(599.,141.)])
+        self.assertEqual(rects,[0x202D008,0x202D108])
+        title=r.localization()['game_strings'][str(2504+episode-24)].encode('gbk')+b'\0'
+        self.assertEqual(bytes(m.mem_read(self.window+0x110,len(title))),title)
         self.put(self.frame-0x10,self.window);m.reg_write(x.UC_X86_REG_ESP,self.stack)
         m.emu_start(r.RANK_DRAW,0,count=1000)
         texts=[row[1] for row in calls if row[0]=='text']
-        self.assertEqual([(t[0],t[1],t[2]) for t in texts],[(207,268+i*38,r.RANK_TEXT+i*8) for i in range(4)])
-        self.assertEqual([bytes(m.mem_read(r.RANK_TEXT+i*8,2)) for i in range(4)], [b'1\0',b'2\0',b'3\0',b'4\0'])
-        self.assertTrue(all(t[3:]==(0xFFFFFF,0,0,1,0,0,0,0,0,0) for t in texts))
+        self.assertEqual([(t[0],t[1],t[2]) for t in texts],[(357,181,self.window+0x110)])
+        self.assertEqual(draws,[0x2026000+i*0x200 for i in range(len(visible))])
+        self.assertTrue(all(t[3:]==(0xFFFFFF,0,0,1,0,2,0,0,0,0) for t in texts))
         self.assertEqual(m.reg_read(x.UC_X86_REG_ESP),self.stack)
 
     def test_popup_all_four_identities_and_invalid_cache_updates(self):
@@ -102,7 +145,10 @@ class MonkRankingChecks(unittest.TestCase):
         at=compat._va_offset(raw,r.EXT_BASE,r.EXT_SPAN)
         self.assertEqual(hashlib.sha256(r.gameplay_payload(legacy_rank_matrix=True)).hexdigest(),
             '320652b2fe4f8440d9748052afde6139c33a49c9a12aa1f11b8fc3a56689f45f')
-        for old in [r.gameplay_payload(legacy_ranking=True),r.gameplay_payload(legacy_rank_matrix=True)]:
+        self.assertEqual(hashlib.sha256(r.gameplay_payload(legacy_rank_layout=True)).hexdigest(),
+            '5f98e5f6ba79a3ea518970d0c7c301a2167402512da52a04055f73de56d4cf05')
+        for old in [r.gameplay_payload(legacy_ranking=True),r.gameplay_payload(legacy_rank_matrix=True),
+                    r.gameplay_payload(legacy_rank_layout=True)]:
             at=compat._va_offset(raw,r.EXT_BASE,r.EXT_SPAN);raw[at:at+r.EXT_SPAN]=old
             patched,_=compat.patch_monk_dialogue(bytes(raw))
             self.assertEqual(compat.patch_monk_dialogue(patched)[0],patched)
@@ -144,8 +190,57 @@ class MonkRankingChecks(unittest.TestCase):
         self.assertEqual(hit,[0x8C2DDE]);self.assertEqual(m.reg_read(x.UC_X86_REG_ESP),self.stack)
         self.assertEqual(bytes(m.mem_read(self.window+40,4+48*4)),bytes(4+48*4))
 
+    def test_native_destructor_releases_badges_and_digit_slots_once(self):
+        import os
+        from pathlib import Path
+        from prepare_client_compatibility import _va_offset
+        client=Path(os.environ.get('NANAIMO_CLIENT',Path(__file__).resolve().parents[2]))/'game.exe'
+        if not client.is_file():self.skipTest('native CN executable is unavailable')
+        raw=client.read_bytes();at=_va_offset(raw,0x8C2170,0x159)
+        m=self.machine();m.mem_write(0x8C2170,raw[at:at+0x159])
+        vtable=0x202E000;deleter=0x400800;self.put(vtable,deleter)
+        m.mem_write(deleter,b'\xC2\x04\x00');m.mem_write(0x41AFD7,b'\xC2\x04\x00')
+        offsets=[0x20,0x24,0x28]+[0x2C+i*4 for i in range(4)]+[0xEC+i*4 for i in range(8)]
+        pointers=[0x2026000+i*0x200 for i in range(len(offsets))]
+        for offset,pointer in zip(offsets,pointers):
+            self.put(self.window+offset,pointer);self.put(pointer,vtable)
+        seen=[]
+        def hook(mm,a,size,data):
+            if a in (deleter,0x41AFD7):
+                seen.append(mm.reg_read(x.UC_X86_REG_ECX))
+                self.assertEqual(struct.unpack('<I',mm.mem_read(mm.reg_read(x.UC_X86_REG_ESP)+4,4))[0],1)
+        m.hook_add(uc.UC_HOOK_CODE,hook);m.reg_write(x.UC_X86_REG_ECX,self.window)
+        m.emu_start(0x8C2170,self.end,count=2500)
+        self.assertCountEqual(seen,pointers)
+        self.assertEqual(bytes(m.mem_read(self.window+0x20,0x10C-0x20)),bytes(0x10C-0x20))
+        self.assertEqual(m.reg_read(x.UC_X86_REG_ESP),self.stack+4)
+
 
 class MonkRankingResources(unittest.TestCase):
+    def test_right_and_bottom_edges_have_no_matrix_remnants(self):
+        import os
+        from pathlib import Path
+        import monk_ranking_resources as assets
+        from gui_launcher.generate_furniture_previews import decode_im3
+        client=Path(os.environ.get('NANAIMO_CLIENT',Path(__file__).resolve().parents[2]))
+        if not (client/assets.SOURCE_IMAGE).is_file():self.skipTest('native CN popup source is unavailable')
+        raw=(client/assets.SOURCE_IMAGE).read_bytes()
+        original=decode_im3(raw)
+        image=decode_im3(assets.single_slot_bitmap(raw))
+        # The old crop retained the last header glyph and four half sockets.
+        for y in range(99,278):
+            with self.subTest(edge='right',y=y):
+                self.assertEqual(set(image.crop((416,y,427,y+1)).getdata()),
+                                 {original.getpixel((147,y))})
+        # Include the final body scanline, but keep the genuine lower frame.
+        for y in range(278,284):
+            with self.subTest(edge='bottom',y=y):
+                for left,right in ((112,255),(288,416)):
+                    self.assertEqual(set(image.crop((left,y,right,y+1)).getdata()),
+                                     {original.getpixel((147,y))})
+        self.assertEqual(image.crop((112,283,416,284)).getextrema(),
+                         ((181,181),(181,181),(181,181),(255,255)))
+
     def test_unknown_background_and_effect_are_rejected(self):
         import monk_ranking_resources as assets
         import tempfile
@@ -173,14 +268,21 @@ class MonkRankingResources(unittest.TestCase):
             self.assertEqual((len(raw),hashlib.sha256(raw).hexdigest()),(rows[path]['size'],rows[path]['sha256']))
         original=decode_im3((client/assets.SOURCE_IMAGE).read_bytes())
         image=decode_im3(files[assets.IMAGE])
-        self.assertEqual(image.size,original.size)
-        for box in [(0,0,554,84),(0,84,112,283),(534,84,554,283),(0,283,554,336)]:
+        self.assertEqual(image.size,(450,336))
+        for box in [(0,0,300,30),(0,30,430,84),(0,84,112,284),(0,284,350,336)]:
             self.assertEqual(image.crop(box).tobytes(),original.crop(box).tobytes())
+        for box in [(300,0,450,30),(430,30,450,84),(416,84,450,99),(427,99,450,278),(350,284,450,336)]:
+            left,top,right,bottom=box
+            self.assertEqual(image.crop(box).tobytes(),original.crop((left+104,top,right+104,bottom)).tobytes())
         for row in range(4):
             y=134+row*38
-            self.assertEqual(image.crop((306,y,339,y+35)).tobytes(),original.crop((114,y,147,y+35)).tobytes())
+            self.assertEqual(image.crop((255,y,288,y+35)).tobytes(),original.crop((148,y,181,y+35)).tobytes())
+        for y,right in enumerate((426,426,425,425,423,420),278):
+            self.assertEqual(image.crop((right,y,450,y+1)).tobytes(),
+                             original.crop((right+104,y,554,y+1)).tobytes())
         for y in range(84,134):
-            self.assertEqual(len(set(image.crop((112,y,534,y+1)).getdata())),1)
+            self.assertEqual(len(set(image.crop((112,y,416,y+1)).getdata())),1)
+        self.assertAlmostEqual(struct.unpack_from('<f',files[assets.EFFECT],392)[0],450/554)
         model=assets.resources.codec_module().eff2(files[assets.EFFECT])
         self.assertEqual(model['refs'],['nanaimo_cs_pop00.im3',Path(assets.IMAGE).name])
 

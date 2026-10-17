@@ -153,6 +153,18 @@ class PatchPlanTests(unittest.TestCase):
         self.assertEqual([row[SCRIPT_SLOT] for row in added], ['10000', '0', '10001',
                                                               '10002', '0', '10003'])
 
+    def test_cn_reward_ids_match_compiled_package(self):
+        chapter = self.catalog['chapters'][0]
+        chapter['rewards'] = [[4, 10019997, 1]]
+        self.localization['reward_mappings'] = [dict(quest_id=chapter['id'],
+            source_rewards=chapter['rewards'], cn_rewards=[[4, 10010116, 1]])]
+        planned = package_plan(self)
+        self.assertEqual(planned['candidate']['quests'][patch.CN_QUEST_COUNT]['rewards'],
+                         [['4', '10010116', '1']])
+        self.localization['reward_mappings'][0]['source_rewards'] = [[4, 10019999, 1]]
+        with self.assertRaisesRegex(ValueError, 'Stale KR reward mapping'):
+            package_plan(self)
+
     def test_tail_slots_stay_zero(self):
         planned = package_plan(self)
         for row in planned['candidate']['objectives'][patch.CN_OBJECTIVE_COUNT:]:
@@ -222,6 +234,7 @@ def package_plan(case, **overrides):
                       dict(titles={row['quest_id']: row for row in localization['titles']},
                            names={row['objective_id']: row
                                   for row in localization['objective_names']},
+                           reward_mappings={r['quest_id']: r for r in localization.get('reward_mappings', [])},
                            sha256='0' * 64),
                       options['chapters'], options['script_slot'],
                       options['reference_quest'], options['allow_unreviewed'])

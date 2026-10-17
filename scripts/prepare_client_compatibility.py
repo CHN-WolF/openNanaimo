@@ -692,6 +692,51 @@ def patch_dungeon_state_controls(data: bytes) -> tuple[bytes, dict]:
         player_trade=_migration_report('patch_player_trade', **player_trade))
 
 
+def patch_chapter_dialogue(data: bytes) -> tuple[bytes, dict]:
+    """Chapter story dialogue: own cave, hooked into the village update.
+
+    The cave is free int3 in the shipped exe and is rewritten only when it still
+    carries our own tag, so re-running the compatibility pass is idempotent. The
+    payload creates one instance of the dialogue window class the four-village
+    payload already installs (vtable 0x6E4000) and registers it in the engine
+    window registry; drawing, paging and closing stay with that class, so no
+    render hook is patched here.
+    """
+    import chapter_dialogue_patch as chapter
+    bundle = chapter.build(chapter.default_texts(chapter.ROOT), chapter.default_triggers())
+    payload = bundle['payload']
+    empty = b'\xCC' * chapter.SPAN
+    old = empty
+    if data:
+        offset = _va_offset(data, chapter.CAVE, chapter.SPAN)
+        current = data[offset:offset + chapter.SPAN]
+        require(set(current) == {0xCC} or current.endswith(chapter.TAG),
+                'the chapter dialogue cave differs; this unpacking needs a reviewed cave')
+        if current != empty:
+            old = current
+    data, cave_row = _patch_site(data, chapter.CAVE, old, payload, 'chapter_dialogue_cave',
+                                 'the chapter dialogue cave differs; this unpacking needs a reviewed cave')
+    data, hook_row = _patch_site(data, chapter.HOOK_SITE, chapter.HOOK_ORIGINAL, bundle['patch'],
+                                 'chapter_dialogue_hook',
+                                 'the village update call differs; this unpacking needs a reviewed hook')
+    # Store the move-handler page identifier while retaining its instruction ABI,
+    # so a page-based trigger can replace the task-record bridge later.
+    data, page_row = _patch_site(data, chapter.PAGE_HOOK_SITE, chapter.PAGE_HOOK_ORIGINAL,
+                                 bytes.fromhex(bundle['report']['page_patch']),
+                                 'chapter_dialogue_page_capture',
+                                 'the town-page log call differs; this unpacking needs a reviewed page hook')
+    # The unsolicited task list must rebuild records without opening the panel,
+    # while the player's own book click still creates it; the gate stub decides.
+    window_patch = bytes.fromhex(bundle['report']['task_window_patch'])
+    data, window_row = _patch_site(data, chapter.TASK_WINDOW_SITE, chapter.TASK_WINDOW_ORIGINAL,
+                                   window_patch,
+                                   'chapter_dialogue_suppress_task_window',
+                                   'the task-window create path differs; this unpacking needs a reviewed jump')
+    return data, _migration_report('patch_chapter_dialogue',
+                                  chapter_dialogue_cave=cave_row, chapter_dialogue_hook=hook_row,
+                                  chapter_dialogue_page_capture=page_row,
+                                  chapter_dialogue_suppress_task_window=window_row)
+
 def patch_monk_dialogue(data: bytes) -> tuple[bytes, dict]:
     rows = {}
     for name, va, old, new in monk_dialogue_compat.sites():
@@ -704,7 +749,8 @@ def patch_monk_dialogue(data: bytes) -> tuple[bytes, dict]:
         if va == monk_dialogue_compat.FOLLOW_BASE:
             known += (monk_dialogue_compat.followup_payload(legacy_portrait=True),)
         if va == monk_dialogue_compat.EXT_BASE:
-            known += (monk_dialogue_compat.gameplay_payload(legacy_rank_matrix=True),
+            known += (monk_dialogue_compat.gameplay_payload(legacy_rank_layout=True),
+                      monk_dialogue_compat.gameplay_payload(legacy_rank_matrix=True),
                       monk_dialogue_compat.gameplay_payload(legacy_ranking=True),
                       monk_dialogue_compat.gameplay_payload(legacy_portrait=True),
                       monk_dialogue_compat.gameplay_payload(legacy_room=True))
@@ -995,6 +1041,9 @@ def _collect_outputs(source_root: Path, furniture: bool, dungeon7: bool, revival
                 import prepare_monk_dialogue as dialogue
                 dialogue.verify(source_root)
                 data, row = patch_monk_dialogue(data)
+                if (source_root / 'game.exe').is_file():
+                    data, row = patch_chapter_dialogue(data)
+                    operations.append(row)
                 operations.append(row)
         if inventory_gift_display:
             data, row = patch_inventory_gift_display(data)

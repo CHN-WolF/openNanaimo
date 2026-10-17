@@ -17,9 +17,66 @@ catch (Exception ex) { Console.Error.WriteLine(ex); Environment.ExitCode = 1; }
 
 static async Task RunAsync(string[] args)
 {
+    if (args.Contains("--chapter-reward-matrix-self-test"))
+    {
+        await ChapterRewardMatrixChecks.RunAsync();
+        return;
+    }
+    if (args.Contains("--chapter-reward-self-test"))
+    {
+        await ChapterRewardChecks.RunAsync();
+        return;
+    }
+    if (args.Contains("--chapter-monk-self-test"))
+    {
+        await ChapterMonkChecks.RunAsync();
+        return;
+    }
+    if (args.Contains("--quest-catalog-probe"))
+    {
+        // Diagnostic: load the catalog from this build's 资源/数据 and report what
+        // the real parser accepted. Never starts a server or a worker.
+        QuestCatalog.StoryChaptersEnabled = !args.Contains("--no-story-chapters");
+        var chapterIds = new[] { 73_000_000u, 73_000_001u, 73_000_002u, 73_000_003u };
+        var chapters = chapterIds.Select(id => QuestCatalog.TryGetQuest(id, out var quest)
+            ? new
+            {
+                quest_id = id,
+                objectives = quest.Objectives.Select(objective => new
+                {
+                    objective_id = objective.ObjectiveId,
+                    objective_type = objective.ObjectiveType
+                }).ToArray(),
+                reward_text_id = quest.RewardTextId,
+                rewards = quest.Rewards.Select(reward => new[]
+                {
+                    (long)reward.RewardType, reward.RewardCode, reward.Amount
+                }).ToArray()
+            }
+            : null).ToArray();
+        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+        {
+            schema = "openNanaimo.quest-catalog-probe.v1",
+            story_chapters = QuestCatalog.StoryChaptersEnabled,
+            quests = QuestCatalog.Quests.Count,
+            scrolls = QuestCatalog.Scrolls.Count,
+            mainline = QuestCatalog.MainLineQuestIds.Count,
+            objectives = QuestCatalog.Quests.Sum(quest => quest.Objectives.Count),
+            chapters
+        }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+        return;
+    }
     if (args.Contains("--chapter-story-reward-audit"))
     {
         ChapterStoryRewardAudit.Run();
+        return;
+    }
+    if (args.Contains("--chapter-story-reward-review"))
+    {
+        var at = Array.IndexOf(args, "--chapter-story-reward-review");
+        if (at < 0 || at + 1 >= args.Length)
+            throw new ArgumentException("--chapter-story-reward-review needs an output path.");
+        ChapterStoryRewardAudit.Run(Path.GetFullPath(args[at + 1]));
         return;
     }
     if (args.Contains("--chapter-story-self-test"))
@@ -273,6 +330,31 @@ bindAddressText = bindAddress.ToString();
 bool unlockAllDungeons = ReadProfileBoolean(profile, "unlock_all_dungeons", defaultValue: true);
 bool requireMonkTravel = args.Contains("--require-monk-travel")
     || ReadProfileBoolean(profile, "require_monk_village_travel", defaultValue: false);
+// Candidate chapter rows stay off unless the operator asks for them; the
+// shipped catalog is validated exactly while this is false. The launcher
+// rewrites the profile on every start, so the switch also lives in files it
+// does not touch: <data>/story_chapters.flag and story_chapters_start.flag.
+bool storyChaptersOn = !args.Contains("--no-story-chapters")
+    && (args.Contains("--story-chapters")
+        || ReadProfileBoolean(profile, "story_chapters", defaultValue: false)
+        || File.Exists(Path.Combine(data, "story_chapters.flag")));
+QuestCatalog.StoryChaptersEnabled = storyChaptersOn;
+bool storyChaptersStart = !args.Contains("--no-story-chapters")
+    && (args.Contains("--story-chapters-start")
+        || ReadProfileBoolean(profile, "story_chapters_start", defaultValue: false)
+        || File.Exists(Path.Combine(data, "story_chapters_start.flag")));
+var rewardReview = Option("--story-chapters-reward", ReadProfileValue(profile, "story_chapters_reward") ?? "");
+if (rewardReview.Length == 0)
+{
+    // Same pattern as the story-chapter flags: the launcher rewrites the profile on
+    // every start, so a reviewed reward file dropped into the data directory has to
+    // be honoured without an argument.
+    var reviewedFile = Path.Combine(data, "chapter_reward_review.json");
+    if (File.Exists(reviewedFile)) rewardReview = reviewedFile;
+}
+var storyChapterRewards = rewardReview.Length == 0
+    ? Array.Empty<ChapterRewardReview>()
+    : ChapterRewardReviewFile.Load(Path.GetFullPath(rewardReview));
 int loginPort = int.Parse(Option("--login-port", "11005"));
 int worldPort = int.Parse(Option("--world-port", "12050"));
 int profilePort = int.Parse(Option("--profile-port", "11999"));
@@ -345,7 +427,10 @@ try
     await using var rooms = new NativeDungeonPool(native, Path.Combine(data, "native-rooms"));
     await using var host = new NetworkAdapterService(database, message => Console.WriteLine($"{DateTime.Now:O} {message}"), data)
     { NativeDungeonEnabled = true, UnlockAllDungeons = unlockAllDungeons,
-      RequireMonkChallengeForVillageTravel = requireMonkTravel, NativeJournalDirectory = journal, NativeRooms = rooms };
+      RequireMonkChallengeForVillageTravel = requireMonkTravel,
+      StoryChaptersAutoStart = storyChaptersStart,
+      StoryChapterRewards = storyChapterRewards,
+      NativeJournalDirectory = journal, NativeRooms = rooms };
     await host.StartAsync(new AdapterOptions { BindAddress = bindAddressText, GameAdapterPort = loginPort, WorldAdapterPort = worldPort },
         new[] { new AdapterEndpoint { Id = 1, Host = bindAddressText, Port = worldPort } }, stop.Token);
     var profiles = host.RunLocalProfileListenerAsync(bindAddress, profilePort, stop.Token, Path.GetDirectoryName(profile)!);
@@ -379,6 +464,22 @@ finally
 }
 }
 
+static string? ReadProfileValue(string path, string key)
+{
+    if (!File.Exists(path)) return null;
+    foreach (var raw in File.ReadLines(path))
+    {
+        var line = raw.Trim();
+        if (line.Length == 0 || line[0] is '#' or ';') continue;
+        var separator = line.IndexOf('=');
+        if (separator <= 0 || !string.Equals(line[..separator].Trim(), key, StringComparison.OrdinalIgnoreCase))
+            continue;
+        var value = line[(separator + 1)..].Trim();
+        return value.Length == 0 ? null : value;
+    }
+    return null;
+}
+
 static bool ReadProfileBoolean(string path, string key, bool defaultValue)
 {
     if (!File.Exists(path)) return defaultValue;
@@ -404,3 +505,5 @@ static async Task WaitForStopAsync(string path, CancellationToken token)
     while (!File.Exists(path)) await Task.Delay(250, token);
     File.Delete(path);
 }
+
+

@@ -119,6 +119,11 @@ STORY_SOURCES = {
     'scripts/prepare_story_portraits.py', 'scripts/audit_story_localization.py',
     'scripts/install_story_portraits.py',
     'scripts/generate_inventory_card_catalog.py',
+    'manifest/chapter_dialogue_triggers.json',
+    'scripts/chapter_dialogue_patch.py', 'scripts/chapter_window_probe.py',
+    'scripts/story_qt_patch.py', 'scripts/story_qs_patch.py',
+    'scripts/test_chapter_dialogue_patch.py',
+    'scripts/test_story_qt_patch.py', 'scripts/test_story_qs_patch.py',
 }
 # This is only a rejection aid; NOT a privacy certification. Exact-byte human review
 # remains mandatory for every payload, especially knowledge and protocol fixtures.

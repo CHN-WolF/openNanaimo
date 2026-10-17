@@ -13,7 +13,50 @@ internal sealed record ChapterRewardPlan(long Hans, long Experience,
 
 internal static class ChapterRewardPolicy
 {
+    // The CN client splits costumes by gender. The reward package stores the
+    // female piece; a male character receives the mirrored id instead. Pairs are
+    // the ones the client catalogue actually ships (the admiral set has no female
+    // hat, so the female head piece is the military cap).
+    private static readonly (uint Female, uint Male)[] GenderedGrants =
+    [
+        (10010116u, 10110107u),   // 女提督上衣 / 提督上衣
+        (10020116u, 10120107u),   // 女提督下衣 / 提督下衣
+        (10030079u, 10130113u),   // 女军人帽子 / 贝雷帽
+        (10050065u, 10150065u),   // 水晶魔法棒 (15 days)
+        (10060004u, 10160004u),   // 炎炎火花 (15 days)
+        (10069201u, 10169201u),   // 秘密关卡免费券 (1 day)
+    ];
+
+    internal static IReadOnlyList<ChapterSourceReward> ForGender(
+        IReadOnlyList<ChapterSourceReward> grants, bool male)
+    {
+        var swapped = new List<ChapterSourceReward>(grants.Count);
+        foreach (var grant in grants)
+        {
+            var code = grant.Code;
+            foreach (var pair in GenderedGrants)
+                if (grant.Kind == 4 && (code == pair.Female || code == pair.Male))
+                {
+                    code = male ? pair.Male : pair.Female;
+                    if (!ShopCatalog.TryGet(grant.Code, out var source)
+                        || !ShopCatalog.TryGet(code, out var target)
+                        || source.Section != target.Section || source.DurationDays != target.DurationDays)
+                        throw new InvalidDataException("Invalid chapter reward gender pair");
+                    break;
+                }
+            swapped.Add(code == grant.Code ? grant : grant with { Code = code });
+        }
+        return swapped;
+    }
+
     internal static string PackageSha256 { get; } = HashPackage();
+
+    // Episode 5's source reward is a one-day trial set. CN has only permanent
+    // rows for these appearances; the chapter grants a timed instance of them.
+    internal static ushort DurationDays(uint quest, ChapterSourceReward reward)
+        => quest == StoryChapterCatalog.FirstQuestId + 4 && reward.Kind == 4 ? (ushort)1
+            : reward.Kind is 2 or 4 && ShopCatalog.TryGet(reward.Code, out var item)
+                ? item.DurationDays : (ushort)0;
 
     private static string HashPackage()
     {
@@ -53,8 +96,10 @@ internal static class ChapterRewardPolicy
                     grants.Add(r);
                     break;
                 case 2 or 4 when !CardCatalog.TryGet(r.Code, out _) && ShopCatalog.TryGet(r.Code, out var item)
-                    && r.Amount <= ushort.MaxValue && days[i] == item.DurationDays
-                    && (!item.HasExpiry || days[i] > 0):
+                    && r.Amount <= ushort.MaxValue && days[i] == DurationDays(quest, r)
+                    // Permanent clothing still has a wire expiration field; its zero-day
+                    // catalog term is encoded by the inventory owner as PermanentExpiration.
+                    && (!item.HasExpiry || days[i] > 0 || item.Section == InventorySection.Clothing):
                     grants.Add(r);
                     break;
                 default:

@@ -7,9 +7,9 @@ are copied from an explicit reference quest or left at the shipped CN default,
 never invented, and every one of them is listed in the report. Both
 `activation_allowed` and `runtime_acceptance` stay false.
 
-Layout evidence:
+CN layout contract:
   CN objective row = 27 fields. Fields 0..16 are read by the adapter parser
-  (manifest/QuestCatalog.cs); fields 17..26 are zero in all 357 shipped rows.
+  (CN task parser); fields 17..26 are zero in all 357 shipped rows.
   CN quest header = 22 fields. Id, type, title and description-QS positions are
   proven by the same parser; the remaining positions are not.
 
@@ -43,6 +43,9 @@ KR_QUEST_HEAD = 24
 TAIL_FIRST, TAIL_LAST = 17, 26
 SCRIPT_SLOT_MIN, SCRIPT_SLOT_MAX = 17, 26
 OBJECTIVE_TYPE_DIALOGUE, OBJECTIVE_TYPE_DUNGEON, OBJECTIVE_TYPE_MONK = 39, 40, 1
+# The CN table never uses 39/40: its own talk objective is type 1 (mainline
+# rows 75000000..75000038). Written objectives therefore carry the CN code.
+CN_OBJECTIVE_TYPE_DIALOGUE = 1
 EXPECTED_KINDS = ((39, 40, 39), (39, 40, 39, 1))
 # CN quest header positions taken verbatim from --reference-quest.
 TEMPLATE_QUEST_SLOTS = (3, 5, 6)
@@ -174,7 +177,10 @@ def load_localization(path: Path) -> dict:
     titles = {row['quest_id']: row for row in data['titles']}
     names = {row['objective_id']: row for row in data['objective_names']}
     require(len(titles) == 16 and len(names) == 52, 'Localization coverage differs')
-    return dict(titles=titles, names=names, sha256=digest(path.read_bytes()))
+    from prepare_story_port import unique
+    mappings = unique(data.get('reward_mappings', []), 'quest_id')
+    require(set(mappings) <= set(titles), 'Unknown chapter reward mapping')
+    return dict(titles=titles, names=names, reward_mappings=mappings, sha256=digest(path.read_bytes()))
 
 
 def load_catalog(path: Path) -> dict:
@@ -215,6 +221,12 @@ def objective_row(kr: list[str], name: str, script_slot: int, provenance: list[d
     if kind == OBJECTIVE_TYPE_DIALOGUE:
         require(10000 <= script < 10032, 'Chapter dialogue script differs')
         row[script_slot] = kr[19]
+        # The CN client knows its own talk objective: the shipped mainline rows
+        # use type 1 with the NPC code in field 4, and the KR code 39 never
+        # appears in the shipped table, so the client cannot react to it. Zero
+        # means "the quest's own NPC", exactly like 75000000 与尼莫对话.
+        row[2] = str(CN_OBJECTIVE_TYPE_DIALOGUE)
+        row[4] = '0'
     elif kind == OBJECTIVE_TYPE_MONK:
         # The CN monk subsystem owns 24000..24003; never project the KR script id.
         require(10032 <= script < 10036, 'KR monk reference script differs')
@@ -296,6 +308,9 @@ def plan(cn_text: str, catalog: dict, localization: dict, chapters: list[int],
         if not title['approved'] and not allow_unreviewed:
             raise ValueError('Unreviewed title for %d; pass --allow-unreviewed' % quest_id)
         quest = quest_row(chapter, template, next_index, title['translation_zh'], provenance)
+        from prepare_story_port import mapped_rewards
+        quest['rewards'] = [[str(value) for value in row] for row in
+                            mapped_rewards(chapter, localization.get('reward_mappings', {}).get(quest_id))]
         for objective_id in chapter['objective_ids']:
             require(objective_id not in shipped_objectives,
                     'Objective %d already exists in the CN table' % objective_id)
@@ -309,7 +324,8 @@ def plan(cn_text: str, catalog: dict, localization: dict, chapters: list[int],
         new_quests.append(quest)
         next_index += 1
 
-    candidate = dict(header=list(table['header']),
+    candidate = dict(header=[table['header'][0], table['header'][1],
+                             str(len(table['objectives']) + len(new_objectives))],
                      objectives=list(table['objectives']) + new_objectives,
                      quests=list(table['quests']) + new_quests)
     return dict(table=table, candidate=candidate, provenance=provenance, review_complete=reviewed,
@@ -335,7 +351,13 @@ def verify_appended(candidate: dict, table: dict, chapters: list[int], script_sl
         require(uint(quest['header'][1], 'quest type') == 2, 'Appended quest is not type 2')
         kinds = [uint(candidate['objectives'][index_of[objective_id]][2], 'objective type')
                  for objective_id in quest['objective_ids']]
-        require(any(tuple(kinds) == expected for expected in EXPECTED_KINDS), 'Objective kinds differ')
+        # The written rows carry the CN vocabulary: talk is type 1 there, the
+        # dungeon objective keeps the KR code that the host side still counts.
+        expected = (CN_OBJECTIVE_TYPE_DIALOGUE, OBJECTIVE_TYPE_DUNGEON,
+                    CN_OBJECTIVE_TYPE_DIALOGUE)
+        if chapter_objective_count(episode) == 4:
+            expected += (CN_OBJECTIVE_TYPE_DIALOGUE,)
+        require(tuple(kinds) == expected, 'Objective kinds differ')
         for objective_id in quest['objective_ids']:
             row = candidate['objectives'][index_of[objective_id]]
             require(all(row[slot] == '0' for slot in range(TAIL_FIRST, TAIL_LAST + 1)
@@ -387,6 +409,8 @@ def derive(client: Path, catalog_path: Path, localization_path: Path, chapters: 
             'Candidate objectives differ after re-read')
     require(reparsed['quests'] == planned['candidate']['quests'],
             'Candidate quests differ after re-read')
+    require(reparsed['header'] == planned['candidate']['header'],
+            'Candidate header differs after re-read')
     inputs = [dict(name=CN_QT_NAME, size=len(raw), sha256=digest(raw)),
               dict(name='catalog', size=catalog_path.stat().st_size, sha256=catalog['sha256']),
               dict(name='localization', size=localization_path.stat().st_size,

@@ -10,13 +10,15 @@ internal static class ChapterStoryChecks
         int checks=0;
         void Check(bool ok,string label) {if(!ok)throw new InvalidOperationException(label);checks++;}
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        QuestCatalog.StoryChaptersEnabled = true;
         var gbk=Encoding.GetEncoding(936,EncoderFallback.ExceptionFallback,DecoderFallback.ExceptionFallback);
         Check(StoryChapterCatalog.Chapters.Count==16,"16 chapters");
         Check(StoryChapterCatalog.Chapters.Sum(q=>q.ObjectiveIds.Count)==52,"52 objectives including reused monk references");
         Check(StoryChapterCatalog.Get(73000000).SourceRewards.SequenceEqual(new[]{
             new ChapterSourceReward(1,0,200),new ChapterSourceReward(6,13000020,10)}),"original episode1 reward triples retained");
         Check(QuestCatalog.MainLineQuestIds.SequenceEqual(Enumerable.Range(0,13).Select(i=>71_000_000u+(uint)i)),"medal chain unchanged");
-        Check(QuestCatalog.Quests.Count==217 && QuestCatalog.Scrolls.Count==204,"ordinary catalog unchanged");
+        Check(QuestCatalog.Quests.Count(q => q.QuestId < StoryChapterCatalog.FirstQuestId || q.QuestId > StoryChapterCatalog.LastQuestId)==217
+            && QuestCatalog.Scrolls.Count==204,"ordinary catalog unchanged");
         int speeches=0,pages=0;
         var s=ChapterStoryState.Start;
         foreach(var q in StoryChapterCatalog.Chapters.OrderBy(q=>q.Id))
@@ -46,15 +48,21 @@ internal static class ChapterStoryChecks
             Check(s.ObjectiveIndex==1,"entry advances one objective");
             Check(ChapterStoryPolicy.ConfirmDialogue(s,old.Revision,q.Episode*2-1)==s,"stale confirmation rejected");
             Check(ChapterStoryPolicy.ClearSettled(s,q.Episode,0)==s,"wrong episode rejected");
-            Check(ChapterStoryPolicy.ClearSettled(s,q.Episode-1,3)==s,"special dungeon rejected");
-            foreach(int dg in new[]{2,0,1})
+            var required = ChapterStoryPolicy.RequiredDungeonCount(q.Episode);
+            Check(ChapterStoryPolicy.ClearSettled(s,q.Episode-1,required)==s,"dungeon beyond the episode count rejected");
+            for (var dg = required - 1; dg >= 0; dg--)
             {
                 s=ChapterStoryPolicy.ClearSettled(s,q.Episode-1,dg);
                 Check(ChapterStoryPolicy.ClearSettled(s,q.Episode-1,dg)==s,"duplicate clear idempotent");
                 Check(ChapterStoryPolicy.Valid(s),"clear state valid");
             }
-            Check(s.ObjectiveIndex==2 && s.ClearMask==7,"three distinct dungeons required");
+            // Settling every dungeon records the mask but keeps objective 1: the
+            // exit dialogue plays only when the player walks back into the room.
+            Check(s.ObjectiveIndex==1 && s.ClearMask==15 && ChapterStoryPolicy.HasCleared(s.ClearMask,q.Episode),
+                "all settled bits retained, super boss permits exit room");
             Check(ChapterStoryPolicy.AfterRewardTransaction(s,s.Revision)==s,"no early reward");
+            s=ChapterStoryPolicy.ConfirmDialogue(s,s.Revision,q.Episode*2-1);
+            Check(s.ObjectiveIndex==2 && s.RewardPending==(q.ExistingMonkMask==0),"exit opens and ordinary chapter becomes claimable");
             s=ChapterStoryPolicy.ConfirmDialogue(s,s.Revision,q.Episode*2-1);
             if(q.ExistingMonkMask!=0)
             {
@@ -125,20 +133,29 @@ internal static class ChapterStoryChecks
             await controller.EnterSceneAsync(1);
             Check(!await controller.SettleBattleAsync(token,settlement),"old scene settlement denied");
             Check(await controller.BeginBattleAsync(1,0,0)==null,"battle epoch cannot replay");
-            for(int dg=0;dg<3;dg++)
+            var requiredDungeons = ChapterStoryPolicy.RequiredDungeonCount(
+                StoryChapterCatalog.Get(73_000_000).Episode);
+            for(int dg=0;dg<requiredDungeons;dg++)
             {
                 uint epoch=(uint)(dg+2);token=(await controller.BeginBattleAsync(epoch,0,dg))!.Value;
                 var clear=new NativeQuestSettlement(0,2,dg,100){Authoritative=true,BattleEpoch=epoch};
                 Check(await controller.SettleBattleAsync(token,clear),"authoritative settlement persists");
                 Check(!await controller.SettleBattleAsync(token,clear),"settlement token one-shot");
             }
+            // Settling every dungeon only records the mask; the exit dialogue needs
+            // the player back in the episode's dungeon room (page 31 for chapter 1).
+            var settled=(await db.ReadChapterStoryAsync(account,character,session))!;
+            Check(settled.ObjectiveIndex==1
+                && settled.ClearMask==15 && ChapterStoryPolicy.HasCleared(settled.ClearMask,1),
+                "exit waits for the room");
+            var atRoom=await db.ApplyChapterDialogueAsync(account,character,session,settled.QuestId,
+                settled.Revision,StoryChapterCatalog.Get(settled.QuestId).Episode*2-1);
+            Check(atRoom is not null && atRoom.ObjectiveIndex==2,"room entry opens the exit");
             Check((await db.ReadChapterStoryAsync(account,character,session))!.ObjectiveIndex==2,"exit ready");
-            d=(await controller.BeginDialogueAsync("测试角色"))!.Value;
-            for(int i=0;i<d.Pages.Count;i++)Check(await controller.AcknowledgePageAsync(d.Token,i),"exit page");
             var pending=(await db.ReadChapterStoryAsync(account,character,session))!;
             Check(pending.RewardPending && pending.QuestId==73000000,"unmapped rewards fail closed");
             Check(await controller.BeginDialogueAsync("测试角色")==null,"pending reward no repeat dialogue");
-            await Execute("UPDATE CharacterChapterStory SET QuestId=73000007,ObjectiveIndex=3,ClearMask=7,RewardPending=0,Revision=100 WHERE CharacterId=$id");
+            await Execute("UPDATE CharacterChapterStory SET QuestId=73000007,ObjectiveIndex=3,ClearMask=8,RewardPending=0,Revision=100 WHERE CharacterId=$id");
             Check(!(await db.RefreshChapterMonkAsync(account,character,session,73000007,100))!.RewardPending,"missing monk progress rejected");
             await db.InitializeMonkChallengesAsync();
             Check(!(await db.RefreshChapterMonkAsync(account,character,session,73000007,100))!.RewardPending,"missing monk row rejected");
@@ -154,7 +171,7 @@ internal static class ChapterStoryChecks
                 string schema=(string)(await command.ExecuteScalarAsync())!;
                 using var transaction=connection.BeginTransaction();command.Transaction=transaction;
                 command.CommandText="ALTER TABLE CharacterChapterStory RENAME TO ChapterStoryFixture;"+
-                    schema.Replace("BETWEEN 73000000 AND","BETWEEN 73000004 AND")+";"+
+                    schema.Replace("BETWEEN 73000000 AND","BETWEEN 73000004 AND").Replace("ClearMask BETWEEN 0 AND 15","ClearMask BETWEEN 0 AND 7")+";"+
                     "INSERT INTO CharacterChapterStory SELECT * FROM ChapterStoryFixture; DROP TABLE ChapterStoryFixture;";
                 await command.ExecuteNonQueryAsync();await transaction.CommitAsync();
             }

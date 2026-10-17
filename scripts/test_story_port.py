@@ -140,6 +140,25 @@ class StoryPortChecks(unittest.TestCase):
                 inputs=[],files=[dict(path='catalog.json',size=len(raw),sha256='0'*64)])))
             with self.assertRaisesRegex(ValueError,'identity'):port.load_catalog(root)
     def test_deterministic(self):self.assertEqual(catalog.encoded(self.compile()),catalog.encoded(self.compile()))
+    def test_cn_reward_mapping_survives_regeneration(self):
+        q=self.c['chapters'][0]
+        q['rewards']=[[4,10019997,1]]
+        self.local['reward_mappings']=[dict(quest_id=q['id'],source_rewards=q['rewards'],cn_rewards=[[4,10010116,1]])]
+        compiled=self.compile()
+        self.assertEqual(compiled['chapters'][0]['source_rewards'],[[4,10010116,1]])
+        self.assertFalse(compiled['chapters'][0]['rewards_resolved'])
+        self.assertFalse(compiled['activation_allowed'])
+    def test_stale_or_changed_reward_mapping_rejected(self):
+        q=self.c['chapters'][0]
+        q['rewards']=[[4,10019997,1]]
+        for source, grants in [([[4,1,1]],[[4,10010116,1]]),
+                               (q['rewards'],[[4,10010116,2]]),
+                               (q['rewards'],[[6,13000001,1]]),
+                               (q['rewards'],[]),
+                               (q['rewards'],[[4,True,1]])]:
+            with self.subTest(source=source,grants=grants):
+                self.local['reward_mappings']=[dict(quest_id=q['id'],source_rewards=source,cn_rewards=grants)]
+                with self.assertRaises(ValueError):self.compile()
     def test_local_candidate(self):
         root=Path(__file__).resolve().parents[1]
         supplied=os.environ.get('NANAIMO_STORY_CATALOG')

@@ -43,10 +43,12 @@ internal sealed class ChapterStorySession
             long epoch=sceneEpoch;int? location=scene;
             var state=await database.ReadChapterStoryAsync(account,character,session);
             if (epoch!=sceneEpoch || location is null || state is null || state.RewardPending || state.Finished
-                || state.ObjectiveIndex is not (0 or 2)) return null;
+                || state.ObjectiveIndex is not (0 or 1 or 2)) return null;
             var q=StoryChapterCatalog.Get(state.QuestId);
-            if (q.Dialogue.Single(d=>d.ObjectiveIndex==state.ObjectiveIndex).SourceScene!=location) return null;
-            var pages=ChapterStoryPolicy.Pages(q,state.ObjectiveIndex,name);
+            if (state.ObjectiveIndex == 1 && !ChapterStoryPolicy.HasCleared(state.ClearMask, q.Episode)) return null;
+            var phase = state.ObjectiveIndex == 1 ? 2 : state.ObjectiveIndex;
+            if (q.Dialogue.Single(d=>d.ObjectiveIndex==phase).SourceScene!=location) return null;
+            var pages=ChapterStoryPolicy.Pages(q,phase,name);
             var token=Guid.NewGuid(); dialogue=new(token,state.QuestId,state.Revision,epoch,location.Value,pages,0);
             return (token,pages);
         }
@@ -61,7 +63,7 @@ internal sealed class ChapterStorySession
             if (d is null || d.Token!=token || d.SceneEpoch!=sceneEpoch || d.Scene!=scene || d.Page!=page) return false;
             var state=await database.ReadChapterStoryAsync(account,character,session);
             if (state is null || state.QuestId!=d.Quest || state.Revision!=d.Revision
-                || state.RewardPending || state.Finished || state.ObjectiveIndex is not (0 or 2))
+                || state.RewardPending || state.Finished || state.ObjectiveIndex is not (0 or 1 or 2))
             { dialogue=null; return false; }
             if (page+1<d.Pages.Count) {dialogue=d with {Page=page+1};return true;}
             dialogue=null;
@@ -75,7 +77,7 @@ internal sealed class ChapterStorySession
         await serial.WaitAsync();
         try
         {
-            if (epoch==0 || epoch<=lastBattleEpoch || dungeon is <0 or >2) return null;
+            if (epoch==0 || epoch<=lastBattleEpoch || dungeon is <0 or >3) return null;
             long current=sceneEpoch;
             var state=await database.ReadChapterStoryAsync(account,character,session);
             if (current!=sceneEpoch || state is null || state.ObjectiveIndex!=1 || state.RewardPending || state.Finished

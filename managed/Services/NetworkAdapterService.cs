@@ -481,6 +481,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         public bool DungeonRunRevived { get; set; }
         public bool DungeonRunStarted { get; set; }
         public bool QuestCompletionNoticePending { get; set; }
+        // The CN client only rebuilds its task records when it receives C59C, so a
+        // chapter advance asks the C367 handler to push a fresh task list.
+        public bool ChapterTaskListDirty { get; set; }
         public int DungeonRunStartLevel { get; set; }
         public int QuestClearEpisode { get; set; } = -1;
         public int QuestClearDifficulty { get; set; } = -1;
@@ -2946,6 +2949,61 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 // C599 is 88 bytes, but only the first eight payload bytes are stable
                 // task fields. Original-server captures carry non-zero opaque tail bytes.
                 await EvaluateSessionQuestsAsync(session, token);
+                // A chapter task lives in the fixed type-2 slot, which the ordinary
+                // completion query never reads, so a claim on it goes through the
+                // reviewed chapter reward transaction instead.
+                if (QuestCatalog.StoryChaptersEnabled
+                    && questId >= StoryChapterCatalog.FirstQuestId
+                    && questId <= StoryChapterCatalog.LastQuestId)
+                {
+                    var chapterState = await _database.ReadChapterStoryAsync(
+                        session.AccountId, session.Character.Id, session.SessionId,
+                        explicitlyStart: false, token);
+                    if (chapterState is not null && chapterState.QuestId == questId
+                        && taskType == 2 && runtimeStateValue == 0)
+                        chapterState = await RefreshSessionChapterMonkAsync(session, chapterState, token);
+                    if (chapterState is { RewardPending: true, Finished: false }
+                        && chapterState.QuestId == questId && taskType == 2 && runtimeStateValue == 0)
+                    {
+                        var claim = await ClaimChapterRewardAsync(session, chapterState, token);
+                        var claimed = claim.Status == ChapterClaimStatus.Claimed ? claim.State : null;
+                        if (claimed is not null)
+                        {
+                            await RefreshSessionCharacterAsync(session, token);
+                            session.QuestCompletionNoticePending = false;
+                            AccountStateChanged?.Invoke();
+                        }
+                        _log($"{channel}:{remote} chapter reward claim: quest={questId} "
+                            + $"result={claim.Status} next={claimed?.QuestId}");
+                        var claimTasks = await _database.GetCharacterTasksAsync(
+                            session.AccountId, session.Character.Id, session.SessionId, token);
+                        var claimFrames = new List<byte[]>
+                        {
+                            BuildNativeFrame(frame, 0xC59A,
+                                BuildTaskCompletionResultPayload(claimed is not null, questId,
+                                    session.Character, claimed is not null, taskType,
+                                    failureResult: claim.Status == ChapterClaimStatus.CapacityExceeded ? (byte)3 : (byte)1), session),
+                            BuildNativeFrame(frame, 0xC430, BuildGameInventoryPayload(session.Character), session),
+                            BuildNativeFrame(frame, 0xC379,
+                                BuildBoxInfoPayloadWithSkills(session.Character,
+                                    await _database.GetCharacterSkillsAsync(session.Character.Id, token)), session),
+                        };
+                        if (claim.Status == ChapterClaimStatus.ReviewRequired)
+                            claimFrames.Add(BuildNativeFrame(frame, 0xCB25,
+                                PrivateChatProtocol.BuildMessage("系统通知", "奖励未审核或失效，进度已保留"), session));
+                        // No C59D here: it makes the client raise a second, plain-text
+                        // completion notice on top of the C59A reward window the player
+                        // just used, so one confirmation is enough.
+                        claimFrames.Add(BuildNativeFrame(frame, 0xC59C,
+                            BuildTaskListPayload(claimTasks, unsolicitedPush: true), session));
+                        return CombineNativeFrames(claimFrames.ToArray());
+                    }
+                    _log($"{channel}:{remote} chapter reward rejected: requested={questId} current={chapterState?.QuestId} "
+                        + $"pending={chapterState?.RewardPending} finished={chapterState?.Finished}");
+                    return BuildNativeFrame(frame, 0xC59A,
+                        BuildTaskCompletionResultPayload(false, questId, session.Character, false, taskType,
+                            failureResult: 1), session);
+                }
                 var completion = await _database.CompleteQuestTaskAsync(
                     session.AccountId,
                     session.Character.Id,
@@ -5058,6 +5116,10 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 session.TownPage = transition.Page;
                 session.Character.CurrentMapId = townId;
                 session.Character.CurrentTownPage = transition.Page;
+                // Candidate chapter policy: the CN client cannot confirm a
+                // chapter dialogue, so arriving in the chapter's village is the
+                // observable event that stands in for it.
+                await ObserveChapterTownAsync(session, townId, session.TownPage, token);
                 // C365 runs while the old village actor/controller is being torn
                 // down. Its X/Y describe transient transport context, not the new
                 // actor's authoritative landing point. Preserve the last legal
@@ -5155,6 +5217,10 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         ? $"{channel}:{remote} C367 village-entry sentinel normalized: town={session.TownId} room={effectiveRoomIndex} requested=({requestedPositionX},{requestedPositionY}) position=({entryPosition.WireX},{entryPosition.WireY}); FFFF/FFFF and legacy 03FF/03FF are not persisted"
                         : $"{channel}:{remote} C367 accepted village-entry position: room={effectiveRoomIndex} position=({entryPosition.WireX},{entryPosition.WireY})");
                 await CompleteTownPetSceneOnActivityAsync(session, token);
+                // The tutorial-to-village transition only sends C367 room entries
+                // (no C365), so the chapter dialogue confirmation has to watch the
+                // room entry too; the observer is idempotent per objective.
+                await ObserveChapterTownAsync(session, session.TownId, effectiveRoomIndex, token);
                 var townActor = BuildNativeFrame(
                     frame,
                     0xC368,
@@ -5165,6 +5231,24 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         entryPosition.WireY,
                         session.NonCombatResourceSnapshot),
                     session);
+                // The CN client rebuilds task records only when it receives C59C,
+                // and a chapter advance on this entry must reach it or the client
+                // never sees the objective edge. The client patch in
+                // chapter_dialogue_patch.py skips the window create path, so this
+                // list rebuilds the records without opening the task panel.
+                if (session.ChapterTaskListDirty && session.Character is not null
+                    && session.NativeDungeon is null)
+                {
+                    session.ChapterTaskListDirty = false;
+                    var chapterTasks = await _database.GetCharacterTasksAsync(
+                        session.AccountId,
+                        session.Character.Id,
+                        session.SessionId,
+                        token);
+                    townActor = CombineNativeFrames(townActor,
+                        BuildNativeFrame(frame, 0xC59C, BuildTaskListPayload(chapterTasks, unsolicitedPush: true), session));
+                    _log($"{channel}:{remote} chapter task list pushed on room entry: character={session.Character.Id} tasks={chapterTasks.Count}");
+                }
                 if (!session.TownEquipmentInitializationPending || !session.Character.TutorialCompleted)
                     return townActor;
                 var initialSkills = await _database.GetCharacterSkillsAsync(session.Character.Id, token);
@@ -18069,7 +18153,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         return payload;
     }
 
-    private static byte[] BuildTaskListPayload(IReadOnlyList<CharacterTaskRecord> tasks)
+    private static byte[] BuildTaskListPayload(IReadOnlyList<CharacterTaskRecord> tasks,
+        bool unsolicitedPush = false)
     {
         // C59C reads a dword count at frame+8, up to ten 20-byte entries at
         // frame+12, and fixed slot-type 2/1 records at frame+212/+232.
@@ -18088,6 +18173,11 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         var fixedType1 = tasks.FirstOrDefault(task => task.SlotType == 1);
         if (fixedType1 is not null)
             WriteTaskRecord(payload.AsSpan(224, TaskRecordLength), fixedType1);
+        // The client ignores the last four bytes of a record. A pushed list marks
+        // them so its handler can rebuild the records without opening the panel;
+        // a reply to the player's own C59B leaves them zero and opens normally.
+        if (unsolicitedPush && fixedType2 is not null)
+            payload[204 + 16] = 1;
         return payload;
     }
 

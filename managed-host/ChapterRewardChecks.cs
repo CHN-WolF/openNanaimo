@@ -6,8 +6,7 @@ internal static class ChapterRewardChecks
     // Approvals here are synthetic test inputs. They do not review or enable shipped rewards.
     private static ChapterRewardReview Review(uint quest) => new(quest, ChapterRewardPolicy.PackageSha256,
         "host-fixture-only", true, StoryChapterCatalog.Get(quest).SourceRewards.ToArray(),
-        StoryChapterCatalog.Get(quest).SourceRewards.Select(r => r.Kind is 2 or 4 && ShopCatalog.TryGet(r.Code, out var item)
-            ? item.DurationDays : (ushort)0).ToArray());
+        StoryChapterCatalog.Get(quest).SourceRewards.Select(r => ChapterRewardPolicy.DurationDays(quest, r)).ToArray());
 
     internal static async Task RunAsync()
     {
@@ -26,7 +25,10 @@ internal static class ChapterRewardChecks
         Check(ChapterRewardPolicy.Resolve(first, review with { SourceRewards = [new(1, 0, 201), new(6, 13000020, 10)] }) is null,
             "changed amount denied");
         Check(ChapterRewardPolicy.Resolve(first, review with { DurationDays = [0, 1] }) is null, "card term denied");
-        Check(ChapterRewardPolicy.Resolve(first + 3, Review(first + 3)) is null, "one missing identity blocks whole reward");
+        Check(ChapterRewardPolicy.Resolve(first + 3, Review(first + 3)) is not null, "CN replacement identities resolve");
+        Check(ChapterRewardPolicy.Resolve(first + 3, Review(first + 3) with
+            { SourceRewards = [new(6, 13000111, 5), new(2, 19000006, 1), new(4, 10069204, 1)] }) is null,
+            "obsolete KR identity blocks whole reward");
         Check(ChapterRewardPolicy.Resolve(first + 7, Review(first + 7) with { DurationDays = [0, 0] }) is null,
             "pet duration must match reviewed catalog");
         foreach (var q in StoryChapterCatalog.Chapters)
@@ -39,6 +41,7 @@ internal static class ChapterRewardChecks
             File.WriteAllBytes(Path.Combine(root, "game.db"), []);
             var db = new DatabaseService(root);
             await db.InitializeAsync();
+            await db.InitializeMonkChallengesAsync();
             long account = await db.OpenLocalAccountAsync("chapter-reward-test");
             long character = await db.CreateLocalCharacterAsync(account, "ChapterReward", 1);
             string session = Guid.NewGuid().ToString("N");
@@ -55,8 +58,12 @@ internal static class ChapterRewardChecks
             await db.ReadChapterStoryAsync(account, character, session, true);
             async Task Pending(uint quest, long revision)
             {
-                int index = StoryChapterCatalog.Get(quest).ExistingMonkMask == 0 ? 2 : 3;
-                await Sql($"UPDATE CharacterChapterStory SET QuestId={quest},ObjectiveIndex={index},ClearMask=7,RewardPending=1,Finished=0,Revision={revision} WHERE CharacterId=$id");
+                var chapter = StoryChapterCatalog.Get(quest);
+                if (chapter.ExistingMonkMask != 0)
+                    await Sql($"INSERT INTO CharacterMonkChallenges VALUES($id,{chapter.ExistingMonkMask},'fixture') ON CONFLICT(CharacterId) DO UPDATE SET ClearMask={chapter.ExistingMonkMask}");
+                int index = chapter.ExistingMonkMask == 0 ? 2 : 3;
+                var mask = ChapterStoryPolicy.RequiredDungeonMask(chapter.Episode);
+                await Sql($"UPDATE CharacterChapterStory SET QuestId={quest},ObjectiveIndex={index},ClearMask={mask},RewardPending=1,Finished=0,Revision={revision} WHERE CharacterId=$id");
             }
             async Task<ChapterClaimResult> Claim(uint quest, long revision, ChapterRewardReview? r)
                 => await db.ClaimChapterRewardsAsync(account, character, session, quest, revision, r);
@@ -188,7 +195,8 @@ internal static class ChapterRewardChecks
                 "successful session reward cannot replay");
 
             await Pending(first + 3, 30);
-            Check((await Claim(first + 3, 30, Review(first + 3))).Status == ChapterClaimStatus.ReviewRequired, "missing identity rejects whole chapter");
+            Check((await Claim(first + 3, 30, Review(first + 3) with { Approved = false })).Status == ChapterClaimStatus.ReviewRequired,
+                "missing approval rejects whole chapter even with resolved identities");
             Check(await Sql("SELECT COUNT(*) FROM CharacterCards WHERE CharacterId=$id AND CardCode=13000111") == 0,
                 "supported member of unresolved batch not granted");
             await Pending(first + 10, 40);
@@ -214,6 +222,51 @@ internal static class ChapterRewardChecks
             Check((await Claim(StoryChapterCatalog.LastQuestId, 60, Review(StoryChapterCatalog.LastQuestId))).Status
                 == ChapterClaimStatus.AlreadyClaimed, "terminal retry idempotent");
             Check(await Sql("SELECT COUNT(*) FROM CharacterStoryClaims WHERE CharacterId=$id") == 0, "medal claim ledger untouched");
+
+            uint trialQuest = first + 4;
+            Check(ChapterRewardPolicy.Resolve(trialQuest, Review(trialQuest) with { DurationDays = [0, 0, 0, 0, 0] }) is null,
+                "episode5 permanent trial approval is rejected");
+            foreach (bool male in new[] { false, true })
+            foreach (uint? ownedExpiry in new uint?[] { null, ClothingExpirationTime.PermanentExpiration, 0 })
+            {
+                var codes = male ? new uint[] { 10110107, 10120107, 10130113 }
+                    : new uint[] { 10010116, 10020116, 10030079 };
+                await Sql($"UPDATE Characters SET Gender={(male ? 1 : 0)} WHERE Id=$id");
+                await Sql("DELETE FROM CharacterChapterClaims WHERE CharacterId=$id AND QuestId IN(73000004,73000012,73000013,73000014)");
+                foreach (var code in codes)
+                {
+                    await Sql($"DELETE FROM CharacterItems WHERE CharacterId=$id AND ItemCode={code}");
+                    if (ownedExpiry.HasValue)
+                        await Sql($"INSERT INTO CharacterItems(CharacterId,ItemCode,Quantity,ItemExpiration,UpdatedAt) VALUES($id,{code},1,{ownedExpiry.Value},'fixture')");
+                }
+                await Pending(trialQuest, 1000);
+                var started = DateTime.Now;
+                Check((await Claim(trialQuest, 1000, Review(trialQuest))).Status == ChapterClaimStatus.Claimed,
+                    "episode5 grants one-day trial set");
+                foreach (var code in codes)
+                {
+                    var expiry = await Sql($"SELECT ItemExpiration FROM CharacterItems WHERE CharacterId=$id AND ItemCode={code}");
+                    Check(await Sql($"SELECT Quantity FROM CharacterItems WHERE CharacterId=$id AND ItemCode={code}") == 1,
+                        "trial never duplicates an existing garment");
+                    Check(ownedExpiry.HasValue ? expiry == ClothingExpirationTime.PermanentExpiration
+                        : expiry >= ClothingExpirationTime.Extend(0, 1, started)
+                          && expiry <= ClothingExpirationTime.Extend(0, 1, DateTime.Now),
+                        "trial lasts one day and never downgrades owned permanent or legacy clothing");
+                }
+                Check((await Claim(trialQuest, 1000, Review(trialQuest))).Status == ChapterClaimStatus.AlreadyClaimed,
+                    "trial claim replay cannot extend expiration");
+                for (int piece = 0; piece < codes.Length; piece++)
+                {
+                    uint quest = first + 12 + (uint)piece;
+                    await Pending(quest, 1100 + piece);
+                    Check((await Claim(quest, 1100 + piece, Review(quest))).Status == ChapterClaimStatus.Claimed,
+                        "later chapter grants permanent garment");
+                    Check(await Sql($"SELECT Quantity FROM CharacterItems WHERE CharacterId=$id AND ItemCode={codes[piece]}") == 1
+                        && await Sql($"SELECT ItemExpiration FROM CharacterItems WHERE CharacterId=$id AND ItemCode={codes[piece]}")
+                            == ClothingExpirationTime.PermanentExpiration,
+                        "later reward upgrades same inventory row to permanent without a duplicate");
+                }
+            }
         }
         finally { SqliteConnection.ClearAllPools(); Directory.Delete(root, true); }
         Console.WriteLine($"CHAPTER_REWARD_CHECKS_OK assertions={checks} approvals=host-fixtures-only runtime_acceptance=false activation_allowed=false");

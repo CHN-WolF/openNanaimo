@@ -6,7 +6,7 @@
   "official_baseline_verified": false,
   "binary_delta_implemented": false,
   "complete_playable_game": false,
-  "source_closure_count_observed": 409,
+  "source_closure_count_observed": 419,
   "default_layers": [
     "runtime",
     "source",
@@ -254,8 +254,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/DIY/\u5730\u5bab/\u4fee\u9053\u50e7\u7ed3\u7b97\u4e0e\u8fdb\u5ea6.md",
       "layer": "knowledge",
-      "size": 8633,
-      "sha256": "4e326b40f4d4aed3041ef74e6976c65d43b1d20c736a098f8038ec504083070a",
+      "size": 9918,
+      "sha256": "6e78d33dfeb89f9292cfedd63c4a1616c96544e26c37d35d0283e2fe1c4ffa49",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -286,16 +286,16 @@
     {
       "path": "knowledge/\u4e1a\u52a1/DIY/\u5730\u5bab/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1795,
-      "sha256": "40b260692386ab76bf97066bb378a929c09a0e983e8ad5b72f08539732913418",
+      "size": 1810,
+      "sha256": "1f2f029d3791ff7e30156d91c752e6e7dcbf537a944497e39fffd5cb7b7e8169",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/DIY/\u5730\u5bab/\u8ba1\u5206\u677fDIY.md",
       "layer": "knowledge",
-      "size": 5251,
-      "sha256": "d2d2f9895fd0812ae6af0fb5c1856e413087df213e4dd359e5ceeabade9edd6f",
+      "size": 5282,
+      "sha256": "fadc913f4b6cf915761932a498af7e320a4c2c8da30af7188381438a7035bc21",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2038,24 +2038,32 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u4efb\u52a1/\u7a97\u53e3\u534f\u8bae\u4e0e\u5ba2\u6237\u7aef\u6d88\u8d39.md",
       "layer": "knowledge",
-      "size": 4217,
-      "sha256": "1176d0a70ede22d56a426bfe5832c3d80238577fa2885720cc9c74db135eb07e",
+      "size": 6798,
+      "sha256": "0dbad6d1b80e5d766db67507a6fd1a4b8b188bd86abc1178e1cba3e01aa84358",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u4efb\u52a1/\u7ae0\u8282\u5267\u60c5\u79fb\u690d\u8fdb\u5c55.md",
+      "layer": "knowledge",
+      "size": 10282,
+      "sha256": "8280008e797a3bd27bd56dcdfc857a13637a6071c224690a0e3cd3f7cb6a606e",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u4efb\u52a1/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1001,
-      "sha256": "75fd34a6a58336e325f25b96fb7c80da6ba7d74e0fb3e3abb934033b0fdd151f",
+      "size": 1255,
+      "sha256": "99bd8523c38a48a9ac430c96d7fc7b9917ad3f884f9bdc3d7b7652ae6a151c7c",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u4efb\u52a1/\u97e9\u670d\u7ae0\u8282\u5267\u60c5.md",
       "layer": "knowledge",
-      "size": 10889,
-      "sha256": "658212527a0a3b6c29a5736f19de52cab6492c1b3a4bab40952b5f1a4cb897ab",
+      "size": 11063,
+      "sha256": "1d21b3687e298e70320d55aeb08b42fda1b82438bc4e7de3071f68b3271206b2",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2878,8 +2886,8 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u8d44\u6e90\u5b89\u88c5/\u4e8b\u52a1\u4e0e\u6062\u590d.md",
       "layer": "knowledge",
-      "size": 6209,
-      "sha256": "407e16f40bc100a55ec99393c4cabdf80c546ee82f6a98c9b0b349225c4c4bcf",
+      "size": 7639,
+      "sha256": "3f156c885515b9252eb232eb313f825c898ae7b4aa9c218e997b15a1be897ae6",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2982,8 +2990,8 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u9a8c\u8bc1\u72b6\u6001/\u4fee\u9053\u50e7\u6311\u6218\u9a8c\u6536.md",
       "layer": "knowledge",
-      "size": 4650,
-      "sha256": "2adc7ba7c424f8162c960b48ff49cae51afd6feb4a6d48a494f36f1290fc9560",
+      "size": 4893,
+      "sha256": "939723f23104a3c18f16cbee33b79c89b1e002be6747c22c069acc7096434b8d",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3022,16 +3030,16 @@
     {
       "path": "knowledge/\u5de5\u7a0b/\u9a8c\u8bc1\u72b6\u6001/\u7ae0\u8282\u5267\u60c5\u4e0e\u8de8\u6751\u95e8\u69db.md",
       "layer": "knowledge",
-      "size": 5371,
-      "sha256": "4618062414bca8ee08894e4afa996da690d1d92978a1a7849c765ba2a6c7af23",
+      "size": 6241,
+      "sha256": "873f06592ebe5ae01a8a245a177c02901925ef6338382cf492abdc8dffe65247",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u5de5\u7a0b/\u9a8c\u8bc1\u72b6\u6001/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1058,
-      "sha256": "25fc2b2655bc920622b77377f94579c3179a25aaeb17f3f7b7de41197e15a9fc",
+      "size": 1094,
+      "sha256": "b93f720af306a88b4b0fc0eed7fad80abff210da4c4726e3723dd24fbd30f61d",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3110,8 +3118,8 @@
     {
       "path": "knowledge/\u6307\u5357/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01.md",
       "layer": "knowledge",
-      "size": 3544,
-      "sha256": "f71b9f0b643fdd639cd376114d86547e3329a7686d698553a57de50a43832450",
+      "size": 3500,
+      "sha256": "fff2e88647d606c665947190500c48288f266be1f14201fbc4219ed310d37042",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3142,8 +3150,8 @@
     {
       "path": "knowledge/\u6307\u5357/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01/\u4fee\u9053\u50e7\u56db\u6751\u5bf9\u767d\u5b89\u88c5/\u5b89\u88c5\u4e0e\u6062\u590d.md",
       "layer": "knowledge",
-      "size": 7301,
-      "sha256": "36c2616a3699c25619d449048788d92a89afdf47da9b3dfc4b414d73d9c126ff",
+      "size": 7388,
+      "sha256": "4815a1cb23334886f16631769fd4415b26468ac1c663389103f2926431c04070",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3190,8 +3198,8 @@
     {
       "path": "knowledge/\u6307\u5357/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01/\u6311\u6218\u5355\u69fd\u8ba1\u5206\u677f\u5347\u7ea7.md",
       "layer": "knowledge",
-      "size": 4455,
-      "sha256": "a8a26051f42690673d469843f7e6c5061937fbc6483749960dc5b65508b14595",
+      "size": 5116,
+      "sha256": "a4a2481b108979fb3c1e92ac628f55a5b0076cbfe0f1a066f379a6ea6829233f",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3204,10 +3212,18 @@
       "approval": "required_per_file"
     },
     {
+      "path": "knowledge/\u6307\u5357/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01/\u7ae0\u8282\u8868\u4e0e\u5bf9\u767d\u5b89\u88c5.md",
+      "layer": "knowledge",
+      "size": 7663,
+      "sha256": "77e4f604089fe1005f2d1d89dcc1dcf6e16c2eafea2ded77da3fb6423afa811a",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "knowledge/\u6307\u5357/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1235,
-      "sha256": "88e46da30660e7a16c9d7977b29e858d1e26a78ccc2cba03fed76a6f4c9b3596",
+      "size": 1372,
+      "sha256": "6bce35d6d6e7198ce0caaa2f309983727f97f2a7c93623031f6b5cc84c792ae4",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3406,8 +3422,8 @@
     {
       "path": "knowledge/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 8342,
-      "sha256": "82036b0712abd0ee11a56f1d325a7bcfe759986d41dc1d78b84e0686d28e0101",
+      "size": 8851,
+      "sha256": "4650f9f83f11c1c0199c4b392dae422358f2fa6760d673214f07b076ce5004c1",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3540,26 +3556,42 @@
       "approval": "required_per_file"
     },
     {
+      "path": "managed-host/ChapterMonkChecks.cs",
+      "layer": "source",
+      "size": 17656,
+      "sha256": "2dd6e5e5abed5cdcb04a7e9bb56f18c551b280e411cff3d3adbe3ab6cf75b32f",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "managed-host/ChapterRewardChecks.cs",
       "layer": "source",
-      "size": 18171,
-      "sha256": "b060ec998c2d8c718fef3fa8ae9a7fa4c1221e2243fbe4b52681aaf89480aa74",
+      "size": 22129,
+      "sha256": "5e4904cf2c3a1b35a4bf7247836d573ef2ef390d1f6d24f2047acecf931ad713",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "managed-host/ChapterRewardMatrixChecks.cs",
+      "layer": "source",
+      "size": 10380,
+      "sha256": "f3a669a1132a603396c1971c59ac28a05fde863f93049f5c38198add4f501a48",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "managed-host/ChapterStoryChecks.cs",
       "layer": "source",
-      "size": 14547,
-      "sha256": "5fa3a6cf6c8a7a9e3f693fbb24fd168e996ce01ffc54ec3af209cdda7d6426ef",
+      "size": 16068,
+      "sha256": "b76f4e2b213d1dc7c1221bc115201dd9a91e5abc1ee85cc45751e2c162c832e9",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "managed-host/ChapterStoryRewardAudit.cs",
       "layer": "source",
-      "size": 2006,
-      "sha256": "ef2e43f2ec1d0bd53d3b8ecf6d968ca797a15509ea7cbfc90a72ba673f061eb0",
+      "size": 6147,
+      "sha256": "dd322f4461ff0d58930b33a40dc46a843c394ab9ed59015375f79769c4762920",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3870,8 +3902,8 @@
     {
       "path": "managed-host/Program.cs",
       "layer": "source",
-      "size": 15805,
-      "sha256": "8647f1e30db3b609d3f680d29c81904d974e04e6a91c2ae259ebfcee4ac503aa",
+      "size": 20380,
+      "sha256": "a1a9f9e4a20399b3388fac0e91d1776eeaaf2f4489245e0377de8fd0f7c8b3c4",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3886,16 +3918,16 @@
     {
       "path": "managed-host/QuestSystemChecks.cs",
       "layer": "source",
-      "size": 31230,
-      "sha256": "e4077ced1c8c4ba127f5e2c74220f04797395a7aaf3a01dec95d98dcddcfd4d9",
+      "size": 48389,
+      "sha256": "23df573b12124f7500359e2cb5d0caba9128b1679e86afecb251dee083e9b3fd",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "managed-host/Resources/client-compatibility.json",
       "layer": "source",
-      "size": 761047,
-      "sha256": "2e10aa6b291b3c2bd4ce95618c20cbc2f3e8b3a19450e89b1f2daf9c02f1f7ef",
+      "size": 1048631,
+      "sha256": "6c045c44c1f6d89ea9b17d4807ca3b02da3a58e0c850f539ae8f44b781b7b18b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4302,24 +4334,24 @@
     {
       "path": "managed/Services/ChapterRewardPolicy.cs",
       "layer": "source",
-      "size": 3359,
-      "sha256": "c7e8aa340bcbea18ccad6580489c95ebb703a78a769a835a57dab730486d374b",
+      "size": 5838,
+      "sha256": "85cf22060787746c0c36919ccd40a454a243d5f8ec327d110a214ccd45ec6f66",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "managed/Services/ChapterStoryPolicy.cs",
       "layer": "source",
-      "size": 5414,
-      "sha256": "7a801a8805bfe8dce9d62e5597751bb4f506c46dac9150332d2aceae0632e6f6",
+      "size": 8408,
+      "sha256": "ed898d54d5e8f98f01ea70d6f74986ea90f6dafa4a7d4fd2adeab3725f6f2f6d",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "managed/Services/ChapterStorySession.cs",
       "layer": "source",
-      "size": 6694,
-      "sha256": "ba334770aafd18527fc2fb36c5cdc89df9745aaa0605916d7452c4e268c8fe38",
+      "size": 6872,
+      "sha256": "93b50ce7ecf92e81ed6058aba329fe885c28a8da9e47c0e222eba25b5a953963",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4462,16 +4494,16 @@
     {
       "path": "managed/Services/DatabaseService.ChapterRewards.cs",
       "layer": "source",
-      "size": 8745,
-      "sha256": "f1bb5363b8460f8eeadfcf3bf6b8ff2bc152e8d3900fd53c26f96a8dec90fa33",
+      "size": 9263,
+      "sha256": "3ca0eed3b6a431fc771a9b01f4b024a5fc6398ff913a9984ae61eac2795ee271",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "managed/Services/DatabaseService.ChapterStory.cs",
       "layer": "source",
-      "size": 9518,
-      "sha256": "33b27e5dd8a6a0f9e50fecfcb843f5f00884f59006f99be544005b2d62d4f955",
+      "size": 15996,
+      "sha256": "5a16ecb0091cae2fbb2618dee6bc636827abc2bb42bd3c831b2362806d1ce2e1",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -4574,8 +4606,8 @@
     {
       "path": "managed/Services/DatabaseService.LuckyCards.cs",
       "layer": "source",
-      "size": 19032,
-      "sha256": "646f2044239a03873a21c74d8e15e741752a6ad815db95f6504e3822d50ea8cf",
+      "size": 19674,
+      "sha256": "a04635d31e62a06dec38970f4ce24892b0591fcb8303b4e8e304d02588ce349a",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5134,8 +5166,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.MonkTravel.cs",
       "layer": "source",
-      "size": 318,
-      "sha256": "697f866b71679061744c9d4dec390ecdc54951d95499c9fca9b61fb5548bf099",
+      "size": 935,
+      "sha256": "25204c17de62d342e2948a03b2ecfea7fe1f38367d169116c0038a3f175b8c0b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5150,8 +5182,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.NativeDungeon.cs",
       "layer": "source",
-      "size": 101579,
-      "sha256": "e66baea2ab29f1b37606b5653972147c51499850940babbca51caca2e8d67115",
+      "size": 103354,
+      "sha256": "d00a432645ee9dc4c2df78fa55bc332e9490ee6c342ee9628ecb088ef98cab21",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5246,8 +5278,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.QuestNotifications.cs",
       "layer": "source",
-      "size": 4719,
-      "sha256": "44597e55270a563ca9ba12357825e54ac10b92e1b7b7e21569409a3409bce15a",
+      "size": 15190,
+      "sha256": "0c4bb084ca415d8780eb6ae788f928c48b4110097df756f2eba8e3d3618db8f1",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5286,8 +5318,8 @@
     {
       "path": "managed/Services/NetworkAdapterService.cs",
       "layer": "source",
-      "size": 1013428,
-      "sha256": "caeec4e8d7a448ebe9a311d8a44200622bf2f10a44a5b367cdba1176bd224a5d",
+      "size": 1020083,
+      "sha256": "f70f8d24afd81ebf39e5fb9bc046e7a45a63451eb280672edf6ac974d97efd71",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5342,8 +5374,8 @@
     {
       "path": "managed/Services/QuestCatalog.cs",
       "layer": "source",
-      "size": 17537,
-      "sha256": "11250053e14f9332ae5e6614f06c8a5983a122c92662c546a6abe2d327d1bd7e",
+      "size": 22191,
+      "sha256": "152d54d3d3a68e686817c557f423c0796d1bab5a6acf08d904f6e48d0d4c7451",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5436,6 +5468,14 @@
       "approval": "required_per_file"
     },
     {
+      "path": "manifest/chapter_dialogue_triggers.json",
+      "layer": "source",
+      "size": 24005,
+      "sha256": "99bdf2d770caf8f950bd7df548c0e275692266e6fec92d27ea2ffba1df4885a7",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "manifest/document_fusion.json",
       "layer": "source",
       "size": 435357,
@@ -5503,7 +5543,7 @@
       "path": "manifest/monk_dialogue_resources.json",
       "layer": "source",
       "size": 8369,
-      "sha256": "0825fba5653876afab1c7e9767559dda6091ee0ebf1351459e0e5ca8b5e98992",
+      "sha256": "20b15f45e189fa7312f4921800a772e75d9c004304ac0c2addc82b28f9fc6353",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5518,16 +5558,16 @@
     {
       "path": "manifest/source_closure.json",
       "layer": "source",
-      "size": 74460,
-      "sha256": "bdc688849d237384d406f4a78bd7c6b057b5560aac26ade694389959416414f6",
+      "size": 76138,
+      "sha256": "07a393c12a5a3355da88d65b1a3b498e7c0dd94c94de0bd3fa37929ed025507b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "manifest/story_localization.json",
       "layer": "source",
-      "size": 87582,
-      "sha256": "46f35941d0bb2c6f02d57d2ada9d3c1175a1ae4df9681278bf0ee2ba7c8546ea",
+      "size": 92878,
+      "sha256": "5a6f1ce34e69594806c667ee6d4c20a4c7d2d15e0abb2924fb470f3b68cfeaae",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -5542,8 +5582,8 @@
     {
       "path": "manifest/story_terms.json",
       "layer": "source",
-      "size": 5762,
-      "sha256": "045f3197799e1550a1c29fed1ee1625ef2eabaffad0a6b620e7ac4ea03242214",
+      "size": 28531,
+      "sha256": "599211a7471316a197bb3c8f333a9edb56c1596e6a7f4bf99e566f58e9dd5d6e",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6446,8 +6486,8 @@
     {
       "path": "release/components/story_chapters/chapters.json",
       "layer": "source",
-      "size": 225216,
-      "sha256": "5513c201a019d3bc0620a7ab104178a4fbbbd5e2e1cefc746850c5ac7900d1d6",
+      "size": 225976,
+      "sha256": "31093c2e770e7f4a249ef2d973d31f48ef6276710683f658af1926334f4d9475",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6455,7 +6495,7 @@
       "path": "release/components/story_chapters/manifest.json",
       "layer": "source",
       "size": 281,
-      "sha256": "7e3a126200c12803abe2d0b0ae0222e1249ab447f6b81fc850a7e3913f8cfe8f",
+      "sha256": "b809125ff792579d4f5101030fba2968f57bf7c75e5e2b14c4cf7c419d08fd6d",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6646,8 +6686,8 @@
     {
       "path": "scripts/audit_story_localization.py",
       "layer": "source",
-      "size": 3710,
-      "sha256": "3bf8a69fe85563f66110b97b06277f08f7ad6aa52bf58607ca674d3a4ec119de",
+      "size": 6683,
+      "sha256": "11d60202ba7185441a6f5cc6199674b07eb3255c8e853d2294811f4dc0a78af8",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6668,10 +6708,74 @@
       "approval": "required_per_file"
     },
     {
+      "path": "scripts/chapter_dialogue_patch.py",
+      "layer": "source",
+      "size": 33416,
+      "sha256": "020d41808739b2a0c072f273f78443cad009fd3bb24bb1b7bfab0c41abe394d0",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/chapter_window_probe.py",
+      "layer": "source",
+      "size": 5969,
+      "sha256": "b22587cfc7d7f3e1975ee07b61a34f0499ddf0d46bfd4ce23e4993ce54ebaae7",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "scripts/clean_generated_state.ps1",
       "layer": "source",
       "size": 2639,
       "sha256": "7ead8baa351a98913d1e954690df8035a79ff27b12714622bf47c14c6dba1a4c",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/clear_chapter_progress.py",
+      "layer": "source",
+      "size": 3575,
+      "sha256": "00af3743faf8822a745d9100f47552da5e706a9186e359719a4cd952737a1e0b",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/client_disasm.py",
+      "layer": "source",
+      "size": 7583,
+      "sha256": "1693ecb6b97aa715e718fa27d390c9a58e12de4523128ff5a2c2b8168212a24d",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/client_memory_probe.py",
+      "layer": "source",
+      "size": 2827,
+      "sha256": "b5596151df8b629c3ec368a648d50a5d0def7697ab2649e75521421e9192f11e",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/client_memory_scan.py",
+      "layer": "source",
+      "size": 4279,
+      "sha256": "e650f97a01d3bca63b937b9799ef2affc93a89c8e4f416c233231445335b04f8",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/client_string.py",
+      "layer": "source",
+      "size": 1151,
+      "sha256": "8cccdb16c47e42b437bc1ff7786b52fe4fef983a586218b91595bd71f4944b89",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/client_window_probe.py",
+      "layer": "source",
+      "size": 4359,
+      "sha256": "520bb896400724fe14d9c1d08e119fce82148ea14008e2347a5c7da5b52e8ed3",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6766,8 +6870,8 @@
     {
       "path": "scripts/export_patch.py",
       "layer": "source",
-      "size": 31482,
-      "sha256": "fbf7ccae21f75bbcf8be56916cc49ae7aba6ea936e721152cf3f26cc32a29bca",
+      "size": 31785,
+      "sha256": "59ef99367169cc580c8dfa57cb941341a31eb67f719a8344dbbc0c4a664570cd",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6862,8 +6966,8 @@
     {
       "path": "scripts/generate_managed_compatibility_recipe.py",
       "layer": "source",
-      "size": 3758,
-      "sha256": "d394deb1841b7c772e32024374c7486b02d8428c974476c89f2b0882bf121c6b",
+      "size": 4181,
+      "sha256": "db92f9babd185f511b331c364838ad53bf759b6c7bb9aea303d94d890f36303b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6924,6 +7028,14 @@
       "approval": "required_per_file"
     },
     {
+      "path": "scripts/install_story_tables.py",
+      "layer": "source",
+      "size": 11401,
+      "sha256": "d8af24e865dc9b13cf9ce21364b3a059cda38ebcb5b58d3ab802c6f8c98ee2ed",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "scripts/lumineos_codec.py",
       "layer": "source",
       "size": 7933,
@@ -6942,16 +7054,16 @@
     {
       "path": "scripts/monk_dialogue_compat.py",
       "layer": "source",
-      "size": 40447,
-      "sha256": "7d87a8a4d23aa13e622d122723fa0ff653a5fba247becc164e3f880606ebf5a1",
+      "size": 42908,
+      "sha256": "49c42a59623090992077f1d001c6722e7f731eb2012768ceba31e05c05c29ab3",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "scripts/monk_ranking_resources.py",
       "layer": "source",
-      "size": 2637,
-      "sha256": "c23ada1c43d85cc063c26684ad79fd19b07852afd12b548a8822a63afca2173d",
+      "size": 3559,
+      "sha256": "1c41786efd5a71657357bf858e43773c96798601c5e31cea188c27981aedfc2a",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -6990,8 +7102,8 @@
     {
       "path": "scripts/port_lumineos_resources.py",
       "layer": "source",
-      "size": 22663,
-      "sha256": "b795bfa96054c211546daff33dcfc90814304217af62a4520f23dc082bbdbdf2",
+      "size": 22733,
+      "sha256": "6b47d0cacdb5225c0170e6449a2dc9f65c2ba844328aeac2a388e098f2d4bac2",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7006,8 +7118,8 @@
     {
       "path": "scripts/prepare_client_compatibility.py",
       "layer": "source",
-      "size": 79416,
-      "sha256": "b9d7ae3c5386e066502a9f1f0daf2e0ad46cc9b0c6a169d54116620ad7889d12",
+      "size": 82652,
+      "sha256": "7fef2d4be79cc3b068b82042594b00a8fe32bd0154d275959cd59b1311aac65c",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7030,8 +7142,8 @@
     {
       "path": "scripts/prepare_monk_dialogue.py",
       "layer": "source",
-      "size": 17517,
-      "sha256": "f29230d6e6307257d047d0b6c095ad56eca8ce1329d1b6e28fef047beb7744a6",
+      "size": 17834,
+      "sha256": "ac0a147f664af599ea4cc7eb76c1fc967bf8d4f2c538324dd9d532b326eb61f6",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7062,8 +7174,8 @@
     {
       "path": "scripts/prepare_story_port.py",
       "layer": "source",
-      "size": 11388,
-      "sha256": "55eda78817a13d1c3c580c4b17cca218323aba2559faced69398bb70597f17e2",
+      "size": 12200,
+      "sha256": "72f70e5f060a23cd6fae1248bef057cd94b45271184711cd67a2c587f914602a",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7110,8 +7222,8 @@
     {
       "path": "scripts/refresh_source_manifest.py",
       "layer": "source",
-      "size": 9796,
-      "sha256": "81980499b39d6201177f5db8c958ecebf78a4e69d05d0b4f526dd913b79280dd",
+      "size": 10731,
+      "sha256": "d6733e21615d0642e69c99241bd28cd8c454e0a6d769a260452a0621a9f9454f",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7120,6 +7232,70 @@
       "layer": "source",
       "size": 11259,
       "sha256": "f080ed88027363325be3b61afb2a7313c9fc2ac5ce95319cb87b3c092e3aa4f8",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/story_action_patch.py",
+      "layer": "source",
+      "size": 10693,
+      "sha256": "795e51a15f3275b11d54f2fbe4136f9d67e5b53a215a2027c82e31919a517b7e",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/story_dialogue_bundle.py",
+      "layer": "source",
+      "size": 10676,
+      "sha256": "ff3843dabbbae548c2d3922138ef046a0536c2100b30cfb2c217a651ab0738ff",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/story_dialogue_survey.py",
+      "layer": "source",
+      "size": 4372,
+      "sha256": "8913ebff69746cffda13609e0e0f9947e0edeb332b41f8706356d67304fadcbc",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/story_qs_patch.py",
+      "layer": "source",
+      "size": 16265,
+      "sha256": "4a627d6da9d68105d107adafd7bda27df973aa479dd5d1b654f7e10a45c63bb0",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/story_qt_patch.py",
+      "layer": "source",
+      "size": 24417,
+      "sha256": "b861718ec7265458f19b122740b3c5acdc16c5a54d3d9577e0e894ccc72fc11b",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/story_rehearsal.py",
+      "layer": "source",
+      "size": 4286,
+      "sha256": "cc7e4307ff30a8f83c13be1e6893bd4e4d6322a98df4f0f52bd66cda399ec9f4",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/story_runtime_evidence.py",
+      "layer": "source",
+      "size": 5360,
+      "sha256": "75ad66e1ba7f6408f73547e0ea535659f9f96bf6d31c698b4440051b7036688b",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/story_window_accept.py",
+      "layer": "source",
+      "size": 17639,
+      "sha256": "395c768bc8a9a5bfc28427fcf5678ac7d549cd279fe6c59b7cb10940220564a5",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7288,6 +7464,14 @@
       "layer": "source",
       "size": 2054,
       "sha256": "2f73d779f59f078668cd372956dbb5b5d043e0c3f7911d8ef1b71f6f4607d2a9",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_chapter_dialogue_patch.py",
+      "layer": "source",
+      "size": 23481,
+      "sha256": "c9ce821dfa307efe1204203bca182b06b7b2ce483c0b33adf914b977098d2be8",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7670,8 +7854,8 @@
     {
       "path": "scripts/test_monk_dialogue_resources.py",
       "layer": "source",
-      "size": 11984,
-      "sha256": "4542ea1a7d24f53a57774dcaa77696b2dd77a083e6cd64fefec5eee1ef8c225e",
+      "size": 12689,
+      "sha256": "4c0ac1c2ea67ec1eb45a1c0f5615122c68cc8a39ac9b7c82a1983338ea7a211b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7686,8 +7870,16 @@
     {
       "path": "scripts/test_monk_portrait.py",
       "layer": "source",
-      "size": 7733,
-      "sha256": "6055f023151d0124b735ca0845fc7def96157437f63bfb22fa504eb1551d037c",
+      "size": 7751,
+      "sha256": "d5293d3f28b0aab412691c6adbd1a06fa8b058d6864597b15047786914685a7f",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_monk_ranking.py",
+      "layer": "source",
+      "size": 18684,
+      "sha256": "0263d01894e3df7d0e9aee7d03a597bbccfa01c5d0a402f58a7eeabdf15a22f0",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7900,6 +8092,14 @@
       "approval": "required_per_file"
     },
     {
+      "path": "scripts/test_story_action_patch.py",
+      "layer": "source",
+      "size": 6785,
+      "sha256": "9cabacf14d8d35dec8b82118a050599d2f5bea7abbd2d3b1a7ae64d513f99719",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "scripts/test_story_catalog.py",
       "layer": "source",
       "size": 11673,
@@ -7908,18 +8108,34 @@
       "approval": "required_per_file"
     },
     {
+      "path": "scripts/test_story_dialogue_bundle.py",
+      "layer": "source",
+      "size": 7307,
+      "sha256": "34d0e80562b98675dca581da426f4d3c3cee4db6c3be1608e1fe969b31a43be8",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_story_dialogue_survey.py",
+      "layer": "source",
+      "size": 3857,
+      "sha256": "2a64a759de1a5c8000ecbe016a4f84fa50ead456068ac2fcb54e0c041305f654",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "scripts/test_story_localization.py",
       "layer": "source",
-      "size": 1858,
-      "sha256": "df621a9bbd3fd031ef69a04935f076f195bef3e6a08ff501022fe9fc9940eb6f",
+      "size": 4273,
+      "sha256": "acd5ab54dd60d5db0033a268f5431c3fdd53bff96e866bc698973362ad0bd273",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "scripts/test_story_port.py",
       "layer": "source",
-      "size": 8438,
-      "sha256": "1a8506b7fddc88e98fad7b9132c4e7bcb84e90efe0e5a01edb1058ac9cf395ed",
+      "size": 9599,
+      "sha256": "f4a03f80d2f6dd1425f5a22f316a09b1ad5a096a10bd273196d79c9cc9ed7458",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7928,6 +8144,54 @@
       "layer": "source",
       "size": 4721,
       "sha256": "ed671081fefe671d495af2e672f99e1ee2605083773ca836374f7d9761914232",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_story_qs_patch.py",
+      "layer": "source",
+      "size": 12627,
+      "sha256": "ff509cf174bbdc9db01afdba41b2e68c0f2051d910a382f60c4492b132643476",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_story_qt_patch.py",
+      "layer": "source",
+      "size": 13194,
+      "sha256": "b523c3853fa77dbad317efd0d0ac23beb62feae73b3958823ec01262f67dfbf9",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_story_rehearsal.py",
+      "layer": "source",
+      "size": 4168,
+      "sha256": "2b7eafae3230536a4952ae8c61359e190728cdae42fd98fd066583bb5fd98956",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_story_runtime_evidence.py",
+      "layer": "source",
+      "size": 6089,
+      "sha256": "6591a5ec7a8e27b3a45bfafebafd8890d9175bb0136b612348c6af8779cb8b1a",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_story_tables_install.py",
+      "layer": "source",
+      "size": 8000,
+      "sha256": "14c72afb92d741bf6e51e29e8935bf01814559a478891bd8d04922bb84145e6e",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "scripts/test_story_window_accept.py",
+      "layer": "source",
+      "size": 14156,
+      "sha256": "4e122f6208a2109ce90c863f00ea43dd295dde39b4bdc0577163d837e49348b7",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7950,8 +8214,8 @@
     {
       "path": "scripts/test_verify_package.py",
       "layer": "source",
-      "size": 8415,
-      "sha256": "ba70fd806de4bea30be950c9f71f3c1daee575e0c7cd9958d1de4e23c2b5ea02",
+      "size": 9747,
+      "sha256": "643feafd23111c62e2b5ebb5a1cd219504c9c38fa5588a35cc80cc029b2d4ffe",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -7990,8 +8254,8 @@
     {
       "path": "scripts/verify_package.py",
       "layer": "source",
-      "size": 13458,
-      "sha256": "8e5afd7fe884c0b953b97c3289222701173a28cdd8a751672f18e7f1786f52c3",
+      "size": 14924,
+      "sha256": "bfa795cbad99b269bad1095b24144934a8d9ccc3ce38e25dcb855011020d2e24",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },

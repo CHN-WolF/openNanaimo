@@ -12,6 +12,17 @@ BUNDLE=Path(os.environ.get('NANAIMO_MONK_DIALOGUE_BUNDLE',Path(__file__).resolve
 
 
 class FootDepthChecks(unittest.TestCase):
+    def test_build_checks_explicit_previous_recipe_before_creating_output(self):
+        with tempfile.TemporaryDirectory() as root:
+            root=Path(root)
+            recipe=root/'previous.json'; recipe.write_text('{"schema":"previous"}',encoding='utf8')
+            output=root/'output'
+            with patch.object(d.io,'verify',side_effect=ValueError('baseline rejected')) as verify:
+                with self.assertRaisesRegex(ValueError,'baseline rejected'):
+                    d.build(root/'source',root/'client',output,baseline_recipe=recipe)
+                verify.assert_called_once_with(root/'client',dialogue_recipe={'schema':'previous'})
+            self.assertFalse(output.exists())
+
     @staticmethod
     def effect():
         raw = bytearray(struct.pack('<5I', 2, 0, 0, 60, 3))

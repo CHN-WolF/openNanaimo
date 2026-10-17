@@ -264,7 +264,7 @@ def build(source, client, output, recipe_path=RECIPE):
                 changed=sum(row['before_sha256'] != row['sha256'] for row in manifest['files']))
 
 
-def verify(client, manifest=None):
+def verify(client, manifest=None, dialogue_recipe=None):
     client = clean_root(client)
     if manifest is None:
         manifest = load(safe(client, MARKER))
@@ -288,7 +288,7 @@ def verify(client, manifest=None):
                                       and path.stat().st_size == monk_entry_size)
         if (client / '.openNanaimo-monk-dialogue.json').is_file():
             import prepare_monk_dialogue as dialogue
-            recipe = load(dialogue.RECIPE)
+            recipe = load(dialogue.RECIPE) if dialogue_recipe is None else dialogue_recipe
             parents = recipe.get('parent_files', {'Village_map_image/Village_map_image.pack':recipe['parent_pack_sha256']})
             if row['sha256'] == parents.get(row['path']) and any(r['path']==row['path'] for r in recipe['files']):
                 dialogue.verify(client,recipe)

@@ -247,11 +247,14 @@ public sealed partial class DatabaseService
 
     // Shared transactional grant for explicitly configured event rewards and resource-authored lucky rewards.
     private static async Task<CardRewardGrant> GrantCardRewardAsync(SqliteConnection connection, SqliteTransaction tx,
-        long id, uint reward, CancellationToken token)
+        long id, uint reward, CancellationToken token, ushort? clothingDurationDays = null)
     {
         await using var command = connection.CreateCommand(); command.Transaction = tx;
         command.Parameters.AddWithValue("$id", id); command.Parameters.AddWithValue("$reward", reward);
         command.Parameters.AddWithValue("$now", DateTime.UtcNow.ToString("O"));
+        if (clothingDurationDays.HasValue
+            && (!ShopCatalog.TryGet(reward, out var clothing) || clothing.Section != InventorySection.Clothing))
+            return CardRewardGrant.Failed;
         if (CardCatalog.TryGet(reward, out _))
             command.CommandText = """
                 INSERT INTO CharacterCards(CharacterId,CardCode,Quantity,UpdatedAt) VALUES($id,$reward,1,$now)
@@ -274,10 +277,17 @@ public sealed partial class DatabaseService
                 current.Parameters.AddWithValue("$id", id);
                 current.Parameters.AddWithValue("$reward", reward);
                 var value = await current.ExecuteScalarAsync(token);
-                if (value is not null) currentExpiration = checked((uint)Convert.ToInt64(value));
+                if (value is not null)
+                {
+                    currentExpiration = checked((uint)Convert.ToInt64(value));
+                    if (clothingDurationDays.HasValue)
+                        currentExpiration = ClothingExpirationTime.Effective(currentExpiration);
+                }
             }
             var expiration = timed
-                ? ClothingExpirationTime.Extend(currentExpiration, item.DurationDays, DateTime.Now)
+                ? clothingDurationDays.HasValue && currentExpiration == ClothingExpirationTime.PermanentExpiration
+                    ? currentExpiration
+                    : ClothingExpirationTime.Extend(currentExpiration, clothingDurationDays ?? item.DurationDays, DateTime.Now)
                 : 0u;
             command.Parameters.AddWithValue("$stage", item.Section == InventorySection.Pet && !item.IsPetMaterial ? item.PetModelStage : 0);
             command.Parameters.AddWithValue("$maximumStage", item.Section == InventorySection.Pet && !item.IsPetMaterial ? item.PetUpgradeStage : 0);

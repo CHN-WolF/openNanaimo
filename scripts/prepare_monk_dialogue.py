@@ -120,13 +120,14 @@ def derive_pack(raw, check=True):
     return output
 
 
-def build(source, client, output, font=None):
+def build(source, client, output, font=None, baseline_recipe=None):
     source,client,output = map(io.clean_root,(source,client,output))
     require(not output.exists() and not output.is_relative_to(source)
                and not source.is_relative_to(output) and not client.is_relative_to(output)
                and (not output.is_relative_to(client) or output.is_relative_to(ROOT/'build')),
                'use a fresh isolated bundle directory')
-    io.verify(client)
+    # An upgrade must validate the installed generation before deriving its replacement.
+    io.verify(client, dialogue_recipe=io.load(baseline_recipe) if baseline_recipe else None)
     parent = io.load(io.safe(client,io.MARKER))
     parent_row = next(row for row in parent['files'] if row['path']==PACK)
     files = {PACK:derive_pack(io.safe(client,PACK).read_bytes())}
@@ -307,6 +308,7 @@ def rollback(client,receipt):
 def main():
     p=argparse.ArgumentParser(description=__doc__); commands=p.add_subparsers(dest='command',required=True)
     q=commands.add_parser('build'); q.add_argument('--source',type=Path,required=True); q.add_argument('--client',type=Path,required=True); q.add_argument('--output',type=Path,required=True); q.add_argument('--font',type=Path)
+    q.add_argument('--baseline-recipe',type=Path,help='reviewed previous dialogue recipe for verifying an installed upgrade baseline')
     q=commands.add_parser('apply'); q.add_argument('--bundle',type=Path,required=True); q.add_argument('--client',type=Path,required=True)
     q=commands.add_parser('verify'); q.add_argument('--client',type=Path,required=True)
     q=commands.add_parser('rollback'); q.add_argument('--client',type=Path,required=True); q.add_argument('--receipt',required=True)

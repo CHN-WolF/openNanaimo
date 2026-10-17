@@ -403,10 +403,12 @@ ROOM_NUMBER, BOSS_STRINGS = EXT_BASE+0x13A0, EXT_BASE+0x13C0
 RANK_INIT, RANK_GET, RANK_SET = EXT_BASE+0x1100, EXT_BASE+0xB00, EXT_BASE+0xB80
 RANK_DRAW, RANK_TEXT = EXT_BASE+0xC80, EXT_BASE+0x1440
 RANK_BACKGROUND = EXT_BASE+0x1460
+RANK_WIDGETS = EXT_BASE+0x200
 
 
-def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False, legacy_names=False, legacy_ranking=False, legacy_rank_matrix=False):
+def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=False, legacy_names=False, legacy_ranking=False, legacy_rank_matrix=False, legacy_rank_layout=False):
     legacy_room = legacy_room or legacy_portrait
+    compact_rank = not any((legacy_room, legacy_names, legacy_ranking, legacy_rank_matrix, legacy_rank_layout))
     data = bytearray(b'\xCC' * EXT_SPAN)
     local = localization(legacy_names)
     def put(at, raw, limit):
@@ -510,10 +512,11 @@ def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=F
             c.emit('89449F2C4383FB0C')
         else:
             c.emit('6BCB2681C10C01000051') # y=268+38*challenge
-            c.emit('0FB6441E4483E00368');c.u32(430)
+            c.emit('0FB6441E4483E00368');c.u32(431 if compact_rank else 430)
             c.emit('508BCF');c.call(0x41E67D)
             c.emit('89449F2C4383FB04')
         c.branch('0F82','loop')
+        if compact_rank:c.call(RANK_WIDGETS)
         c.emit('61');jump(c,0x8C2DDE)
         c.label('native');c.emit('619D8B0D');c.u32(PROFILE);c.call(0x411379);jump(c,0x8C25B3)
         put(RANK_INIT,c.finish(),0x220)
@@ -552,20 +555,55 @@ def gameplay_payload(legacy_gameplay=False, legacy_portrait=False, legacy_room=F
         c.emit('BB03000000D3E3F7D30FB60623C3D3E70BC78806' if legacy_rank_matrix else '8BC78806')
         c.label('done');c.emit('5F5E5BC21400')
         c.label('native');c.emit('619D');jump(c,0x4103D9);put(RANK_SET,c.finish(),0x100)
-        # The original last draw block labels ordinary dungeon rows. Draw
-        # four ASCII numbers in the existing Epi boxes, with the same text ABI.
+        # Native sprite slots retain native destruction; old text layouts are
+        # emitted only to recognize exact previously installed patch bytes.
         c=Code(RANK_DRAW);c.emit('9C60');c.call(IS_CHALLENGE)
         c.emit('85C0');c.branch('0F84','native');c.emit('619D60')
-        for row in range(4):
-            c.emit('6A006A006A006A006A006A006A016A006A0068FFFFFF0068');c.u32(TITLE_STRINGS+row*32 if legacy_rank_matrix else RANK_TEXT+row*8)
-            c.emit('68');c.u32(268+38*row);c.emit('68');c.u32(128 if legacy_rank_matrix else 207);c.call(0x414A6F)
+        if compact_rank:
+            c.emit('8B7DF033DB')
+            c.label('digits');c.emit('8B8C9FEC00000085C9');c.branch('0F84','next_digit')
+            c.emit('8B01FF5014')
+            c.label('next_digit');c.emit('4383FB08');c.branch('0F82','digits')
+            c.emit('6A006A006A006A006A026A006A016A006A0068FFFFFF008D871001000050')
+            c.emit('68');c.u32(181);c.emit('68');c.u32(357);c.call(0x41206C)
             c.emit('8BC8');c.call(0x40DA1C)
+        else:
+            for row in range(4):
+                c.emit('6A006A006A006A006A006A006A016A006A0068FFFFFF0068');c.u32(TITLE_STRINGS+row*32 if legacy_rank_matrix else RANK_TEXT+row*8)
+                c.emit('68');c.u32(268+38*row);c.emit('68');c.u32(128 if legacy_rank_matrix else 207);c.call(0x414A6F)
+                c.emit('8BC8');c.call(0x40DA1C)
         c.emit('61');jump(c,0x8C3182)
         c.label('native');c.emit('619D');c.call(0x419BBE);jump(c,0x8C30F2)
         put(RANK_DRAW,c.finish(),0x240)
         if not legacy_rank_matrix:
-            for row in range(4):put(RANK_TEXT+row*8,str(row+1).encode('ascii')+b'\0',8)
+            if not compact_rank:
+                for row in range(4):put(RANK_TEXT+row*8,str(row+1).encode('ascii')+b'\0',8)
             put(RANK_BACKGROUND,b'interface\\openNanaimo_monk_rank.eff\0',0x40)
+        if compact_rank:
+            c=Code(RANK_WIDGETS);c.emit('60');c.call(0x419BBE)
+            c.emit('8B8034E5010083E818C1E00505');c.u32(TITLE_STRINGS)
+            c.emit('8BF05781C710010000B908000000F3A55F33DB')
+            c.label('make_digit');c.emit('686C010000');c.call(0xB479CC)
+            c.emit('83C40485C0');c.branch('0F84','digit_done');c.emit('8BF0')
+            # Same loader, image, frame index and float coordinates as 8C2806.
+            c.emit('8BC3D1E86BC026051101000050DB0424D91C24')
+            c.emit('8BC383E0016BC00E05FD00000050DB0424D91C24')
+            c.emit('6A006A006A006A006A006A036A0068');c.u32(0xCA5AE4)
+            c.emit('6A0D');c.call(0x41CC33);c.emit('8BC8');c.call(0x41E0E7)
+            c.emit('508BCE');c.call(0x40A62D)
+            c.emit('89849FEC0000008BC885DBF7C301000000');c.branch('0F84','zero_digit')
+            c.emit('8BC3D1E840');c.branch('E9','set_digit')
+            c.label('zero_digit');c.emit('33C0')
+            c.label('set_digit');c.emit('50');c.call(0x402770)
+            c.label('digit_done');c.emit('4383FB08');c.branch('0F82','make_digit')
+            # Move both button sprites and regenerate their native hit rectangles.
+            for offset, xpos, ypos in ((0x20,557.,428.),(0x24,599.,141.)):
+                c.emit(bytes((0x8B,0x5F,offset)));c.emit('85DB');c.branch('0F84',f'button_{offset}')
+                c.emit('8B0B85C9');c.branch('0F84',f'button_{offset}')
+                c.emit(b'\x68'+struct.pack('<f',ypos)+b'\x68'+struct.pack('<f',xpos));c.call(0x410DFC)
+                c.emit('8B0B8D5308528B01FF501C')
+                c.label(f'button_{offset}')
+            c.emit('61C3');put(RANK_WIDGETS,c.finish(),0x200)
     return bytes(data)
 
 

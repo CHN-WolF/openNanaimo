@@ -12,6 +12,9 @@ SOURCE_IMAGE = 'effs/interface/nanaimo_cs_pop01.im3'
 SOURCE_EFFECT = 'effs/interface/nanaimo_cs_pop.eff'
 IMAGE_SHA256 = 'c9d855847eae50c9d66949958f00f912c3475901a4af1422dbf8779e25a1aaf7'
 EFFECT_SHA256 = '7065891445798bbcf4d36b9e015c6e720724ebdcb78eb788a2af6f25a8ce6f89'
+WIDTH = 450
+SHIFT = (554 - WIDTH) // 2
+SLOT_X = 255
 
 
 def single_slot_bitmap(raw):
@@ -37,18 +40,29 @@ def single_slot_bitmap(raw):
         pixels.append(row)
     require(cursor == len(raw), 'monk ranking trailing bytes')
 
-    # Retain the native frame, Epi boxes, four row bevels and both close buttons.
-    # Erase the baked difficulty/stage grid; centre one original circle per row.
-    for y in range(84, 283):
+    # Keep the speech bubble and footer text intact, including native controls.
+    # Each band loses only unused horizontal space, never scales its artwork.
+    for y in range(84, 284):
         row = pixels[y]
-        slot = row[114:147]
-        row[112:534] = [row[147]] * 422
+        # An interior socket excludes the lower-left matrix frame's roundover.
+        slot = row[148:181]
+        # Keep the top rivet and true outer frame, not the old final column.
+        # The last six scanlines follow the native lower-right rounded corner.
+        right = 520 if y < 99 else 531 if y < 278 else (530, 530, 529, 529, 527, 524)[y - 278]
+        row[112:right] = [row[147]] * (right - 112)
         if any(134 + i * 38 <= y < 169 + i * 38 for i in range(4)):
-            row[306:339] = slot
+            row[SLOT_X:SLOT_X+33] = slot
+    for y, row in enumerate(pixels):
+        start = 300 if y < 30 else 350 if y >= 284 else 416 if y >= 84 else 430
+        del row[start:start + 554 - WIDTH]
+    width = WIDTH
     body = b''.join(struct.pack('<HhHH', width + 4, -1, 0, width)
                     + struct.pack('<' + 'H' * width, *row) for row in pixels)
     header = bytearray(raw[:44])
     struct.pack_into('<I', header, 8, len(body) + 36)
+    struct.pack_into('<I', header, 12, width)
+    struct.pack_into('<I', header, 20, width)
+    struct.pack_into('<f', header, 36, width / 2)
     return bytes(header) + body
 
 
@@ -59,4 +73,8 @@ def ranking_files(client):
     effect, count = resources.rewrite_names(raw, EFFECT,
         {'nanaimo_cs_pop01.im3': Path(IMAGE).name})
     require(count == 1, 'monk ranking effect dependency differs')
+    # The first layer is the native translucent shadow, not the panel artwork.
+    effect = bytearray(effect)
+    struct.pack_into('<f', effect, 20 + 272 + 5 * 20, WIDTH / 554)
+    effect = bytes(effect)
     return {IMAGE: single_slot_bitmap((client / SOURCE_IMAGE).read_bytes()), EFFECT: effect}

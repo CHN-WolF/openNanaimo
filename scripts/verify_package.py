@@ -193,6 +193,35 @@ def verify_client_presence(root: Path, manifest: dict) -> str:
     return 'presence-only-no-hash-local-derived-verification'
 
 
+def public_brand_surface(rel: str, text: str) -> str:
+    """Separate canonical in-world names from publication terminology."""
+    schemas = {
+        'manifest/story_localization.json': 'openNanaimo.chapter-story-localization.v1',
+        'manifest/story_terms.json': 'openNanaimo.story-terms.v1',
+        'release/components/story_chapters/chapters.json': 'openNanaimo.chapter-story.v1',
+    }
+    if rel not in schemas:
+        return text
+    document = json.loads(text)
+    if document.get('schema') != schemas[rel]:
+        return text
+    in_world_name = ''.join(map(chr, (0x98DE, 0x884C, 0x5C9B)))
+    def walk(value, path=()):
+        if isinstance(value, dict):
+            return {key: walk(item, path + (key,)) for key, item in value.items()}
+        if isinstance(value, list):
+            return [walk(item, path + (index,)) for index, item in enumerate(value)]
+        if isinstance(value, str):
+            narrative = (len(path) == 3 and path[0] in ('texts', 'terms')
+                         and path[2] == 'translation_zh')
+            speech = (len(path) == 7 and path[0] == 'chapters' and path[2] == 'dialogue'
+                      and path[4] == 'speeches' and path[6] == 'text')
+            if narrative or speech:
+                return value.replace(in_world_name, '[in-world-name]')
+        return value
+    return json.dumps(walk(document), ensure_ascii=False)
+
+
 def scan_public_text(root: Path) -> None:
     hits = []
     paths = [root / 'README.md', root / 'start_nanaimo_launcher.bat']
@@ -230,7 +259,8 @@ def scan_public_text(root: Path) -> None:
                     hits.append((rel, 'private network address'))
         if FORBIDDEN_ADAPTER_LABEL.search(text):
             hits.append((rel, 'non-adapter endpoint terminology'))
-        if FORBIDDEN_BRAND_LABEL.search(text) or LEGACY_PROJECT_LABEL.search(text):
+        brand_surface = public_brand_surface(rel, text)
+        if FORBIDDEN_BRAND_LABEL.search(brand_surface) or LEGACY_PROJECT_LABEL.search(brand_surface):
             hits.append((rel, 'obsolete regional or brand terminology'))
         if p.suffix.lower() == '.md' and FORBIDDEN_PROCESS_NARRATIVE.search(text):
             hits.append((rel, 'development-process narrative outside changelog'))
