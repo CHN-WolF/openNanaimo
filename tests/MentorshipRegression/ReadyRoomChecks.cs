@@ -61,6 +61,12 @@ internal static partial class Program
         byte[] Equipment(uint pet)
         {
             var bytes=new byte[136];Character(host).Appearance.CopyTo(bytes,96);
+            var pets=NetworkAdapterService.GetPetWireItems(Character(host));
+            var identities=(PetIdentityMap)Get(host,"PetIdentities")!;
+            bytes[85]=identities.Wire(Array.FindIndex(pets,item=>item.ItemCode==pet));
+            BinaryPrimitives.WriteUInt16LittleEndian(bytes.AsSpan(86),identities.Wire(Array.FindIndex(pets,
+                item=>item.ItemCode==Character(host).EquippedPetItemCode
+                    &&item.PetInstanceId==Character(host).EquippedPetInstanceId)));
             BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(88),pet);
             BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(92),Character(host).EquippedPetItemCode);
             BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(124),pet);return bytes;

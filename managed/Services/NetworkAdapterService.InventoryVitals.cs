@@ -34,7 +34,8 @@ public sealed partial class NetworkAdapterService
         // PetVariant is creation metadata, NOT a second equipment selector.
         // A gem in an unselected pet or loose inventory contributes nothing.
         var petCode = character.EquippedPetItemCode;
-        var pet = character.Items.FirstOrDefault(item => item.ItemCode == petCode && item.Quantity > 0);
+        var pet = character.Items.FirstOrDefault(item => item.ItemCode == petCode
+            && item.PetInstanceId == character.EquippedPetInstanceId && item.Quantity > 0);
         if (petCode == 0 || pet is null || !ShopCatalog.TryGet(15, petCode, out _))
             return default;
         long hp = 0, mp = 0;

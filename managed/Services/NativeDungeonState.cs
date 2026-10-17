@@ -133,7 +133,8 @@ public sealed class NativeDungeonState
         s.Put(AttackModifierOffset, CharacterCombatProgression.NativeAttack(c.Level, c.AttackModifier));
         s.Put(DefenseFlatOffset, CharacterCombatProgression.NativeDefense(c.Level, c.DefenseFlat));
         s.Put(PetCombatLevelOffset, (uint)Math.Clamp(c.InitialAttackMode + 1, 1, 3));
-        var pet = c.Items.FirstOrDefault(i => i.ItemCode == equippedPetItemCode && i.Quantity > 0);
+        var pet = c.Items.FirstOrDefault(i => i.ItemCode == equippedPetItemCode
+            && i.PetInstanceId == c.EquippedPetInstanceId && i.Quantity > 0);
         var petState = PetProgression.GetState(c, equippedPetItemCode);
         s.Put(72, petState.CurrentStage); s.Put(76, petState.MaximumStage);
         s.Put(PetLevelOffset, petState.Level);

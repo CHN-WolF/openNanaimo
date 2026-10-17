@@ -86,6 +86,32 @@ class ResourceRepairTests(unittest.TestCase):
         p=self.run_tool("--apply","--expected-plan",str(self.plan));self.assertNotEqual(p.returncode,0)
         self.assertEqual(before,self.read("SELECT * FROM Characters"))
 
+    def test_reordered_object_keys_match_exact_preview(self):
+        plan=self.preview()
+        self.plan.write_text(json.dumps(plan,sort_keys=True,ensure_ascii=False),encoding='utf-8')
+        p=self.run_tool("--apply","--expected-plan",str(self.plan));self.assertEqual(p.returncode,0,p.stderr)
+
+    def test_changed_array_order_or_scalar_rejected(self):
+        for change in ('order','number','extra','null','scalar_type'):
+            with self.subTest(change=change):
+                plan=self.preview()
+                if change=='order':plan['changes'].reverse()
+                if change=='number':plan['changes'][0]['after']['MaxHp']+=1
+                if change=='extra':plan['unexpected']=True
+                if change=='null':plan['changes'][0]['native_before']=None
+                if change=='scalar_type':plan['changes'][0]['after']['MaxHp']='1600'
+                self.plan.write_text(json.dumps(plan),encoding='utf-8')
+                before=self.read("SELECT * FROM Characters")
+                p=self.run_tool("--apply","--expected-plan",str(self.plan));self.assertNotEqual(p.returncode,0)
+                self.assertEqual(before,self.read("SELECT * FROM Characters"))
+
+    def test_equivalent_string_escapes_match_preview(self):
+        plan=self.preview()
+        raw=json.dumps(plan).replace('HP=1500', r'\u0048P=1500')
+        self.assertNotEqual(raw,json.dumps(plan))
+        self.plan.write_text(raw,encoding='utf-8')
+        p=self.run_tool("--apply","--expected-plan",str(self.plan));self.assertEqual(p.returncode,0,p.stderr)
+
     def test_online_account_or_character_rejected(self):
         self.mutate("UPDATE Accounts SET IsOnline=1")
         self.assertNotEqual(self.run_tool().returncode,0)

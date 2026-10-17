@@ -39,6 +39,7 @@ public sealed class CharacterRecord
     public uint SkillSlotExpansionExpires { get; set; }
     public int PetVariant { get; set; }
     public uint EquippedPetItemCode { get; set; }
+    public long EquippedPetInstanceId { get; set; }
     public int PetLevel { get; set; } = 1;
     public long PetExperience { get; set; }
     public List<CharacterItemRecord> Items { get; set; } = [];
@@ -137,6 +138,8 @@ public sealed record DungeonQuickItemConsumeResult(
 
 public sealed class CharacterItemRecord
 {
+    // Zero identifies the legacy per-code row; positive IDs identify independent pets.
+    public long PetInstanceId { get; set; }
     public uint ItemCode { get; set; }
     public ushort Quantity { get; set; }
     // Wire-format expiration for timed inventory entries. Zero means legacy

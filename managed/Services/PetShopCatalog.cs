@@ -57,6 +57,7 @@ public sealed class ShopCatalogItem
     // C46A is the shopping-coupon (domain 41) page. Other ordinary items,
     // including microphones (42) and card keys (47), share C430 identities.
     public bool IsPetMaterial => InventoryClassification.IsPetMaterial(ItemCode);
+    public bool IsIndependentPet => Section == InventorySection.Pet && !IsPetMaterial && DurationDays == 0;
     public bool IsGameInventoryItem => InventoryClassification.UsesGameItemCarrier(ItemCode, Section);
     public bool IsShoppingCoupon => Category == 41;
     public byte ShoppingCouponDomain { get; init; } = byte.MaxValue;
@@ -70,9 +71,8 @@ public sealed class ShopCatalogItem
     public bool HasExpiry => Section == InventorySection.Clothing
         || Section == InventorySection.Furniture && DurationDays > 0
         || Section == InventorySection.Pet && !IsPetMaterial && DurationDays > 0;
-    // One authored creature per appearance: the catalog's life and level variants reuse the
-    // same icon and name, so a family key groups them. A trailing single-digit icon suffix is
-    // the model stage and a trailing "(n)" is the level variant; neither starts a new pet.
+    // Appearance grouping for calendar-duration variants only. Lifespan pets can share
+    // this key but are granted independently. Stage/level suffixes do not change family.
     public string PetFamilyKey
     {
         get

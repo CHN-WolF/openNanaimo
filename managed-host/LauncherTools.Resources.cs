@@ -6,6 +6,24 @@ using OpenNanaimo.Adapter.Services;
 
 internal static partial class LauncherTools
 {
+    // Repair plans contain integral values, strings, nulls, objects and ordered arrays.
+    // Keep numeric encodings and array order; string escapes and object key order are immaterial.
+    // JsonNode.DeepEquals is unavailable on the supported net6 target.
+    static bool RepairPlanMatches(System.Text.Json.Nodes.JsonNode? left, System.Text.Json.Nodes.JsonNode? right)
+    {
+        if (left is null || right is null) return left is null && right is null;
+        if (left is System.Text.Json.Nodes.JsonObject a && right is System.Text.Json.Nodes.JsonObject b)
+            return a.Count == b.Count && a.All(pair => b.TryGetPropertyValue(pair.Key, out var value)
+                && RepairPlanMatches(pair.Value, value));
+        if (left is System.Text.Json.Nodes.JsonArray x && right is System.Text.Json.Nodes.JsonArray y)
+            return x.Count == y.Count && x.Zip(y).All(pair => RepairPlanMatches(pair.First, pair.Second));
+        if (left is not System.Text.Json.Nodes.JsonValue l || right is not System.Text.Json.Nodes.JsonValue r)
+            return false;
+        if (l.TryGetValue<string>(out var ls) && r.TryGetValue<string>(out var rs))
+            return string.Equals(ls, rs, StringComparison.Ordinal);
+        return left.ToJsonString() == right.ToJsonString();
+    }
+
     static Dictionary<string, object?> LevelResourceValues(Dictionary<string, object> ch, int level)
     {
         int previousLevel = checked((int)V(ch, "Level"));
@@ -97,7 +115,7 @@ internal static partial class LauncherTools
         if(apply)
         {
             var expected=Option(args,"--expected-plan");Require(expected.Length>0,"Apply requires a reviewed --expected-plan");
-            Require(System.Text.Json.Nodes.JsonNode.DeepEquals(ReadJson(expected),plan), "Repair preview is stale; re-preview required");
+            Require(RepairPlanMatches(ReadJson(expected),plan), "Repair preview is stale; re-preview required");
             foreach(var update in updates)
             {
                 Update(c,t,"Characters",update.Values,"Id",update.Id);

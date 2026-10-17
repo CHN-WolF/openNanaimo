@@ -14,17 +14,19 @@ internal sealed class ChapterStorySession
     private int? scene;
     private DialogueTicket? dialogue;
     private BattleTicket? battle;
+    private RewardTicket? reward;
     private uint lastBattleEpoch;
     private sealed record DialogueTicket(Guid Token,uint Quest,long Revision,long SceneEpoch,int Scene,
         IReadOnlyList<ChapterDialoguePage> Pages,int Page);
     private sealed record BattleTicket(Guid Token,uint Quest,long Revision,long SceneEpoch,uint BattleEpoch,int Episode,int Dungeon);
+    private sealed record RewardTicket(Guid Token,uint Quest,long Revision,long SceneEpoch,int Scene);
     internal ChapterStorySession(DatabaseService database,long account,long character,string session)
     { this.database=database;this.account=account;this.character=character;this.session=session; }
 
     internal async Task EnterSceneAsync(int? verifiedSourceScene)
     {
         await serial.WaitAsync();
-        try { checked {sceneEpoch++;} scene=verifiedSourceScene;dialogue=null;battle=null; }
+        try { checked {sceneEpoch++;} scene=verifiedSourceScene;dialogue=null;battle=null;reward=null; }
         finally {serial.Release();}
     }
     internal async Task CancelDialogueAsync()
@@ -96,7 +98,45 @@ internal sealed class ChapterStorySession
                 || settlement.DungeonBit!=b.Dungeon || settlement.Difficulty is <0 or >2) return false;
             battle=null;
             var result=await database.ApplyChapterSettlementAsync(account,character,session,b.Quest,b.Revision,b.Episode,b.Dungeon);
-            return result is not null;
+            return result is not null && result.Revision==b.Revision+1;
+        }
+        finally {serial.Release();}
+    }
+
+    internal async Task<Guid?> BeginRewardAsync()
+    {
+        await serial.WaitAsync();
+        try
+        {
+            reward=null;
+            var state=await database.ReadChapterStoryAsync(account,character,session);
+            if (state is null || !state.RewardPending || state.Finished || scene is null
+                || StoryChapterCatalog.Get(state.QuestId).Dialogue.Single(d=>d.ObjectiveIndex==2).SourceScene!=scene)
+                return null;
+            var token=Guid.NewGuid();
+            reward=new(token,state.QuestId,state.Revision,sceneEpoch,scene.Value);
+            return token;
+        }
+        finally {serial.Release();}
+    }
+
+    internal async Task CancelRewardAsync()
+    {
+        await serial.WaitAsync();
+        try { reward=null; }
+        finally {serial.Release();}
+    }
+
+    internal async Task<ChapterClaimResult> ClaimRewardAsync(Guid token,ChapterRewardReview? review=null)
+    {
+        await serial.WaitAsync();
+        try
+        {
+            var r=reward;
+            if (r is null || r.Token!=token || r.SceneEpoch!=sceneEpoch || r.Scene!=scene)
+                return new(ChapterClaimStatus.Rejected,null);
+            reward=null;
+            return await database.ClaimChapterRewardsAsync(account,character,session,r.Quest,r.Revision,review);
         }
         finally {serial.Release();}
     }

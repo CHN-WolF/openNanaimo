@@ -91,7 +91,9 @@ public sealed partial class DatabaseService
               MaxHp=$hp,MaxMp=$mp,CurrentHp=CASE WHEN $heal=1 THEN $hp ELSE MIN(CurrentHp,$hp) END,
               CurrentMp=CASE WHEN $heal=1 THEN $mp ELSE MIN(CurrentMp,$mp) END,PetLevel=$pet,LastSavedAt=$now WHERE Id=$id;
             UPDATE CharacterItems SET PetLevel=$pet,UpdatedAt=$now WHERE CharacterId=$id
-              AND ItemCode=(SELECT EquippedPetItemCode FROM Characters WHERE Id=$id);
+              AND ItemCode=(SELECT EquippedPetItemCode FROM Characters WHERE Id=$id AND EquippedPetInstanceId=0);
+            UPDATE CharacterPetCopies SET PetLevel=$pet,UpdatedAt=$now WHERE CharacterId=$id
+              AND PetInstanceId=(SELECT EquippedPetInstanceId FROM Characters WHERE Id=$id);
             UPDATE Accounts SET IsGm=$gm,IsBanned=$ban WHERE Id=$account;
             """;
         foreach (var (key, value) in new (string, object)[] {
@@ -115,6 +117,17 @@ public sealed partial class DatabaseService
         await using var connection = await OpenConnectionAsync(token);
         await using var transaction = connection.BeginTransaction();
         long id = await RequireGmOfflineAsync(connection, transaction, account, token);
+        if (kind == "item" && ShopCatalog.TryGet(code, out var petItem)
+            && petItem.Section == InventorySection.Pet && !petItem.IsPetMaterial)
+        {
+            var changed = quantity > 0
+                ? await GrantPetAsync(connection, transaction, id, petItem, quantity, DateTime.Now, token)
+                : await RemovePetInstancesAsync(connection, transaction, id, code, -quantity, true, token);
+            if (!changed) throw new InvalidDataException("Pet inventory capacity or protected-instance constraint.");
+            await AuditGmAsync(connection, transaction, account, "pet inventory", new { code, quantity }, token);
+            await transaction.CommitAsync(token);
+            return;
+        }
         // Identifiers below come only from the fixed kind allowlist.
         string table = kind == "item" ? "CharacterItems" : kind == "card" ? "CharacterCards" : "CharacterSkills";
         string key = kind == "item" ? "ItemCode" : kind == "card" ? "CardCode" : "SkillCode";

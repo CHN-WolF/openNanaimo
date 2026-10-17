@@ -117,6 +117,7 @@ STORY_SOURCES = {
     'manifest/story_portrait_resources.json',
     'scripts/prepare_story_catalog.py', 'scripts/prepare_story_port.py',
     'scripts/prepare_story_portraits.py', 'scripts/audit_story_localization.py',
+    'scripts/install_story_portraits.py',
     'scripts/generate_inventory_card_catalog.py',
 }
 # This is only a rejection aid; NOT a privacy certification. Exact-byte human review

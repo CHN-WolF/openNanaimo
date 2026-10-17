@@ -177,5 +177,6 @@ internal static class ChapterStoryChecks
         }
         finally {SqliteConnection.ClearAllPools();Directory.Delete(root,true);}
         Console.WriteLine($"CHAPTER_STORY_CHECKS_OK assertions={checks} chapters=16 speeches={speeches} pages={pages} runtime_acceptance=false activation_allowed=false");
+        await ChapterRewardChecks.RunAsync();
     }
 }

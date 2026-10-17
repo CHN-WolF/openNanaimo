@@ -51,6 +51,7 @@ def collect(root=ROOT):
                     'manifest/story_portrait_resources.json',
                     'scripts/prepare_story_catalog.py', 'scripts/prepare_story_port.py',
                     'scripts/prepare_story_portraits.py', 'scripts/audit_story_localization.py',
+                    'scripts/install_story_portraits.py',
                     'scripts/generate_inventory_card_catalog.py'):
             path = root / rel
             if not path.is_file(): raise ValueError('missing chapter source input: ' + rel)

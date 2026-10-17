@@ -391,6 +391,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         public InventoryAcquisitionTracker InventoryAcquisitions { get; set; } = new();
         public long CardNoticeCharacterId { get; set; }
         public InventoryIdentityMap PetMaterialIdentities { get; set; } = new();
+        public PetIdentityMap PetIdentities { get; set; } = new();
         public ShoppingCouponIdentityMap ShoppingCouponIdentities { get; set; } = new();
         public ushort? LastSkillSlotExpansionRequestControl { get; set; }
         public byte[]? LastSkillSlotExpansionRequestPayload { get; set; }
@@ -2594,12 +2595,15 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     return BuildNativeFrame(frame, 0xC44E, BuildPetDeleteResultPayload(false, itemCode, slot), session);
                 }
 
+                if (!TryResolveSessionPet(session, slot, out _, out var deletedPet) || deletedPet.ItemCode != itemCode)
+                    return BuildNativeFrame(frame, 0xC44E, BuildPetDeleteResultPayload(false, itemCode, slot), session);
                 var deleted = await _database.DeletePetItemAsync(
                     session.AccountId,
                     session.Character.Id,
                     session.InventorySessionId,
                     itemCode,
-                    token);
+                    token, deletedPet.PetInstanceId);
+                if (deleted) session.PetIdentities.Remove(slot);
                 await RefreshInventoryCharacterAsync(session, token);
                 _log($"{channel}:{remote} 宠物丢弃：item={itemCode} slot={slot} result={(deleted ? "success" : "failed")} equipped={GetEquippedPetItemCode(session.Character)}");
                 if (deleted)
@@ -2626,10 +2630,12 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var responseState = payload[3];
                 var materialWireIdentity = petChangeOperation == 2 ? payload[5] : payload[4];
                 var petChangePayload = payload.ToArray();
+                var petIdentityValid = TryResolveSessionPet(session, payload[2], out var petOrdinal, out var targetPet);
+                petChangePayload[2] = petOrdinal;
                 var materialIdentityValid = TryResolveSessionPetMaterialIdentity(session, materialWireIdentity,
                     out var materialOrdinal, out _);
                 petChangePayload[petChangeOperation == 2 ? 5 : 4] = checked((byte)(PetMaterialIdentityBase + materialOrdinal));
-                if (!materialIdentityValid || !TryResolvePetChangeRequest(
+                if (!petIdentityValid || !materialIdentityValid || !TryResolvePetChangeRequest(
                         session.Character,
                         petChangePayload,
                         out var resolvedOperation,
@@ -2653,7 +2659,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         petItemCode,
                         payload[3],
                         materialItemCode,
-                        token)
+                        token, targetPet.PetInstanceId)
                     : await _database.ChangePetItemAsync(
                         session.AccountId,
                         session.Character.Id,
@@ -2662,7 +2668,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                         petItemCode,
                         payload[3],
                         materialItemCode,
-                        token);
+                        token, targetPet.PetInstanceId);
                 if (changeResult.Success)
                     session.PetMaterialIdentities.Remove((uint)(materialWireIdentity - PetMaterialIdentityBase));
                 await RefreshInventoryCharacterAsync(session, token);
@@ -2718,6 +2724,21 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var unequippedPetItemCode = BinaryPrimitives.ReadUInt32LittleEndian(payload.AsSpan(92, 4));
                 var appearance = payload.AsSpan(96, 36).ToArray();
                 var appearancePetItemCode = BinaryPrimitives.ReadUInt32LittleEndian(appearance.AsSpan(28, 4));
+                long selectedInstance = 0, removedInstance = 0;
+                // sub_819C90 writes selected BYTE frame+93 and removed WORD frame+94.
+                if (equippedPetItemCode != 0)
+                {
+                    quickSlotLayoutValid &= TryResolveSessionPet(session, payload[85], out _, out var selectedPet)
+                        && selectedPet.ItemCode == equippedPetItemCode;
+                    selectedInstance = selectedPet?.PetInstanceId ?? 0;
+                }
+                if (unequippedPetItemCode != 0)
+                {
+                    quickSlotLayoutValid &= TryResolveSessionPet(session,
+                        BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(86, 2)), out _, out var removedPet)
+                        && removedPet.ItemCode == unequippedPetItemCode;
+                    removedInstance = removedPet?.PetInstanceId ?? 0;
+                }
                 if (!quickSlotLayoutValid
                     || ((equippedPetItemCode != 0 || unequippedPetItemCode != 0)
                         && appearancePetItemCode != equippedPetItemCode))
@@ -2738,7 +2759,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     equippedPetItemCode,
                     unequippedPetItemCode,
                     appearance,
-                    token);
+                    token, selectedInstance, removedInstance);
                 await RefreshInventoryCharacterAsync(session, token);
                 _log($"{channel}:{remote} 库存穿戴提交：selectedPet={equippedPetItemCode} deselectedPet={unequippedPetItemCode} result={(changed ? "success" : "rejected")} storedPet={GetEquippedPetItemCode(session.Character)} appearance={FormatAppearanceHex(session.Character?.Appearance)}");
                 if (changed)
@@ -4539,10 +4560,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                 var itemCode = BinaryPrimitives.ReadUInt32LittleEndian(payload.AsSpan(0, 4));
                 var slot = BinaryPrimitives.ReadUInt16LittleEndian(payload.AsSpan(8, 2));
                 var durability = BinaryPrimitives.ReadInt16LittleEndian(payload.AsSpan(14, 2));
-                var ownedPetCodes = GetOwnedPetItemCodes(session.Character).Distinct().Take(PetChargeCapacity).ToArray();
                 ShopCatalog.TryGet(itemCode, out var petItem);
-                var valid = slot < ownedPetCodes.Length
-                    && ownedPetCodes[slot] == itemCode
+                var valid = TryResolveSessionPet(session, slot, out _, out var chargedPet)
+                    && chargedPet.ItemCode == itemCode
                     && durability >= 0
                     && petItem is not null
                     && petItem.Section == InventorySection.Pet
@@ -4563,7 +4583,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
                     durability,
                     chargePet.PetMaxDurability,
                     chargePet.PetChargeUnitPrice,
-                    token);
+                    token, chargedPet.PetInstanceId);
                 if (result.Success)
                     await RefreshSessionCharacterAsync(session, token);
                 _log($"{channel}:{remote} pet-charge {(result.Success ? "completed" : "rejected")}: item={itemCode} slot={slot} durability={durability}->{result.Durability} max={chargePet.PetMaxDurability} unit={chargePet.PetChargeUnitPrice} cost={result.Cost} hans={result.Hans} reason={result.Error}");
@@ -13988,6 +14008,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         BinaryPrimitives.WriteUInt16LittleEndian(response.AsSpan(6, 2), responseOpcode);
         payload.CopyTo(response.AsSpan(8));
         RewriteSessionInventoryIdentities(response, session);
+        RewriteSessionPetIdentities(response, session);
         RewriteSessionPetMaterialIdentities(response, session);
         return response;
     }
@@ -17807,10 +17828,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
 
     internal static byte[] BuildPetInventoryPayload(CharacterRecord? character)
     {
-        var petItems = GetPetWireItemCodes(character);
+        var petItems = GetPetWireItems(character);
         var equippedPetItemCode = GetEquippedPetItemCode(character);
-        if (equippedPetItemCode != 0 && !petItems.Contains(equippedPetItemCode))
-            equippedPetItemCode = 0;
         var materials = GetPetMaterialWireItemCodes(character);
         var hasPet = petItems.Length + materials.Length > 0;
         var expansionExpiration = GetActiveInventoryExpansionExpiration(character?.PetInventoryExpansionExpires ?? 0);
@@ -17820,7 +17839,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         payload[0] = 0; // acquisition notice; session publication supplies the edge
         payload[1] = expansionExpiration != 0 ? (byte)4 : (byte)0;
         payload[2] = checked((byte)(petItems.Length + materials.Length));
-        payload[3] = equippedPetItemCode == 0 ? byte.MaxValue : checked((byte)Array.IndexOf(petItems, equippedPetItemCode));
+        payload[3] = equippedPetItemCode == 0 ? byte.MaxValue : checked((byte)GetSelectedPetOrdinal(character));
         if (!hasPet || character is null)
         {
             if (expansionExpiration != 0)
@@ -17831,9 +17850,9 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         for (var index = 0; index < petItems.Length; index++)
         {
             var record = payload.AsSpan(4 + index * PetInventoryRecordLength, PetInventoryRecordLength);
-            var state = PetProgression.GetState(character, petItems[index]);
-            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(0, 4), petItems[index]);
-            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(4, 4), GetPetWireExpiration(character, petItems[index]));
+            var state = PetProgression.GetState(character, petItems[index].ItemCode, petItems[index].PetInstanceId);
+            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(0, 4), petItems[index].ItemCode);
+            BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(4, 4), GetPetWireExpiration(character, petItems[index].ItemCode, petItems[index].PetInstanceId));
             BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(8, 2), checked((ushort)index));
             record[10] = state.CurrentStage;
             record[11] = state.MaximumStage;
@@ -17861,44 +17880,19 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
     // Duration pets use the same wire expiration encoding as timed clothing, and the
     // C44C/C452/C379 pet records read it. A permanent pet, the starter pet and legacy
     // rows without a stored value keep the far-future sentinel instead of an epoch date.
-    private static uint GetPetWireExpiration(CharacterRecord? character, uint itemCode)
-        => ClothingExpirationTime.Effective(
-            character?.Items.FirstOrDefault(item => item.ItemCode == itemCode)?.ItemExpiration ?? 0);
+    private static uint GetPetWireExpiration(CharacterRecord? character, uint itemCode, long? instanceId = null)
+        => ClothingExpirationTime.Effective(ShopCatalog.TryGet(itemCode, out var catalog) && catalog.IsIndependentPet
+            ? 0 : character?.Items.FirstOrDefault(item => item.ItemCode == itemCode
+                && item.PetInstanceId == (instanceId ?? (character.EquippedPetItemCode == itemCode ? character.EquippedPetInstanceId : 0)))?.ItemExpiration ?? 0);
 
     internal static uint[] GetPetWireItemCodes(CharacterRecord? character)
-    {
-        var owned = GetOwnedPetItemCodes(character).Distinct().ToArray();
-        if (owned.Length <= PetChargeCapacity)
-            return owned;
-        var visible = owned.Take(PetChargeCapacity).ToArray();
-        var equipped = GetEquippedPetItemCode(character);
-        if (equipped != 0 && !visible.Contains(equipped))
-            visible[^1] = equipped;
-        return visible;
-    }
-
-    private static IEnumerable<uint> GetOwnedPetItemCodes(CharacterRecord? character)
-    {
-        if (character is null)
-            yield break;
-        if (character.PetVariant is >= 1 and <= 3)
-            yield return 15_000_000u + (uint)character.PetVariant;
-        foreach (var item in character.Items)
-        {
-            // A lapsed pet stops being owned, the same way timed clothing leaves the
-            // wardrobe when its wire expiration passes. Permanent rows carry none.
-            if (item.Quantity > 0 && item.ItemCode / 1_000_000 == 15
-                && ClothingExpirationTime.IsActive(item.ItemExpiration, DateTime.Now))
-                yield return item.ItemCode;
-        }
-    }
+        => GetPetWireItems(character).Select(item => item.ItemCode).ToArray();
 
     private static uint GetEquippedPetItemCode(CharacterRecord? character)
     {
         if (character is null)
             return 0;
-        var owned = GetOwnedPetItemCodes(character).Distinct().ToArray();
-        if (character.EquippedPetItemCode != 0 && owned.Contains(character.EquippedPetItemCode))
+        if (character.EquippedPetItemCode != 0 && GetSelectedPetOrdinal(character) >= 0)
             return character.EquippedPetItemCode;
         // A persisted zero is an explicit unequip, not a missing default.
         // Tutorial ownership remains visible in C44C without forcing selection.
@@ -18011,8 +18005,8 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             return false;
         if (before.Hans != after.Hans || before.CardSummonCount != after.CardSummonCount)
             return true;
-        var beforeItems = before.Items.ToDictionary(item => item.ItemCode, item => item.Quantity);
-        return after.Items.Any(item => beforeItems.GetValueOrDefault(item.ItemCode) != item.Quantity);
+        var beforeItems = before.Items.ToDictionary(item => (item.ItemCode, item.PetInstanceId), item => item.Quantity);
+        return after.Items.Any(item => beforeItems.GetValueOrDefault((item.ItemCode, item.PetInstanceId)) != item.Quantity);
     }
 
     private static byte[] BuildTaskCompletionResultPayload(
@@ -18182,7 +18176,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             BinaryPrimitives.WriteUInt32LittleEndian(
                 pet.Slice(0, 4),
                 equippedPetItemCode);
-            var selectedPetHandle = Array.IndexOf(GetPetWireItemCodes(character), equippedPetItemCode);
+            var selectedPetHandle = GetSelectedPetOrdinal(character);
             BinaryPrimitives.WriteUInt16LittleEndian(
                 pet.Slice(4, 2),
                 selectedPetHandle >= 0 ? checked((ushort)selectedPetHandle) : ushort.MaxValue);
@@ -18322,7 +18316,7 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
         // frame+8, up to 56 records of 36 bytes from frame+12, then DWORD
         // Hans/Cash balances at frame+2032/+2036.
         var payload = new byte[PetChargeListResponsePayloadLength];
-        var petItems = GetPetWireItemCodes(character);
+        var petItems = GetPetWireItems(character);
         BinaryPrimitives.WriteUInt32LittleEndian(payload.AsSpan(0, 4), checked((uint)petItems.Length));
 
         if (character is not null)
@@ -18331,13 +18325,14 @@ public sealed partial class NetworkAdapterService : IAsyncDisposable
             for (var index = 0; index < petItems.Length; index++)
             {
                 var record = payload.AsSpan(4 + index * PetInventoryRecordLength, PetInventoryRecordLength);
-                var state = PetProgression.GetState(character, petItems[index]);
-                BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(0, 4), petItems[index]);
-                BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(4, 4), GetPetWireExpiration(character, petItems[index]));
+                var state = PetProgression.GetState(character, petItems[index].ItemCode, petItems[index].PetInstanceId);
+                BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(0, 4), petItems[index].ItemCode);
+                BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(4, 4), GetPetWireExpiration(character, petItems[index].ItemCode, petItems[index].PetInstanceId));
                 BinaryPrimitives.WriteUInt16LittleEndian(record.Slice(8, 2), checked((ushort)index));
                 record[10] = state.CurrentStage;
                 record[11] = state.MaximumStage;
-                record[12] = petItems[index] == equippedPetItemCode ? (byte)1 : (byte)0;
+                record[12] = petItems[index].ItemCode == equippedPetItemCode
+                    && petItems[index].PetInstanceId == character.EquippedPetInstanceId ? (byte)1 : (byte)0;
                 record[13] = 0;
                 BinaryPrimitives.WriteInt16LittleEndian(record.Slice(14, 2), state.Durability);
                 BinaryPrimitives.WriteUInt32LittleEndian(record.Slice(16, 4), state.Experience);

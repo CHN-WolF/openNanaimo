@@ -200,16 +200,21 @@ internal static class PetProgression
     }
 
     public static PetState GetState(CharacterRecord? character, uint itemCode)
+        => GetState(character, itemCode, character?.EquippedPetItemCode == itemCode
+            ? character.EquippedPetInstanceId : 0);
+
+    public static PetState GetState(CharacterRecord? character, uint itemCode, long instanceId)
     {
         if (character is null || itemCode == 0)
             return default;
 
         ShopCatalog.TryGet(15, itemCode, out var catalogItem);
-        var stored = character.Items.FirstOrDefault(item => item.ItemCode == itemCode && item.Quantity > 0);
+        var stored = character.Items.FirstOrDefault(item => item.ItemCode == itemCode
+            && item.PetInstanceId == instanceId && item.Quantity > 0);
         var tutorialItemCode = character.PetVariant is >= 1 and <= 3
             ? 15_000_000u + (uint)character.PetVariant
             : 0u;
-        var usesLegacyTutorialState = stored is null && itemCode == tutorialItemCode;
+        var usesLegacyTutorialState = stored is null && instanceId == 0 && itemCode == tutorialItemCode;
         var currentStage = stored?.PetCurrentStage > 0
             ? stored.PetCurrentStage
             : catalogItem?.PetModelStage ?? (byte)1;

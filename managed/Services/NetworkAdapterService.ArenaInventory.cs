@@ -29,6 +29,7 @@ public sealed partial class NetworkAdapterService
     {
         peer.GameInventoryIdentities = owner.GameInventoryIdentities;
         peer.PetMaterialIdentities = owner.PetMaterialIdentities;
+        peer.PetIdentities = owner.PetIdentities;
         peer.ShoppingCouponIdentities = owner.ShoppingCouponIdentities;
         peer.InventoryAcquisitions = owner.InventoryAcquisitions;
         peer.Character = owner.Character;

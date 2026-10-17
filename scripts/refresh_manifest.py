@@ -14,6 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    'scripts/install_story_portraits.py',
+    'scripts/test_story_install.py',
     'scripts/prepare_story_port.py',
     'scripts/prepare_story_portraits.py',
     'scripts/audit_story_localization.py',
@@ -106,6 +108,8 @@ REPOSITORY_FILES = [
     'knowledge/业务/卡片/兑换.md',
     'tests/CardUseRegression/CardUseRegression.csproj',
     'tests/CardUseRegression/Program.cs',
+    'tests/PetInstanceRegression/PetInstanceRegression.csproj',
+    'tests/PetInstanceRegression/Program.cs',
     'tests/CardPageUnionRegression/CardPageUnionRegression.csproj',
     'tests/CardPageUnionRegression/Program.cs',
     'scripts/refresh_manifest.py',

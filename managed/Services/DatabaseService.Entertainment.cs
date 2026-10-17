@@ -60,8 +60,9 @@ public sealed partial class DatabaseService
         await using var command = connection.CreateCommand();
         command.Transaction = transaction;
         command.CommandText = """
-            SELECT PetCurrentStage, PetMaximumStage FROM CharacterItems
+            SELECT PetCurrentStage, PetMaximumStage FROM CharacterInventoryInstances
             WHERE CharacterId=$id AND ItemCode=$pet AND Quantity>0
+                AND PetInstanceId=(SELECT EquippedPetInstanceId FROM Characters WHERE Id=$id)
             """;
         command.Parameters.AddWithValue("$id", characterId);
         command.Parameters.AddWithValue("$pet", petCode);

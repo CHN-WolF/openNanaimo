@@ -193,10 +193,14 @@ internal static class CardSynthesisChecks
 
             var duplicatePet = await database.SynthesizeCardItemAsync(
                 accountId, characterId, sessionId, 7, CancellationToken.None);
-            Check(!duplicatePet.Success, "duplicate PET reward is rejected");
+            Check(duplicatePet.Success, "duplicate lifespan PET reward creates another instance");
             remainingCards = await ReadCardQuantitiesAsync(database.DatabasePath, characterId);
-            Check(remainingCards.GetValueOrDefault(13_000_007u) == 1,
-                "duplicate PET rejection rolls back its material");
+            Check(remainingCards.GetValueOrDefault(13_000_007u) == 0,
+                "second PET synthesis consumes exactly one material");
+            state = (await database.GetCharacterAsync(accountId, CancellationToken.None))!;
+            Check(state.Items.Count(item => item.ItemCode == 15_000_009u) == 2
+                && state.Items.Where(item => item.ItemCode == 15_000_009u).Select(item => item.PetInstanceId).Distinct().Count() == 2,
+                "same-code PET copies persist with independent identities");
 
             await SetKeyStateAsync(database.DatabasePath, characterId, 0, 1, 1, 1);
             var normal = await database.SynthesizeCardItemAsync(

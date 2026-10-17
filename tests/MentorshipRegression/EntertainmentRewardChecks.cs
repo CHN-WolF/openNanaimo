@@ -19,6 +19,7 @@ internal static partial class Program
                 == !CardCatalog.IsGoldPowder(13000001u + (uint)i), "entertainment card eligibility " + (i + 1));
         await CheckEntertainmentRoomRewardsAsync();
         await CheckEntertainmentPetBoardGateAsync();
+        CheckEntertainmentFreshPetRewards();
         await using var f = await Fixture.CreateAsync();
         await f.ExecuteAsync("UPDATE Characters SET PetVariant=1,EquippedPetItemCode=15000001 WHERE Id=$id; "
             + "INSERT INTO CharacterItems(CharacterId,ItemCode,Quantity,PetCurrentStage,PetMaximumStage,PetLevel,PetExperience,UpdatedAt) "
@@ -63,7 +64,7 @@ internal static partial class Program
             && await Send(0xD005, [10, 0, 16, 0]) is null
             && (uint)scores[Id(host)]! == 1400, "duplicate and skipped combos cannot grant score");
         await Send(0xD005, [10, 0, 15, 0]);
-        Check((uint)scores[Id(host)]! == 1500 && cards.Count == 1, "exact target crossing awards one basic card");
+        Check((uint)scores[Id(host)]! == 1500 && cards.Count == 0, "target crossing does not award a card");
         var notifications = ((IList)Get(host, "PendingSessionBroadcasts")!).Cast<object>().Where(item =>
             (ushort)Get(item, "Opcode")! == 0xD008).ToArray();
         var scoreFrame = (byte[])Get(notifications[^1], "Payload")!;
@@ -81,58 +82,87 @@ internal static partial class Program
         Set(room, "LuckyPoints", (ushort)900);
         var lucky = await Send(0xD007, [0, 2, 2, 10]);
         Check(lucky is not null && BinaryPrimitives.ReadUInt16LittleEndian(lucky.AsSpan(12)) == 2812
-            && BinaryPrimitives.ReadUInt16LittleEndian(lucky.AsSpan(14)) == 112 && cards.Count == 2,
-            "lucky crossing awards a basic card independently of target thresholds");
-        Check(await Send(0xD007, [0, 2, 2, 10]) is null && cards.Count == 2,
-            "completed board retry cannot duplicate score or either award");
+            && BinaryPrimitives.ReadUInt16LittleEndian(lucky.AsSpan(14)) == 112 && cards.Count == 1,
+            "lucky crossing alone awards one basic card");
+        Check(await Send(0xD007, [0, 2, 2, 10]) is null && cards.Count == 1,
+            "completed board retry cannot duplicate score or lucky award");
         await Send(0xD007, [1, 2, 2, 10]);
+        Check((uint)scores[Id(host)]! == 3024 && cards.Count == 1,
+            "crossing 3000 points does not add a score card");
         Set(room, "LuckyPoints", (ushort)900);
         await Send(0xD007, [2, 2, 2, 10]);
-        Check((uint)scores[Id(host)]! == 4236 && cards.Count == 4,
-            "a second lucky crossing and a second target each grant one card");
+        Check((uint)scores[Id(host)]! == 4236 && cards.Count == 2,
+            "a second lucky crossing grants exactly a second card");
         await Send(0xD007, [3, 3, 3, 0]);
-        Check((uint)scores[Id(host)]! == 4558 && cards.Count == 5,
-            "third target crossing retains all five prizes beyond preview capacity");
+        Check((uint)scores[Id(host)]! == 4558 && cards.Count == 2,
+            "crossing 4500 points leaves the two lucky prizes unchanged");
         var prizes = cards.Cast<uint>().ToArray();
         Check(prizes.All(EntertainmentRewardPolicy.IsBasicCard), "all earned prizes use the native basic preview domain");
         Set(room, "StartedUtc", DateTime.UtcNow.AddSeconds(-105));
         InvokeMentorship<object>(f.Service, "CollectEntertainmentDeadlines", DateTime.UtcNow);
         var result = await Send(0xCF85, []);
         Check(result is { Length: 80 } && BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(24)) == 4558
-            && Enumerable.Range(0, 3).All(i => BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(56 + 4 * i)) == prizes[i]),
+            && Enumerable.Range(0, 3).All(i => BinaryPrimitives.ReadUInt32LittleEndian(result.AsSpan(56 + 4 * i)) == prizes.ElementAtOrDefault(i)),
             "CF86 freezes actual score and the first three native basic preview identities");
-        Check(await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 5
-            && await f.ScalarAsync("SELECT SUM(Quantity) FROM CharacterCards") == 5,
-            "all five prize receipts and inventory grants commit together");
+        Check(await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 2
+            && await f.ScalarAsync("SELECT SUM(Quantity) FROM CharacterCards") == 2,
+            "only the two lucky prize receipts and inventory grants commit together");
         Check(await f.ScalarAsync("SELECT SUM(PetExperience) FROM ActivityRewardReceipts") == soloPetReward,
             "single-player settlement receives the ten-percent pet award");
+        var savedFirstPet = PetProgression.GetState((await f.Database.GetCharacterByIdAsync(Character(host).Id))!, 15000001);
+        Check(savedFirstPet.Experience == soloPetReward
+            && BinaryPrimitives.ReadUInt32LittleEndian(result!.AsSpan(44)) == soloPetReward,
+            "fresh pet first settlement stores and publishes ten percent, not ninety percent");
         lobby = await Send(0xCF0B, []);
         Check(BinaryPrimitives.ReadUInt32LittleEndian(lobby!.AsSpan(16)) == 4558
             && await f.Database.GetEntertainmentBestScoreAsync(Character(host).Id, 1) == 4558
             && await f.Database.GetEntertainmentBestScoreAsync(Character(host).Id, 2) == 0,
             "lobby personal record uses the committed point score and isolates game types");
         await Send(0xCF85, []);
-        Check(await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 5
-            && await f.ScalarAsync("SELECT SUM(Quantity) FROM CharacterCards") == 5,
+        Check(await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 2
+            && await f.ScalarAsync("SELECT SUM(Quantity) FROM CharacterCards") == 2,
             "result retry cannot duplicate a basic card grant");
         Check(await Send(0xD005, [10, 0, 2, 0]) is null && await Send(0xD007, [4, 2, 2, 10]) is null,
             "frozen round rejects further scoring and rewards");
+        Check((ushort)Get(room, "LuckyPoints")! == 434, "first round leaves a nonzero room lucky remainder");
+        var returning = await Send(0xCF6E, []);
+        Check(returning is { Length: 88 }
+            && BinaryPrimitives.ReadUInt16LittleEndian(returning.AsSpan(34)) == 434,
+            "returning waiting-room response displays the inherited lucky remainder");
         await Send(0xCFE5, []);
         Check((uint)scores[Id(host)]! == 0 && ((IList)((IDictionary)Get(room, "RewardCardsBySession")!)[Id(host)]!).Count == 0
             && (ushort)((IDictionary)Get(room, "CombosBySession")!)[Id(host)]! == 0,
-            "new round resets scores, combos, target awards and prizes");
+            "new round resets scores, combos and prizes");
+        Check((ushort)Get(room, "LuckyPoints")! == 434, "same-room next round retains lucky remainder");
         var nextCards = (IList)((IDictionary)Get(room, "RewardCardsBySession")!)[Id(host)]!;
         void AddScore(uint amount) => typeof(NetworkAdapterService).GetMethod("AddEntertainmentScoreLocked",
             BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, [room, host, amount]);
-        AddScore(6000u);
-        Check(nextCards.Count == 4, "one large score increment grants every crossed target");
+        foreach (var score in new uint[] { 1500, 3000, 4500, 6000 })
+        {
+            AddScore(1500u);
+            Check((uint)scores[Id(host)]! == score && nextCards.Count == 0,
+                "score-only threshold does not grant cards: " + score);
+        }
         AddScore(uint.MaxValue);
-        var capCount = nextCards.Count;
         AddScore(100u);
-        Check((uint)scores[Id(host)]! == ushort.MaxValue && capCount == 43 && nextCards.Count == capCount,
-            "score saturation is overflow safe and cannot repeat a threshold grant");
+        Check((uint)scores[Id(host)]! == ushort.MaxValue && nextCards.Count == 0,
+            "score saturation is overflow safe and grants no cards");
+        await Send(0xCF7F, []);
+        for (byte board = 0; board < 12; board++)
+        {
+            var response = await Send(0xD007, [board, 3, 3, 22]);
+            var total = 434 + (board + 1) * 300;
+            Check(response is { Length: 20 }
+                && BinaryPrimitives.ReadUInt16LittleEndian(response.AsSpan(14)) == total % 1000
+                && nextCards.Count == total / 1000,
+                "inherited lucky remainder awards every thousand even at score cap: " + board);
+        }
+        Check(nextCards.Count == 4 && (ushort)Get(room, "LuckyPoints")! == 34,
+            "four lucky awards are retained beyond the three preview slots");
 
         var recreated = (await Send(0xCF6C, create))!;
+        Check((ushort)Get(rooms[Get(host, "EntertainmentRoomId")!]!, "LuckyPoints")! == 0,
+            "a new room does not inherit the previous room lucky remainder");
         Check(BinaryPrimitives.ReadUInt32LittleEndian(recreated.AsSpan(16)) == 4558
             && Encoding.ASCII.GetString(recreated, 20, 7) == "Teacher",
             "recreated GAME INFO reads the saved actual score rather than a round's selection count or UID");
@@ -171,7 +201,7 @@ internal static partial class Program
         var failed = false;
         try { await Grant("entertainment:rollback", [13000001, 13000001], 9000); }
         catch (SqliteException) { failed = true; }
-        Check(failed && await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 5
+        Check(failed && await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 2
             && await f.ScalarAsync("SELECT COUNT(*) FROM ActivityRewardReceipts") == 1,
             "mid-grant failure rolls back cards, pet reward and settlement receipt");
         Check(await f.Database.GetEntertainmentBestScoreAsync(actor.CharacterId, 1) == 4558,
@@ -179,8 +209,8 @@ internal static partial class Program
         await f.ExecuteAsync("DROP TRIGGER fail_entertainment_card");
         await Grant("entertainment:rollback", [13000001, 13000001]);
         await Grant("entertainment:rollback", [13000001, 13000001]);
-        Check(await f.ScalarAsync("SELECT SUM(Quantity) FROM CharacterCards") == 7
-            && await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 7,
+        Check(await f.ScalarAsync("SELECT SUM(Quantity) FROM CharacterCards") == 4
+            && await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 4,
             "duplicate random card identities each grant one copy and retry is idempotent");
         await f.ExecuteAsync("INSERT INTO EntertainmentLuckyCardReceipts VALUES(" + actor.CharacterId
             + ", 'historical', 0, 22000011, 'before')");
@@ -194,7 +224,7 @@ internal static partial class Program
         var reopened = new DatabaseService(f.Root);
         await reopened.InitializeAsync();
         Check(await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentLuckyCardReceipts") == 1
-            && await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 7,
+            && await f.ScalarAsync("SELECT COUNT(*) FROM EntertainmentCardReceipts") == 4,
             "database reopen preserves historical lucky receipts and new basic receipts");
         Check(await reopened.GetEntertainmentBestScoreAsync(actor.CharacterId, 1) == 8000,
             "database reopen preserves the best entertainment result");
@@ -242,6 +272,35 @@ internal static partial class Program
 
         for (var memberCount = 1; memberCount <= 6; memberCount++)
             await CheckEntertainmentRoomRewardsAsync(memberCount);
+    }
+
+    private static void CheckEntertainmentFreshPetRewards()
+    {
+        var pets = ShopCatalog.All.Where(pet => pet.Category == 15).ToArray();
+        Check(pets.Length > 0, "fresh pet reward audit has catalog entries");
+        foreach (var pet in pets)
+        {
+            var initial = PetProgression.NormalizeState(new PetState(pet.ItemCode,
+                pet.PetModelStage, pet.PetUpgradeStage, 0, 0, 0, 0, 0, pet.PetMaxDurability));
+            Check(ShopCatalog.TryGetPetGrowthStage(pet.PetGrowthClass, initial.CurrentStage, out var growth),
+                "fresh pet has a growth denominator: " + pet.ItemCode);
+            var award = (uint)((ulong)growth.ExperiencePerLevel * 10 / 100);
+            var first = PetProgression.AddExperience(initial,
+                EntertainmentRewardPolicy.GetPetExperience(initial, 0, 1)).State;
+            var second = PetProgression.AddExperience(first,
+                EntertainmentRewardPolicy.GetPetExperience(first, 0, 1)).State;
+            Check(first.Experience == award && second.Experience == 2 * award
+                && first.CurrentStage == initial.CurrentStage && second.Level == 0,
+                "fresh pet first and second solo awards are ten percent each: " + pet.ItemCode);
+            for (var count = 1; count <= EntertainmentProtocol.MaximumMembers; count++)
+            for (var place = 0; place < count; place++)
+            {
+                var percent = Math.Min(25, 10 + (count - place - 1) * 3);
+                Check(EntertainmentRewardPolicy.GetPetExperience(initial, place, count)
+                    == (uint)((ulong)growth.ExperiencePerLevel * (uint)percent / 100),
+                    "fresh pet ranked reward uses the declared percentage: " + pet.ItemCode + "/" + count + "/" + place);
+            }
+        }
     }
 
     private static async Task CheckEntertainmentPetBoardGateAsync()
@@ -414,10 +473,19 @@ internal static partial class Program
             Check(listing is { Length: 52 } && BinaryPrimitives.ReadUInt16LittleEndian(listing.AsSpan(38)) == place + 1,
                 "CF10 publishes actual population instead of selected difficulty " + (place + 1));
         }
-        await Send(host, 0xCFE5, []);
-        foreach (var member in members) await Send(member, 0xCF7F, []);
         var rooms = (IDictionary)typeof(NetworkAdapterService).GetField("_entertainmentRooms", PrivateInstance)!.GetValue(f.Service)!;
         var room = rooms[(int)roomId]!;
+        Set(room, "LuckyPoints", (ushort)345);
+        var waiting = await Send(host, 0xCF6E, []);
+        Check(waiting is { Length: 88 } && BinaryPrimitives.ReadUInt16LittleEndian(waiting.AsSpan(34)) == 345,
+            "waiting-room direct frame carries room lucky points: " + memberCount);
+        var memberFrames = ((IList)Get(host, "PendingSessionBroadcasts")!).Cast<object>()
+            .Where(item => (ushort)Get(item, "Opcode")! == 0xCF6F).ToArray();
+        Check(memberFrames.Length == memberCount - 1
+            && memberFrames.All(item => BinaryPrimitives.ReadUInt16LittleEndian(((byte[])Get(item, "Payload")!).AsSpan(26)) == 345),
+            "waiting-room member snapshots carry the same lucky points: " + memberCount);
+        await Send(host, 0xCFE5, []);
+        foreach (var member in members) await Send(member, 0xCF7F, []);
         var scores = new uint[] { 4000, 3000, 2000, 1000, 900, 800 };
         for (var place = 0; place < memberCount; place++)
         {

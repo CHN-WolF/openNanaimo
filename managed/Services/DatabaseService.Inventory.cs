@@ -296,8 +296,9 @@ public sealed partial class DatabaseService
                 FROM CharacterItems AS item
                 INNER JOIN Characters AS character ON character.Id = item.CharacterId
                 INNER JOIN Accounts AS account ON account.Id = character.AccountId
-                LEFT JOIN CharacterItems AS pet ON pet.CharacterId = character.Id
+                LEFT JOIN CharacterInventoryInstances AS pet ON pet.CharacterId = character.Id
                     AND pet.ItemCode = character.EquippedPetItemCode AND pet.Quantity > 0
+                    AND pet.PetInstanceId = character.EquippedPetInstanceId
                 WHERE item.CharacterId = $characterId AND item.ItemCode = $itemCode
                   AND item.Quantity > 0 AND character.AccountId = $accountId
                   AND character.IsOnline = 1 AND character.ActiveSessionId = $sessionId
@@ -421,8 +422,9 @@ public sealed partial class DatabaseService
                    COALESCE(p.PetAccessory0, 0), COALESCE(p.PetAccessory1, 0), COALESCE(p.PetAccessory2, 0),
                    c.Level, c.Appearance
             FROM Characters AS c
-            LEFT JOIN CharacterItems AS p ON p.CharacterId = c.Id
+            LEFT JOIN CharacterInventoryInstances AS p ON p.CharacterId = c.Id
                 AND p.ItemCode = c.EquippedPetItemCode AND p.Quantity > 0
+                AND p.PetInstanceId = c.EquippedPetInstanceId
             WHERE c.Id = $id
             """;
         command.Parameters.AddWithValue("$id", characterId);

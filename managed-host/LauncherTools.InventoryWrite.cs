@@ -122,6 +122,7 @@ internal static partial class LauncherTools
         foreach(var(offset,code) in new[]{0,4,8,12,20}.Zip(A(shop,"equipped").Select(x=>Num(x))))BinaryPrimitives.WriteUInt32LittleEndian(appearance.AsSpan(offset),checked((uint)code));
         long selected=N(shop,"selected_pet");BinaryPrimitives.WriteUInt32LittleEndian(appearance.AsSpan(24),checked((uint)N(shop,"effect")));BinaryPrimitives.WriteUInt32LittleEndian(appearance.AsSpan(28),checked((uint)selected));BinaryPrimitives.WriteUInt32LittleEndian(appearance.AsSpan(32),checked((uint)V(current,"Gender")));
         Set("Appearance",appearance,"shop");Set("EquippedPetItemCode",selected,"shop");
+        if(selected!=V(current,"EquippedPetItemCode")&&cols.Contains("EquippedPetInstanceId"))Set("EquippedPetInstanceId",0,"shop");
         var oldItems=Rows(c,t,"SELECT * FROM CharacterItems WHERE CharacterId=$id",("$id",id)).ToDictionary(x=>V(x,"ItemCode"));
         var wanted=new Dictionary<long,(string Domain,Dictionary<string,object?> Values)>();
         void Item(string domain,long code,long qty,Dictionary<string,object?>? extra=null){

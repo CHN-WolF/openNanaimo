@@ -66,6 +66,7 @@ async Task<long> Sql(string text, params (string,object)[] parameters)
 }
 async Task Reset()
 {
+    await Sql("DELETE FROM CharacterPetCopies WHERE CharacterId=$id; UPDATE Characters SET EquippedPetInstanceId=0 WHERE Id=$id");
     await Sql("DELETE FROM CharacterQuickSlots WHERE CharacterId=$id; DELETE FROM CharacterApartmentItems WHERE CharacterId=$id; DELETE FROM CharacterItems WHERE CharacterId=$id; DELETE FROM CharacterCards WHERE CharacterId=$id; DELETE FROM CharacterExperienceCards WHERE CharacterId=$id; DELETE FROM LuckyCardPendingDraws WHERE CharacterId=$id; DELETE FROM EventCardPendingDraws WHERE CharacterId=$id; UPDATE Characters SET PetVariant=1,CardMysteryKeyCount=99,CardSummonCount=99,CardGoldenKeyCount=99,FreeMagicExpansionExpires=2099123123 WHERE Id=$id;");
 }
 Task<long> Seed(uint code,int count=2)=>Sql("INSERT INTO CharacterCards(CharacterId,CardCode,Quantity,UpdatedAt) VALUES($id,$c,$q,'test') ON CONFLICT(CharacterId,CardCode) DO UPDATE SET Quantity=excluded.Quantity",("$c",code),("$q",count));
@@ -246,8 +247,7 @@ foreach(uint page in Enumerable.Range(1,10).Select(x=>(uint)x))
     Config(page:page);await Reset();await SeedSet(page);
     Check((await Redeem(page)).Success&&await Sql("SELECT COUNT(*) FROM CharacterCards WHERE CharacterId=$id")==0,"configured event page "+page);
 }
-// Duration pets extend through C3FD/C3FE as well. A permanent pet (no catalog
-// duration) keeps the fixed already-owned text and preserves the whole set.
+// Calendar-duration pets extend through C3FD/C3FE; lifespan pets create copies.
 Config(15009016);await Reset();await SeedSet(1);
 var eventPetGrant=await Redeem();
 var eventPetExpiration=await Sql("SELECT ItemExpiration FROM CharacterItems WHERE CharacterId=$id AND ItemCode=15009016");
@@ -274,15 +274,14 @@ Config(15009238);await Reset();await SeedSet(1);await Item(15009238,1);
 Check((await Redeem()).Success,"legacy row drawn again");
 Check(ClothingExpirationTime.TryDecode((uint)await Sql("SELECT ItemExpiration FROM CharacterItems WHERE CharacterId=$id AND ItemCode=15009238"),out var stacked)
     &&stacked>DateTime.Now.AddDays(29)&&stacked<DateTime.Now.AddDays(31),"a legacy row stacks the drawn days onto the term it displayed");
-// A pet authored with duration zero that is already owned settles as a blank draw: the
-// set is consumed, nothing is granted, and the page is not left pinned.
+// A duration-zero reward creates an independent pet and consumes the set exactly once.
 Config(15000004);await Reset();await SeedSet(1);await Item(15000004,1);
 var permanentPet=await Redeem();
-Check(permanentPet.Success&&permanentPet.Message=="已拥有该奖励"
+Check(permanentPet.Success&&permanentPet.Message!="已拥有该奖励"
     &&await Cards(50000001)==0&&await Items(15000004)==1
-    &&await Sql("SELECT COUNT(*) FROM EventCardPendingDraws WHERE CharacterId=$id")==0,"permanently owned pet settles as a blank draw and consumes the set");
-// One authored creature is one pet: a longer life variant of an owned family extends the
-// same row instead of adding a second instance of the same animal.
+    &&await Sql("SELECT COUNT(*) FROM CharacterPetCopies WHERE CharacterId=$id AND ItemCode=15000004")==1
+    &&await Sql("SELECT COUNT(*) FROM EventCardPendingDraws WHERE CharacterId=$id")==0,"lifespan pet reward creates an independent copy and consumes the set");
+// Calendar-duration family variants continue to extend the same row.
 Config(15009238);await Reset();await SeedSet(1);
 Check((await Redeem()).Success&&await Items(15009238)==1,"family life variant granted");
 var firstTerm=await Sql("SELECT ItemExpiration FROM CharacterItems WHERE CharacterId=$id AND ItemCode=15009238");
@@ -292,11 +291,11 @@ Check(await Sql("SELECT COUNT(*) FROM CharacterItems WHERE CharacterId=$id AND I
 Check(ClothingExpirationTime.TryDecode((uint)firstTerm,out var termBefore)
     &&ClothingExpirationTime.TryDecode((uint)await Sql("SELECT ItemExpiration FROM CharacterItems WHERE CharacterId=$id AND ItemCode=15009238"),out var termAfter)
     &&termAfter-termBefore>=TimeSpan.FromDays(90),"merged term adds the drawn variant's authored days");
-// A drawn permanent variant makes the whole family permanent.
+// A lifespan variant cannot erase or inherit the calendar variant's term.
 Config(15009337);await Reset();await SeedSet(1);Check((await Redeem()).Success,"timed family variant drawn");
 Config(15003362);await SeedSet(1);Check((await Redeem()).Success,"permanent family variant drawn");
-Check(await Sql("SELECT ItemExpiration FROM CharacterItems WHERE CharacterId=$id AND ItemCode=15009337")==0
-    &&await Items(15003362)==0&&await Sql("SELECT COUNT(*) FROM CharacterItems WHERE CharacterId=$id AND ItemCode/1000000=15")==1,"a drawn permanent variant makes the owned pet permanent");
+Check(await Sql("SELECT ItemExpiration FROM CharacterItems WHERE CharacterId=$id AND ItemCode=15009337")!=0
+    &&await Items(15003362)==1&&await Sql("SELECT COUNT(*) FROM CharacterItems WHERE CharacterId=$id AND ItemCode/1000000=15")==2,"a drawn lifespan variant coexists with the timed family row");
 // Buying another life variant of an owned pet extends that pet's term; a pet with no owned
 // family still lands as its own row.
 await Reset();await Sql("UPDATE Characters SET Hans=99999999,Cash=99999999 WHERE Id=$id");

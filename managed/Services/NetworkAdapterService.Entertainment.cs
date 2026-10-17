@@ -390,7 +390,7 @@ public sealed partial class NetworkAdapterService
             room.WaitingRoomInitializedSessions.Add(requester.SessionId);
             requester.EntertainmentWaitingRoomInitialized = true;
             var direct = ordered[0];
-            payload = BuildEntertainmentWaitingMemberPayload(direct, owner.Character);
+            payload = BuildEntertainmentWaitingMemberPayload(direct, owner.Character, room.LuckyPoints);
             room.WaitingRoomAnnouncements.Add($"{requester.SessionId}\0{direct.SessionId}");
 
             foreach (var entity in ordered.Skip(1))
@@ -411,7 +411,8 @@ public sealed partial class NetworkAdapterService
 
     private static byte[] BuildEntertainmentWaitingMemberPayload(
         ConnectionSession member,
-        CharacterRecord owner)
+        CharacterRecord owner,
+        ushort luckyPoints)
     {
         var character = member.Character
             ?? throw new InvalidOperationException("Entertainment room member has no character.");
@@ -421,7 +422,7 @@ public sealed partial class NetworkAdapterService
             GetSceneEntityId(character),
             member.EntertainmentReady,
             checked((ushort)EntertainmentRewardPolicy.TargetScore),
-            0,
+            luckyPoints,
             character.Name,
             BuildStoredAppearance(character));
     }
@@ -440,7 +441,7 @@ public sealed partial class NetworkAdapterService
         source.PendingSessionBroadcasts.Add(new PendingSessionBroadcast(
             recipient,
             0xCF6F,
-            BuildEntertainmentWaitingMemberPayload(entity, owner),
+            BuildEntertainmentWaitingMemberPayload(entity, owner, room.LuckyPoints),
             reason));
     }
 
@@ -543,6 +544,7 @@ public sealed partial class NetworkAdapterService
             room.ScoresBySession.Clear();
             room.CombosBySession.Clear();
             room.RewardCardsBySession.Clear();
+            // LuckyPoints belongs to the room and survives consecutive rounds.
             room.PicnicLivesBySession.Clear();
             foreach (var member in room.Members.Values)
             {
@@ -695,9 +697,6 @@ public sealed partial class NetworkAdapterService
         var previous = room.ScoresBySession.GetValueOrDefault(member.SessionId);
         var score = (uint)Math.Min(ushort.MaxValue, (ulong)previous + increment);
         room.ScoresBySession[member.SessionId] = score;
-        var awards = score / EntertainmentRewardPolicy.TargetScore - previous / EntertainmentRewardPolicy.TargetScore;
-        for (var index = 0u; index < awards; index++)
-            room.RewardCardsBySession[member.SessionId].Add(EntertainmentRewardPolicy.PickBasicCard());
     }
 
     private static byte[] BuildEntertainmentScoreStateLocked(EntertainmentRoom room, ConnectionSession member, uint luckyAward)
@@ -1070,7 +1069,7 @@ public sealed partial class NetworkAdapterService
                         (broadcastSource ?? member).PendingSessionBroadcasts.Add(new PendingSessionBroadcast(
                             recipient,
                             0xCF6F,
-                            BuildEntertainmentWaitingMemberPayload(entity, newOwner.Character),
+                            BuildEntertainmentWaitingMemberPayload(entity, newOwner.Character, room.LuckyPoints),
                             "entertainment owner authority refresh"));
                     }
             }

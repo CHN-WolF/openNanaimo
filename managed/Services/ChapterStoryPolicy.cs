@@ -52,8 +52,7 @@ internal static class ChapterStoryPolicy
         return needed != 0 && (existingMask & needed) == needed
             ? s with { RewardPending=true, Revision=checked(s.Revision+1) } : s;
     }
-    // Only a future reviewed reward transaction may call this after the entire reward batch succeeds.
-    // It is deliberately not reachable from any current client opcode or database claim method.
+    // Used by the isolated reviewed reward transaction, never directly by a client opcode.
     internal static ChapterStoryState AfterRewardTransaction(ChapterStoryState s, long expectedRevision)
     {
         if (!Valid(s) || s.Revision != expectedRevision || !s.RewardPending || s.Finished) return s;

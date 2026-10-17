@@ -86,7 +86,7 @@ public sealed partial class DatabaseService
         GameInventoryExpansionExpires, InteriorInventoryExpansionExpires,
         QuickSlotExpansionExpires, FreeMagicExpansionExpires,
         AttackModifier, DefenseFlat, InitialAttackMode, PureNewProfile,
-        SkillPointsMeat, CurveVersion
+        SkillPointsMeat, CurveVersion, EquippedPetInstanceId
         """;
 
     private readonly string _databasePath;
@@ -668,6 +668,7 @@ public sealed partial class DatabaseService
         await EnsureColumnAsync(connection, "CharacterItems", "PetAccessory0", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(connection, "CharacterItems", "PetAccessory1", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
         await EnsureColumnAsync(connection, "CharacterItems", "PetAccessory2", "INTEGER NOT NULL DEFAULT 0", cancellationToken);
+        await InitializePetInstancesAsync(connection, cancellationToken);
 
         await using (var markExistingInitialGrants = connection.CreateCommand())
         {
@@ -2804,28 +2805,10 @@ public sealed partial class DatabaseService
         ushort rewardQuantity;
         if (rewardDomain == 15u)
         {
-            await using var pets = connection.CreateCommand();
-            pets.Transaction = transaction;
-            pets.CommandText = """
-                SELECT EXISTS(
-                           SELECT 1 FROM CharacterItems
-                           WHERE CharacterId = $characterId AND ItemCode = $itemCode AND Quantity > 0),
-                       (SELECT COUNT(*) FROM CharacterItems
-                        WHERE CharacterId = $characterId AND Quantity > 0
-                          AND ItemCode / 1000000 = 15)
-                """;
-            pets.Parameters.AddWithValue("$characterId", characterId);
-            pets.Parameters.AddWithValue("$itemCode", recipe.Output);
-            await using var reader = await pets.ExecuteReaderAsync(cancellationToken);
-            await reader.ReadAsync(cancellationToken);
-            var duplicate = reader.GetInt32(0) != 0
-                || petVariant is >= 1 and <= 3 && recipe.Output == 15_000_000u + checked((uint)petVariant);
-            var ownedPetCount = reader.GetInt32(1) + (petVariant is >= 1 and <= 3 ? 1 : 0);
-            if (duplicate || ownedPetCount >= 56)
+            if (!await CanGrantPetAsync(connection, transaction, characterId, petReward!, 1, cancellationToken))
             {
-                await reader.CloseAsync();
                 await transaction.RollbackAsync(cancellationToken);
-                return (false, duplicate ? "The synthesized PET is already owned." : "The PET inventory is full.", recipe.Output, 0, "none", 0);
+                return (false, "The PET inventory is full.", recipe.Output, 0, "none", 0);
             }
             rewardQuantity = 1;
         }
@@ -2939,20 +2922,7 @@ public sealed partial class DatabaseService
 
         if (rewardDomain == 15u)
         {
-            await using var grantPet = connection.CreateCommand();
-            grantPet.Transaction = transaction;
-            grantPet.CommandText = """
-                INSERT INTO CharacterItems(
-                    CharacterId, ItemCode, Quantity, PetCurrentStage, PetMaximumStage,
-                    PetLevel, PetExperience, UpdatedAt)
-                VALUES($characterId, $itemCode, 1, $currentStage, $maximumStage, 0, 0, $now)
-                """;
-            grantPet.Parameters.AddWithValue("$characterId", characterId);
-            grantPet.Parameters.AddWithValue("$itemCode", recipe.Output);
-            grantPet.Parameters.AddWithValue("$currentStage", petReward!.PetModelStage);
-            grantPet.Parameters.AddWithValue("$maximumStage", petReward.PetUpgradeStage);
-            grantPet.Parameters.AddWithValue("$now", now);
-            if (await grantPet.ExecuteNonQueryAsync(cancellationToken) != 1)
+            if (!await GrantPetAsync(connection, transaction, characterId, petReward!, 1, DateTime.Now, cancellationToken))
             {
                 await transaction.RollbackAsync(cancellationToken);
                 return (false, "The synthesized PET could not be persisted.", recipe.Output, 0, "none", 0);
@@ -3045,7 +3015,8 @@ public sealed partial class DatabaseService
                 IsEquipped = catalogItem.Section switch
                 {
                     InventorySection.Clothing => equippedAppearanceItems.Contains(ownedItem.ItemCode),
-                    InventorySection.Pet => character.EquippedPetItemCode == ownedItem.ItemCode,
+                    InventorySection.Pet => character.EquippedPetItemCode == ownedItem.ItemCode
+                        && character.EquippedPetInstanceId == ownedItem.PetInstanceId,
                     _ => false
                 }
             });
@@ -3086,10 +3057,27 @@ public sealed partial class DatabaseService
             return (false, "账号 ID 无效。", 0);
         if (quantity == 0)
             return (false, "发放数量必须大于 0。", 0);
-        if (!ShopCatalog.TryGet(itemCode, out _))
+        if (!ShopCatalog.TryGet(itemCode, out var grantedItem))
             return (false, "物品编号不在客户端资源目录中。", 0);
 
         await using var connection = await OpenConnectionAsync(cancellationToken);
+        if (grantedItem.Section == InventorySection.Pet && !grantedItem.IsPetMaterial)
+        {
+            await using var tx = connection.BeginTransaction(deferred: false);
+            await using var petGrant = connection.CreateCommand();
+            petGrant.Transaction = tx;
+            petGrant.Parameters.AddWithValue("$account", accountId);
+            petGrant.CommandText = "SELECT Id FROM Characters WHERE AccountId=$account";
+            var owner = await petGrant.ExecuteScalarAsync(cancellationToken);
+            if (owner is null || !await GrantPetAsync(connection, tx, Convert.ToInt64(owner), grantedItem, quantity, DateTime.Now, cancellationToken))
+                return (false, "The PET inventory is full or the character does not exist.", 0);
+            petGrant.Parameters.AddWithValue("$id", owner);
+            petGrant.Parameters.AddWithValue("$code", itemCode);
+            petGrant.CommandText = "SELECT COUNT(*) FROM CharacterInventoryInstances WHERE CharacterId=$id AND ItemCode=$code AND Quantity>0";
+            var total = checked((ushort)Convert.ToInt32(await petGrant.ExecuteScalarAsync(cancellationToken)));
+            await tx.CommitAsync(cancellationToken);
+            return (true, string.Empty, total);
+        }
         await using var command = connection.CreateCommand();
         command.CommandText = """
             INSERT INTO CharacterItems(CharacterId, ItemCode, Quantity, UpdatedAt)
@@ -3145,6 +3133,19 @@ public sealed partial class DatabaseService
         }
 
         var tutorialPetItemCode = petVariant is >= 1 and <= 3 ? 15_000_000u + (uint)petVariant : 0u;
+        if (catalogItem.Section == InventorySection.Pet && !catalogItem.IsPetMaterial)
+        {
+            if (!await RemovePetInstancesAsync(connection, transaction, characterId, itemCode, quantity, false, cancellationToken))
+                return (false, "Insufficient removable pet instances.", 0);
+            await using var count = connection.CreateCommand();
+            count.Transaction = transaction;
+            count.CommandText = "SELECT COUNT(*) FROM CharacterInventoryInstances WHERE CharacterId=$id AND ItemCode=$code AND Quantity>0";
+            count.Parameters.AddWithValue("$id", characterId);
+            count.Parameters.AddWithValue("$code", itemCode);
+            var remaining = checked((ushort)Convert.ToInt32(await count.ExecuteScalarAsync(cancellationToken)));
+            await transaction.CommitAsync(cancellationToken);
+            return (true, string.Empty, remaining);
+        }
         if (catalogItem.Section == InventorySection.Pet && itemCode == tutorialPetItemCode)
         {
             await transaction.RollbackAsync(cancellationToken);
@@ -3211,7 +3212,8 @@ public sealed partial class DatabaseService
         short expectedDurability,
         short maxDurability,
         ushort unitPrice,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        long petInstanceId = 0)
     {
         if (accountId <= 0
             || characterId <= 0
@@ -3230,11 +3232,11 @@ public sealed partial class DatabaseService
         await using (var current = connection.CreateCommand())
         {
             current.Transaction = transaction;
-            current.CommandText = """
+            current.CommandText = $"""
                 SELECT c.Hans, COALESCE(i.PetDurability, $maxDurability)
                 FROM Characters c
                 JOIN Accounts a ON a.Id = c.AccountId
-                JOIN CharacterItems i ON i.CharacterId = c.Id
+                JOIN {PetStorageTable(petInstanceId)} i ON i.CharacterId = c.Id
                 WHERE c.Id = $characterId
                   AND c.AccountId = $accountId
                   AND c.IsOnline = 1
@@ -3242,6 +3244,7 @@ public sealed partial class DatabaseService
                   AND a.IsOnline = 1
                   AND a.ActiveSessionId = $sessionId
                   AND i.ItemCode = $itemCode
+                  {PetStorageFilter(petInstanceId)}
                   AND i.Quantity > 0
                 """;
             current.Parameters.AddWithValue("$maxDurability", maxDurability);
@@ -3279,14 +3282,15 @@ public sealed partial class DatabaseService
         await using (var durability = connection.CreateCommand())
         {
             durability.Transaction = transaction;
-            durability.CommandText = """
-                UPDATE CharacterItems
+            durability.CommandText = $"""
+                UPDATE {PetStorageTable(petInstanceId)}
                 SET PetDurability = $maxDurability,
                     UpdatedAt = $now
                 WHERE CharacterId = $characterId
                   AND ItemCode = $itemCode
                   AND Quantity > 0
                   AND COALESCE(PetDurability, $maxDurability) = $expectedDurability
+                  {PetStorageFilter(petInstanceId)}
                 """;
             durability.Parameters.AddWithValue("$maxDurability", maxDurability);
             durability.Parameters.AddWithValue("$expectedDurability", expectedDurability);
@@ -3774,9 +3778,18 @@ public sealed partial class DatabaseService
                 expiration = ClothingExpirationTime.Extend(expiration, catalogItem.DurationDays, purchaseTime);
         else
             expiration = 0;
-        // Buying another life variant of an owned pet extends that pet instead of adding a
-        // second instance of it; a permanently owned pet simply gains nothing.
-        if (!await TryMergePetFamilyGrantAsync(connection, transaction, characterId, catalogItem, quantity, purchaseTime, cancellationToken))
+        if (catalogItem.Section == InventorySection.Pet && !catalogItem.IsPetMaterial)
+        {
+            if (!await GrantPetAsync(connection, transaction, characterId, catalogItem, quantity, purchaseTime, cancellationToken))
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return (false, false, "The PET inventory is full.", 0,
+                    payWithCash ? hans : hans + totalPrice, payWithCash ? cash + totalPrice : cash);
+            }
+            if (catalogItem.IsIndependentPet)
+                newQuantity = await GetPetInstanceQuantityAsync(connection, transaction, characterId, itemCode, cancellationToken);
+        }
+        else
         {
             await using var inventory = connection.CreateCommand();
             inventory.Transaction = transaction;
@@ -4760,6 +4773,9 @@ public sealed partial class DatabaseService
             inventoryExpiration = checked((uint)reader.GetInt64(3));
         }
 
+        if (claimedItem.IsIndependentPet)
+            inventoryQuantity = await GetPetInstanceQuantityAsync(connection, transaction, characterId, itemCode, cancellationToken);
+
         if (inboxQuantity <= 0)
         {
             await transaction.RollbackAsync(cancellationToken);
@@ -4808,9 +4824,14 @@ public sealed partial class DatabaseService
             await updateInbox.ExecuteNonQueryAsync(cancellationToken);
         }
 
-        // Claiming another life variant of an owned pet extends that pet instead of adding a
-        // second instance of it; a permanently owned pet simply gains nothing.
-        if (!await TryMergePetFamilyGrantAsync(connection, transaction, characterId, claimedItem, 1, DateTime.Now, cancellationToken))
+        if (claimedItem.Section == InventorySection.Pet && !claimedItem.IsPetMaterial)
+        {
+            if (!await GrantPetAsync(connection, transaction, characterId, claimedItem, 1, DateTime.Now, cancellationToken))
+                return (false, "The PET inventory is full.", checked((ushort)inboxQuantity), checked((ushort)inventoryQuantity));
+            if (claimedItem.IsIndependentPet)
+                newInventoryQuantity = await GetPetInstanceQuantityAsync(connection, transaction, characterId, itemCode, cancellationToken);
+        }
+        else
         {
             await using var updateInventory = connection.CreateCommand();
             updateInventory.Transaction = transaction;
@@ -4981,7 +5002,8 @@ public sealed partial class DatabaseService
         long characterId,
         string sessionId,
         uint itemCode,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        long petInstanceId = 0)
     {
         if (accountId <= 0
             || characterId <= 0
@@ -4996,10 +5018,11 @@ public sealed partial class DatabaseService
         await using (var delete = connection.CreateCommand())
         {
             delete.Transaction = transaction;
-            delete.CommandText = """
-                DELETE FROM CharacterItems
+            delete.CommandText = $"""
+                DELETE FROM {PetStorageTable(petInstanceId)}
                 WHERE CharacterId = $characterId
                   AND ItemCode = $itemCode
+                  {PetStorageFilter(petInstanceId)}
                   AND Quantity > 0
                   AND NOT EXISTS (
                       SELECT 1
@@ -5007,6 +5030,7 @@ public sealed partial class DatabaseService
                       WHERE protectedCharacter.Id = $characterId
                         AND protectedCharacter.PetVariant BETWEEN 1 AND 3
                         AND $itemCode = 15000000 + protectedCharacter.PetVariant
+                        AND {petInstanceId} = 0
                   )
                   AND EXISTS (
                       SELECT 1
@@ -5036,9 +5060,10 @@ public sealed partial class DatabaseService
             repairEquippedPet.Transaction = transaction;
             repairEquippedPet.CommandText = """
                 UPDATE Characters
-                SET EquippedPetItemCode = CASE WHEN EquippedPetItemCode = $itemCode THEN 0 ELSE EquippedPetItemCode END,
-                    PetLevel = CASE WHEN EquippedPetItemCode = $itemCode THEN 0 ELSE PetLevel END,
-                    PetExperience = CASE WHEN EquippedPetItemCode = $itemCode THEN 0 ELSE PetExperience END,
+                SET EquippedPetItemCode = CASE WHEN EquippedPetItemCode = $itemCode AND EquippedPetInstanceId = $instance THEN 0 ELSE EquippedPetItemCode END,
+                    EquippedPetInstanceId = CASE WHEN EquippedPetItemCode = $itemCode AND EquippedPetInstanceId = $instance THEN 0 ELSE EquippedPetInstanceId END,
+                    PetLevel = CASE WHEN EquippedPetItemCode = $itemCode AND EquippedPetInstanceId = $instance THEN 0 ELSE PetLevel END,
+                    PetExperience = CASE WHEN EquippedPetItemCode = $itemCode AND EquippedPetInstanceId = $instance THEN 0 ELSE PetExperience END,
                     LastSavedAt = $now
                 WHERE Id = $characterId
                   AND AccountId = $accountId
@@ -5046,6 +5071,7 @@ public sealed partial class DatabaseService
                   AND ActiveSessionId = $sessionId
                 """;
             repairEquippedPet.Parameters.AddWithValue("$itemCode", itemCode);
+            repairEquippedPet.Parameters.AddWithValue("$instance", petInstanceId);
             repairEquippedPet.Parameters.AddWithValue("$characterId", characterId);
             repairEquippedPet.Parameters.AddWithValue("$accountId", accountId);
             repairEquippedPet.Parameters.AddWithValue("$sessionId", sessionId);
@@ -5069,7 +5095,9 @@ public sealed partial class DatabaseService
         uint equippedPetItemCode,
         uint unequippedPetItemCode,
         byte[] appearance,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        long equippedPetInstanceId = 0,
+        long unequippedPetInstanceId = 0)
     {
         if (accountId <= 0
             || characterId <= 0
@@ -5088,6 +5116,7 @@ public sealed partial class DatabaseService
         var appearancePetItemCode = BinaryPrimitives.ReadUInt32LittleEndian(appearance.AsSpan(28, 4));
 
         uint currentEquippedPet;
+        long currentEquippedInstance;
         uint quickSlotExpansionExpires;
         int petVariant;
         int gender;
@@ -5096,7 +5125,7 @@ public sealed partial class DatabaseService
             current.Transaction = transaction;
             current.CommandText = """
                 SELECT character.EquippedPetItemCode, character.PetVariant, character.Gender,
-                       character.QuickSlotExpansionExpires
+                       character.QuickSlotExpansionExpires, character.EquippedPetInstanceId
                 FROM Characters AS character
                 INNER JOIN Accounts AS account ON account.Id = character.AccountId
                 WHERE character.Id = $characterId
@@ -5120,6 +5149,7 @@ public sealed partial class DatabaseService
             petVariant = reader.GetInt32(1);
             gender = reader.GetInt32(2);
             quickSlotExpansionExpires = checked((uint)reader.GetInt64(3));
+            currentEquippedInstance = reader.GetInt64(4);
         }
 
         var expandedQuickSlotsActive = SkillSlotExpansionTime.TryDecode(
@@ -5157,10 +5187,11 @@ public sealed partial class DatabaseService
                 return false;
             }
             equippedPetItemCode = currentEquippedPet;
+            equippedPetInstanceId = currentEquippedInstance;
         }
         else
         {
-            if ((unequippedPetItemCode != 0 && unequippedPetItemCode != currentEquippedPet)
+            if ((unequippedPetItemCode != 0 && (unequippedPetItemCode != currentEquippedPet || unequippedPetInstanceId != currentEquippedInstance))
                 || (equippedPetItemCode != 0 && equippedPetItemCode / 1_000_000 != 15)
                 || appearancePetItemCode != equippedPetItemCode)
             {
@@ -5171,19 +5202,21 @@ public sealed partial class DatabaseService
             var tutorialPetItemCode = petVariant is >= 1 and <= 3
                 ? 15_000_000u + (uint)petVariant
                 : 0u;
-            if (equippedPetItemCode != 0 && equippedPetItemCode != tutorialPetItemCode)
+            if (equippedPetItemCode != 0 && (equippedPetItemCode != tutorialPetItemCode || equippedPetInstanceId != 0))
             {
                 await using var ownership = connection.CreateCommand();
                 ownership.Transaction = transaction;
                 ownership.CommandText = """
                     SELECT COUNT(*)
-                    FROM CharacterItems
+                    FROM CharacterInventoryInstances
                     WHERE CharacterId = $characterId
                       AND ItemCode = $itemCode
+                      AND PetInstanceId = $instance
                       AND Quantity > 0
                     """;
                 ownership.Parameters.AddWithValue("$characterId", characterId);
                 ownership.Parameters.AddWithValue("$itemCode", equippedPetItemCode);
+                ownership.Parameters.AddWithValue("$instance", equippedPetInstanceId);
                 if (Convert.ToInt32(await ownership.ExecuteScalarAsync(cancellationToken)) != 1)
                 {
                     await transaction.RollbackAsync(cancellationToken);
@@ -5193,6 +5226,7 @@ public sealed partial class DatabaseService
         }
 
         var storedAppearance = NormalizeAppearanceForGender(appearance, gender, 0);
+        if (equippedPetItemCode == 0) equippedPetInstanceId = 0;
         await using (var update = connection.CreateCommand())
         {
             update.Transaction = transaction;
@@ -5200,13 +5234,14 @@ public sealed partial class DatabaseService
                 UPDATE Characters
                 SET Appearance = $appearance,
                     EquippedPetItemCode = $equippedPetItemCode,
+                    EquippedPetInstanceId = $instance,
                     PetLevel = COALESCE((
-                        SELECT PetLevel FROM CharacterItems
-                        WHERE CharacterId = $characterId AND ItemCode = $equippedPetItemCode
+                        SELECT PetLevel FROM CharacterInventoryInstances
+                        WHERE CharacterId = $characterId AND ItemCode = $equippedPetItemCode AND PetInstanceId = $instance
                     ), 0),
                     PetExperience = COALESCE((
-                        SELECT PetExperience FROM CharacterItems
-                        WHERE CharacterId = $characterId AND ItemCode = $equippedPetItemCode
+                        SELECT PetExperience FROM CharacterInventoryInstances
+                        WHERE CharacterId = $characterId AND ItemCode = $equippedPetItemCode AND PetInstanceId = $instance
                     ), 0),
                     LastSavedAt = $now
                 WHERE Id = $characterId
@@ -5216,6 +5251,7 @@ public sealed partial class DatabaseService
                 """;
             update.Parameters.Add("$appearance", SqliteType.Blob).Value = storedAppearance;
             update.Parameters.AddWithValue("$equippedPetItemCode", equippedPetItemCode);
+            update.Parameters.AddWithValue("$instance", equippedPetInstanceId);
             update.Parameters.AddWithValue("$now", DateTime.UtcNow.ToString("O"));
             update.Parameters.AddWithValue("$characterId", characterId);
             update.Parameters.AddWithValue("$accountId", accountId);
@@ -5453,7 +5489,8 @@ public sealed partial class DatabaseService
         uint petItemCode,
         byte accessoryPosition,
         uint specialItemCode,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        long petInstanceId = 0)
     {
         if (accountId <= 0 || characterId <= 0 || string.IsNullOrEmpty(sessionId)
             || operation is not (3 or 4)
@@ -5467,12 +5504,13 @@ public sealed partial class DatabaseService
         await using (var authorization = connection.CreateCommand())
         {
             authorization.Transaction = transaction;
-            authorization.CommandText = """
+            authorization.CommandText = $"""
                 SELECT COUNT(*)
                 FROM Characters AS character
                 INNER JOIN Accounts AS account ON account.Id = character.AccountId
-                INNER JOIN CharacterItems AS pet
+                INNER JOIN {PetStorageTable(petInstanceId)} AS pet
                     ON pet.CharacterId = character.Id AND pet.ItemCode = $petItemCode AND pet.Quantity > 0
+                    {PetStorageFilter(petInstanceId)}
                 WHERE character.Id = $characterId
                   AND character.AccountId = $accountId
                   AND character.IsOnline = 1
@@ -5495,10 +5533,11 @@ public sealed partial class DatabaseService
         await using (var readPet = connection.CreateCommand())
         {
             readPet.Transaction = transaction;
-            readPet.CommandText = """
+            readPet.CommandText = $"""
                 SELECT PetAccessory0, PetAccessory1, PetAccessory2
-                FROM CharacterItems
+                FROM {PetStorageTable(petInstanceId)}
                 WHERE CharacterId = $characterId AND ItemCode = $petItemCode AND Quantity > 0
+                    {PetStorageFilter(petInstanceId)}
                 """;
             readPet.Parameters.AddWithValue("$characterId", characterId);
             readPet.Parameters.AddWithValue("$petItemCode", petItemCode);
@@ -5544,11 +5583,12 @@ public sealed partial class DatabaseService
         await using (var updatePet = connection.CreateCommand())
         {
             updatePet.Transaction = transaction;
-            updatePet.CommandText = """
-                UPDATE CharacterItems
+            updatePet.CommandText = $"""
+                UPDATE {PetStorageTable(petInstanceId)}
                 SET PetAccessory0 = $accessory0, PetAccessory1 = $accessory1, PetAccessory2 = $accessory2,
                     UpdatedAt = $now
                 WHERE CharacterId = $characterId AND ItemCode = $petItemCode AND Quantity > 0
+                    {PetStorageFilter(petInstanceId)}
                 """;
             updatePet.Parameters.AddWithValue("$accessory0", accessories[0]);
             updatePet.Parameters.AddWithValue("$accessory1", accessories[1]);
@@ -5604,7 +5644,8 @@ public sealed partial class DatabaseService
         uint petItemCode,
         byte accessoryPosition,
         uint materialItemCode,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        long petInstanceId = 0)
     {
         if (accountId <= 0 || characterId <= 0 || string.IsNullOrEmpty(sessionId)
             || operation is not (1 or 2)
@@ -5658,13 +5699,14 @@ public sealed partial class DatabaseService
         var tutorialPetItemCode = petVariant is >= 1 and <= 3
             ? 15_000_000u + (uint)petVariant
             : 0u;
-        if (petItemCode != tutorialPetItemCode)
+        if (petItemCode != tutorialPetItemCode || petInstanceId != 0)
         {
             await using var petOwnership = connection.CreateCommand();
             petOwnership.Transaction = transaction;
-            petOwnership.CommandText = """
-                SELECT COUNT(*) FROM CharacterItems
+            petOwnership.CommandText = $"""
+                SELECT COUNT(*) FROM {PetStorageTable(petInstanceId)}
                 WHERE CharacterId = $characterId AND ItemCode = $itemCode AND Quantity > 0
+                    {PetStorageFilter(petInstanceId)}
                 """;
             petOwnership.Parameters.AddWithValue("$characterId", characterId);
             petOwnership.Parameters.AddWithValue("$itemCode", petItemCode);
@@ -5676,7 +5718,7 @@ public sealed partial class DatabaseService
         }
 
         var now = DateTime.UtcNow.ToString("O");
-        if (petItemCode == tutorialPetItemCode)
+        if (petItemCode == tutorialPetItemCode && petInstanceId == 0)
         {
             await using var ensureTutorialPet = connection.CreateCommand();
             ensureTutorialPet.Transaction = transaction;
@@ -5713,8 +5755,9 @@ public sealed partial class DatabaseService
             };
             petState.CommandText = $"""
                 SELECT PetCurrentStage, PetMaximumStage, {accessoryColumn}
-                FROM CharacterItems
+                FROM {PetStorageTable(petInstanceId)}
                 WHERE CharacterId = $characterId AND ItemCode = $itemCode AND Quantity > 0
+                    {PetStorageFilter(petInstanceId)}
                 """;
             petState.Parameters.AddWithValue("$characterId", characterId);
             petState.Parameters.AddWithValue("$itemCode", petItemCode);
@@ -5768,19 +5811,21 @@ public sealed partial class DatabaseService
             };
             updatePet.CommandText = operation == 1
                 ? $"""
-                    UPDATE CharacterItems
+                    UPDATE {PetStorageTable(petInstanceId)}
                     SET {accessoryAssignment}
                         PetCurrentStage = $currentStage,
                         PetMaximumStage = $maximumStage,
                         UpdatedAt = $now
                     WHERE CharacterId = $characterId AND ItemCode = $petItemCode AND Quantity > 0
+                        {PetStorageFilter(petInstanceId)}
                     """
-                : """
-                    UPDATE CharacterItems
+                : $"""
+                    UPDATE {PetStorageTable(petInstanceId)}
                     SET PetCurrentStage = $maximumStage,
                         PetMaximumStage = 3,
                         UpdatedAt = $now
                     WHERE CharacterId = $characterId AND ItemCode = $petItemCode AND Quantity > 0
+                        {PetStorageFilter(petInstanceId)}
                     """;
             updatePet.Parameters.AddWithValue("$characterId", characterId);
             updatePet.Parameters.AddWithValue("$petItemCode", petItemCode);
@@ -6899,7 +6944,7 @@ public sealed partial class DatabaseService
                    c.GameInventoryExpansionExpires, c.InteriorInventoryExpansionExpires,
                    c.QuickSlotExpansionExpires, c.FreeMagicExpansionExpires,
                    c.AttackModifier, c.DefenseFlat, c.InitialAttackMode, c.PureNewProfile,
-                   c.SkillPointsMeat, c.CurveVersion, a.Username
+                   c.SkillPointsMeat, c.CurveVersion, c.EquippedPetInstanceId, a.Username
             FROM Characters c
             INNER JOIN Accounts a ON a.Id = c.AccountId
             ORDER BY c.Id
@@ -6908,7 +6953,7 @@ public sealed partial class DatabaseService
         while (await reader.ReadAsync(cancellationToken))
         {
             var character = ReadCharacter(reader);
-            character.Username = reader.GetString(61);
+            character.Username = reader.GetString(62);
             result.Add(character);
         }
         return result;
@@ -9639,12 +9684,13 @@ public sealed partial class DatabaseService
         int oldMaxMp;
         int petVariant;
         uint equippedPetItemCode;
+        long equippedPetInstanceId;
         await using (var query = connection.CreateCommand())
         {
             query.Transaction = transaction;
             query.CommandText = """
                 SELECT Level, Experience, Hans, Vitality, Intelligence, MaxHp, MaxMp,
-                       PetVariant, EquippedPetItemCode
+                       PetVariant, EquippedPetItemCode, EquippedPetInstanceId
                 FROM Characters
                 WHERE Id = $characterId AND AccountId = $accountId AND ActiveSessionId = $sessionId
                 """;
@@ -9666,6 +9712,7 @@ public sealed partial class DatabaseService
             oldMaxMp = reader.GetInt32(6);
             petVariant = reader.GetInt32(7);
             equippedPetItemCode = checked((uint)reader.GetInt64(8));
+            equippedPetInstanceId = reader.GetInt64(9);
         }
 
         if (entertainmentGameType is not null)
@@ -9763,7 +9810,7 @@ public sealed partial class DatabaseService
             && equippedPetItemCode != 0
             && ShopCatalog.TryGet(15, equippedPetItemCode, out var petCatalogItem))
         {
-            if (equippedPetItemCode == tutorialPetItemCode)
+            if (equippedPetItemCode == tutorialPetItemCode && equippedPetInstanceId == 0)
             {
                 await using var ensureTutorialPet = connection.CreateCommand();
                 ensureTutorialPet.Transaction = transaction;
@@ -9790,11 +9837,12 @@ public sealed partial class DatabaseService
             await using (var readPet = connection.CreateCommand())
             {
                 readPet.Transaction = transaction;
-                readPet.CommandText = """
+                readPet.CommandText = $"""
                     SELECT PetDurability, PetCurrentStage, PetMaximumStage, PetLevel, PetExperience,
                            PetAccessory0, PetAccessory1, PetAccessory2
-                    FROM CharacterItems
+                    FROM {PetStorageTable(equippedPetInstanceId)}
                     WHERE CharacterId = $characterId AND ItemCode = $itemCode AND Quantity > 0
+                        {PetStorageFilter(equippedPetInstanceId)}
                     """;
                 readPet.Parameters.AddWithValue("$characterId", characterId);
                 readPet.Parameters.AddWithValue("$itemCode", equippedPetItemCode);
@@ -9819,14 +9867,14 @@ public sealed partial class DatabaseService
                 var petProgress = PetProgression.AddExperience(petState, checked((uint)petExperienceReward));
                 await using var updatePet = connection.CreateCommand();
                 updatePet.Transaction = transaction;
-                updatePet.CommandText = """
-                    UPDATE CharacterItems
+                updatePet.CommandText = $"""
+                    UPDATE {PetStorageTable(equippedPetInstanceId)}
                     SET PetCurrentStage = $currentStage,
                         PetMaximumStage = $maximumStage,
                         PetLevel = $level,
                         PetExperience = $experience,
                         UpdatedAt = $now
-                    WHERE CharacterId = $characterId AND ItemCode = $itemCode AND Quantity > 0;
+                    WHERE CharacterId = $characterId AND ItemCode = $itemCode AND Quantity > 0 {PetStorageFilter(equippedPetInstanceId)};
                     UPDATE Characters
                     SET PetLevel = $level, PetExperience = $experience
                     WHERE Id = $characterId;
@@ -10497,6 +10545,7 @@ public sealed partial class DatabaseService
                 TutorialCompleted = $tutorialCompleted,
                 PetVariant = $petVariant,
                 EquippedPetItemCode = $equippedPetItemCode,
+                EquippedPetInstanceId = $petInstance,
                 PetLevel = $petLevel,
                 PetExperience = $petExperience,
                 Level = $level,
@@ -10532,6 +10581,7 @@ public sealed partial class DatabaseService
         command.Parameters.AddWithValue("$tutorialCompleted", character.TutorialCompleted ? 1 : 0);
         command.Parameters.AddWithValue("$petVariant", character.PetVariant);
         command.Parameters.AddWithValue("$equippedPetItemCode", character.EquippedPetItemCode);
+        command.Parameters.AddWithValue("$petInstance", character.EquippedPetItemCode == 0 ? 0 : character.EquippedPetInstanceId);
         command.Parameters.AddWithValue("$petLevel", character.PetLevel);
         command.Parameters.AddWithValue("$petExperience", character.PetExperience);
         command.Parameters.AddWithValue("$level", character.Level);
@@ -10569,14 +10619,15 @@ public sealed partial class DatabaseService
         {
             await using var updatePetState = connection.CreateCommand();
             updatePetState.Transaction = transaction;
-            updatePetState.CommandText = """
-                UPDATE CharacterItems
+            updatePetState.CommandText = $"""
+                UPDATE {PetStorageTable(character.EquippedPetInstanceId)}
                 SET PetLevel = $petLevel,
                     PetExperience = $petExperience,
                     UpdatedAt = $now
                 WHERE CharacterId = $characterId
                   AND ItemCode = $itemCode
                   AND Quantity > 0
+                  {PetStorageFilter(character.EquippedPetInstanceId)}
                 """;
             updatePetState.Parameters.AddWithValue("$petLevel", character.PetLevel);
             updatePetState.Parameters.AddWithValue("$petExperience", character.PetExperience);
@@ -11743,7 +11794,8 @@ public sealed partial class DatabaseService
             InitialAttackMode = checked((byte)reader.GetInt32(57)),
             PureNewProfile = reader.GetInt64(58) != 0,
             SkillPointsMeat = checked((ushort)reader.GetInt32(59)),
-            CurveVersion = reader.GetInt32(60)
+            CurveVersion = reader.GetInt32(60),
+            EquippedPetInstanceId = reader.GetInt64(61)
         };
         CharacterProgression.Validate(character.Level, character.Experience, character.CurveVersion);
         return character;
@@ -11759,10 +11811,10 @@ public sealed partial class DatabaseService
         command.CommandText = """
             SELECT ItemCode, Quantity, ItemExpiration, PetDurability,
                    PetCurrentStage, PetMaximumStage, PetLevel, PetExperience,
-                   PetAccessory0, PetAccessory1, PetAccessory2
-            FROM CharacterItems
+                   PetAccessory0, PetAccessory1, PetAccessory2, PetInstanceId
+            FROM CharacterInventoryInstances
             WHERE CharacterId = $characterId
-            ORDER BY ItemCode
+            ORDER BY ItemCode, PetInstanceId
             """;
         command.Parameters.AddWithValue("$characterId", characterId);
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
@@ -11780,7 +11832,8 @@ public sealed partial class DatabaseService
                 PetExperience = checked((uint)reader.GetInt64(7)),
                 PetAccessory0 = checked((uint)reader.GetInt64(8)),
                 PetAccessory1 = checked((uint)reader.GetInt64(9)),
-                PetAccessory2 = checked((uint)reader.GetInt64(10))
+                PetAccessory2 = checked((uint)reader.GetInt64(10)),
+                PetInstanceId = reader.GetInt64(11)
             });
         }
         return result;

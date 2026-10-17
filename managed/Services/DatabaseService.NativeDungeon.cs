@@ -448,6 +448,7 @@ public sealed partial class DatabaseService
               Strength=$attribute, Vitality=$attribute, Agility=$attribute, Intelligence=$attribute, Luck=$attribute,
               Hans=$coin, Cash=$cash, CardMysteryKeyCount=$mystery, CardGoldenKeyCount=$gold,
               AttackModifier=$attack, DefenseFlat=$defense, InitialAttackMode=$attackMode,
+              EquippedPetInstanceId=CASE WHEN EquippedPetItemCode=$pet THEN EquippedPetInstanceId ELSE 0 END,
               EquippedPetItemCode=$pet, PetVariant=$pet_variant, QuickSlotExpansionExpires=$quickbar,
               FreeMagicExpansionExpires=$free_magic, SelectedSkill0=$skill0, SelectedSkill1=$skill1,
               SkillSlotExpansionExpires=$skill_expiry,
@@ -516,6 +517,7 @@ public sealed partial class DatabaseService
               MaxHp=$hpmax, CurrentHp=$hp, MaxMp=$mpmax, CurrentMp=$mp,
               Hans=$coin, Cash=$cash, CardMysteryKeyCount=$mystery, CardGoldenKeyCount=$gold,
               AttackModifier=$attack, DefenseFlat=$defense, InitialAttackMode=$attackMode,
+              EquippedPetInstanceId=CASE WHEN EquippedPetItemCode=$pet THEN EquippedPetInstanceId ELSE 0 END,
               EquippedPetItemCode=$pet, PetVariant=$pet_variant, QuickSlotExpansionExpires=$quickbar,
               FreeMagicExpansionExpires=$free_magic, SelectedSkill0=$skill0, SelectedSkill1=$skill1,
               SkillSlotExpansionExpires=$skill_expiry,
@@ -909,16 +911,20 @@ public sealed partial class DatabaseService
         {
             PetState? storedPetState = null;
             var tutorialPet = false;
+            long petInstanceId = 0;
             await using (var readPet = connection.CreateCommand())
             {
                 readPet.Transaction = transaction;
                 readPet.CommandText = """
                     SELECT c.PetVariant, i.Quantity, i.PetDurability, i.PetCurrentStage, i.PetMaximumStage,
-                           i.PetLevel, i.PetExperience, i.PetAccessory0, i.PetAccessory1, i.PetAccessory2
+                           i.PetLevel, i.PetExperience, i.PetAccessory0, i.PetAccessory1, i.PetAccessory2,
+                           c.EquippedPetInstanceId
                     FROM Characters c
-                    LEFT JOIN CharacterItems i
+                    LEFT JOIN CharacterInventoryInstances i
                       ON i.CharacterId = c.Id AND i.ItemCode = $itemCode AND i.Quantity > 0
+                      AND i.PetInstanceId = c.EquippedPetInstanceId
                     WHERE c.Id = $characterId AND c.AccountId = $accountId
+                        AND c.EquippedPetItemCode = $itemCode
                     """;
                 readPet.Parameters.AddWithValue("$itemCode", petItemCode);
                 readPet.Parameters.AddWithValue("$characterId", characterId);
@@ -927,8 +933,9 @@ public sealed partial class DatabaseService
                 if (await reader.ReadAsync(token))
                 {
                     var petVariant = reader.GetInt32(0);
+                    petInstanceId = reader.GetInt64(10);
                     tutorialPet = petVariant is >= 1 and <= 3
-                        && petItemCode == 15_000_000u + (uint)petVariant;
+                        && petItemCode == 15_000_000u + (uint)petVariant && petInstanceId == 0;
                     if (!reader.IsDBNull(1))
                     {
                         storedPetState = new PetState(
@@ -975,11 +982,11 @@ public sealed partial class DatabaseService
                 if (petExperienceReward > 0)
                 {
                     var progressed = PetProgression.AddExperience(petState, petExperienceReward);
-                    await Execute("""
-                        UPDATE CharacterItems
+                    await Execute($"""
+                        UPDATE {PetStorageTable(petInstanceId)}
                         SET PetCurrentStage = $currentStage, PetMaximumStage = $maximumStage,
                             PetLevel = $petLevel, PetExperience = $petExperience, UpdatedAt = $now
-                        WHERE CharacterId = $id AND ItemCode = $itemCode AND Quantity > 0;
+                        WHERE CharacterId = $id AND ItemCode = $itemCode AND Quantity > 0 {PetStorageFilter(petInstanceId)};
                         UPDATE Characters
                         SET PetLevel = $petLevel, PetExperience = $petExperience, LastSavedAt = $now
                         WHERE Id = $id;
