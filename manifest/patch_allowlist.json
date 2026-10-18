@@ -212,26 +212,42 @@
       "approval": "required_per_file"
     },
     {
+      "path": "knowledge/\u4e1a\u52a1/DIY/\u4efb\u52a1/\u5bf9\u767d\u4e0e\u7acb\u7ed8.md",
+      "layer": "knowledge",
+      "size": 5441,
+      "sha256": "99089a94221a600d7c0e957f205b9990ca4185a80d1760faec10c34fa2925a04",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
       "path": "knowledge/\u4e1a\u52a1/DIY/\u4efb\u52a1/\u63a5\u5165\u7b56\u7565.md",
       "layer": "knowledge",
-      "size": 6343,
-      "sha256": "74a7a28bf8beee45effa269d50f481e7046e535ac10fa191530509d4c22d3211",
+      "size": 6138,
+      "sha256": "da29c889c59ce0b9f5efb6676cbab3e7925dd081373cd44852f4f98ea5383d38",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/DIY/\u4efb\u52a1/\u76ee\u5f55\u4e0e\u5bf9\u767d.md",
       "layer": "knowledge",
-      "size": 5524,
-      "sha256": "1ec0d1b8450ae5e850ed891fdcac103b44349a835d818e442a200b154effc0f8",
+      "size": 7451,
+      "sha256": "811540d68fc4b58004b9cfc7d9a7c5d79cda046e2f4fe917b4d337b10941ecf0",
+      "provenance": "project_or_derived_material_requires_review",
+      "approval": "required_per_file"
+    },
+    {
+      "path": "knowledge/\u4e1a\u52a1/DIY/\u4efb\u52a1/\u76ee\u6807\u4e0e\u5956\u52b1.md",
+      "layer": "knowledge",
+      "size": 8683,
+      "sha256": "5fbf0fea21ac134ed50534ba5723e65c4709ccb13fa015c7a2c4a1e9f0eba777",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/DIY/\u4efb\u52a1/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1106,
-      "sha256": "f6ea3124ccedd57d789c4d0787ff63d5016ce5d1ec4668de0938f3a293ab86ca",
+      "size": 1515,
+      "sha256": "c656539bd91869b5f64223e0e1487c7a0d5d83150a3632ac0b34bf8930f0a4bc",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -342,8 +358,8 @@
     {
       "path": "knowledge/\u4e1a\u52a1/DIY/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 3369,
-      "sha256": "769b4ec7e11bf623e9ed819be25f4bb7e58a1c750f0a4820d436cced508a568a",
+      "size": 3406,
+      "sha256": "814602d0191104418d404ff7c3c80e5ed48949bb412574fa4f70a16928c9bf42",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -2046,16 +2062,16 @@
     {
       "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u4efb\u52a1/\u7ae0\u8282\u5267\u60c5\u79fb\u690d\u8fdb\u5c55.md",
       "layer": "knowledge",
-      "size": 12427,
-      "sha256": "e13fb4fad86e4adda11d009cfa64ca64504d1adeda450cfe21ae842f42c5e4a5",
+      "size": 12604,
+      "sha256": "154e36f00b8161b261595e791cc3f8bebd25bf0f63236b9623f0b3560eaf4c6e",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u4e1a\u52a1/\u89d2\u8272/\u4efb\u52a1/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1276,
-      "sha256": "74e26584cb052d5733ee730c8e858cb5910304200650e4943a6713ea433accae",
+      "size": 1295,
+      "sha256": "e99e08de871e5e8d1ba89037e98b9d2f51399132fe133962d89fde55014097b2",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3214,16 +3230,16 @@
     {
       "path": "knowledge/\u6307\u5357/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01/\u7ae0\u8282\u8868\u4e0e\u5bf9\u767d\u5b89\u88c5.md",
       "layer": "knowledge",
-      "size": 9837,
-      "sha256": "b0d83b1d7f4b444781bf27e280d7813a2abf552000368c0095ad6fa4ebdb7415",
+      "size": 14163,
+      "sha256": "0c093ef749311b09cecd05729c36172b9c55e714e60e36630899d3fd8be8645b",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
     {
       "path": "knowledge/\u6307\u5357/\u5ba2\u6237\u7aef\u4e8c\u8fdb\u5236\u8865\u4e01/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 1372,
-      "sha256": "6bce35d6d6e7198ce0caaa2f309983727f97f2a7c93623031f6b5cc84c792ae4",
+      "size": 1405,
+      "sha256": "24cc922ed74846445ba4f7c6f57132e9cf1a1de69d45a7d2f265e86fc4588daa",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
@@ -3422,8 +3438,8 @@
     {
       "path": "knowledge/\u7d22\u5f15.md",
       "layer": "knowledge",
-      "size": 8893,
-      "sha256": "0d98355c361d54f5fbc32eb578f60cce2e6d31ab93c2f7303fe6f92b544dc6e2",
+      "size": 8936,
+      "sha256": "fa474ffaff51d4ce5c0190c8b653bebab72141846e8cd019994994ec5d685662",
       "provenance": "project_or_derived_material_requires_review",
       "approval": "required_per_file"
     },
