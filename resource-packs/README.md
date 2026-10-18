@@ -1,4 +1,14 @@
-# 韩服移植资源包
+# 客户端移植资源包
+
+## 章节与四村挑战
+
+- `nanaimo-story-resource-kit.zip`：37项章节立绘、37项四村场景／立绘／界面和1,154项挑战资源，共1,228项实物；包内 `kit-manifest.json` 登记三份配方及逐文件身份。
+- `nanaimo-story-resource-kit.zip.sha256`：章节ZIP整体摘要。资源包由 `scripts/package_story_resource_kit.py` 按当前配方构建及核验。
+- 完整仓库提供自包含适配器、QT／QS和自动部署入口 `scripts/deploy_story_release.py`。首次部署同时使用下述L7/L8资源包；已有附加资源层按收据核验。
+
+安装、显式章节启用、奖励审核和统一回滚见[章节自动部署](../knowledge/指南/客户端二进制补丁/章节表与对白安装.md#自动部署)。两个ZIP均随Git直接交付，使用者提供完整CN客户端。
+
+## L7/L8与宠物
 
 - `nanaimo-korean-resource-kit.zip`：2350项去重韩服白名单输入、1328项L7/L8安装输出及保留校验项，以及安装工具和配方；数量和文件身份以包内清单为准。
 - `nanaimo-korean-resource-kit.zip.sha256`：ZIP的SHA-256。包内`kit-manifest.json`逐文件登记大小与摘要。

@@ -124,7 +124,7 @@ class KitTests(unittest.TestCase):
         (bundle / 'payload/map.im3').write_bytes(b'output')
         (bundle / 'manifest.json').write_text(json.dumps(dict(id='fixture', files=[dict(
             path='map.im3', size=6, sha256=kit.port.digest(b'output'))])))
-        for rel in [*('scripts/' + x for x in kit.TOOLS), *('manifest/' + x for x in (*kit.RECIPES, *kit.COMPATIBILITY_RECIPES, 'korean_resource_kit.json')), *kit.EXTRA_DOCS]:
+        for rel in [*('scripts/' + x for x in kit.TOOLS), *('manifest/' + x for x in (*kit.RECIPES, *kit.COMPATIBILITY_RECIPES, 'korean_resource_kit.json')), *kit.CHAPTER_FILES, *kit.EXTRA_DOCS]:
             p = repo / rel
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes(b'tool-or-doc')

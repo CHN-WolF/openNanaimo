@@ -14,6 +14,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    'scripts/package_story_resource_kit.py',
+    'scripts/deploy_story_release.py',
+    'manifest/story_deployment_baselines.json',
+    'scripts/test_story_release.py',
+    'scripts/deploy_adapter_runtime.py',
+    'scripts/story_window_accept.py',
+    'scripts/install_story_tables.py',
+    'resource-packs/nanaimo-story-resource-kit.zip',
+    'resource-packs/nanaimo-story-resource-kit.zip.sha256',
+    'resource-packs/nanaimo-korean-resource-kit.zip',
+    'resource-packs/nanaimo-korean-resource-kit.zip.sha256',
     'scripts/install_story_portraits.py',
     'scripts/test_story_install.py',
     'scripts/prepare_story_port.py',

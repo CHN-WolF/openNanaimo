@@ -111,6 +111,7 @@ INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"\r\n]+)"', re.M)
 TEXT_SUFFIXES = {".py", ".ps1", ".bat", ".c", ".h", ".inc", ".cs", ".csproj", ".md", ".json", ".ini", ".tsv"}
 # Candidate inputs have exact scope; rights and export approval are separate gates.
 STORY_SOURCES = {
+    'manifest/story_deployment_baselines.json',
     'release/components/story_chapters/chapters.json',
     'release/components/story_chapters/manifest.json',
     'manifest/story_localization.json', 'manifest/story_terms.json',
