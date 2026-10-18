@@ -835,7 +835,9 @@ function Test-PureNewPlayerNativeStartup([string]$profilePath) {
     }
 }
 function Get-AdapterStartupFailureDetail([Diagnostics.Process]$proc,[string]$runtimeProfile) {
-    $sections=@("adapter_exit_code=$($proc.ExitCode)","profile=$runtimeProfile")
+    $exitCode=$proc.ExitCode
+    if($null-eq$exitCode){$exitCode='unavailable'}
+    $sections=@("adapter_exit_code=$exitCode","profile=$runtimeProfile")
     foreach($entry in @(
         [pscustomobject]@{Label='process stderr';Path=$AdapterErr;Tail=80},
         [pscustomobject]@{Label='managed adapter error';Path=(Join-Path $AdapterLogs 'adapter-error.log');Tail=80},
@@ -861,7 +863,7 @@ function Start-LocalAdapter([string]$runtimeProfile=$ProfileIni,[string]$bindAdd
     if($LauncherProgress){$LauncherProgress.Stage='等待适配器就绪并复核端口归属'}
     for($i=0;$i-lt100;$i++){
         Start-Sleep -Milliseconds 100
-        if($proc.HasExited){$detail=if(Test-Path -LiteralPath $AdapterErr){Get-Content -LiteralPath $AdapterErr -Raw}else{'无错误日志。'};throw "适配器退出，代码 $($proc.ExitCode)：$detail"}
+        if($proc.HasExited){$detail=Get-AdapterStartupFailureDetail $proc $runtimeProfile;throw "适配器启动失败：`r`n$detail"}
         if((Test-AdapterPort 11005 $bindAddress)-and(Test-AdapterPort 11999 $bindAddress)-and(Test-AdapterPort 12050 $bindAddress)){Assert-StartedAdapterListeners $proc.Id;Write-RuntimeIdentity $proc $bindAddress;return $proc}
     }
     Stop-LocalAdapter

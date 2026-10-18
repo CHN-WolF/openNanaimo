@@ -160,7 +160,16 @@ internal static class ChapterStoryChecks
             await db.InitializeMonkChallengesAsync();
             Check(!(await db.RefreshChapterMonkAsync(account,character,session,73000007,100))!.RewardPending,"missing monk row rejected");
             await Execute("INSERT INTO CharacterMonkChallenges(CharacterId,ClearMask,UpdatedAt) VALUES($id,2,'test') ON CONFLICT(CharacterId) DO UPDATE SET ClearMask=2");
-            Check((await db.RefreshChapterMonkAsync(account,character,session,73000007,100))!.RewardPending,"existing monk ledger reused");
+            Check(!(await db.RefreshChapterMonkAsync(account,character,session,73000007,100))!.RewardPending,"historical monk ledger cannot complete current objective");
+            await using(var c=new SqliteConnection($"Data Source={db.DatabasePath}"))
+            {
+                await c.OpenAsync(); using var tx=c.BeginTransaction();
+                Check((await DatabaseService.CommitMonkChallengeSuccessAsync(c,tx,character,session,
+                    new NativeDungeonSettlementRecord(0,25,0,0,0,3,100,100,0,"100:0"))).Applied,
+                    "new objective-bound monk receipt");
+                tx.Commit();
+            }
+            Check((await db.RefreshChapterMonkAsync(account,character,session,73000007,100))!.RewardPending,"new monk completion unlocks reward");
             await Execute("UPDATE CharacterChapterStory SET ObjectiveIndex=0,ClearMask=0,RewardPending=0,Revision=200 WHERE CharacterId=$id");
             Check((await db.RefreshChapterMonkAsync(account,character,session,73000007,200))!.ObjectiveIndex==0,"old monk does not skip story");
             await using(var connection=new SqliteConnection($"Data Source={db.DatabasePath}"))

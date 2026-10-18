@@ -36,6 +36,8 @@ internal static class ChapterRewardChecks
 
         string root = Path.Combine(Path.GetTempPath(), "nanaimo-chapter-rewards-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
+        var previousChapters = QuestCatalog.StoryChaptersEnabled;
+        QuestCatalog.StoryChaptersEnabled = true;
         try
         {
             File.WriteAllBytes(Path.Combine(root, "game.db"), []);
@@ -64,6 +66,17 @@ internal static class ChapterRewardChecks
                 int index = chapter.ExistingMonkMask == 0 ? 2 : 3;
                 var mask = ChapterStoryPolicy.RequiredDungeonMask(chapter.Episode);
                 await Sql($"UPDATE CharacterChapterStory SET QuestId={quest},ObjectiveIndex={index},ClearMask={mask},RewardPending=1,Finished=0,Revision={revision} WHERE CharacterId=$id");
+                if (chapter.ExistingMonkMask != 0)
+                {
+                    await Sql($"UPDATE CharacterChapterStory SET RewardPending=0,Revision={revision-1} WHERE CharacterId=$id");
+                    await using var c = new SqliteConnection($"Data Source={db.DatabasePath}");
+                    await c.OpenAsync(); using var tx = c.BeginTransaction();
+                    Check((await DatabaseService.CommitMonkChallengeSuccessAsync(c,tx,character,session,
+                        new NativeDungeonSettlementRecord(0,(byte)(23+chapter.Episode/4),0,0,0,3,100,100,0,$"{revision}:0"))).Applied,
+                        "reward fixture earns objective-bound monk receipt");
+                    tx.Commit();
+                    await db.RefreshChapterMonkAsync(account,character,session,quest,revision-1);
+                }
             }
             async Task<ChapterClaimResult> Claim(uint quest, long revision, ChapterRewardReview? r)
                 => await db.ClaimChapterRewardsAsync(account, character, session, quest, revision, r);
@@ -268,7 +281,7 @@ internal static class ChapterRewardChecks
                 }
             }
         }
-        finally { SqliteConnection.ClearAllPools(); Directory.Delete(root, true); }
+        finally { QuestCatalog.StoryChaptersEnabled = previousChapters; SqliteConnection.ClearAllPools(); Directory.Delete(root, true); }
         Console.WriteLine($"CHAPTER_REWARD_CHECKS_OK assertions={checks} approvals=host-fixtures-only runtime_acceptance=false activation_allowed=false");
     }
 }

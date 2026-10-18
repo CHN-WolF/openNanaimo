@@ -118,23 +118,23 @@
     },
     {
       "path": "managed-host/ChapterMonkChecks.cs",
-      "size": 17656,
-      "sha256": "2DD6E5E5ABED5CDCB04A7E9BB56F18C551B280E411CFF3D3ADBE3AB6CF75B32F"
+      "size": 21666,
+      "sha256": "CBB6C0746731D9A25D73231040BEF8BA4AB6A98162A2CCD424AD3121010E32AD"
     },
     {
       "path": "managed-host/ChapterRewardChecks.cs",
-      "size": 22129,
-      "sha256": "5E4904CF2C3A1B35A4BF7247836D573EF2EF390D1F6D24F2047ACECF931AD713"
+      "size": 23137,
+      "sha256": "AC197F75580FCD49F725485C4DB67CAAECF0CCD359EA60F47B51F8AEC3FF6438"
     },
     {
       "path": "managed-host/ChapterRewardMatrixChecks.cs",
-      "size": 10380,
-      "sha256": "F3A669A1132A603396C1971C59AC28A05FDE863F93049F5C38198ADD4F501A48"
+      "size": 11374,
+      "sha256": "C7675F74FA11C6403C340ED3E95D07C3C417DB72E05AA8AC1D4E62105E173A25"
     },
     {
       "path": "managed-host/ChapterStoryChecks.cs",
-      "size": 16068,
-      "sha256": "B76F4E2B213D1DC7C1221BC115201DD9A91E5ABC1EE85CC45751E2C162C832E9"
+      "size": 16724,
+      "sha256": "B27449168D7F5625A7ACBE728CFA6EAF4D6FEE9E9CB698E6A753521CAD09B511"
     },
     {
       "path": "managed-host/ChapterStoryRewardAudit.cs",
@@ -703,13 +703,13 @@
     },
     {
       "path": "managed/Services/DatabaseService.ChapterRewards.cs",
-      "size": 9263,
-      "sha256": "3CA0EED3B6A431FC771A9B01F4B024A5FC6398FF913A9984AE61EAC2795EE271"
+      "size": 10547,
+      "sha256": "14D9E457584115EADB60B1A408B11CD70EC4DAC584E432AC2C652BAC69ADF657"
     },
     {
       "path": "managed/Services/DatabaseService.ChapterStory.cs",
-      "size": 15996,
-      "sha256": "5A16ECB0091CAE2FBB2618DEE6BC636827ABC2BB42BD3C831B2362806D1CE2E1"
+      "size": 19178,
+      "sha256": "9839930BA54A0EAC34167CB0081AFAF2D8107540C45E684F42C279E7C54240D4"
     },
     {
       "path": "managed/Services/DatabaseService.CoupleBenefits.cs",
@@ -788,8 +788,8 @@
     },
     {
       "path": "managed/Services/DatabaseService.MonkChallenges.cs",
-      "size": 16019,
-      "sha256": "C863E5A76A91FEDDACC2DD65FA15220375920E73AA738F285665901C4E01A594"
+      "size": 16374,
+      "sha256": "2F0614513A11E6E1DEAC48581BDC9FD18753C6EB8E4ACFE5694F20311C913E39"
     },
     {
       "path": "managed/Services/DatabaseService.MonkTravel.cs",
@@ -1133,8 +1133,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.NativeDungeon.cs",
-      "size": 103354,
-      "sha256": "D00A432645EE9DC4C2DF78FA55BC332E9490EE6C342EE9628ECB088EF98CAB21"
+      "size": 103351,
+      "sha256": "3A812AEC269DD6A7695C2505FE5BC89D30BF0EDD16DD19689537FDD502221DEF"
     },
     {
       "path": "managed/Services/NetworkAdapterService.NativeDungeonConsumables.cs",
@@ -1193,8 +1193,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.QuestNotifications.cs",
-      "size": 15190,
-      "sha256": "0C4BB084CA415D8780EB6AE788F928C48B4110097DF756F2EBA8E3D3618DB8F1"
+      "size": 15188,
+      "sha256": "45A2C4C8D717208BE19A81ED85C6DE0A39B319B877426A1D677E09951A81DF1A"
     },
     {
       "path": "managed/Services/NetworkAdapterService.SettlementBonuses.cs",

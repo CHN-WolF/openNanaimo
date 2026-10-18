@@ -12,6 +12,27 @@ ROOT = Path(__file__).resolve().parents[1]
 class LauncherContractTests(unittest.TestCase):
 
     @unittest.skipUnless(shutil.which('powershell.exe'), 'Windows PowerShell required')
+    def test_startup_failure_reads_managed_error_log(self):
+        script = r"""
+$ErrorActionPreference='Stop'
+$tokens=$null;$errors=$null
+$ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'gui_launcher/nanaimo_launcher.ps1'),[ref]$tokens,[ref]$errors)
+$fn=$ast.FindAll({param($n)$n-is[Management.Automation.Language.FunctionDefinitionAst]-and$n.Name-eq'Get-AdapterStartupFailureDetail'},$true)[0]
+. ([scriptblock]::Create($fn.Extent.Text))
+$AdapterLogs=$env:TEST_TMP;$AdapterData=$env:TEST_TMP;$AdapterErr=Join-Path $env:TEST_TMP 'process.err'
+[IO.File]::WriteAllText($AdapterErr,'')
+[IO.File]::WriteAllText((Join-Path $AdapterLogs 'adapter-error.log'),'REWARD_PACKAGE_MISMATCH_SENTINEL')
+$detail=Get-AdapterStartupFailureDetail ([Diagnostics.Process]::GetCurrentProcess()) 'fixture-profile'
+if($detail-notmatch'REWARD_PACKAGE_MISMATCH_SENTINEL'-or$detail-notmatch'managed adapter error'-or$detail-notmatch'fixture-profile'){throw $detail}
+$source=[IO.File]::ReadAllText((Join-Path $PWD 'gui_launcher/nanaimo_launcher.ps1'))
+if($source-notmatch'\$detail=Get-AdapterStartupFailureDetail \$proc \$runtimeProfile'){throw 'startup does not invoke diagnostic helper'}
+$worker=[IO.File]::ReadAllText((Join-Path $PWD 'gui_launcher/launcher_worker.ps1'))
+if($worker-notmatch'Get-Command Get-AdapterStartupFailureDetail'){throw 'helper missing from runspace'}
+'STARTUP_MANAGED_ERROR_PASS'
+"""
+        self.run_powershell_check(script, 'STARTUP_MANAGED_ERROR_PASS')
+
+    @unittest.skipUnless(shutil.which('powershell.exe'), 'Windows PowerShell required')
     def test_social_start_does_not_save_local_inventory(self):
         # Execute the actual GUI click body, with process/UI boundaries stubbed.
         script = r"""

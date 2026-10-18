@@ -50,7 +50,7 @@ public sealed partial class DatabaseService
         var after=mutate(before);
         if (readMonk)
         {
-            byte existingMask = await ReadChapterMonkMaskAsync(c, tx, character, token);
+            byte existingMask = await ReadChapterMonkMaskAsync(c, tx, character, before, token);
             after=ChapterStoryPolicy.ObserveExistingMonk(before,existingMask);
         }
         if (!ChapterStoryPolicy.Valid(after)) throw new InvalidDataException("Invalid chapter transition");
@@ -131,6 +131,15 @@ public sealed partial class DatabaseService
         }
         command.CommandText=schema;
         await command.ExecuteNonQueryAsync(token);
+        command.CommandText = """
+            CREATE TABLE IF NOT EXISTS CharacterChapterMonkCompletions(
+                CharacterId INTEGER NOT NULL REFERENCES Characters(Id) ON DELETE CASCADE,
+                QuestId INTEGER NOT NULL CHECK(QuestId IN (73000003,73000007,73000011,73000015)),
+                ObjectiveRevision INTEGER NOT NULL CHECK(ObjectiveRevision>=0),
+                SessionId TEXT NOT NULL, SettlementId TEXT NOT NULL,
+                PRIMARY KEY(CharacterId,QuestId));
+            """;
+        await command.ExecuteNonQueryAsync(token);
     }
     private static async Task<ChapterStoryState?> ReadChapterRowAsync(SqliteConnection c,SqliteTransaction tx,
         long character,CancellationToken token)
@@ -152,7 +161,7 @@ public sealed partial class DatabaseService
         if (ChapterStoryPolicy.Valid(s) && !s.Finished && s.RewardPending)
         {
             var needed = StoryChapterCatalog.Get(s.QuestId).ExistingMonkMask;
-            if (needed != 0 && (await ReadChapterMonkMaskAsync(c, tx, character, token) & needed) != needed)
+            if (needed != 0 && (await ReadChapterMonkMaskAsync(c, tx, character, s, token) & needed) != needed)
                 s = s with { RewardPending = false, Revision = checked(s.Revision + 1) };
         }
         if (!ChapterStoryPolicy.Valid(s))
@@ -178,16 +187,54 @@ public sealed partial class DatabaseService
     }
 
     private static async Task<byte> ReadChapterMonkMaskAsync(SqliteConnection c, SqliteTransaction tx,
-        long character, CancellationToken token)
+        long character, ChapterStoryState state, CancellationToken token)
     {
+        if (state.ObjectiveIndex != 3 || state.Finished) return 0;
         using var command = c.CreateCommand(); command.Transaction = tx;
-        command.CommandText = "SELECT 1 FROM sqlite_master WHERE type='table' AND name='CharacterMonkChallenges'";
-        if (await command.ExecuteScalarAsync(token) is null) return 0;
-        command.CommandText = "SELECT ClearMask FROM CharacterMonkChallenges WHERE CharacterId=$id";
+        command.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('CharacterMonkChallenges','MonkChallengeCommits')";
+        if (Convert.ToInt64(await command.ExecuteScalarAsync(token)) != 2) return 0;
+        command.CommandText = """
+            SELECT m.ClearMask & (1 << r.ChallengeIndex)
+            FROM CharacterChapterMonkCompletions p
+            JOIN MonkChallengeCommits r ON r.CharacterId=p.CharacterId
+                AND r.SessionId=p.SessionId AND r.SettlementId=p.SettlementId
+            JOIN CharacterMonkChallenges m ON m.CharacterId=p.CharacterId
+            WHERE p.CharacterId=$id AND p.QuestId=$quest AND p.ObjectiveRevision=$revision
+                AND r.ChallengeIndex=$index AND r.Rating BETWEEN 1 AND 5
+            """;
         command.Parameters.AddWithValue("$id", character);
+        command.Parameters.AddWithValue("$quest", state.QuestId);
+        command.Parameters.AddWithValue("$revision", state.Revision - (state.RewardPending ? 1 : 0));
+        command.Parameters.AddWithValue("$index", StoryChapterCatalog.Get(state.QuestId).Episode / 4 - 1);
         var value = await command.ExecuteScalarAsync(token);
         return value is not null and not DBNull && Convert.ToInt64(value) is >= 0 and <= 15
             ? Convert.ToByte(value) : (byte)0;
+    }
+
+    // Called only after a new successful receipt is inserted, in its transaction.
+    // A global clear, an early win, or replaying an old receipt cannot create proof.
+    private static async Task RecordChapterMonkCompletionAsync(SqliteConnection c, SqliteTransaction tx,
+        long character, string session, string settlement, int challengeIndex, CancellationToken token)
+    {
+        if (!QuestCatalog.StoryChaptersEnabled) return;
+        using var command = c.CreateCommand(); command.Transaction = tx;
+        command.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ('CharacterChapterStory','CharacterChapterMonkCompletions')";
+        if (Convert.ToInt64(await command.ExecuteScalarAsync(token)) != 2) return;
+        command.CommandText = """
+            INSERT INTO CharacterChapterMonkCompletions
+                (CharacterId,QuestId,ObjectiveRevision,SessionId,SettlementId)
+            SELECT CharacterId,QuestId,Revision,$session,$settlement FROM CharacterChapterStory
+            WHERE CharacterId=$id AND QuestId=$quest AND ObjectiveIndex=3
+                AND (ClearMask & 8)=8 AND RewardPending=0 AND Finished=0
+            ON CONFLICT(CharacterId,QuestId) DO UPDATE SET
+                ObjectiveRevision=excluded.ObjectiveRevision,
+                SessionId=excluded.SessionId,SettlementId=excluded.SettlementId
+            """;
+        command.Parameters.AddWithValue("$id", character);
+        command.Parameters.AddWithValue("$quest", StoryChapterCatalog.FirstQuestId + (challengeIndex + 1) * 4 - 1);
+        command.Parameters.AddWithValue("$session", session);
+        command.Parameters.AddWithValue("$settlement", settlement);
+        await command.ExecuteNonQueryAsync(token);
     }
 
     /// <summary>

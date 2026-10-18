@@ -35,11 +35,24 @@ def restore(client,journal):
         else:io.atomic(path,io.safe(client,row['backup']).read_bytes())
     journal['status']='rolled-back'
 
+def chapter_review_preflight(client, package_hash):
+    review_path = client / 'adapter_data/chapter_reward_review.json'
+    if not review_path.exists():
+        return
+    review = io.load(review_path)
+    if (review.get('schema') != 'openNanaimo.chapter-reward-review.v1'
+            or str(review.get('package_sha256', '')).lower() != package_hash.lower()):
+        raise ValueError('Existing chapter reward review belongs to another package; '
+                         'review the reward mapping and update its authorization before deploying. '
+                         'No target files have been changed: ' + str(review_path))
+
+
 def deploy(client,apply=False,reviewed_before=None):
     reviewed_before=reviewed_before or {}
     client=io.clean_root(client)
     if client==ROOT:raise ValueError('Choose the installed root, not the source workspace')
     manifest,source=verify_root(ROOT);old_manifest,old_source=verify_root(client)
+    chapter_review_preflight(client, io.file_hash(ROOT / 'release/components/story_chapters/chapters.json'))
     names=set(manifest['critical_files'])|{r['path'] for r in source['files']}|{'manifest/source_closure.json','manifest/open_release_manifest.json'}
     known=set(old_manifest['critical_files'])|{r['path'] for r in old_source['files']}|{'manifest/source_closure.json','manifest/open_release_manifest.json'}
     if any(n=='game.exe' or n.startswith(('adapter_data/','adapter-data/','knowledge/evidence/','nanaimo_launcher_profile.')) for n in names):raise ValueError('Private or client payload in release contract')

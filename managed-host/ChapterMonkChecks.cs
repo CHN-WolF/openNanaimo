@@ -83,6 +83,16 @@ internal static class ChapterMonkChecks
                 return new(quest, ChapterRewardPolicy.PackageSha256, "host-fixture-only", true, q.SourceRewards,
                     q.SourceRewards.Select(r => ChapterRewardPolicy.DurationDays(quest, r)).ToArray());
             }
+            async Task<MonkChallengeCommitResult> Commit(int episode, long epoch, byte rating = 3, bool rollback = false, bool recovering = false)
+            {
+                await using var c = new SqliteConnection($"Data Source={db.DatabasePath}");
+                await c.OpenAsync(); using var tx = c.BeginTransaction();
+                var result = await DatabaseService.CommitMonkChallengeSuccessAsync(c, tx, character, sid,
+                    new NativeDungeonSettlementRecord(0, (byte)(23 + episode / 4), 0, 0, 0,
+                        rating, 100, 100, 0, $"{epoch}:0"), recovering: recovering);
+                if (rollback) tx.Rollback(); else tx.Commit();
+                return result;
+            }
             foreach (var chapter in StoryChapterCatalog.Chapters)
             {
                 var entry = new ChapterStoryState(chapter.Id, 1, 0, false, false, 1);
@@ -101,6 +111,13 @@ internal static class ChapterMonkChecks
             {
                 var quest = StoryChapterCatalog.FirstQuestId + (uint)episode - 1;
                 var chapter = StoryChapterCatalog.Get(quest);
+                for (var phase = 0; phase < 3; phase++)
+                {
+                    await Sql($"UPDATE CharacterChapterStory SET QuestId={quest},ObjectiveIndex={phase},ClearMask={(phase == 0 ? 0 : 8)},RewardPending=0,Finished=0,Revision={90+phase} WHERE CharacterId=$id");
+                    Check((await Commit(episode, episode * 100 + phase)).Applied, "early win still updates independent performance");
+                    Check(await Sql($"SELECT COUNT(*) FROM CharacterChapterMonkCompletions WHERE CharacterId=$id AND QuestId={quest}") == 0,
+                        "win before monk objective creates no chapter proof");
+                }
                 await Sql($"UPDATE CharacterChapterStory SET QuestId={quest},ObjectiveIndex=2,ClearMask=8,RewardPending=0,Finished=0,Revision=100 WHERE CharacterId=$id");
                 await Sql("DELETE FROM CharacterMonkChallenges WHERE CharacterId=$id");
                 await Ensure();
@@ -135,12 +152,26 @@ internal static class ChapterMonkChecks
                     await Ensure();
                     Check(!(await db.ReadChapterStoryAsync(account, character, sid))!.RewardPending,
                         "all other villages cannot satisfy own challenge");
+                    await Sql("UPDATE CharacterMonkChallenges SET ClearMask=15 WHERE CharacterId=$id");
+                    await Ensure();
+                    Check(!(await db.ReadChapterStoryAsync(account, character, sid))!.RewardPending,
+                        "all historical clear bits and early receipts cannot bypass objective");
+                    Check(!(await Commit(episode, episode * 100 + 2)).Applied, "early receipt replay rejected after objective activates");
+                    Check((await Commit(episode == 16 ? 4 : episode + 4, episode * 100 + 3)).Applied,
+                        "wrong village still has independent score");
+                    Check(!(await Commit(episode, episode * 100 + 4, rating: 0)).Applied, "failed challenge cannot create proof");
+                    Check((await Commit(episode, episode * 100 + 5, rollback: true)).Applied, "tentative success constructed");
+                    Check((await Commit(episode, episode * 100 + 6, recovering: true)).Applied,
+                        "journal recovery preserves score without inventing task-time attribution");
+                    await Ensure();
+                    Check(!(await db.ReadChapterStoryAsync(account, character, sid))!.RewardPending,
+                        "wrong village, failure, replay and rolled-back success do not unlock reward");
                     // Exercise the real receipt/epoch transaction, not a fabricated UI completion.
                     await using (var c = new SqliteConnection($"Data Source={db.DatabasePath}"))
                     {
                         await c.OpenAsync(); using var tx = c.BeginTransaction();
                         var result = await DatabaseService.CommitMonkChallengeSuccessAsync(c, tx, character, sid,
-                            new NativeDungeonSettlementRecord(0, (byte)(24 + episode / 4 - 1), 0, 0, 0, 3, 100, 100, 0, $"{episode}:0"));
+                            new NativeDungeonSettlementRecord(0, (byte)(24 + episode / 4 - 1), 0, 0, 0, 3, 100, 100, 0, $"{episode*100+90}:0"));
                         Check(result.Applied, "authoritative solo fixture commits monk receipt");
                         tx.Commit();
                     }
@@ -149,6 +180,8 @@ internal static class ChapterMonkChecks
                 s = (await db.ReadChapterStoryAsync(account, character, sid))!;
                 Check(s.RewardPending && s.ObjectiveIndex == 3, "monk policy unlocks reward at final objective");
                 var revision = s.Revision;
+                Check(await new DatabaseService(root).ReadChapterStoryAsync(account, character, sid) == s,
+                    "objective-bound completion survives database reopen");
                 await Ensure();
                 Check((await db.ReadChapterStoryAsync(account, character, sid))!.Revision == revision,
                     "repeated list/login reconciliation is idempotent");
@@ -186,6 +219,17 @@ internal static class ChapterMonkChecks
                     Check(Frame(await Claim(quest), 0xC59A)[8] != 0, "replayed old quest cannot claim successor");
                     Check(await Sql($"SELECT COUNT(*) FROM CharacterChapterClaims WHERE CharacterId=$id AND QuestId={quest}") == 1
                         && await Sql("SELECT Hans FROM Characters WHERE Id=$id") == money, "replay cannot duplicate rewards");
+                    await Sql($"UPDATE CharacterChapterStory SET QuestId={quest},ObjectiveIndex=3,ClearMask=8,RewardPending=0,Finished=0,Revision=300 WHERE CharacterId=$id");
+                    await Ensure();
+                    Check(!(await db.ReadChapterStoryAsync(account, character, sid))!.RewardPending,
+                        "administrative rewind cannot reuse old objective proof");
+                    Check(Frame(await Claim(quest), 0xC59A)[8] != 0, "old reward receipt cannot bypass rewound objective");
+                    Check((await Commit(episode, episode * 100 + 91)).Applied, "rewound objective earns fresh win");
+                    await Ensure();
+                    Check(Frame(await Claim(quest), 0xC59A)[8] == 0, "rewound completed objective can advance");
+                    Check(await Sql("SELECT Hans FROM Characters WHERE Id=$id") == money
+                        && await Sql($"SELECT COUNT(*) FROM CharacterChapterClaims WHERE CharacterId=$id AND QuestId={quest}") == 1,
+                        "rewind preserves original reward receipt and does not grant again");
                 }
                 else
                 {

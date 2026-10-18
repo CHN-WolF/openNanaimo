@@ -33,18 +33,35 @@ public sealed partial class DatabaseService
         command.Parameters.AddWithValue("$id", character);
         command.Parameters.AddWithValue("$quest", quest);
         command.CommandText = "SELECT Revision,RewardDigest FROM CharacterChapterClaims WHERE CharacterId=$id AND QuestId=$quest";
+        long? claimedRevision = null;
+        string? claimedDigest = null;
         using (var reader = await command.ExecuteReaderAsync(token))
         {
             if (await reader.ReadAsync(token))
-                return new(reader.GetInt64(0) == revision && reader.GetString(1) == plan.Digest
-                    ? ChapterClaimStatus.AlreadyClaimed : ChapterClaimStatus.Rejected, before);
+            {
+                claimedRevision = reader.GetInt64(0);
+                claimedDigest = reader.GetString(1);
+            }
         }
+        if (claimedRevision == revision && claimedDigest == plan.Digest)
+            return new(ChapterClaimStatus.AlreadyClaimed, before);
         if (before is null || before.QuestId != quest || before.Revision != revision
             || !before.RewardPending || before.Finished)
             return new(ChapterClaimStatus.Rejected, before);
         var after = ChapterStoryPolicy.AfterRewardTransaction(before, revision);
         if (after == before || !ChapterStoryPolicy.Valid(after))
             return new(ChapterClaimStatus.Rejected, before);
+
+        // An explicit administrative rewind can replay the objective, not its rewards.
+        // Keep the original receipt and require a newer, fully validated completion.
+        if (claimedRevision is not null)
+        {
+            if (claimedRevision >= revision || claimedDigest != plan.Digest)
+                return new(ChapterClaimStatus.Rejected, before);
+            await AdvanceChapterRewardAsync(c, tx, character, before, after, token);
+            await tx.CommitAsync(token);
+            return new(ChapterClaimStatus.Claimed, after);
+        }
 
         // The shared inventory owner defines pet instances, terms and capacity.
         // Every mandatory member must be granted; a blank draw cannot settle this transaction.
@@ -89,6 +106,18 @@ public sealed partial class DatabaseService
             VALUES($id,$quest,$revision,$digest,$review,$now)
             """;
         if (await command.ExecuteNonQueryAsync(token) != 1) throw new InvalidDataException("Chapter claim write failed");
+        await AdvanceChapterRewardAsync(c, tx, character, before, after, token);
+        await tx.CommitAsync(token);
+        return new(ChapterClaimStatus.Claimed, after);
+    }
+
+    private static async Task AdvanceChapterRewardAsync(SqliteConnection c, SqliteTransaction tx,
+        long character, ChapterStoryState before, ChapterStoryState after, CancellationToken token)
+    {
+        using var command = c.CreateCommand(); command.Transaction = tx;
+        command.Parameters.AddWithValue("$id", character);
+        command.Parameters.AddWithValue("$quest", before.QuestId);
+        command.Parameters.AddWithValue("$revision", before.Revision);
         command.Parameters.AddWithValue("$nextQuest", after.QuestId);
         command.Parameters.AddWithValue("$index", after.ObjectiveIndex);
         command.Parameters.AddWithValue("$mask", after.ClearMask);
@@ -101,8 +130,6 @@ public sealed partial class DatabaseService
             WHERE CharacterId=$id AND QuestId=$quest AND Revision=$revision
             """;
         if (await command.ExecuteNonQueryAsync(token) != 1) throw new InvalidDataException("Chapter claim revision race");
-        await tx.CommitAsync(token);
-        return new(ChapterClaimStatus.Claimed, after);
     }
 
     private static async Task<bool> GrantChapterCurrencyAsync(SqliteConnection c, SqliteTransaction tx,

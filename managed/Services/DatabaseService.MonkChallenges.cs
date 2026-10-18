@@ -214,7 +214,12 @@ public sealed partial class DatabaseService
             performance.Parameters.AddWithValue("$now", DateTime.UtcNow.ToString("O"));
             await performance.ExecuteNonQueryAsync(token);
         }
-        // No currencies, EXP, inventory, title or main-story progress are changed.
+        // A recovered journal has no captured chapter objective revision. Do not
+        // attribute an earlier interrupted fight to an objective activated later.
+        if (!recovering)
+            await RecordChapterMonkCompletionAsync(connection, transaction, characterId,
+                sessionId, settlement.SettlementId!, index, token);
+        // Historical scores stay independent; chapter proof requires its active objective.
         return new(MonkChallengeCommitStatus.Applied, next, (previous & bit) == 0);
     }
 

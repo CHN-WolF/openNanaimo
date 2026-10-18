@@ -14,6 +14,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_ROOT = 'adapter_runtime'
 REPOSITORY_FILES = [
+    'scripts/test_adapter_chapter_preflight.py',
+    'scripts/reset_chapter_checkpoint.py',
+    'scripts/test_reset_chapter_checkpoint.py',
     'scripts/package_story_resource_kit.py',
     'scripts/deploy_story_release.py',
     'manifest/story_deployment_baselines.json',

@@ -7,6 +7,8 @@ internal static class ChapterRewardMatrixChecks
     internal static async Task RunAsync()
     {
         int checks = 0, cases = 0;
+        var previousChapters = QuestCatalog.StoryChaptersEnabled;
+        QuestCatalog.StoryChaptersEnabled = true;
         void Check(bool ok, string label)
         {
             if (!ok) throw new InvalidDataException("CHAPTER_REWARD_MATRIX_FAILED " + label);
@@ -52,6 +54,17 @@ internal static class ChapterRewardMatrixChecks
                     await Sql($"INSERT INTO CharacterMonkChallenges VALUES($id,{chapter.ExistingMonkMask},'fixture')");
                 int index = chapter.ExistingMonkMask == 0 ? 2 : 3;
                 await Sql($"UPDATE CharacterChapterStory SET QuestId={chapter.Id},ObjectiveIndex={index},ClearMask={ChapterStoryPolicy.RequiredDungeonMask(chapter.Episode)},RewardPending=1,Finished=0,Revision=10 WHERE CharacterId=$id");
+                if (chapter.ExistingMonkMask != 0)
+                {
+                    await Sql("UPDATE CharacterChapterStory SET RewardPending=0,Revision=9 WHERE CharacterId=$id");
+                    await using var c = new SqliteConnection($"Data Source={db.DatabasePath}");
+                    await c.OpenAsync(); using var tx = c.BeginTransaction();
+                    Check((await DatabaseService.CommitMonkChallengeSuccessAsync(c,tx,character,session,
+                        new NativeDungeonSettlementRecord(0,(byte)(23+chapter.Episode/4),0,0,0,3,100,100,0,"1:0"))).Applied,
+                        "matrix fixture earns objective-bound monk receipt");
+                    tx.Commit();
+                    await db.RefreshChapterMonkAsync(account,character,session,chapter.Id,9);
+                }
                 var days = chapter.SourceRewards.Select(r => ChapterRewardPolicy.DurationDays(chapter.Id, r)).ToArray();
                 // These approvals exist only in this temporary database test, never in a review file.
                 var review = new ChapterRewardReview(chapter.Id, ChapterRewardPolicy.PackageSha256,
@@ -138,6 +151,7 @@ internal static class ChapterRewardMatrixChecks
         }
         finally
         {
+            QuestCatalog.StoryChaptersEnabled = previousChapters;
             SqliteConnection.ClearAllPools();
             Directory.Delete(root, true);
         }

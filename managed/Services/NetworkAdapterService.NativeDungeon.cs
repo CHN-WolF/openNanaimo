@@ -1266,8 +1266,8 @@ public sealed partial class NetworkAdapterService
                 session.QuestClearDungeonBit, token);
             chapterSettled = session.ChapterTaskListDirty;
         }
-        // Read the authoritative monk ledger only after the settlement transaction
-        // has applied. Never treat ordinary episode clears as monk challenge bits.
+        // Reconcile objective-scoped proof only after the settlement transaction
+        // has applied. Historical monk clears do not complete chapter objectives.
         if (applied.Applied && settlement is { Rating: > 0 } monkSettlement
             && MonkChallengePolicy.IsReservedEpisode(monkSettlement.Episode)
             && !session.NativeDungeonDeathLatched && QuestCatalog.StoryChaptersEnabled)
