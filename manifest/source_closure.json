@@ -394,8 +394,8 @@
     },
     {
       "path": "managed-host/SecretEntryChecks.cs",
-      "size": 12959,
-      "sha256": "8B399F215BBD19FD73593137F1EC18D6F41CBE251C0840BEEE98B13C52518DF4"
+      "size": 16963,
+      "sha256": "292284C8436F355826862FC09425FD4C1DB2EA36A5B4EFAEC39E627B37A68AF8"
     },
     {
       "path": "managed-host/ShopCurrencyPaginationChecks.cs",
@@ -894,8 +894,8 @@
     },
     {
       "path": "managed/Services/DatabaseService.SecretEntry.cs",
-      "size": 3583,
-      "sha256": "801F0D7CBE5194CB26D31E5195F6998B488029F884A178AF212D4A48A7E756F5"
+      "size": 3729,
+      "sha256": "61C79E4B3FF6622453BEDF870315C3A7D67B9BE1AE3D2930BEF7E9712DF14752"
     },
     {
       "path": "managed/Services/DatabaseService.SkillPointCards.cs",
@@ -1299,8 +1299,8 @@
     },
     {
       "path": "managed/Services/NetworkAdapterService.SecretEntry.cs",
-      "size": 3015,
-      "sha256": "28493E62D7E44B9055B962248EEC2C8BCEF43698AAB48CA17ED9204F250137FE"
+      "size": 3153,
+      "sha256": "B430326A43E79F5A1BCF447BA9F31A16D5A3A7EE2940A6B366AB7A27AE5B4049"
     },
     {
       "path": "managed/Services/NetworkAdapterService.SettlementBonuses.cs",

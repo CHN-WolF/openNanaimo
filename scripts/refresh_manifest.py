@@ -85,6 +85,7 @@ REPOSITORY_FILES = [
     'manifest/story_deployment_baselines.json',
     'scripts/test_story_release.py',
     'scripts/deploy_adapter_runtime.py',
+    'scripts/test_secret_entry_client.py',
     'scripts/story_window_accept.py',
     'scripts/install_story_tables.py',
     'resource-packs/nanaimo-story-resource-kit.zip',
@@ -331,7 +332,9 @@ REPOSITORY_FILES = [
 # The fusion manifest explicitly declares the active documentation snapshot.
 # Keep every unified document in the contract on subsequent runtime refreshes.
 _fusion_documents = json.loads((ROOT / 'manifest/document_fusion.json').read_text('utf-8'))
-REPOSITORY_FILES += list(_fusion_documents['validation']['current_documents'])
+_knowledge_routes = json.loads((ROOT / 'manifest/knowledge_routes.json').read_text('utf-8'))
+REPOSITORY_FILES += [_knowledge_routes['path_mapping'].get(name, name)
+                     for name in _fusion_documents['validation']['current_documents']]
 REPOSITORY_FILES += [
     'README.md', 'resource-packs/README.md',
     'scripts/generate_flight_item_catalog.py', 'scripts/test_flight_item_effects.py',

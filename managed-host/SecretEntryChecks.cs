@@ -63,6 +63,8 @@ internal static class SecretEntryChecks
             {
                 var saved = await Read();
                 Check(saved.Hans == expected && saved.Cash == 321, "exact persisted wallets");
+                var current = (CharacterRecord)session.GetType().GetProperty("Character")!.GetValue(session)!;
+                Check(current.Hans == expected && current.Cash == 321, "session wallet matches committed balance");
             }
 
             foreach (var (town, fare) in new (byte Town, uint Fare)[] { (0, 3000), (1, 30000), (2, 80000), (3, 150000) })
@@ -73,7 +75,7 @@ internal static class SecretEntryChecks
                 Answer(await Request(1), 10, fare);
                 Answer(await Request(1), 10, fare);
                 await Balance(fare + 17);
-                Answer(await Request(10), 11, fare, 17);
+                Answer(await Request(10), 11, fare);
                 await Balance(17);
                 Answer(await Request(10), 20, 0);
                 Answer(await Request(1), 20, 0);
@@ -84,7 +86,7 @@ internal static class SecretEntryChecks
                 await Balance(17);
                 await Seed(town, fare);
                 Answer(await Request(1), 10, fare);
-                Answer(await Request(10), 11, fare, 0);
+                Answer(await Request(10), 11, fare);
                 await Balance(0);
                 await Seed(town, fare - 1);
                 Answer(await Request(1), 1, fare);
@@ -114,28 +116,30 @@ internal static class SecretEntryChecks
 
             await Seed(0, 10000);
             Answer(await Request(1), 10, 3000);
-            Answer(await Request(10), 11, 3000, 7000);
+            Answer(await Request(10), 11, 3000);
             var page = new byte[8];
             BinaryPrimitives.WriteInt32LittleEndian(page, 6);
             Check(await Send(page, opcode: 0xC367) is not null, "real page transition accepted");
             Answer(await Request(10), 0, 0);
             Answer(await Request(1), 10, 3000);
-            Answer(await Request(10), 11, 3000, 4000);
+            Answer(await Request(10), 11, 3000);
             await Balance(4000);
 
             foreach (uint ticket in new uint[] { 10069101, 10169101, 10069201, 10169201 })
             {
                 Check(ShopCatalog.TryGet(ticket, out _), "ticket catalog identity");
                 await Seed(0, 0, ticket, true);
+                await Execute("CREATE TRIGGER ticket_must_not_debit BEFORE UPDATE ON Characters BEGIN SELECT RAISE(ABORT,'ticket checked after wallet write'); END;");
                 Answer(await Request(1), 20, 0);
                 Answer(await Request(10), 20, 0);
                 Check((await Read()).Items.Single(i => i.ItemCode == ticket).Quantity == 1, "ticket not consumed");
                 await Balance(0);
+                await Execute("DROP TRIGGER ticket_must_not_debit");
                 await Seed(0, 3000, ticket);
                 Answer(await Request(1), 10, 3000);
                 await Seed(0, 3000, ticket, true, ClothingExpirationTime.Encode(DateTime.Now.AddDays(-1)));
                 Answer(await Request(1), 10, 3000);
-                Answer(await Request(10), 11, 3000, 0);
+                Answer(await Request(10), 11, 3000);
                 await Seed(0, 0, ticket, true, ClothingExpirationTime.Encode(DateTime.Now.AddDays(1)));
                 Answer(await Request(1), 20, 0);
                 await Seed(0, 0, ticket, true, 0);
@@ -155,12 +159,31 @@ internal static class SecretEntryChecks
             Answer(await Request(10), 20, 0);
             await Balance(3000);
 
+            foreach (uint ticket in new uint[] { 10069101, 10169101, 10069201, 10169201 })
+            {
+                await Seed(0, 10000);
+                Answer(await Request(1), 10, 3000);
+                var equipped = new byte[36];
+                BinaryPrimitives.WriteUInt32LittleEndian(equipped.AsSpan(24), ticket);
+                await Execute($"UPDATE Characters SET Hans=0,Appearance=$appearance WHERE Id={id}", equipped);
+                await Execute($"INSERT INTO CharacterItems(CharacterId,ItemCode,Quantity,ItemExpiration,UpdatedAt) VALUES({id},{ticket},1,{ClothingExpirationTime.PermanentExpiration},'test')");
+                await Execute("CREATE TRIGGER ticket_must_not_debit BEFORE UPDATE ON Characters BEGIN SELECT RAISE(ABORT,'ticket confirmation attempted wallet write'); END;");
+                Answer(await Request(10), 20, 0);
+                await Balance(0);
+                Check((await Read()).Items.Single(i => i.ItemCode == ticket).Quantity == 1,
+                    "newly equipped ticket precedes insufficient balance and debit");
+                await Execute("DROP TRIGGER ticket_must_not_debit");
+            }
+
             await Seed(0, 100000);
             Answer(await Request(1), 10, 3000);
             var concurrent = await Task.WhenAll(Enumerable.Range(0, 8).Select(_ => Task.Run(() => Request(10))));
-            Check(concurrent.Count(r => r?.Length == 40) == 1, "concurrent confirmations debit once");
+            Check(concurrent.Count(r => r is not null
+                && BinaryPrimitives.ReadUInt16LittleEndian(r.AsSpan(8)) == 11) == 1,
+                "concurrent confirmations debit once");
             foreach (var response in concurrent)
-                if (response?.Length == 40) Answer(response, 11, 3000, 97000);
+                if (response is not null && BinaryPrimitives.ReadUInt16LittleEndian(response.AsSpan(8)) == 11)
+                    Answer(response, 11, 3000);
                 else Answer(response, 20, 0);
             await Balance(97000);
             await Seed(0, 10000);
@@ -171,8 +194,44 @@ internal static class SecretEntryChecks
             Check(failed, "transaction failure propagated without allowance");
             await Balance(10000);
             await Execute("DROP TRIGGER secret_entry_fail");
-            Answer(await Request(10), 11, 3000, 7000);
+            Answer(await Request(10), 11, 3000);
             await Balance(7000);
+
+            foreach (var extended in new[] { false, true })
+            {
+                await Seed(0, 10000, 10069201);
+                await Execute($"INSERT INTO CharacterItems(CharacterId,ItemCode,Quantity,ItemExpiration,UpdatedAt) VALUES({id},14000001,3,0,'test')");
+                Set("Character", await Read());
+                Set("Inventory99Enabled", extended);
+                var before = (await Read()).Items.Select(i => (i.ItemCode, i.Quantity, i.ItemExpiration)).ToArray();
+                await Send([], opcode: 0xC42F); // Acknowledge the seeded acquisition notice.
+                var inventoryBefore = await Send([], opcode: 0xC42F);
+                Check(inventoryBefore is not null && inventoryBefore.Length > 8, "nonempty game inventory baseline");
+                Answer(await Request(1), 10, 3000);
+                Answer(await Request(10), 11, 3000);
+                await Balance(7000);
+                var pageRequest = new byte[8];
+                BinaryPrimitives.WriteInt32LittleEndian(pageRequest, 115);
+                var pageResponse = await Send(pageRequest, opcode: 0xC367);
+                Check(pageResponse is not null && BinaryPrimitives.ReadUInt16LittleEndian(pageResponse.AsSpan(6)) == 0xC368,
+                    "secret page request reaches actor construction");
+                var box = await Send([], opcode: 0xC378);
+                Check(box is not null && BinaryPrimitives.ReadUInt16LittleEndian(box.AsSpan(6)) == 0xC379
+                    && BinaryPrimitives.ReadInt64LittleEndian(box.AsSpan(208)) == 7000
+                    && BinaryPrimitives.ReadInt64LittleEndian(box.AsSpan(216)) == 321,
+                    "requested backpack restores committed wallets");
+                var inventoryAfter = await Send([], opcode: 0xC42F);
+                Check(inventoryAfter is not null && inventoryBefore!.AsSpan(4).SequenceEqual(inventoryAfter.AsSpan(4)),
+                    "entering secret page preserves inventory payload and handles");
+                var after = (await Read()).Items.Select(i => (i.ItemCode, i.Quantity, i.ItemExpiration)).ToArray();
+                Check(before.SequenceEqual(after), "paid admission and backpack read preserve stored items");
+                var wallet = await Send(Mode(0), opcode: 0xC37A);
+                Check(wallet?.Length == 32 && BinaryPrimitives.ReadUInt16LittleEndian(wallet.AsSpan(6)) == 0xC37B
+                    && BinaryPrimitives.ReadInt64LittleEndian(wallet.AsSpan(8)) == 7000
+                    && BinaryPrimitives.ReadInt64LittleEndian(wallet.AsSpan(16)) == 321,
+                    "balance response remains request driven");
+            }
+            Set("Inventory99Enabled", false);
 
             await Seed(4, 1000000);
             Answer(await Request(1), 0, 0);
@@ -212,23 +271,15 @@ internal static class SecretEntryChecks
         return payload;
     }
 
-    private static void Answer(byte[]? response, ushort action, uint price, long? balance = null)
+    private static void Answer(byte[]? response, ushort action, uint price)
     {
         if (response is null) throw new InvalidOperationException("Missing secret-entry response.");
-        Check(response.Length == (balance.HasValue ? 40 : 16), "exact frame length and no unsolicited frames");
-        var at = 0;
-        if (balance.HasValue)
-        {
-            Check(BinaryPrimitives.ReadUInt16LittleEndian(response!.AsSpan(4)) == 24
-                && BinaryPrimitives.ReadUInt16LittleEndian(response.AsSpan(6)) == 0xC37B
-                && BinaryPrimitives.ReadInt64LittleEndian(response.AsSpan(8)) == balance
-                && BinaryPrimitives.ReadInt64LittleEndian(response.AsSpan(16)) == 321, "committed wallet before allowance");
-            at = 24;
-        }
+        Check(response.Length == 16, "single allowance frame, no unsolicited wallet or inventory snapshots");
+        const int at = 0;
         Check(BinaryPrimitives.ReadUInt16LittleEndian(response!.AsSpan(at + 4)) == 16
             && BinaryPrimitives.ReadUInt16LittleEndian(response.AsSpan(at + 6)) == 0xC5AB
             && BinaryPrimitives.ReadUInt16LittleEndian(response.AsSpan(at + 8)) == action
-            && response[at + 10] == 0 && response[at + 11] == 0
+            && response[at + 10] == 0 && response[at + 11] == (action == 11 ? 1 : 0)
             && BinaryPrimitives.ReadUInt32LittleEndian(response.AsSpan(at + 12)) == price,
             $"initialized allowance action={action} price={price}");
     }

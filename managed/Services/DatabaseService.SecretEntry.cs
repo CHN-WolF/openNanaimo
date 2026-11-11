@@ -55,6 +55,8 @@ public sealed partial class DatabaseService
                 effect = BinaryPrimitives.ReadUInt32LittleEndian(appearance.AsSpan(24, 4));
         }
 
+        // Resolve equipped-ticket entitlement before checking or debiting Hans,
+        // including a ticket equipped after the original quote.
         if (SecretEntryPolicy.IsTicket(effect) && ShopCatalog.TryGet(effect, out _))
         {
             command.Parameters.AddWithValue("$code", effect);

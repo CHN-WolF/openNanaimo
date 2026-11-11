@@ -162,16 +162,16 @@
         "sha256": "6B60AF0002EF06557A41988975881DFA8BAEC7394C9CFB85C7A4759D66CD42F3"
       },
       "adapter_runtime/Nanaimo.Adapter.dll": {
-        "size": 6176768,
-        "sha256": "FA1E4ADDF3A7BDDEBAC7497CF106DCBB396F0EE9DE6F49751BC7D2C72FD25037"
+        "size": 6182400,
+        "sha256": "AF8776BB611CE48B58520F8554DFF9E6E9E217936D7A319BCC87AAFC6FD64CF5"
       },
       "adapter_runtime/Nanaimo.Adapter.exe": {
         "size": 151552,
-        "sha256": "DE633F0A68447A7D44339EDA1D7721C52D753D1E9C98B1D308FCA3507C51F4A4"
+        "sha256": "6EBB5CB4B3C5DE6C2406C1627DC427AD01D79E54BFBC45A91C7F71E16B64CE66"
       },
       "adapter_runtime/Nanaimo.Adapter.pdb": {
-        "size": 289276,
-        "sha256": "F890968D2B58893C6E9B8E8888925CE179BB5CA87A6A91EA75EFD6F5360F1803"
+        "size": 290140,
+        "sha256": "EFD747D607177ED097DAF8185006B66353F6E529A65CE48D6AB03F1301810EFC"
       },
       "adapter_runtime/Nanaimo.Adapter.runtimeconfig.json": {
         "size": 372,
@@ -179,11 +179,11 @@
       },
       "adapter_runtime/Nanaimo.Gameplay.dll": {
         "size": 6353408,
-        "sha256": "D5BA444C529B8A897623D2C7AF944520F0693C9C7D79F0220C166492977CD444"
+        "sha256": "7C87D016BE02991AC5319464D6315A819F115EF9B81E20F54B3B780DC843B724"
       },
       "adapter_runtime/Nanaimo.Gameplay.pdb": {
-        "size": 619772,
-        "sha256": "A72B3EA2674114E6E09956A2EA1C47124694385516CB355CD4D56BB96F497C2A"
+        "size": 619752,
+        "sha256": "8E52171AA7329690CF6A5B1D0B98FD61034040A6454B5BA1AC801E8EE53ABA55"
       },
       "adapter_runtime/SQLitePCLRaw.batteries_v2.dll": {
         "size": 5120,
@@ -847,7 +847,7 @@
       },
       "adapter_runtime/adapter_manifest.json": {
         "size": 52662,
-        "sha256": "2228B2ECD3E3AEC79FFDFE7D859DDB9C05644BF5666BC75ABBC3AE1DF0BF8B09"
+        "sha256": "A97003D61D965E54F4EE1FD929958E85CC319CA1623F8399D514774BC933DC77"
       },
       "adapter_runtime/clretwrc.dll": {
         "size": 310568,
@@ -1006,6 +1006,10 @@
     "source_tracking": "complete-runtime-is-source-tracked"
   },
   "critical_files": {
+    "CHANGELOG.md": {
+      "size": 75068,
+      "sha256": "74BBF48B8BA62EE2838EEB339BB5D9B55C8F2D816E02BBFFA79ABCFD5BF30903"
+    },
     "README.md": {
       "size": 15304,
       "sha256": "F6AF40A527D0868774E16E432A2E73821F7FA44EDD9F05051A688280C0FCC1FB"
@@ -3198,6 +3202,18 @@
       "size": 59930,
       "sha256": "12AD7ECE9810E12B0F4A8161FD6E1521B940F687CC6E272A77577C3B44C255B7"
     },
+    "knowledge/README.md": {
+      "size": 16889,
+      "sha256": "94A1BF40885A6C0FB53FDF1B07B0F58456A8E440B016A76F8CBFC4FC36EAC748"
+    },
+    "knowledge/业务/README.md": {
+      "size": 818,
+      "sha256": "43AF13BC8F0D9E6FB9A8101F475D142D7CF19718FF69811420F080A281521A28"
+    },
+    "knowledge/业务/住宅/README.md": {
+      "size": 825,
+      "sha256": "64D0D59FE07CCCEDBEB9E2A7B60AE7211A921DA150ACF0ABD04D2AF79422572B"
+    },
     "knowledge/业务/住宅/公寓引导.md": {
       "size": 3219,
       "sha256": "2B929EE279F3900AF62303A699C03E3EC7B8A07EE5D718068292F5604F69407C"
@@ -3214,13 +3230,13 @@
       "size": 833,
       "sha256": "BFC69668FA0D4D7AF4D152B29A960005443B64365D19F1A1DADFAC33EA394306"
     },
-    "knowledge/业务/住宅/README.md": {
-      "size": 825,
-      "sha256": "64D0D59FE07CCCEDBEB9E2A7B60AE7211A921DA150ACF0ABD04D2AF79422572B"
-    },
     "knowledge/业务/住宅/访问恢复.md": {
       "size": 11015,
       "sha256": "81AA054BC29254A31257A68119BF524D914E98377185CA75B3242AAFBEC8E0E9"
+    },
+    "knowledge/业务/卡片/README.md": {
+      "size": 616,
+      "sha256": "3527F8D98E19E5E4F06C6B952A35BCA4D5164CA5C6C2539F07E4E73598D5FDA4"
     },
     "knowledge/业务/卡片/兑换/README.md": {
       "size": 989,
@@ -3234,17 +3250,21 @@
       "size": 1460,
       "sha256": "2045955FB01710C0864C96857AFA1C310F17BA254C390778E8A5CF3D24DC0261"
     },
-    "knowledge/业务/卡片/README.md": {
-      "size": 616,
-      "sha256": "3527F8D98E19E5E4F06C6B952A35BCA4D5164CA5C6C2539F07E4E73598D5FDA4"
+    "knowledge/业务/地宫/BOSS/README.md": {
+      "size": 2510,
+      "sha256": "8E2027A751DC8706F9F0DED5ADBB19A12543E910FFC2B90721AEC20AA91F366D"
+    },
+    "knowledge/业务/地宫/README.md": {
+      "size": 2032,
+      "sha256": "62E952028083D96074D529B5FDC7A7F167B4B29C9E42F226D76C14532BCF9D9C"
     },
     "knowledge/业务/地宫/伤害与目标/README.md": {
       "size": 3822,
       "sha256": "62AB4AA1D9C58BFC68E82B1166F879A1ABB642F59C4E48EBAF274F4149221A1F"
     },
     "knowledge/业务/地宫/关卡与房间/README.md": {
-      "size": 5553,
-      "sha256": "5EAB66FBB442DB129F256EC86327D5D90242B3CB77E7F5F5461C16545FFFB6A9"
+      "size": 5583,
+      "sha256": "DB5A50BB5DC7DA80AAC7801DFEA26539DFC12C2345A495D2C6FE23ED3FD9AF72"
     },
     "knowledge/业务/地宫/战斗资源/README.md": {
       "size": 3245,
@@ -3254,29 +3274,25 @@
       "size": 3631,
       "sha256": "E25E8458177904017DB635D2E2E4953ABC6F7F44EEEB9241C240011D588D172A"
     },
-    "knowledge/业务/地宫/README.md": {
-      "size": 1978,
-      "sha256": "CA5BCF1F8001FB3BBA5CD32F6E3133CB7B6BDEB29381AA090D0959EED32199F1"
-    },
     "knowledge/业务/地宫/计分与结算/README.md": {
       "size": 3487,
       "sha256": "CC79B0BC1E88B2A4682C4230ADEAA6C6F40757908AB1C6638CD6B27E9AE7D1DB"
-    },
-    "knowledge/业务/地宫/BOSS/README.md": {
-      "size": 2510,
-      "sha256": "8E2027A751DC8706F9F0DED5ADBB19A12543E910FFC2B90721AEC20AA91F366D"
-    },
-    "knowledge/业务/城镇/场景切换/README.md": {
-      "size": 1604,
-      "sha256": "FD85F0C48985587CED57B2FBFB674242A5427B160E67B6D13FE3B5B20A088F93"
     },
     "knowledge/业务/城镇/README.md": {
       "size": 516,
       "sha256": "632CB0AC7DE242CA79D97BBCFF596157CDF1B2C68E11F0AC5D86DEABE0759AC8"
     },
+    "knowledge/业务/城镇/场景切换/README.md": {
+      "size": 1604,
+      "sha256": "FD85F0C48985587CED57B2FBFB674242A5427B160E67B6D13FE3B5B20A088F93"
+    },
     "knowledge/业务/城镇/角色实体.md": {
       "size": 10054,
       "sha256": "B58AFF9ED4B6A2CC30FA45D67DC53A6BB29A6D1B0C38F8D2C250143281302025"
+    },
+    "knowledge/业务/娱乐/README.md": {
+      "size": 646,
+      "sha256": "BD6321A6A9D06269DE2E738D25ABCA923DA9C8FB644C476E1F67E1636B645661"
     },
     "knowledge/业务/娱乐/奖励/README.md": {
       "size": 793,
@@ -3290,9 +3306,9 @@
       "size": 880,
       "sha256": "B1EE103957E3E98C9484AED83CA820166FF1A6B01596E8C31C98FEEDDFC59501"
     },
-    "knowledge/业务/娱乐/README.md": {
-      "size": 646,
-      "sha256": "BD6321A6A9D06269DE2E738D25ABCA923DA9C8FB644C476E1F67E1636B645661"
+    "knowledge/业务/宠物/README.md": {
+      "size": 739,
+      "sha256": "56FD42CDB3E2599BB4244DCF50D3CC02155E8DC7524A2F50D2DCCAA3B91D1EA7"
     },
     "knowledge/业务/宠物/发射器/README.md": {
       "size": 1163,
@@ -3310,9 +3326,9 @@
       "size": 1191,
       "sha256": "F843A86433DDCC8BF2EED3386A15C867A7134017CBECB7C4E451A6FDD00F0F73"
     },
-    "knowledge/业务/宠物/README.md": {
-      "size": 739,
-      "sha256": "56FD42CDB3E2599BB4244DCF50D3CC02155E8DC7524A2F50D2DCCAA3B91D1EA7"
+    "knowledge/业务/库存/README.md": {
+      "size": 699,
+      "sha256": "5645D57F1D2819C2C100A13734BCA22B887BB259E37E2522CDFC08AABE8C96D4"
     },
     "knowledge/业务/库存/快捷栏/README.md": {
       "size": 818,
@@ -3326,13 +3342,13 @@
       "size": 1379,
       "sha256": "59DB4602033897590F4C6E2AE5ABE858610D7D0823B4A9733E85B93356BB68F3"
     },
-    "knowledge/业务/库存/README.md": {
-      "size": 699,
-      "sha256": "5645D57F1D2819C2C100A13734BCA22B887BB259E37E2522CDFC08AABE8C96D4"
-    },
     "knowledge/业务/库存/装备/README.md": {
       "size": 1553,
       "sha256": "CDDA94DDC8124B9FB50AED9D81DC9B2FE6ACE17ED847509BCC642E0F6FB18D31"
+    },
+    "knowledge/业务/社交/README.md": {
+      "size": 646,
+      "sha256": "A04A16B8DE4AE90F4B76245966A1DD05B31FC6CBB36D9F6875D3DB870646E597"
     },
     "knowledge/业务/社交/好友.md": {
       "size": 6454,
@@ -3346,13 +3362,13 @@
       "size": 873,
       "sha256": "8A44A1E86868176BA4260BBB89EA2886281F8D55A502FF821822418D828E9F28"
     },
-    "knowledge/业务/社交/README.md": {
-      "size": 646,
-      "sha256": "A04A16B8DE4AE90F4B76245966A1DD05B31FC6CBB36D9F6875D3DB870646E597"
-    },
     "knowledge/业务/社交/组队.md": {
       "size": 2096,
       "sha256": "C52C446E1975CA8DA2F3B29CBC74E028994F62226470268DED2163524ECCBCAC"
+    },
+    "knowledge/业务/竞技/README.md": {
+      "size": 609,
+      "sha256": "EA92EC27DE62799C2D0ACBFE6A12E1EA7435F2569A6E17B98B8BA3DB68D99825"
     },
     "knowledge/业务/竞技/战斗/README.md": {
       "size": 783,
@@ -3362,17 +3378,13 @@
       "size": 951,
       "sha256": "F3192CED5BDB4F6A1D31D87CC618957537D9D24A22B288D275708E8B6EE4E064"
     },
-    "knowledge/业务/竞技/README.md": {
-      "size": 609,
-      "sha256": "EA92EC27DE62799C2D0ACBFE6A12E1EA7435F2569A6E17B98B8BA3DB68D99825"
-    },
     "knowledge/业务/竞技/结算.md": {
       "size": 10204,
       "sha256": "2645B3E63FA3F10EAF2EC25C607D24E0916DACFCB182B67B14B05E44A4C5CCF7"
     },
-    "knowledge/业务/README.md": {
-      "size": 818,
-      "sha256": "43AF13BC8F0D9E6FB9A8101F475D142D7CF19718FF69811420F080A281521A28"
+    "knowledge/业务/经济/README.md": {
+      "size": 759,
+      "sha256": "22EBC4430327D18685DF9F826C8F3F76948BD416D3E500B27DD3601C787C970A"
     },
     "knowledge/业务/经济/卡片交易所.md": {
       "size": 4856,
@@ -3386,13 +3398,13 @@
       "size": 1062,
       "sha256": "6EA0D1E8DBF366633EA66A61665BE9BE522B7F300C2CDFB12DE8E10A460A6ADE"
     },
-    "knowledge/业务/经济/README.md": {
-      "size": 759,
-      "sha256": "22EBC4430327D18685DF9F826C8F3F76948BD416D3E500B27DD3601C787C970A"
-    },
     "knowledge/业务/经济/货币/README.md": {
       "size": 1238,
       "sha256": "71E842CE5116F19A8F7449C27C6CC4AFF4D2E54997CC0C67EAB822B5B88ED35F"
+    },
+    "knowledge/业务/角色/README.md": {
+      "size": 1099,
+      "sha256": "1F8BBD2A5C3F592421FB3E06EA22E001B41F9B893C2F5B5C5C8CD62942969F84"
     },
     "knowledge/业务/角色/任务/README.md": {
       "size": 1900,
@@ -3414,10 +3426,6 @@
       "size": 1216,
       "sha256": "657B50FED964E20BB20FE7E83E4C1F55BEA4900E6DF98D6569CCB0D2D216A6AE"
     },
-    "knowledge/业务/角色/README.md": {
-      "size": 1099,
-      "sha256": "1F8BBD2A5C3F592421FB3E06EA22E001B41F9B893C2F5B5C5C8CD62942969F84"
-    },
     "knowledge/业务/角色/角色创建.md": {
       "size": 5648,
       "sha256": "95CE53FF4B2EFCEAF36249025927A1E72A81937EC9733E322136CF404A9AFCDD"
@@ -3429,6 +3437,10 @@
     "knowledge/业务/角色/账号身份.md": {
       "size": 2597,
       "sha256": "40C1E722FCB57076685C4E315FF14A0617CD8C299A7AA84C2B26AFBDE573871F"
+    },
+    "knowledge/基础/README.md": {
+      "size": 912,
+      "sha256": "ED49D7E8F3285BF779DD52264FA14666FCEF001A489E9FCA23A8EFA093E087E4"
     },
     "knowledge/基础/内部桥接.md": {
       "size": 3182,
@@ -3446,13 +3458,13 @@
       "size": 5584,
       "sha256": "072D9941C55383DAA415BC56B19482A0EEC3223AA45D1727DD63DC93D29267CD"
     },
-    "knowledge/基础/README.md": {
-      "size": 912,
-      "sha256": "ED49D7E8F3285BF779DD52264FA14666FCEF001A489E9FCA23A8EFA093E087E4"
-    },
     "knowledge/基础/连接会话.md": {
       "size": 5386,
       "sha256": "128E14FA4EDBF5EA54366AC2E8919FFAA1BB7F736382F63D3BCE45CD4E4B3688"
+    },
+    "knowledge/工程/README.md": {
+      "size": 1836,
+      "sha256": "5E11A2BDEE83C465EDE21E9C83A987B282857AC810FAED424868E57A8E5830D2"
     },
     "knowledge/工程/住宅与家具客户端兼容/README.md": {
       "size": 932,
@@ -3494,10 +3506,6 @@
       "size": 10914,
       "sha256": "68DD252CFE447D80B9740EA98462466F166393A8CD32392F80D156881240058F"
     },
-    "knowledge/工程/README.md": {
-      "size": 1836,
-      "sha256": "5E11A2BDEE83C465EDE21E9C83A987B282857AC810FAED424868E57A8E5830D2"
-    },
     "knowledge/工程/资源安装/README.md": {
       "size": 2482,
       "sha256": "C463AC79A9C100CEE8A9DBF8C20CDB19FBB8B0D1B89C182C042A0496720086D3"
@@ -3513,6 +3521,10 @@
     "knowledge/指南/L7-L8资源移植.md": {
       "size": 3243,
       "sha256": "6032AC6CCB13753D8049651AB4D1DBA0BB428CE17483B9198DC47120DA4C149C"
+    },
+    "knowledge/指南/README.md": {
+      "size": 2614,
+      "sha256": "8AA12C68509DC5BE9246B06DB338F3ECA4B273206768BB1D03AA9E1CD5035EC0"
     },
     "knowledge/指南/level200/README.md": {
       "size": 1014,
@@ -3542,13 +3554,13 @@
       "size": 2251,
       "sha256": "789453F9F871E0DB288EF346FE6260C8AC08D195932D8843F7E32B6DA0D51CA6"
     },
-    "knowledge/指南/客户端二进制补丁/README.md": {
-      "size": 3281,
-      "sha256": "6D9632BD65AB415DE3B6CDB658ABDA916D2B90EC98CE63615B26CE9ADDD3540A"
-    },
     "knowledge/指南/客户端二进制补丁/99页库存安装与恢复.md": {
       "size": 10970,
       "sha256": "17C478251547BFC5C0C162E5EF716585224368B39330FCBA9036AD5B76FAA6AF"
+    },
+    "knowledge/指南/客户端二进制补丁/README.md": {
+      "size": 3281,
+      "sha256": "6D9632BD65AB415DE3B6CDB658ABDA916D2B90EC98CE63615B26CE9ADDD3540A"
     },
     "knowledge/指南/客户端二进制补丁/陈旧组件兼容安装与恢复.md": {
       "size": 12019,
@@ -3570,10 +3582,6 @@
       "size": 2909,
       "sha256": "BA5C509D1B66C63AE02A62AE6AC2CF5CBC2BD9FA8E5932C817A2C87F2040D689"
     },
-    "knowledge/指南/README.md": {
-      "size": 2614,
-      "sha256": "8AA12C68509DC5BE9246B06DB338F3ECA4B273206768BB1D03AA9E1CD5035EC0"
-    },
     "knowledge/指南/运行依赖.md": {
       "size": 9883,
       "sha256": "913B2E467233880B3A994A6715412A6B0F9577A8CC7BDEC6DE2A0817E8E574F8"
@@ -3585,10 +3593,6 @@
     "knowledge/指南/韩服宠物佩戴等级下放方案.md": {
       "size": 1249,
       "sha256": "51FFE0E499D2431DE20E2E2ADFA1368A62FD8BAE9A1C3435C2BAAB577E9789BA"
-    },
-    "knowledge/README.md": {
-      "size": 16862,
-      "sha256": "68D9E03073EF22D4B29F23675C41C09FC77A20C2A35390F94650E7783771AFD7"
     },
     "managed/Services/ArenaTargetCatalog.cs": {
       "size": 1948,
@@ -3645,6 +3649,10 @@
     "manifest/knowledge_migration.json": {
       "size": 418141,
       "sha256": "ED9EA24F3E29BACB848FCECF71D52892C330F026CAA5DA455DEF3E00E2072070"
+    },
+    "manifest/knowledge_routes.json": {
+      "size": 231782,
+      "sha256": "36D215C3CDFBDCA8660EB41E9E21D8F213694780A631AE36A3FE5B9C30E90347"
     },
     "manifest/kobe_wardrobe.json": {
       "size": 8021,
@@ -4107,8 +4115,8 @@
       "sha256": "585D776882D9565222EEE85261768CCC06CF11ECA4BF98701823FD2362ECE93E"
     },
     "scripts/refresh_manifest.py": {
-      "size": 25249,
-      "sha256": "A7F7E680DA1078F1DB8A16B5A6323AD1D5DBB95386643761F97DBE03EB780899"
+      "size": 25467,
+      "sha256": "A72821071650F899C6135F2B139BC0E0E4BAE0D80308C3A2D5954136C2BD56C7"
     },
     "scripts/refresh_patch_manifest.py": {
       "size": 12933,
@@ -4275,8 +4283,8 @@
       "sha256": "5DC8A5E1332A5194F9E9EDAC14BB2B3132AA48B9BBDDE081746396A7617C9ED4"
     },
     "scripts/test_knowledge_routes.py": {
-      "size": 15010,
-      "sha256": "E36FD1DABB6F36B601D8B92A543E3517794233EA30D28D5D954A488707E0F8D1"
+      "size": 15719,
+      "sha256": "C09504738FD1CCCC3DCFE30780841844009DB32363DB4358BF4D7404514F9D73"
     },
     "scripts/test_kobe_wardrobe.py": {
       "size": 7820,
@@ -4425,6 +4433,10 @@
     "scripts/test_reset_chapter_checkpoint.py": {
       "size": 3348,
       "sha256": "E4D6DD32E57790E43075CC58A845FCBEB9DAA921A7288BF536B2435D703F627A"
+    },
+    "scripts/test_secret_entry_client.py": {
+      "size": 7186,
+      "sha256": "7F9E55546678988C6F130BDF50F21F22875BE4576AB12D8073258FFE812A9949"
     },
     "scripts/test_shop_icon_origins.py": {
       "size": 5319,
@@ -4642,6 +4654,10 @@
       "size": 10296,
       "sha256": "B95A852A67F039E52EE1B408B9D74A9734FCB81757C135EDE8ECCF6E55CD02AE"
     },
+    "knowledge/业务/DIY/NPC/README.md": {
+      "size": 1606,
+      "sha256": "8EF0772FF1342D9EA96D8E0188E6952D771DA949F9ECE82C37CE70CD365F9B9B"
+    },
     "knowledge/业务/DIY/NPC/名字与本地化.md": {
       "size": 983,
       "sha256": "5BA4E2EF0BB19CEE7B3D2E83F515AB8F0DCFA553FFEB5EA8F10C17383AF211BC"
@@ -4658,10 +4674,6 @@
       "size": 1601,
       "sha256": "B76C0156752F491333148082B33D123957198640221DADABDE1B2D6BFD99694F"
     },
-    "knowledge/业务/DIY/NPC/README.md": {
-      "size": 1606,
-      "sha256": "8EF0772FF1342D9EA96D8E0188E6952D771DA949F9ECE82C37CE70CD365F9B9B"
-    },
     "knowledge/业务/DIY/NPC/身份与场景.md": {
       "size": 2325,
       "sha256": "9BF76EC2820187C28B80F430A7C8915DF7D0BEDE859B20EE49DCAF38EDFF9CFD"
@@ -4669,6 +4681,14 @@
     "knowledge/业务/DIY/NPC/输入与对白.md": {
       "size": 2515,
       "sha256": "AB5C2C166B40F01B0EB0A1F3942CC2C60CAB534C1E199F576F2F22E25B16924D"
+    },
+    "knowledge/业务/DIY/README.md": {
+      "size": 3638,
+      "sha256": "132BF798C70C94AA9287660EFE42E29D721808E974F38413CCE75EEC13766A93"
+    },
+    "knowledge/业务/DIY/任务/README.md": {
+      "size": 1629,
+      "sha256": "07CBA3EAE12DAC9B6D608C2212C0A7C61C7391EA0CC821AEFA22A0FB8903E980"
     },
     "knowledge/业务/DIY/任务/对白与立绘.md": {
       "size": 5441,
@@ -4686,13 +4706,13 @@
       "size": 8889,
       "sha256": "8EF8657728110091B8DE152E7105793A7E6BAB9258D707206101A784F53E3DAC"
     },
-    "knowledge/业务/DIY/任务/README.md": {
-      "size": 1629,
-      "sha256": "07CBA3EAE12DAC9B6D608C2212C0A7C61C7391EA0CC821AEFA22A0FB8903E980"
-    },
     "knowledge/业务/DIY/地宫/L7-L8移植策略.md": {
       "size": 3567,
       "sha256": "B78A82A71D58A31D37B167A89AEB71261EC3BA8D0FA33FF3FFC3F0F1DCC2A176"
+    },
+    "knowledge/业务/DIY/地宫/README.md": {
+      "size": 1817,
+      "sha256": "3E454333049DEF396A413847B80CB6F1D1856CA14DD7A1C95B7C6EC12B7AC549"
     },
     "knowledge/业务/DIY/地宫/修道僧入口与准备房.md": {
       "size": 5261,
@@ -4714,10 +4734,6 @@
       "size": 5882,
       "sha256": "7DF59D865ED3B55413208B50B42EE035888919062095AC03F3423860D8F0AF1E"
     },
-    "knowledge/业务/DIY/地宫/README.md": {
-      "size": 1817,
-      "sha256": "3E454333049DEF396A413847B80CB6F1D1856CA14DD7A1C95B7C6EC12B7AC549"
-    },
     "knowledge/业务/DIY/地宫/计分板DIY.md": {
       "size": 5457,
       "sha256": "338AB64BF4645C49DC1A80D757638336F233B9E3C9AF7FD6D4DF291EBC3CFC62"
@@ -4726,13 +4742,13 @@
       "size": 4280,
       "sha256": "C5A4B2A49E1B8B38514C6D7A2A401CB09EC5414E0970ACEFE55E6281C59B1961"
     },
-    "knowledge/业务/DIY/子弹/接入与资源链.md": {
-      "size": 4263,
-      "sha256": "2D5E1C4EE071F25719763B552DC111DD88F61D67D735F9DD35ED62FBE73F3D11"
-    },
     "knowledge/业务/DIY/子弹/README.md": {
       "size": 1457,
       "sha256": "A029F4C232ADF35EDD9766119283DC5FA98C16AB1FDB2F7D0744167825A56808"
+    },
+    "knowledge/业务/DIY/子弹/接入与资源链.md": {
+      "size": 4263,
+      "sha256": "2D5E1C4EE071F25719763B552DC111DD88F61D67D735F9DD35ED62FBE73F3D11"
     },
     "knowledge/业务/DIY/子弹/配置与兼容策略.md": {
       "size": 4085,
@@ -4741,10 +4757,6 @@
     "knowledge/业务/DIY/子弹/验证与伤害边界.md": {
       "size": 4567,
       "sha256": "50CD1AA80F135F8649B7DD055D89D3DCDD5CC1B52599610348D1757FC22D0DCF"
-    },
-    "knowledge/业务/DIY/README.md": {
-      "size": 3638,
-      "sha256": "132BF798C70C94AA9287660EFE42E29D721808E974F38413CCE75EEC13766A93"
     },
     "knowledge/业务/住宅/家具/客户端实例与快照.md": {
       "size": 6905,
@@ -4883,8 +4895,8 @@
       "sha256": "774995E59DE61C1D98DC81026C17D929BEDE6858554AE963E10AD59A0D11AB9D"
     },
     "knowledge/业务/地宫/关卡与房间/房间身份.md": {
-      "size": 8973,
-      "sha256": "48B7C7733FEC0286BA0EEC3976FBF5A167C1D03CF137DB5368653E23755AD18C"
+      "size": 12461,
+      "sha256": "82CD4EA63776E3A46D216ADED590CEC2E60A8735A5A9649E97440B9581827FB7"
     },
     "knowledge/业务/地宫/关卡与房间/拉米诺斯BGM与地图图层.md": {
       "size": 2915,
@@ -5306,6 +5318,10 @@
       "size": 8802,
       "sha256": "0FE51DE967D33E0424BE901FE466DDD9A9148C63A7789EF729570ACA4970B604"
     },
+    "knowledge/业务/角色/等级经验/协议载体/README.md": {
+      "size": 1175,
+      "sha256": "34561764992B9E13C3DD6255755FA9745798A321A9B6B020575B66FBAE5E7A40"
+    },
     "knowledge/业务/角色/等级经验/协议载体/客户端经验与HUD消费链.md": {
       "size": 7598,
       "sha256": "4445893816D0E5E7E9F75B43D0B4D5A49C0AEAEE99FB0915465F44EEB7B0A58F"
@@ -5317,10 +5333,6 @@
     "knowledge/业务/角色/等级经验/协议载体/权威状态与对外字段.md": {
       "size": 9652,
       "sha256": "8245E9A1888999BF19D55901952192BF16DC4D653BAD77DE901C1C0EFF6C99BE"
-    },
-    "knowledge/业务/角色/等级经验/协议载体/README.md": {
-      "size": 1175,
-      "sha256": "34561764992B9E13C3DD6255755FA9745798A321A9B6B020575B66FBAE5E7A40"
     },
     "knowledge/业务/角色/等级经验/发布与验证.md": {
       "size": 3220,
@@ -5358,6 +5370,10 @@
       "size": 3688,
       "sha256": "335FEB1A73381110B1FDB074C25B83A85B3AA9DC187DA02D5AC79C560F14CD5E"
     },
+    "knowledge/工程/历史验证/README.md": {
+      "size": 695,
+      "sha256": "265EE698DF31EF3145BB778BDECDA8482CE6B66535609AC8DFD7F39B5A738740"
+    },
     "knowledge/工程/历史验证/既有记录/卡片与成长记录.md": {
       "size": 4315,
       "sha256": "C5D9218D8EF56CC53EF655AA9C2460CDE8FB0F8E04523774156B7DD933B8DF34"
@@ -5389,10 +5405,6 @@
     "knowledge/工程/历史验证/既有记录/资源与可选子弹.md": {
       "size": 1750,
       "sha256": "D648A3D0736FDCA20684A876AA179FC5FE36B131CDD64A56E29055622647A559"
-    },
-    "knowledge/工程/历史验证/README.md": {
-      "size": 695,
-      "sha256": "265EE698DF31EF3145BB778BDECDA8482CE6B66535609AC8DFD7F39B5A738740"
     },
     "knowledge/工程/启动运行/出生点与位置恢复.md": {
       "size": 2083,
@@ -5567,8 +5579,8 @@
       "sha256": "C18C6860BED4C5D337ECBC71FF39CE38DAF5B6F58020981861092A6164C31B94"
     },
     "knowledge/工程/验证状态/地宫与成长验收.md": {
-      "size": 32762,
-      "sha256": "AFA3A8517ECA1F35E233E680BF094EFAE41F724A28F0EB94DD520A4DC5051CE6"
+      "size": 34880,
+      "sha256": "C052DFDDDC4451302BD0064A524E9F76799517EF62173B9C5DE47AC6D68C84C5"
     },
     "knowledge/工程/验证状态/层级与版本归属.md": {
       "size": 21251,
@@ -5602,6 +5614,10 @@
       "size": 8640,
       "sha256": "B423BF7D7BF4DE06501EF92684BEAA3B91395FBCF350039577E62741E3624342"
     },
+    "knowledge/指南/客户端二进制补丁/修道僧四村对白安装/README.md": {
+      "size": 2035,
+      "sha256": "9381D5EA44382385B69A82CAF79FD6329F2105AA1570A75FFD38A8A406BA7B01"
+    },
     "knowledge/指南/客户端二进制补丁/修道僧四村对白安装/场景与资源.md": {
       "size": 5513,
       "sha256": "EE13D79C6C4987D9C8F9898F59343A61F90738DA9658CD105255515D936D9719"
@@ -5613,10 +5629,6 @@
     "knowledge/指南/客户端二进制补丁/修道僧四村对白安装/程序位点.md": {
       "size": 4927,
       "sha256": "A0FBAD04FE30FDB0A4A62A7808FE7F974963286023A0B82122B23A31ADAD07E4"
-    },
-    "knowledge/指南/客户端二进制补丁/修道僧四村对白安装/README.md": {
-      "size": 2035,
-      "sha256": "9381D5EA44382385B69A82CAF79FD6329F2105AA1570A75FFD38A8A406BA7B01"
     },
     "knowledge/指南/客户端二进制补丁/修道僧第一关兼容安装.md": {
       "size": 2123,
@@ -5751,16 +5763,16 @@
       "sha256": "6B60AF0002EF06557A41988975881DFA8BAEC7394C9CFB85C7A4759D66CD42F3"
     },
     "adapter_runtime/Nanaimo.Adapter.dll": {
-      "size": 6176768,
-      "sha256": "FA1E4ADDF3A7BDDEBAC7497CF106DCBB396F0EE9DE6F49751BC7D2C72FD25037"
+      "size": 6182400,
+      "sha256": "AF8776BB611CE48B58520F8554DFF9E6E9E217936D7A319BCC87AAFC6FD64CF5"
     },
     "adapter_runtime/Nanaimo.Adapter.exe": {
       "size": 151552,
-      "sha256": "DE633F0A68447A7D44339EDA1D7721C52D753D1E9C98B1D308FCA3507C51F4A4"
+      "sha256": "6EBB5CB4B3C5DE6C2406C1627DC427AD01D79E54BFBC45A91C7F71E16B64CE66"
     },
     "adapter_runtime/Nanaimo.Adapter.pdb": {
-      "size": 289276,
-      "sha256": "F890968D2B58893C6E9B8E8888925CE179BB5CA87A6A91EA75EFD6F5360F1803"
+      "size": 290140,
+      "sha256": "EFD747D607177ED097DAF8185006B66353F6E529A65CE48D6AB03F1301810EFC"
     },
     "adapter_runtime/Nanaimo.Adapter.runtimeconfig.json": {
       "size": 372,
@@ -5768,11 +5780,11 @@
     },
     "adapter_runtime/Nanaimo.Gameplay.dll": {
       "size": 6353408,
-      "sha256": "D5BA444C529B8A897623D2C7AF944520F0693C9C7D79F0220C166492977CD444"
+      "sha256": "7C87D016BE02991AC5319464D6315A819F115EF9B81E20F54B3B780DC843B724"
     },
     "adapter_runtime/Nanaimo.Gameplay.pdb": {
-      "size": 619772,
-      "sha256": "A72B3EA2674114E6E09956A2EA1C47124694385516CB355CD4D56BB96F497C2A"
+      "size": 619752,
+      "sha256": "8E52171AA7329690CF6A5B1D0B98FD61034040A6454B5BA1AC801E8EE53ABA55"
     },
     "adapter_runtime/SQLitePCLRaw.batteries_v2.dll": {
       "size": 5120,
@@ -6436,7 +6448,7 @@
     },
     "adapter_runtime/adapter_manifest.json": {
       "size": 52662,
-      "sha256": "2228B2ECD3E3AEC79FFDFE7D859DDB9C05644BF5666BC75ABBC3AE1DF0BF8B09"
+      "sha256": "A97003D61D965E54F4EE1FD929958E85CC319CA1623F8399D514774BC933DC77"
     },
     "adapter_runtime/clretwrc.dll": {
       "size": 310568,
@@ -6589,14 +6601,6 @@
     "adapter_runtime/资源/数据/pi._D7": {
       "size": 551168,
       "sha256": "921D1FCC9A42F0EE6940E4EE620479A630F357BAC509384E749102AD18085EC3"
-    },
-    "CHANGELOG.md": {
-      "size": 74218,
-      "sha256": "BF8CA2147F76BB151671CA3D3BCBC37C3D1F2FE27C5FDFE946B82F2B94203BC9"
-    },
-    "manifest/knowledge_routes.json": {
-      "size": 231782,
-      "sha256": "36D215C3CDFBDCA8660EB41E9E21D8F213694780A631AE36A3FE5B9C30E90347"
     }
   },
   "source_closure_count": 479,

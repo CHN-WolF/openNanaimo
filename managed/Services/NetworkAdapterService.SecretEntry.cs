@@ -47,14 +47,15 @@ public sealed partial class NetworkAdapterService
 
             var response = new byte[SceneTransitionResponsePayloadLength];
             BinaryPrimitives.WriteUInt16LittleEndian(response, result.Action);
+            // C5AB action 11 inverts frame+11 into the client's closed-state gate.
+            // A paid admission under our always-open policy must keep that gate clear.
+            if (result.Action == 11) response[3] = 1;
             BinaryPrimitives.WriteUInt32LittleEndian(response.AsSpan(4), result.Price);
             _log($"Secret entry: character={character.Id} town={session.TownId} mode={mode} action={result.Action} price={result.Price} hans={character.Hans}");
-            var allowance = BuildNativeFrame(frame, 0xC5AB, response, session);
-            if (result.Action != 11) return allowance;
-
-            AccountStateChanged?.Invoke();
-            // Publish committed balances before the allowance changes the client page.
-            return CombineNativeFrames(BuildNativeFrame(frame, 0xC37B, BuildShopMovePayload(character), session), allowance);
+            if (result.Action == 11) AccountStateChanged?.Invoke();
+            // Unrequested C37B has no town consumer without a balance window and
+            // blocks the receive queue. C378/C37A own subsequent wallet refreshes.
+            return BuildNativeFrame(frame, 0xC5AB, response, session);
         }
         finally { session.InventoryGate.Release(); }
     }

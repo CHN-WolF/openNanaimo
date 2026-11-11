@@ -252,6 +252,18 @@ for _path, _anchors in {
 
 
 class KnowledgeRoutingTests(unittest.TestCase):
+    def test_refresh_manifest_resolves_archived_document_paths(self):
+        import refresh_manifest
+        routes = json.loads((ROOT / 'manifest/knowledge_routes.json').read_text('utf-8'))
+        fusion = json.loads((ROOT / 'manifest/document_fusion.json').read_text('utf-8'))
+        for name in fusion['validation']['current_documents']:
+            target = routes['path_mapping'].get(name, name)
+            with self.subTest(source=name, target=target):
+                self.assertIn(target, refresh_manifest.REPOSITORY_FILES)
+                self.assertTrue((ROOT / target).is_file())
+                if name != target:
+                    self.assertNotIn(name, refresh_manifest.REPOSITORY_FILES)
+
     def test_legacy_section_links_remain_addressable(self):
         routes = json.loads((ROOT / 'manifest/knowledge_routes.json').read_text('utf-8'))
         for name, expected in LEGACY_ANCHORS.items():
