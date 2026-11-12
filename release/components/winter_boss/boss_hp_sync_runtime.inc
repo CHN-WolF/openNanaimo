@@ -245,6 +245,16 @@ static int boss_hp_sync_preserve_fireball_scenery(const struct boss_hp_sync_cont
     return boss_hp_sync_is_fireball_machine_profile(c)&&def&&def->target_type==4u&&
         !def->scaled_hp&&def->child==(c->profile->slot<6u?0u:1u);
 }
+static int boss_hp_sync_is_secret_first_profile(const struct boss_hp_sync_context*c){
+    return c&&c->profile&&c->profile->hd==1u&&c->profile->episode==0u&&
+        c->profile->dungeon==0u&&c->profile->stage_index==0u&&c->mode_index==0u;
+}
+static int boss_hp_sync_preserve_scenery(const struct boss_hp_sync_context*c,const struct boss_component_boss_component*def){
+    /* hd_ep00_dg00_bbm_gate.mmo is scenery, not a zero-HP killable Boss part. */
+    return boss_hp_sync_preserve_fireball_scenery(c,def)||
+        (boss_hp_sync_is_secret_first_profile(c)&&def&&def->child==1u&&
+         def->ordinal<=1u&&def->target_type==4u&&!def->scaled_hp);
+}
 /* Finishing the required core set clears residual durability, not damage.
    Authored persistent scenery stays outside component and child retirement. */
 static void boss_hp_sync_execute_if_complete(struct boss_hp_sync_context*c,struct boss_hp_sync_result*r){
@@ -256,13 +266,13 @@ static void boss_hp_sync_execute_if_complete(struct boss_hp_sync_context*c,struc
     r->executed=remaining?1u:0u;r->execution_residual_hp=remaining;r->recording_damage+=remaining;r->hp=0u;
     for(i=0u;i<c->component_count;i++){
         const struct boss_component_boss_component*x=&boss_component_boss_components[c->component_def_index[i]];child=x->child;
-        if(boss_hp_sync_preserve_fireball_scenery(c,x))continue;
+        if(boss_hp_sync_preserve_scenery(c,x))continue;
         if(!c->component_terminal_sent[i]&&!c->child_terminal_sent[child])r->execution_retire_mask[child>>5]|=1u<<(child&31u);
         c->component_hp[i]=0u;c->component_terminal_sent[i]=1u;
     }
     for(i=0u;i<c->component_count;i++){
         const struct boss_component_boss_component*x=&boss_component_boss_components[c->component_def_index[i]];
-        if(boss_hp_sync_preserve_fireball_scenery(c,x))continue;
+        if(boss_hp_sync_preserve_scenery(c,x))continue;
         child=x->child;
         c->child_hp[child]=0u;c->child_terminal_sent[child]=1u;
     }
@@ -501,11 +511,11 @@ static int boss_hp_sync_apply_d011_attack(struct boss_hp_sync_context*c,const un
            - zero-HP type4 rows sharing a positive-HP child are attachments;
              they retire with that child's positive root and must not receive
              an independent D012;
-           - except the scoped winter-body and gate-frame retention, type4 rows in a zero-total-HP child are independently adapter-
+           - except scoped persistent bodies, frames and scenery, type4 rows in a zero-total-HP child are independently adapter-
              retired objects. Their first D011 receives one D012 routed to
              the exact child/ordinal while the Boss recording HP is unchanged.
            Repeats are suppressed by the per-mode component ledger. */
-        if(def->target_type==4u&&c->child_max_hp[def->child]==0u&&!boss_hp_sync_defer_winter_body(c,def)&&!boss_hp_sync_defer_gate_frame(c,def)&&!boss_hp_sync_preserve_fireball_scenery(c,def)){
+        if(def->target_type==4u&&c->child_max_hp[def->child]==0u&&!boss_hp_sync_defer_winter_body(c,def)&&!boss_hp_sync_defer_gate_frame(c,def)&&!boss_hp_sync_preserve_scenery(c,def)){
             if(!c->component_terminal_sent[loaded_slot]){c->component_terminal_sent[loaded_slot]=1u;r->component_first_terminal=1u;}
             else{r->component_repeated_terminal=1u;r->scripted_report_suppressed=1u;}
         }else r->scripted_report_suppressed=1u;

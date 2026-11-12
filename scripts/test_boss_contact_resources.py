@@ -144,7 +144,8 @@ int main(void){
     boss_hp_sync_init(&boss);boss_hp_sync_begin_game_domain(&boss,p->episode,p->hd,p->dungeon,p->stage_index,p->slot/3,p->slot);
     assert(boss_component_boss_load_mode(&boss,mode));
     if(c->target_type==4u&&boss.child_max_hp[c->child]==0u&&
-       !boss_hp_sync_defer_winter_body(&boss,c)&&!boss_hp_sync_defer_gate_frame(&boss,c))continue;
+       !boss_hp_sync_defer_winter_body(&boss,c)&&!boss_hp_sync_defer_gate_frame(&boss,c)&&
+       !boss_hp_sync_preserve_scenery(&boss,c))continue;
     before=boss;memset(req,0,sizeof(req));req[0x12]=mode;req[0x13]=c->child;boss_hp_sync_put32(req,0x14,c->ordinal);
     for(repeat=0;repeat<2;repeat++){
      {int rc=boss_hp_sync_apply_d011_attack(&boss,req,32,100000000u,1,&hit);

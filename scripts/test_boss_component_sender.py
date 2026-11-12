@@ -1,6 +1,9 @@
 """Production Boss retirement builders with isolated socket capture."""
 from pathlib import Path
+import hashlib
+import json
 import os
+import struct
 import subprocess
 import tempfile
 import unittest
@@ -133,6 +136,71 @@ static int fireball_scenery_lifecycle(void){
     printf("FIREBALL_SCENERY_PASS slots=9 paths=%u hit_channels=2 scenery_rows=13 fireballs=3 members=2\n",paths);
     return 0;
 }
+static int secret_scenery_lifecycle(void){
+    static const unsigned orders[6][3]={{0,1,2},{0,2,1},{1,0,2},{1,2,0},{2,0,1},{2,1,0}};
+    struct boss_hp_sync_context*c=multiplayer_shared_boss_context();struct boss_hp_sync_result r;
+    unsigned slot,channel,order,i,j,k,epoch,paths=0;
+    for(slot=0;slot<9;slot++)for(channel=0;channel<2;channel++)for(order=0;order<6;order++){
+        boss_hp_sync_begin_game_domain(c,0u,1u,0u,0u,slot/3u,slot);scalar_retired=0;
+        CHECK(c->profile&&c->hp==60000u&&c->component_count==5u&&c->positive_child_count==1u);
+        epoch=c->battle_epoch;
+        for(i=0;i<3;i++){
+            for(j=0;j<2;j++)for(k=0;k<2;k++){
+                unsigned hp=c->hp,damage=c->cumulative_damage;
+                if(k){
+                    struct boss_hp_sync_context before=*c;unsigned char req[28]={0};count=0;
+                    boss_hp_sync_put16(req,8,40u);req[0x11]=1u;boss_hp_sync_put16(req,0x12,j);
+                    CHECK(boss_hp_sync_apply_external_contact(c,req,28u,1000000u,&r)==BOSS_HP_SYNC_BAD_TARGET);
+                    CHECK(!memcmp(c,&before,sizeof(before))&&count==0);
+                }else{
+                    CHECK(!gate_hit(1,j,0,&r));
+                    CHECK(r.zero_hp_gate&&r.scripted_report_suppressed&&!r.component_first_terminal&&count==0);
+                }
+                CHECK(c->hp==hp&&c->cumulative_damage==damage&&!c->component_terminal_sent[3+j]);
+            }
+            {
+                unsigned char req[32]={0};count=0;
+                if(channel){boss_hp_sync_put16(req,8,40u);boss_hp_sync_put16(req,0x12,orders[order][i]);
+                    CHECK(boss_hp_sync_apply_external_contact(c,req,28u,899u,&r)==BOSS_HP_SYNC_OK);
+                }else{boss_hp_sync_put32(req,0x14,orders[order][i]);
+                    CHECK(boss_hp_sync_apply_d011_attack(c,req,32u,1000u,1u,&r)==BOSS_HP_SYNC_OK);}
+                CHECK(r.applied_damage==899u&&!r.component_first_terminal&&!r.final_terminal);
+                teamplay_send_d013_boss_result_retirements(100,&r);shop_catalogs_send_boss_result(100,&r,0,&scalar_retired);
+                CHECK(count==2u&&frames[0][0x19]==255u&&boss_hp_sync_get32(frames[0],0x28)==60000u-i*20000u-899u);
+            }
+            CHECK(!gate_hit(0,orders[order][i],channel,&r));
+            CHECK(r.applied_damage==19101u&&r.component_first_terminal&&r.final_terminal==(i==2u));
+            CHECK(c->hp==60000u-(i+1u)*20000u&&c->cumulative_damage==(i+1u)*20000u);
+            CHECK(count==(i==2u?4u:2u));
+            for(j=0;j<count;j++){
+                CHECK(recipients[j]==100u+j%2u);
+                if(boss_hp_sync_get16(frames[j],6)==0xD013)CHECK(boss_hp_sync_get16(frames[j],12)==0u);
+                else CHECK(boss_hp_sync_get16(frames[j],6)==0xD012&&frames[j][0x19]==0u);
+            }
+            CHECK(sizes[count-1]==(i==2u?64u:60u));
+            CHECK(boss_hp_sync_get16(frames[count-1],0x1A)==orders[order][i]);
+            CHECK(boss_hp_sync_get32(frames[count-1],0x28)==c->hp);
+            CHECK(!c->child_terminal_sent[1]&&!c->component_terminal_sent[3]&&!c->component_terminal_sent[4]);
+            if(i<2u){CHECK(!gate_hit(0,orders[order][i],channel,&r));CHECK(count==0&&r.component_repeated_terminal);}
+        }
+        CHECK(c->final_terminal_seen&&c->cumulative_damage==60000u);
+        boss_hp_sync_begin_game_domain(c,0u,1u,0u,0u,slot/3u,slot);
+        CHECK(c->battle_epoch==epoch+1u&&c->hp==60000u&&!c->final_terminal_seen);
+        CHECK(!gate_hit(1,0,0,&r));CHECK(count==0&&r.scripted_report_suppressed);
+        paths++;
+    }
+    boss_hp_sync_begin_game_domain(c,0u,1u,1u,0u,0u,0u);
+    CHECK(!boss_hp_sync_is_secret_first_profile(c));
+    CHECK(!gate_hit(0,1,0,&r));CHECK(r.scripted_report_suppressed&&c->hp==60000u);
+    {
+        unsigned char req[32]={0};boss_hp_sync_begin_game_domain(c,1u,1u,2u,1u,0u,1u);
+        CHECK(boss_component_boss_load_mode(c,3u));req[0x12]=3u;req[0x13]=1u;
+        CHECK(boss_hp_sync_apply_d011_attack(c,req,32u,1000000u,1u,&r)==BOSS_HP_SYNC_OK);
+        CHECK(r.zero_hp_gate&&r.component_first_terminal&&!r.scripted_report_suppressed);
+    }
+    printf("SECRET_SCENERY_PASS slots=9 paths=%u hit_channels=2 scenery_rows=2 bodies=3 hp=60000 members=2\n",paths);
+    return 0;
+}
 int main(void){
     struct boss_hp_sync_context*c=multiplayer_shared_boss_context();unsigned i;struct boss_hp_sync_result r;
     pSd=capture;pT=(void*)clock_fixed;g_account_name[0]=0;g_multi_current=0;
@@ -163,12 +231,38 @@ int main(void){
     CHECK(!contact(1,0,2,1000000,1,0,1,0));
     CHECK(!gate_lifecycle());
     CHECK(!fireball_scenery_lifecycle());
+    CHECK(!secret_scenery_lifecycle());
     return 0;
 }
 '''
 
 
 class BossComponentSenderTests(unittest.TestCase):
+    def test_secret_resource_identity(self):
+        data = json.loads((ROOT / 'release/components/stage_damage/boss_contact_registry.json').read_text('utf8'))
+        scopes = [s for s in data['scopes'] if s['key'][:4] == [1, 0, 0, 0]]
+        self.assertEqual([s['key'][4] for s in scopes], list(range(9)))
+        for scope in scopes:
+            self.assertEqual(scope['boss_uid'], 42)
+            self.assertEqual(scope['parts'], [[0, 0, 'hd_ep00_dg00_bbm_00.mmo'], [0, 1, 'hd_ep00_dg00_bbm_gate.mmo']])
+        client = Path(os.environ.get('NANAIMO_AUDIT_CLIENT', ROOT.parent / 'game.exe')).parent
+        if not (client / 'flying/hd1_ep00_dg00_st00.sstg').is_file():
+            self.skipTest('local secret-stage resources required')
+        from normalize_combat_score_resources import Resources
+        import lumineos_codec as codec
+        resources = Resources(client)
+        stage = codec.sstg(resources.read('hd1_ep00_dg00_st00.sstg'))
+        self.assertEqual({(s[0], s[1]) for s in stage['slots']}, {('hd1_ep00_dg00_st00_00.smmo', 100)})
+        self.assertEqual(resources.boss(resources.stage((1, 0, 0, 0))[42][1]),
+                         [['flying\\mmo\\hd_ep00_dg00_bbm_00.mmo', 'flying\\mmo\\hd_ep00_dg00_bbm_gate.mmo']])
+        for name, expected in [('hd_ep00_dg00_bbm_00.mmo', [(1, 20000, 101, -1)] * 3),
+                               ('hd_ep00_dg00_bbm_gate.mmo', [(4, 0, 0, -1)] * 2)]:
+            raw, rows = resources.mmo(name)
+            definition = next(r for r in data['resources'] if r['resource'] == name)
+            self.assertEqual(hashlib.sha256(raw).hexdigest().upper(), definition['sha256'])
+            self.assertEqual([(r[4], struct.unpack_from('<i', r, 8)[0], struct.unpack_from('<i', r, 20)[0],
+                               struct.unpack_from('<i', r, 408)[0]) for r in rows], expected)
+
     def test_production_component_child_mode_and_final_order(self):
         self.assertTrue(TCC.is_file(), f"TinyCC missing: {TCC}")
         with tempfile.TemporaryDirectory(prefix="nanaimo-boss-sender-") as temp:
@@ -179,6 +273,7 @@ class BossComponentSenderTests(unittest.TestCase):
                 result = subprocess.run(command, cwd=directory, capture_output=True, text=True, errors="replace", timeout=180)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             print(next(line for line in result.stdout.splitlines() if line.startswith("FIREBALL_SCENERY_PASS")))
+            print(next(line for line in result.stdout.splitlines() if line.startswith("SECRET_SCENERY_PASS")))
 
 
 if __name__ == "__main__":
